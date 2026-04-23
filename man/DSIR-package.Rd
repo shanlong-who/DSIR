@@ -25,7 +25,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Shanlong WHO \email{dings@who.int}
+\strong{Maintainer}: Shanlong Ding \email{dings@who.int}
 
 }
 \keyword{internal}

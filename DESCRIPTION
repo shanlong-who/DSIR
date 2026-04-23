@@ -1,11 +1,11 @@
 Package: DSIR
-Title: Data Science Infrastructure for Global Health in R
-Version: 0.2.0
+Title: Data Science Infrastructure for Global Health
+Version: 0.3.0
 Authors@R: person(given = "Shanlong",
-                  family = "WHO",
+                  family = "Ding",
                   role = c("aut", "cre"),
                   email = "dings@who.int")
-Description: Tools for global health data analysis, including a
+Description: Supports global health data analysis, including a
     publication-ready 'ggplot2' theme, a 'flextable' defaults helper,
     a thin pie chart wrapper, built-in regional country-code datasets,
     and convenience clients for the World Health Organization Global
