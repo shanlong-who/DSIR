@@ -1,3 +1,11 @@
+# DSIR 0.3.0
+
+## New features
+
+* GHO and SDG network functions now return tibbles instead of plain
+  data frames, improving printing of wide result tables. Tibbles
+  inherit from data.frame, so existing code continues to work.
+
 # DSIR 0.2.0
 
 Initial CRAN submission. Renamed from `DSI` to avoid a name clash

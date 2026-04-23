@@ -11,8 +11,8 @@ sdg_goals(include_children = FALSE)
 nested under each goal? Default \code{FALSE}.}
 }
 \value{
-A list (or data frame) of SDG goals, or \code{NULL} when the
-service is unreachable.
+A list (or \link[tibble:tibble]{tibble}) of SDG goals, or
+\code{NULL} when the service is unreachable.
 }
 \description{
 Fetches the list of Sustainable Development Goals from the UN

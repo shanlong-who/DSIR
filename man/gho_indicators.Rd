@@ -12,9 +12,9 @@ indicators whose name contains \code{search} (case-insensitive)
 are returned.}
 }
 \value{
-A data frame with columns \code{IndicatorCode},
-\code{IndicatorName} and \code{Language}. Returns an empty data frame
-(with a message) when the service is unreachable.
+A \link[tibble:tibble]{tibble} with columns \code{IndicatorCode},
+\code{IndicatorName} and \code{Language}. Returns an empty tibble (with
+a message) when the service is unreachable.
 }
 \description{
 Fetches the catalog of indicators from the WHO Global Health

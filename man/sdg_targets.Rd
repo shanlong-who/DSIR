@@ -11,8 +11,8 @@ sdg_targets(include_children = FALSE)
 each target? Default \code{FALSE}.}
 }
 \value{
-A list (or data frame) of SDG targets, or \code{NULL} when
-the service is unreachable.
+A list (or \link[tibble:tibble]{tibble}) of SDG targets, or
+\code{NULL} when the service is unreachable.
 }
 \description{
 Fetches the list of SDG targets from the UN SDG API.

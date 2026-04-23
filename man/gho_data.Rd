@@ -30,8 +30,8 @@ Default \code{NULL}.}
 Default \code{NULL}.}
 }
 \value{
-A data frame of indicator observations, or an empty
-data frame when the service is unreachable.
+A \link[tibble:tibble]{tibble} of indicator observations, or
+an empty tibble when the service is unreachable.
 }
 \description{
 Retrieves observations for a specific indicator from the WHO GHO

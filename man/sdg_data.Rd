@@ -30,8 +30,8 @@ Default \code{NULL}.}
 Default \code{1000}, maximum \code{10000}.}
 }
 \value{
-A data frame of indicator observations, or an empty
-data frame when the service is unreachable or there are no
+A \link[tibble:tibble]{tibble} of indicator observations, or
+an empty tibble when the service is unreachable or there are no
 matching rows.
 }
 \description{

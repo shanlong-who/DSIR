@@ -7,9 +7,9 @@
 #'   indicators whose name contains `search` (case-insensitive)
 #'   are returned.
 #'
-#' @return A data frame with columns `IndicatorCode`,
-#'   `IndicatorName` and `Language`. Returns an empty data frame
-#'   (with a message) when the service is unreachable.
+#' @return A [tibble][tibble::tibble] with columns `IndicatorCode`,
+#'   `IndicatorName` and `Language`. Returns an empty tibble (with
+#'   a message) when the service is unreachable.
 #' @seealso [gho_data()], [gho_dimensions()].
 #' @export
 #'
@@ -33,9 +33,9 @@ gho_indicators <- function(search = NULL) {
 
   res <- .gho_get(url)
   if (is.null(res) || nrow(res) == 0L) {
-    return(data.frame(IndicatorCode = character(),
-                      IndicatorName = character(),
-                      Language = character()))
+    return(tibble::tibble(IndicatorCode = character(),
+                          IndicatorName = character(),
+                          Language = character()))
   }
   res[, c("IndicatorCode", "IndicatorName", "Language")]
 }
@@ -59,8 +59,8 @@ gho_indicators <- function(search = NULL) {
 #' @param year_to Numeric. End year filter (inclusive).
 #'   Default `NULL`.
 #'
-#' @return A data frame of indicator observations, or an empty
-#'   data frame when the service is unreachable.
+#' @return A [tibble][tibble::tibble] of indicator observations, or
+#'   an empty tibble when the service is unreachable.
 #' @seealso [gho_indicators()], [gho_dimensions()].
 #' @export
 #'
@@ -110,7 +110,7 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
   }
 
   res <- .gho_get(url)
-  if (is.null(res)) data.frame() else res
+  if (is.null(res)) tibble::tibble() else res
 }
 
 
@@ -183,5 +183,5 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 
   out <- do.call(rbind, c(all_data, list(make.row.names = FALSE)))
   rownames(out) <- NULL
-  out
+  tibble::as_tibble(out)
 }

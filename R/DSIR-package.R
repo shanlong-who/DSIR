@@ -15,5 +15,6 @@
 
 ## usethis namespace: start
 #' @importFrom rlang .data %||%
+#' @importFrom tibble as_tibble tibble
 ## usethis namespace: end
 NULL

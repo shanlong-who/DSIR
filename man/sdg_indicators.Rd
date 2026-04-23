@@ -7,8 +7,8 @@
 sdg_indicators()
 }
 \value{
-A list (or data frame) of SDG indicators, or \code{NULL}
-when the service is unreachable.
+A list (or \link[tibble:tibble]{tibble}) of SDG indicators,
+or \code{NULL} when the service is unreachable.
 }
 \description{
 Fetches the list of SDG indicators from the UN SDG API.

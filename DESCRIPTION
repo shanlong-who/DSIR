@@ -23,11 +23,12 @@ RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1.0)
 Imports:
-    ggplot2 (>= 3.4.0),
+    cli,
     flextable (>= 0.9.0),
+    ggplot2 (>= 3.4.0),
     httr2,
     rlang,
-    cli
+    tibble (>= 3.0.0)
 Suggests:
     patchwork,
     officer,
