@@ -5,3 +5,5 @@
 *.Rproj
 .DS_Store
 .claude/
+.positai
+_claude_handoff

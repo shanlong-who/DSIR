@@ -1,3 +1,32 @@
+# DSIR 0.4.0
+
+## New features
+
+* New `who_countries` dataset: a tibble of all 194 WHO Member States with
+  ISO3, ISO2, UN M49 numeric code, official and short names, WHO region,
+  and a `is_pic` flag for the 14 Pacific Island Country Member States.
+
+* New regional ISO3 character vectors for ergonomic filtering:
+  `afro_cty`, `amro_cty`, `searo_cty`, `euro_cty`, `emro_cty`, plus
+  `pic_cty`. All are derived from `who_countries` and stay consistent
+  with the master table.
+
+## Important data changes
+
+* **`wpro_cty` now contains 28 countries (was 22 in 0.2.0).** This
+  reflects the May 2025 World Health Assembly decision (EB156) reassigning
+  Indonesia from the South-East Asia Region to the Western Pacific Region,
+  along with Cook Islands and Niue, which are full WHO Member States but
+  were previously omitted. Code that aggregates over `wpro_cty` (sums,
+  counts, joins) will produce different results than under DSIR 0.2.x —
+  this is intended.
+
+## Internal
+
+* Added `data-raw/who_countries.R` as the single source of truth for all
+  country-related datasets. Editing one file regenerates the master tibble
+  and all derived vectors.
+
 # DSIR 0.3.0
 
 ## New features

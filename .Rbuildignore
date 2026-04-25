@@ -8,3 +8,6 @@
 ^cran-comments\.md$
 ^\.github$
 ^CLAUDE\.md$
+^\.positai$
+^_claude_handoff$
+^data-raw$
