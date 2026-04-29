@@ -76,39 +76,57 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
                      year_from = NULL, year_to = NULL) {
   stopifnot(is.character(indicator), length(indicator) == 1L, nzchar(indicator))
   base_url <- paste0("https://ghoapi.azureedge.net/api/", indicator)
-
+  
   filters <- character(0)
-
+  
+  if (!is.null(area) && is.null(spatial_type)) {
+    cli::cli_inform(c(
+      "Assuming {.arg spatial_type} = {.val country} since {.arg area} was given.",
+      "i" = "Pass {.arg spatial_type} explicitly to silence this message."
+    ))
+    spatial_type <- "country"
+  }
+  
   if (!is.null(spatial_type)) {
     spatial_type <- tolower(spatial_type)
     st <- switch(spatial_type,
-      country = "COUNTRY",
-      region  = "REGION",
-      global  = "GLOBAL",
-      cli::cli_abort("Unknown {.arg spatial_type}: {.val {spatial_type}}. Use \"country\", \"region\", or \"global\".")
+                 country = "COUNTRY",
+                 region  = "REGION",
+                 global  = "GLOBAL",
+                 cli::cli_abort("Unknown {.arg spatial_type}: {.val {spatial_type}}. Use \"country\", \"region\", or \"global\".")
     )
     filters <- c(filters, paste0("SpatialDimType eq '", st, "'"))
   }
-
+  
   if (!is.null(area)) {
-    area_filter <- paste0("SpatialDim eq '", area, "'", collapse = " or ")
-    filters <- c(filters, paste0("(", area_filter, ")"))
+    stopifnot(
+      is.character(area),
+      length(area) >= 1L,
+      !anyNA(area),
+      all(nzchar(area))
+    )
+    area_filter <- paste0(
+      "SpatialDim in ('", 
+      paste(area, collapse = "','"), 
+      "')"
+    )
+    filters <- c(filters, area_filter)
   }
-
+  
   if (!is.null(year_from)) {
     filters <- c(filters, paste0("TimeDim ge ", year_from))
   }
   if (!is.null(year_to)) {
     filters <- c(filters, paste0("TimeDim le ", year_to))
   }
-
+  
   if (length(filters) > 0) {
     filter_str <- paste(filters, collapse = " and ")
     url <- paste0(base_url, "?$filter=", utils::URLencode(filter_str, reserved = TRUE))
   } else {
     url <- base_url
   }
-
+  
   res <- .gho_get(url)
   if (is.null(res)) tibble::tibble() else res
 }

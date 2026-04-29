@@ -1,5 +1,13 @@
 # DSIR 0.5.0
 
+## Bug fixes
+
+* `gho_data()` now correctly handles long `area` vectors. Previously,
+  passing 25+ ISO3 codes hit the upstream query string length limit and
+  resulted in HTTP 400 errors. Switched from chained OR clauses to the
+  OData `in` operator, which generates a much shorter URL and supports
+  up to ~115 codes per call.
+
 ## New features
 
 * New `gho_clean()`: a small post-processor for [gho_data()] output
@@ -22,6 +30,13 @@
   `high` are returned as character because the SDG API returns
   non-numeric values for some rows; coerce with `as.numeric()`
   downstream.
+
+* `gho_data()` now infers `spatial_type = "country"` when `area` is
+  provided without an explicit `spatial_type`. Pass `spatial_type`
+  explicitly to silence the message.
+
+* Added input validation for `area`: must be non-NA, non-empty character
+  vector.
 
 # DSIR 0.4.0
 
