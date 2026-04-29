@@ -168,6 +168,82 @@ sdg_data <- function(indicator, area = NULL,
 }
 
 
+#' Tidy an SDG Data Frame
+#'
+#' Selects and renames the most useful columns from an SDG
+#' observation table returned by [sdg_data()], producing a compact
+#' tibble suitable for downstream analysis.
+#'
+#' The mapping is:
+#' * `goal`            -> `goal`
+#' * `target`          -> `target`
+#' * `indicator`       -> `indicator` (flattened to the first code
+#'   when the source column is a list)
+#' * `series`          -> `series`
+#' * `geoAreaCode`     -> `location`
+#' * `geoAreaName`     -> `location_name`
+#' * `timePeriodStart` -> `year`
+#' * `value`           -> `value`
+#' * `lowerBound`      -> `low`
+#' * `upperBound`      -> `high`
+#'
+#' Source columns that are absent from `df` are filled with `NA`,
+#' so the output always has the same ten columns. `value`, `low`
+#' and `high` are returned in their original character form because
+#' the SDG API returns non-numeric values (e.g. `"<0.1"` or
+#' aggregate notes) for some rows; coerce with [as.numeric()]
+#' downstream when appropriate.
+#'
+#' @param df A data frame returned by [sdg_data()].
+#'
+#' @return A [tibble][tibble::tibble] with columns `goal`, `target`,
+#'   `indicator`, `series`, `location`, `location_name`, `year`,
+#'   `value`, `low`, `high`, sorted by `location` then `year`. An
+#'   empty input returns an empty tibble with the same columns.
+#' @seealso [sdg_data()].
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' sdg_data("3.2.1", area = "156", year_from = 2015) |>
+#'   sdg_clean()
+#' }
+sdg_clean <- function(df) {
+  if (!is.data.frame(df)) {
+    cli::cli_abort("{.arg df} must be a data frame.")
+  }
+
+  rename_map <- c(
+    goal          = "goal",
+    target        = "target",
+    indicator     = "indicator",
+    series        = "series",
+    location      = "geoAreaCode",
+    location_name = "geoAreaName",
+    year          = "timePeriodStart",
+    value         = "value",
+    low           = "lowerBound",
+    high          = "upperBound"
+  )
+
+  n <- nrow(df)
+  cols <- lapply(rename_map, function(src) {
+    if (!src %in% names(df)) return(rep(NA, n))
+    x <- df[[src]]
+    if (is.list(x)) {
+      vapply(x, function(v) {
+        if (length(v) == 0) NA_character_ else as.character(v[[1]])
+      }, character(1))
+    } else {
+      x
+    }
+  })
+  out <- tibble::as_tibble(cols)
+
+  out[order(out$location, out$year), , drop = FALSE]
+}
+
+
 #' @noRd
 .sdg_get <- function(url) {
   cli::cli_inform("Fetching: {.url {url}}")

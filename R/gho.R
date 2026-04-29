@@ -150,6 +150,65 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 }
 
 
+#' Tidy a GHO Data Frame
+#'
+#' Selects and renames the most useful columns from a GHO observation
+#' table returned by [gho_data()], producing a compact tibble suitable
+#' for downstream analysis.
+#'
+#' The mapping is:
+#' * `IndicatorCode` -> `indicator`
+#' * `SpatialDim`    -> `location`
+#' * `TimeDim`       -> `year`
+#' * `Dim1`, `Dim2`, `Dim3` -> `dim1`, `dim2`, `dim3`
+#' * `NumericValue`  -> `value`
+#' * `Low`, `High`   -> `low`, `high`
+#'
+#' Source columns that are absent from `df` (for example `Low` /
+#' `High` on indicators without confidence intervals) are filled
+#' with `NA`, so the output always has the same nine columns.
+#'
+#' @param df A data frame returned by [gho_data()].
+#'
+#' @return A [tibble][tibble::tibble] with columns `indicator`,
+#'   `location`, `year`, `dim1`, `dim2`, `dim3`, `value`, `low`,
+#'   `high`, sorted by `location` then `year`. An empty input
+#'   returns an empty tibble with the same columns.
+#' @seealso [gho_data()].
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' gho_data("NCDMORT3070", spatial_type = "country") |>
+#'   gho_clean()
+#' }
+gho_clean <- function(df) {
+  if (!is.data.frame(df)) {
+    cli::cli_abort("{.arg df} must be a data frame.")
+  }
+
+  rename_map <- c(
+    indicator = "IndicatorCode",
+    location  = "SpatialDim",
+    year      = "TimeDim",
+    dim1      = "Dim1",
+    dim2      = "Dim2",
+    dim3      = "Dim3",
+    value     = "NumericValue",
+    low       = "Low",
+    high      = "High"
+  )
+
+  n <- nrow(df)
+  cols <- lapply(rename_map, function(src) {
+    if (src %in% names(df)) df[[src]] else rep(NA, n)
+  })
+  out <- tibble::as_tibble(cols)
+
+  out[order(out$location, out$year), , drop = FALSE]
+}
+
+
 #' @noRd
 .gho_get <- function(url) {
   all_data <- list()

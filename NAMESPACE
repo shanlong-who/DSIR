@@ -2,10 +2,12 @@
 
 export(dsi_flextable_defaults)
 export(ggpie)
+export(gho_clean)
 export(gho_data)
 export(gho_dimensions)
 export(gho_indicators)
 export(sdg_areas)
+export(sdg_clean)
 export(sdg_data)
 export(sdg_goals)
 export(sdg_indicators)

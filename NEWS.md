@@ -1,3 +1,28 @@
+# DSIR 0.5.0
+
+## New features
+
+* New `gho_clean()`: a small post-processor for [gho_data()] output
+  that selects and renames the most useful columns
+  (`IndicatorCode`, `SpatialDim`, `TimeDim`, `Dim1`-`Dim3`,
+  `NumericValue`, `Low`, `High`) into a compact tibble with snake_case
+  names (`indicator`, `location`, `year`, `dim1`-`dim3`, `value`,
+  `low`, `high`), sorted by `location` and `year`. Missing source
+  columns (e.g. `Low` / `High` for indicators without confidence
+  intervals) are filled with `NA`, so the output schema is stable.
+
+* New `sdg_clean()`: counterpart for [sdg_data()] output. Renames
+  `goal`, `target`, `indicator`, `series`, `geoAreaCode`,
+  `geoAreaName`, `timePeriodStart`, `value`, `lowerBound`,
+  `upperBound` to snake_case names (`goal`, `target`, `indicator`,
+  `series`, `location`, `location_name`, `year`, `value`, `low`,
+  `high`) and sorts by `location` then `year`. The `indicator`
+  list-column from the SDG API is flattened to its first code.
+  Missing source columns are filled with `NA`. `value`, `low` and
+  `high` are returned as character because the SDG API returns
+  non-numeric values for some rows; coerce with `as.numeric()`
+  downstream.
+
 # DSIR 0.4.0
 
 ## New features
