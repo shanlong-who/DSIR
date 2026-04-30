@@ -1,4 +1,4 @@
-# DSIR ![](reference/figures/logo.jpg)
+# DSIR ![DSIR logo](reference/figures/logo.jpg)
 
 > Data Science Infrastructure for Global Health
 
@@ -12,6 +12,10 @@ Development Goals](https://unstats.un.org/sdgs) APIs.
 
 ``` r
 
+# from CRAN
+install.packages("DSIR")
+
+# or the development version from GitHub  
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```

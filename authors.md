@@ -2,7 +2,8 @@
 
 ## Authors
 
-- **Shanlong Ding**. Author, maintainer.
+- **[Shanlong Ding](https://github.com/shanlong-who)**. Author,
+  maintainer.
 
 ## Citation
 
