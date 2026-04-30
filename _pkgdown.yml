@@ -1,4 +1,59 @@
 url: https://shanlong-who.github.io/DSIR/
+
 template:
   bootstrap: 5
+  bslib:
+    primary: "#0093D5"           # WHO 蓝，作为主题色
+    base_font: {google: "Source Sans Pro"}
+    heading_font: {google: "Source Sans Pro"}
+    code_font: {google: "JetBrains Mono"}
 
+home:
+  title: DSIR — Data Science Infrastructure for Global Health
+  description: >
+    A small R package for global-health data work: WHO Member State 
+    metadata, lightweight clients for the GHO and UN SDG indicator APIs, 
+    and reusable WHO-style ggplot2 and flextable themes.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+  - title: WHO country metadata
+    desc: Datasets identifying WHO Member States and regional groupings.
+    contents:
+      - who_countries
+      - wpro_cty
+      - afro_cty
+      - amro_cty
+      - searo_cty
+      - euro_cty
+      - emro_cty
+      - pic_cty
+  - title: GHO indicator data
+    desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
+    contents:
+      - gho_indicators
+      - gho_dimensions
+      - gho_data
+      - gho_clean
+  - title: SDG indicator data
+    desc: Functions for fetching and cleaning data from the UN SDG API.
+    contents:
+      - sdg_goals
+      - sdg_targets
+      - sdg_indicators
+      - sdg_data
+      - sdg_clean
+  - title: Visual themes
+    desc: ggplot2 and flextable styling helpers for WHO-style outputs.
+    contents:
+      - theme_dsi
+      - dsi_flextable_defaults
+      - ggpie
+
+authors:
+  Shanlong Ding:
+    href: https://github.com/shanlong-who
