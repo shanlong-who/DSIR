@@ -1,6 +1,6 @@
 # DSIR ![](reference/figures/logo.jpg)
 
-> Data Science Infrastructure for Global Health in R
+> Data Science Infrastructure for Global Health
 
 An R package providing a publication-ready `ggplot2` theme, `flextable`
 defaults, a pie-chart helper, built-in regional country-code datasets,
