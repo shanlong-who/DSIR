@@ -13,6 +13,8 @@ home:
   title: DSIR — Data Science Infrastructure for Global Health
   description: |
     A small R package for global-health data work: WHO Member State  metadata, lightweight clients for the GHO and UN SDG indicator APIs,  and reusable WHO-style ggplot2 and flextable themes.
+  exclude:
+    - CLAUDE.md
 navbar:
   structure:
     left:
@@ -47,6 +49,7 @@ reference:
   contents:
   - sdg_goals
   - sdg_targets
+  - sdg_areas
   - sdg_indicators
   - sdg_data
   - sdg_clean

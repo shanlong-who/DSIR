@@ -1,4 +1,4 @@
-# DSIR <img src="man/figures/logo.jpg" align="right" height="139" />
+# DSIR <img src="man/figures/logo.jpg" align="right" height="138" alt="DSIR logo" />
 
 > Data Science Infrastructure for Global Health
 
@@ -11,17 +11,13 @@ APIs.
 
 ## Installation
 
-You can install the released version of dplyr from CRAN with:
-
 ```r
+# from CRAN
 install.packages("DSIR")
-```
 
-Or the development version from GitHub with:
-
-```r
-# install.packages("pak")
-pak::pak("shanlong-who/DSIR")
+# or the development version from GitHub  
+# install.packages("remotes")
+remotes::install_github("shanlong-who/DSIR")
 ```
 
 ## Features
