@@ -14,14 +14,14 @@ APIs.
 You can install the released version of dplyr from CRAN with:
 
 ```r
-install.packages("dplyr")
+install.packages("DSIR")
 ```
 
 Or the development version from GitHub with:
 
 ```r
 # install.packages("pak")
-pak::pak("tidyverse/dplyr")
+pak::pak("shanlong-who/DSIR")
 ```
 
 ## Features
