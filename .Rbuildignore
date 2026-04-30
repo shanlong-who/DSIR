@@ -11,3 +11,6 @@
 ^\.positai$
 ^_claude_handoff$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

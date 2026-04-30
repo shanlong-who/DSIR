@@ -15,7 +15,7 @@ Description: Supports global health data analysis, including a
     <https://unstats.un.org/SDGAPI/swagger/>.
 License: MIT + file LICENSE
 Language: en-US
-URL: https://github.com/shanlong-who/DSIR
+URL: https://github.com/shanlong-who/DSIR, https://shanlong-who.github.io/DSIR/
 BugReports: https://github.com/shanlong-who/DSIR/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
