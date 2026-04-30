@@ -1,0 +1,146 @@
+# DSIR ![](reference/figures/logo.jpg)
+
+> Data Science Infrastructure for Global Health in R
+
+An R package providing a publication-ready `ggplot2` theme, `flextable`
+defaults, a pie-chart helper, built-in regional country-code datasets,
+and convenient clients for the [WHO Global Health
+Observatory](https://www.who.int/data/gho) and [UN Sustainable
+Development Goals](https://unstats.un.org/sdgs) APIs.
+
+## Installation
+
+``` r
+
+# install.packages("remotes")
+remotes::install_github("shanlong-who/DSIR")
+```
+
+## Features
+
+### Visualization
+
+**[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)**
+— publication-ready `ggplot2` theme.
+
+``` r
+
+library(DSIR)
+library(ggplot2)
+
+ggplot(women, aes(height, weight)) +
+  geom_point(color = "steelblue") +
+  theme_dsi()
+```
+
+**[`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)**
+— one-line setup for `flextable` formatting (booktabs style, bold
+headers). Pass `font_family = "Cambria"` if you have the font installed.
+
+``` r
+
+dsi_flextable_defaults()
+```
+
+**[`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md)**
+— quick pie charts with automatic percentage labels.
+
+``` r
+
+df <- data.frame(category = c("A", "B", "C"), value = c(40, 35, 25))
+ggpie(df, "category", "value")
+```
+
+### Data
+
+**`wpro_cty`** — ISO-3 country codes for the WHO Western Pacific Region.
+
+``` r
+
+head(wpro_cty)
+#> [1] "AUS" "BRN" "KHM" "CHN" "COK" "FJI"
+```
+
+### WHO GHO API
+
+``` r
+
+# Search indicators by keyword
+gho_indicators("mortality")
+
+# Country-level data for an indicator
+gho_data("NCDMORT3070", spatial_type = "country")
+
+# Filter by area and year
+gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
+
+# Discover available dimensions
+gho_dimensions("NCDMORT3070")
+gho_dimensions("NCDMORT3070", dimension = "Dim1")
+```
+
+### UN SDG API
+
+``` r
+
+# Browse goals, targets, indicators, and geographic areas
+sdg_goals()
+sdg_targets()
+sdg_indicators()
+sdg_areas()
+
+# Fetch indicator data
+sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
+```
+
+## License
+
+MIT
+
+# Package index
+
+## All functions
+
+- [`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)
+  : Set DSIR Flextable Defaults
+- [`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md) :
+  Create a Pie Chart with ggplot2
+- [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  : Tidy a GHO Data Frame
+- [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
+  : Fetch GHO Data
+- [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
+  : List Dimensions of a GHO Indicator
+- [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
+  : List GHO Indicators
+- [`pic_cty`](https://shanlong-who.github.io/DSIR/reference/pic_cty.md)
+  : Pacific Island Country ISO3 codes
+- [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md)
+  : List SDG Geographic Areas
+- [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+  : Tidy an SDG Data Frame
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  : Fetch SDG Data
+- [`sdg_goals()`](https://shanlong-who.github.io/DSIR/reference/sdg_goals.md)
+  : List SDG Goals
+- [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md)
+  : List SDG Indicators
+- [`sdg_targets()`](https://shanlong-who.github.io/DSIR/reference/sdg_targets.md)
+  : List SDG Targets
+- [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
+  : DSIR ggplot2 theme — WHO publication-style
+- [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
+  : WHO Member States with regional and Pacific classifications
+- [`afro_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  [`amro_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  [`searo_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  [`euro_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  [`emro_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  [`wpro_cty`](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)
+  : WHO regional Member State ISO3 vectors
+
+# Articles
+
+### All vignettes
+
+- [DSIR](https://shanlong-who.github.io/DSIR/articles/DSIR.md):

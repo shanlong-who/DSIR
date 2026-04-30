@@ -1,0 +1,179 @@
+# DSIR
+
+``` r
+
+library(DSIR)
+library(dplyr)
+library(ggplot2)
+```
+
+![](../reference/figures/logo.jpg)
+
+DSIR is a small R package for global health data work. It consists of
+WHO Member State metadata, lightweight clients for the GHO and UN SDG
+APIs, and reusable WHO-style ggplot2 and flextable themes. DSIR is
+designed for health professionals, WHO staff, and global health
+researchers — the kind of users who do the same routine tasks every day.
+
+This vignette walks through the typical workflow: looking up countries,
+fetching data from GHO and SDG, cleaning the raw response, and producing
+publication-style charts and tables.
+
+## WHO Member State metadata
+
+The `who_countries` tibble lists all 194 WHO Member States with their
+ISO3C, ISO2C, UN M49 codes, official names, short names, and WHO region.
+For Western Pacific countries, an extra column `is_pic` identifies the
+14 Pacific Island Countries.
+
+``` r
+
+who_countries
+```
+
+For convenience, DSIR offers some pre-defined vectors of ISO3C codes for
+each WHO region.
+
+``` r
+
+wpro_cty
+length(wpro_cty)   # 28 Member States in WPR (since May 2025)
+```
+
+The `is_pic` flag is useful because Pacific Island Countries are often
+analysed as a group, given their distinct demographic and geographic
+profiles.
+
+``` r
+
+who_countries |>
+  filter(is_pic) |>
+  select(iso3, name_short)
+```
+
+## Fetching indicator data from GHO
+
+To fetch indicators from GHO, the typical workflow is three steps:
+search for the indicator code, fetch the data, then clean the response.
+The `area` argument accepts a long ISO3 vector, so a whole region can be
+pulled in one call.
+
+### Step 1: Search for an indicator
+
+``` r
+
+gho_indicators("UHC") |> head()
+```
+
+Pick an `IndicatorCode` from the result — this is the value you pass to
+[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
+in the next step.
+
+### Step 2: Fetch the data
+
+``` r
+
+uhc <- gho_data(
+  indicator    = "UHC_INDEX_REPORTED",
+  spatial_type = "country",
+  area         = wpro_cty,
+  year_from    = 2015
+)
+
+uhc |> glimpse()
+```
+
+Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
+countries in one call.
+
+### Step 3: Clean the raw response
+
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+drops the internal OData columns and renames what remains, leaving a
+compact tibble with `indicator`, `location`, `year`, three optional
+dimensions and `value` / `low` / `high`.
+
+``` r
+
+uhc_clean <- gho_clean(uhc)
+uhc_clean
+```
+
+## Plotting with theme_dsi()
+
+[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
+is a `ggplot2` theme tuned for WHO-style charts — clean panels, a modest
+grid, and a consistent accent color. Use it as a drop-in replacement for
+[`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+whenever a chart is heading into a WHO deliverable.
+
+``` r
+
+uhc_clean |>
+  ggplot(aes(x = year, y = value, group = iso3)) +
+  geom_line(alpha = 0.6) +
+  theme_dsi() +
+  labs(
+    title    = "UHC Service Coverage Index, WPR Member States",
+    subtitle = "2015 onwards",
+    x = NULL, y = "SCI"
+  )
+```
+
+## Tables with dsi_flextable_defaults()
+
+[`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)
+sets WHO-style defaults for `flextable` globally — booktabs theme, bold
+headers, modest padding. Call it once near the top of your report and
+every subsequent
+[`flextable()`](https://davidgohel.github.io/flextable/reference/flextable.html)
+picks up the formatting.
+
+``` r
+
+library(flextable)
+dsi_flextable_defaults()
+
+uhc_clean |>
+  filter(year == max(year)) |>
+  left_join(who_countries, by = "iso3") |>
+  select(name_short, value) |>
+  arrange(desc(value)) |>
+  flextable() |>
+  set_caption("UHC SCI in WPR, latest year")
+```
+
+## Working with SDG indicators
+
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+and
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+follow the same fetch-then-tidy pattern as their GHO counterparts. The
+main differences are that indicator codes use the dotted SDG format
+(e.g. `"3.4.1"`) and that `value`, `low` and `high` are kept as
+character — the SDG API returns non-numeric entries (`"<0.1"`, aggregate
+notes) for some rows, so coerce with
+[`as.numeric()`](https://rdrr.io/r/base/numeric.html) only when you are
+ready to drop them.
+
+``` r
+
+sdg <- sdg_data(
+  indicator = "3.4.1",
+  area      = wpro_cty
+)
+sdg |> glimpse()
+```
+
+``` r
+
+sdg_clean(sdg)
+```
+
+## Where to next
+
+- Source code lives at <https://github.com/shanlong-who/DSIR>.
+- Bug reports, feature requests and pull requests are all welcome —
+  please file them on the GitHub issue tracker.
+- DSIR is maintained at the WHO Western Pacific Regional Office, Manila,
+  and is shaped by the daily reporting work of that team.
