@@ -1,42 +1,59 @@
+# DSIR Release Notes
+
+For full source, see <https://github.com/shanlong-who/DSIR>.
+
 # DSIR 0.5.0
+
+## Breaking changes
+
+* `theme_dsi()`: removed the `color` argument and added `accent` instead.
+  The semantics are different: `color` previously controlled text colour,
+  while `accent` now controls axis line and tick colour. If you used
+  `theme_dsi(color = X)` in 0.2.x, change to `theme_dsi(accent = X)` and
+  note that the visual effect has shifted from "everywhere" to "axis
+  only". Text colour is now fixed to `grey20` to follow modern
+  publication conventions.
 
 ## Bug fixes
 
 * `gho_data()` now correctly handles long `area` vectors. Previously,
-  passing 25+ ISO3 codes hit the upstream query string length limit and
-  resulted in HTTP 400 errors. Switched from chained OR clauses to the
-  OData `in` operator, which generates a much shorter URL and supports
-  up to ~115 codes per call.
+  passing more than ~22 ISO3 codes hit the upstream query string length
+  limit and resulted in HTTP 400 errors. Switched from chained OR clauses
+  to the OData `in` operator, which generates a much shorter URL and
+  supports up to ~115 codes per call.
 
 ## New features
 
-* New `gho_clean()`: a small post-processor for [gho_data()] output
-  that selects and renames the most useful columns
-  (`IndicatorCode`, `SpatialDim`, `TimeDim`, `Dim1`-`Dim3`,
-  `NumericValue`, `Low`, `High`) into a compact tibble with snake_case
-  names (`indicator`, `location`, `year`, `dim1`-`dim3`, `value`,
-  `low`, `high`), sorted by `location` and `year`. Missing source
-  columns (e.g. `Low` / `High` for indicators without confidence
-  intervals) are filled with `NA`, so the output schema is stable.
+* New `gho_clean()`: post-processor for `gho_data()` output. Selects
+  the useful columns and renames them to snake_case (`indicator`,
+  `location`, `year`, `dim1`-`dim3`, `value`, `low`, `high`). Output
+  schema is stable across indicators — missing columns are filled
+  with `NA`. See `?gho_clean` for details.
 
-* New `sdg_clean()`: counterpart for [sdg_data()] output. Renames
-  `goal`, `target`, `indicator`, `series`, `geoAreaCode`,
-  `geoAreaName`, `timePeriodStart`, `value`, `lowerBound`,
-  `upperBound` to snake_case names (`goal`, `target`, `indicator`,
-  `series`, `location`, `location_name`, `year`, `value`, `low`,
-  `high`) and sorts by `location` then `year`. The `indicator`
-  list-column from the SDG API is flattened to its first code.
-  Missing source columns are filled with `NA`. `value`, `low` and
-  `high` are returned as character because the SDG API returns
-  non-numeric values for some rows; coerce with `as.numeric()`
-  downstream.
+* New `sdg_clean()`: counterpart for `sdg_data()`. Renames the
+  SDG API columns to snake_case and flattens the `indicator`
+  list-column. Returns `value`, `low`, and `high` as character to
+  preserve non-numeric entries (`"<0.1"`, aggregate notes); coerce
+  with `as.numeric()` downstream. See `?sdg_clean` for details.
+
+## Improvements
+
+* `theme_dsi()` redesigned to follow modern publication conventions
+  (BBC, OECD, Financial Times style):
+  - Removed panel border; axis lines only on left and bottom
+  - Removed vertical grid lines (kept horizontal only)
+  - Lighter grid colour (`grey92`, was `grey85`)
+  - Larger title and subtitle
+  - Text colour standardised to `grey20`
+  - Title left-aligned to plot edge
+  - New `legend_position` argument
 
 * `gho_data()` now infers `spatial_type = "country"` when `area` is
   provided without an explicit `spatial_type`. Pass `spatial_type`
   explicitly to silence the message.
 
-* Added input validation for `area`: must be non-NA, non-empty character
-  vector.
+* `gho_data()` now validates the `area` argument: must be a non-NA,
+  non-empty character vector.
 
 # DSIR 0.4.0
 

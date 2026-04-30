@@ -2,45 +2,51 @@
 % Please edit documentation in R/theme_dsi.R
 \name{theme_dsi}
 \alias{theme_dsi}
-\title{DSIR ggplot2 Theme}
+\title{DSIR ggplot2 theme — WHO publication-style}
 \usage{
 theme_dsi(
   base_size = 12,
   base_family = "",
-  color = "steelblue",
-  grid_color = "grey85"
+  accent = "#0093D5",
+  grid_color = "grey92",
+  legend_position = "bottom"
 )
 }
 \arguments{
 \item{base_size}{Base font size in points. Default \code{12}.}
 
-\item{base_family}{Base font family. Default \code{""} (device default).}
+\item{base_family}{Base font family. Default \code{""} (system default).
+Set to \code{"sans"}, \code{"Arial"}, \code{"Helvetica"}, or \code{"Calibri"} for a
+specific look. Empty default keeps the package portable on CRAN's
+Linux check machines, where Calibri is unavailable.}
 
-\item{color}{Accent color for text and panel borders.
-Default \code{"steelblue"}.}
+\item{accent}{Accent colour used for axis lines and as a default for
+highlight elements. Default \code{"#0093D5"} (WHO blue). Pass any colour
+string.}
 
-\item{grid_color}{Color for major grid lines. Default \code{"grey85"}.}
+\item{grid_color}{Colour of the (horizontal) major grid. Default
+\code{"grey92"} — a very light grey, close to bbplot and OECD style.}
+
+\item{legend_position}{Position of the legend. Default \code{"bottom"}.
+Pass \code{"none"}, \code{"top"}, \code{"right"}, or a numeric vector \code{c(x, y)}.}
 }
 \value{
-A \code{ggplot2} theme object that can be added to a plot with
-\code{+}.
+A \code{ggplot2} theme object.
 }
 \description{
-A clean, publication-ready \code{ggplot2} theme based on
-\code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} with a consistent color accent and
-bordered panels.
-}
-\details{
-The default \code{base_family = ""} uses the graphics device's default
-font so the theme works on any system (including CRAN's Linux test
-machines). For the original DSIR look, pass
-\code{base_family = "Cambria"} on a system where that font is
-installed and registered with R (see \code{\link[grDevices:postscriptFonts]{grDevices::postscriptFonts()}}
-or the \code{systemfonts} package).
+A clean, modern theme tuned for WHO and global-health publications.
+Removes the panel border, retains only horizontal grid lines, and uses
+a muted text colour so that the data — not the chart chrome — is the
+visual focus.
 }
 \examples{
 library(ggplot2)
-ggplot(women, aes(height, weight)) +
-  geom_point(color = "steelblue") +
-  theme_dsi()
+ggplot(mtcars, aes(wt, mpg, color = factor(cyl))) +
+  geom_point(size = 3) +
+  theme_dsi() +
+  labs(title = "Fuel efficiency by weight",
+       subtitle = "From the mtcars dataset",
+       x = "Weight (1000 lbs)", y = "Miles per gallon",
+       color = "Cylinders")
+
 }

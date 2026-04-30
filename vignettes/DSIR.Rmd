@@ -21,6 +21,8 @@ library(dplyr)
 library(ggplot2)
 ```
 
+<img src="../man/figures/logo.jpg" align="right" height="138" />
+
 DSIR is a small R package for global health data work. It consists of WHO Member State metadata, lightweight clients for the GHO and UN SDG APIs, and reusable WHO-style ggplot2 and flextable themes. DSIR is designed for health professionals, WHO staff, and global health researchers — the kind of users who do the same routine tasks every day.
 
 This vignette walks through the typical workflow: looking up countries, fetching data from GHO and SDG, cleaning the raw response, and producing publication-style charts and tables.
