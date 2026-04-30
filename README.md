@@ -11,9 +11,17 @@ APIs.
 
 ## Installation
 
+You can install the released version of dplyr from CRAN with:
+
 ```r
-# install.packages("remotes")
-remotes::install_github("shanlong-who/DSIR")
+install.packages("dplyr")
+```
+
+Or the development version from GitHub with:
+
+```r
+# install.packages("pak")
+pak::pak("tidyverse/dplyr")
 ```
 
 ## Features
