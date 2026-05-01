@@ -1,13 +1,22 @@
-# DSIR <img src="man/figures/logo.jpg" align="right" height="138" alt="DSIR logo" />
+# DSIR <a href="https://shanlong-who.github.io/DSIR/"><img src="man/figures/logo.jpg" align="right" height="120" alt="DSIR website" /></a>
 
 > Data Science Infrastructure for Global Health
 
-An R package providing a publication-ready `ggplot2` theme,
-`flextable` defaults, a pie-chart helper, built-in regional
-country-code datasets, and convenient clients for the
-[WHO Global Health Observatory](https://www.who.int/data/gho) and
-[UN Sustainable Development Goals](https://unstats.un.org/sdgs)
-APIs.
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/DSIR)](https://CRAN.R-project.org/package=DSIR)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/DSIR)](https://cran.r-project.org/package=DSIR)
+<!-- badges: end -->
+
+An R package for global-health data work. Bundles country metadata 
+and lightweight clients for the [WHO Global Health Observatory][gho] 
+and [UN Sustainable Development Goals][sdg] APIs, plus reusable 
+WHO-style themes for `ggplot2` and `flextable` so that charts and 
+tables produced from this data look consistent across reports.
+
+[gho]: https://www.who.int/data/gho
+[sdg]: https://unstats.un.org/sdgs
+Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
