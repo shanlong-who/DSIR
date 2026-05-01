@@ -1,12 +1,15 @@
-# DSIR ![DSIR logo](reference/figures/logo.jpg)
+# DSIR [![DSIR website](reference/figures/logo.jpg)](https://shanlong-who.github.io/DSIR/)
 
 > Data Science Infrastructure for Global Health
 
-An R package providing a publication-ready `ggplot2` theme, `flextable`
-defaults, a pie-chart helper, built-in regional country-code datasets,
-and convenient clients for the [WHO Global Health
+An R package for global-health data work. Bundles country metadata and
+lightweight clients for the [WHO Global Health
 Observatory](https://www.who.int/data/gho) and [UN Sustainable
-Development Goals](https://unstats.un.org/sdgs) APIs.
+Development Goals](https://unstats.un.org/sdgs) APIs, plus reusable
+WHO-style themes for `ggplot2` and `flextable` so that charts and tables
+produced from this data look consistent across reports.
+
+Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
