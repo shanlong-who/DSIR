@@ -9,8 +9,12 @@
 #'   for the slices.
 #' @param .y Column name (string) of the numeric variable used for
 #'   the slice values.
-#' @param .offset Bar `x` position. Default `1`. Increase (e.g.
-#'   `2`) to carve out a donut-chart hole.
+#' @param .offset Numeric scalar (> 0). Controls label position
+#'   along the slice radius. Default `1` places the label at the
+#'   middle of the slice. Smaller values (e.g. `0.5`) move the
+#'   label inward toward the centre; larger values (e.g. `2`)
+#'   move it outward toward the edge or beyond, useful for
+#'   donut-style layouts.
 #' @param .color Border color between slices. Default `"white"`.
 #' @param .legend Logical. Show the legend? Default `FALSE`.
 #' @param .label Logical. Draw `"name\n(pct%)"` labels on the
@@ -31,20 +35,21 @@ ggpie <- function(df, .x, .y, .offset = 1, .color = "white",
   stopifnot(
     is.data.frame(df),
     is.character(.x), length(.x) == 1L, .x %in% names(df),
-    is.character(.y), length(.y) == 1L, .y %in% names(df)
+    is.character(.y), length(.y) == 1L, .y %in% names(df),
+    is.numeric(df[[.y]]), 
+    is.numeric(.offset), length(.offset) == 1L, .offset > 0
+  )
+  
+  df_plot <- df
+  vals    <- df_plot[[.y]]
+  total   <- sum(vals)
+  df_plot[[".dsir_label"]] <- paste0(
+    df_plot[[.x]], "\n(", round(vals / total * 100, 1), "%)"
   )
 
-  df_plot <- df
-  vals <- df_plot[[.y]]
-  total <- sum(vals)
-
-  df_plot[[".dsir_perc"]]  <- round(vals / total * 100, 1)
-  df_plot[[".dsir_label"]] <- paste0(df_plot[[.x]], "\n(", df_plot[[".dsir_perc"]], "%)")
-  df_plot[[".dsir_y_pos"]] <- total - cumsum(vals) + vals / 2
-
   p <- ggplot2::ggplot(df_plot, ggplot2::aes(
-    x = .offset,
-    y = .data[[.y]],
+    x    = 1,
+    y    = .data[[.y]],
     fill = .data[[.x]]
   )) +
     ggplot2::geom_col(color = .color, linewidth = 0.5) +
@@ -54,20 +59,18 @@ ggpie <- function(df, .x, .y, .offset = 1, .color = "white",
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5, face = "bold")
     )
-
+  
   if (.label) {
     p <- p + ggplot2::geom_text(
-      ggplot2::aes(
-        label = .data[[".dsir_label"]],
-        y     = .data[[".dsir_y_pos"]]
-      ),
-      size = .label_size
+      ggplot2::aes(label = .data[[".dsir_label"]], x = .offset),
+      position = ggplot2::position_stack(vjust = 0.5),
+      size     = .label_size
     )
   }
-
+  
   if (!.legend) {
     p <- p + ggplot2::theme(legend.position = "none")
   }
-
+  
   p
 }

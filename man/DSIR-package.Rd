@@ -20,6 +20,7 @@ Observatory API (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=g
 Useful links:
 \itemize{
   \item \url{https://github.com/shanlong-who/DSIR}
+  \item \url{https://shanlong-who.github.io/DSIR/}
   \item Report bugs at \url{https://github.com/shanlong-who/DSIR/issues}
 }
 

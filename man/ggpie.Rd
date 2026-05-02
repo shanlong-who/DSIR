@@ -24,8 +24,12 @@ for the slices.}
 \item{.y}{Column name (string) of the numeric variable used for
 the slice values.}
 
-\item{.offset}{Bar \code{x} position. Default \code{1}. Increase (e.g.
-\code{2}) to carve out a donut-chart hole.}
+\item{.offset}{Numeric scalar (> 0). Controls label position
+along the slice radius. Default \code{1} places the label at the
+middle of the slice. Smaller values (e.g. \code{0.5}) move the
+label inward toward the centre; larger values (e.g. \code{2})
+move it outward toward the edge or beyond, useful for
+donut-style layouts.}
 
 \item{.color}{Border color between slices. Default \code{"white"}.}
 
