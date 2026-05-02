@@ -36,8 +36,11 @@ ggpie(
 
 - .offset:
 
-  Bar `x` position. Default `1`. Increase (e.g. `2`) to carve out a
-  donut-chart hole.
+  Numeric scalar (\> 0). Controls label position along the slice radius.
+  Default `1` places the label at the middle of the slice. Smaller
+  values (e.g. `0.5`) move the label inward toward the centre; larger
+  values (e.g. `2`) move it outward toward the edge or beyond, useful
+  for donut-style layouts.
 
 - .color:
 

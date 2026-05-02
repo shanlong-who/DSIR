@@ -26,6 +26,8 @@ Useful links:
 
 - <https://github.com/shanlong-who/DSIR>
 
+- <https://shanlong-who.github.io/DSIR/>
+
 - Report bugs at <https://github.com/shanlong-who/DSIR/issues>
 
 ## Author
