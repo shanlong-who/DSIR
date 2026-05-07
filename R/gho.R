@@ -175,13 +175,14 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' for downstream analysis.
 #'
 #' The mapping is:
-#' * `IndicatorCode` -> `indicator`
+#' * `IndicatorCode` -> `id`
 #' * `SpatialDim`    -> `location`
 #' * `TimeDim`       -> `year`
 #' * `Dim1`, `Dim2`, `Dim3` -> `dim1`, `dim2`, `dim3`
 #' * `Value`         -> `value`
 #' * `NumericValue`  -> `value_num`
 #' * `Low`, `High`   -> `low`, `high`
+#' * `IndicatorName` -> `indicator`
 #'
 #' Source columns that are absent from `df` (for example `Low` /
 #' `High` on indicators without confidence intervals) are filled
@@ -189,9 +190,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'
 #' @param df A data frame returned by [gho_data()].
 #'
-#' @return A [tibble][tibble::tibble] with columns `indicator`,
+#' @return A [tibble][tibble::tibble] with columns `id`,
 #'   `location`, `year`, `dim1`, `dim2`, `dim3`, `value`, `value_num`, `low`,
-#'   `high`, sorted by `location` then `year`. An empty input
+#'   `high`, `indicator`, sorted by `location` then `year`. An empty input
 #'   returns an empty tibble with the same columns.
 #' @seealso [gho_data()].
 #' @export
@@ -207,7 +208,7 @@ gho_clean <- function(df) {
   }
 
   rename_map <- c(
-    indicator = "IndicatorCode",
+    id        = "IndicatorCode",
     location  = "SpatialDim",
     year      = "TimeDim",
     dim1      = "Dim1",
@@ -216,7 +217,8 @@ gho_clean <- function(df) {
     value     = "Value",
     value_num = "NumericValue",
     low       = "Low",
-    high      = "High"
+    high      = "High", 
+    indicator = "IndicatorName"
   )
 
   n <- nrow(df)

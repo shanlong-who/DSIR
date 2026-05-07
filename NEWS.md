@@ -25,8 +25,8 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
 ## New features
 
 * New `gho_clean()`: post-processor for `gho_data()` output. Selects
-  the useful columns and renames them to snake_case (`indicator`,
-  `location`, `year`, `dim1`-`dim3`, `value`, `value_num`, `low`, `high`). Output
+  the useful columns and renames them to snake_case (`id`, `location`, `year`, 
+  `dim1`-`dim3`, `value`, `value_num`, `low`, `high`, `indicator`). Output
   schema is stable across indicators — missing columns are filled
   with `NA`. See `?gho_clean` for details.
 
