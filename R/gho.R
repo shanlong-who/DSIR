@@ -212,7 +212,8 @@ gho_clean <- function(df) {
     dim1      = "Dim1",
     dim2      = "Dim2",
     dim3      = "Dim3",
-    value     = "NumericValue",
+    value     = "Value",
+    value_num = "NumericValue",
     low       = "Low",
     high      = "High"
   )
