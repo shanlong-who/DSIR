@@ -179,7 +179,8 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' * `SpatialDim`    -> `location`
 #' * `TimeDim`       -> `year`
 #' * `Dim1`, `Dim2`, `Dim3` -> `dim1`, `dim2`, `dim3`
-#' * `NumericValue`  -> `value`
+#' * `Value`         -> `value`
+#' * `NumericValue`  -> `value_num`
 #' * `Low`, `High`   -> `low`, `high`
 #'
 #' Source columns that are absent from `df` (for example `Low` /
@@ -189,7 +190,7 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' @param df A data frame returned by [gho_data()].
 #'
 #' @return A [tibble][tibble::tibble] with columns `indicator`,
-#'   `location`, `year`, `dim1`, `dim2`, `dim3`, `value`, `low`,
+#'   `location`, `year`, `dim1`, `dim2`, `dim3`, `value`, `value_num`, `low`,
 #'   `high`, sorted by `location` then `year`. An empty input
 #'   returns an empty tibble with the same columns.
 #' @seealso [gho_data()].
