@@ -29,9 +29,9 @@
   post-processor for
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
   output. Selects the useful columns and renames them to snake_case
-  (`indicator`, `location`, `year`, `dim1`-`dim3`, `value`, `low`,
-  `high`). Output schema is stable across indicators — missing columns
-  are filled with `NA`. See
+  (`indicator`, `location`, `year`, `dim1`-`dim3`, `value`, `value_num`,
+  `low`, `high`). Output schema is stable across indicators — missing
+  columns are filled with `NA`. See
   [`?gho_clean`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
   for details.
 
