@@ -6,11 +6,10 @@
 
 - New
   [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md):
-  geometric mean of a numeric vector. Useful for aggregating ratio-based
-  health indicators such as UHC service-coverage tracers, where the
-  composite index is the geometric mean of component coverages.
-  `na.rm = TRUE` by default. Returns `0` when any element is zero, and
-  warns + returns `NaN` when any element is negative.
+  geometric mean of a numeric vector, with optional weights via `w`.
+  Useful for aggregating ratio-based health indicators such as UHC
+  service-coverage tracers. Handles NA (removed by default), zeros
+  (returns 0), and negative values (warns and returns NaN).
 
 - New
   [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md):
