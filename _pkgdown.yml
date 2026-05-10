@@ -27,7 +27,7 @@ navbar:
     - github
 reference:
 - title: WHO country metadata
-  desc: Datasets identifying WHO Member States and regional groupings.
+  desc: Datasets and helpers for WHO Member States and regional groupings.
   contents:
   - who_countries
   - wpro_cty
@@ -37,6 +37,7 @@ reference:
   - euro_cty
   - emro_cty
   - pic_cty
+  - iso3_to_region
 - title: GHO indicator data
   desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
   contents:
@@ -59,6 +60,10 @@ reference:
   - theme_dsi
   - dsi_flextable_defaults
   - ggpie
+- title: Utilities
+  desc: Small mathematical and data helpers.
+  contents:
+  - geomean
 authors:
   Shanlong Ding:
     href: https://github.com/shanlong-who
