@@ -6,11 +6,11 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
 
 ## New features
 
-* New `geomean()`: geometric mean of a numeric vector. Useful for
-  aggregating ratio-based health indicators such as UHC service-coverage
-  tracers, where the composite index is the geometric mean of component
-  coverages. `na.rm = TRUE` by default. Returns `0` when any element is
-  zero, and warns + returns `NaN` when any element is negative.
+* New `geomean()`: geometric mean of a numeric vector, with optional 
+  weights via `w`. Useful for aggregating ratio-based health 
+  indicators such as UHC service-coverage tracers. Handles NA 
+  (removed by default), zeros (returns 0), and negative values 
+  (warns and returns NaN).
 
 * New `iso3_to_region()`: maps ISO3 country codes to WHO region codes
   (`"AFR"`, `"AMR"`, `"SEAR"`, `"EUR"`, `"EMR"`, `"WPR"`) using the
