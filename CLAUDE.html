@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,9 +46,84 @@
 </ul><p>The package is CRAN-bound, so conventions below are driven by <code>R CMD check</code> and CRAN policy, not just taste.</p>
 </div>
 <div class="section level2">
+<h2 id="current-development-state--051-in-preparation-last-updated-2026-05-08">Current development state — 0.5.1 in preparation (last updated 2026-05-08)<a class="anchor" aria-label="anchor" href="#current-development-state--051-in-preparation-last-updated-2026-05-08"></a></h2>
+<p>Two new functions are written, tested, exported, and documented in <code>NEWS.md</code>. <strong>Code is committed-ready but the release scripts have not yet been run.</strong> Resume from this point.</p>
+<div class="section level3">
+<h3 id="what-was-added-in-051">What was added in 0.5.1<a class="anchor" aria-label="anchor" href="#what-was-added-in-051"></a></h3>
+<ul><li>
+<code>geomean(x, na.rm = TRUE)</code> — geometric mean. For ratio-based indicator aggregation (e.g. UHC service-coverage tracers). Returns 0 if any element is 0; warns + returns <code>NaN</code> for negative input.</li>
+<li>
+<code>iso3_to_region(iso3, long = FALSE)</code> — ISO3 → WHO region using the bundled <code>who_countries</code> dataset. <code>long = TRUE</code> gives full names. Non-Member codes return <code>NA</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="files-touched-in-this-release">Files touched in this release<a class="anchor" aria-label="anchor" href="#files-touched-in-this-release"></a></h3>
+<ul><li>
+<code>R/geomean.R</code>, <code>R/iso3_to_region.R</code> (new)</li>
+<li>
+<code>tests/testthat/test-geomean.R</code>, <code>tests/testthat/test-iso3_to_region.R</code> (new)</li>
+<li>
+<code>R/DSIR-package.R</code> — added <code>utils::globalVariables("who_countries")</code> to silence R CMD check NOTE; listed new functions in <code>@details</code>
+</li>
+<li>
+<code>NAMESPACE</code> — manually added <code>export(geomean)</code> and <code>export(iso3_to_region)</code> (will be regenerated identically by <code>devtools::document()</code>)</li>
+<li>
+<code>DESCRIPTION</code> — Version bumped to 0.5.1; Description field updated</li>
+<li>
+<code>NEWS.md</code> — added 0.5.1 section</li>
+</ul></div>
+<div class="section level3">
+<h3 id="pending-steps-before-tagging">Pending steps before tagging<a class="anchor" aria-label="anchor" href="#pending-steps-before-tagging"></a></h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>   <span class="co"># regenerate NAMESPACE + man/*.Rd from roxygen</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>       <span class="co"># all tests should pass</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span>      <span class="co"># R CMD check — expect 0 errors / 0 warnings / 0 notes</span></span></code></pre></div>
+<p>Then commit + tag:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">git</span> add R/ tests/ NAMESPACE DESCRIPTION NEWS.md CLAUDE.md</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Release 0.5.1: add geomean() and iso3_to_region()"</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">git</span> tag v0.5.1</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="known-doc-staleness-not-blocking-051">Known doc staleness (not blocking 0.5.1)<a class="anchor" aria-label="anchor" href="#known-doc-staleness-not-blocking-051"></a></h3>
+<p>The “What this repo is” section above still describes only <code>wpro_cty</code> as the bundled dataset. Since 0.4.0 the package also ships <code>who_countries</code>, the full <code>afro_cty/.../wpro_cty</code> regional vectors, and <code>pic_cty</code>. Worth refreshing during a future doc cleanup.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="roadmap--060-candidates">Roadmap — 0.6.0 candidates<a class="anchor" aria-label="anchor" href="#roadmap--060-candidates"></a></h2>
+<div class="section level3">
+<h3 id="high-priority--schema-alignment-for-gho_clean--sdg_clean">High priority — schema alignment for <code>gho_clean()</code> / <code>sdg_clean()</code>
+<a class="anchor" aria-label="anchor" href="#high-priority--schema-alignment-for-gho_clean--sdg_clean"></a></h3>
+<p>Their outputs cannot currently be <code>bind_rows()</code>-ed cleanly:</p>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Source</th>
+<th>Columns</th>
+</tr></thead><tbody><tr><td><code><a href="reference/gho_clean.html">gho_clean()</a></code></td>
+<td><code>id, location, year, dim1, dim2, dim3, value, value_num, low, high, indicator</code></td>
+</tr><tr><td><code><a href="reference/sdg_clean.html">sdg_clean()</a></code></td>
+<td><code>goal, target, indicator, series, location, location_name, year, value, low, high</code></td>
+</tr></tbody></table><p>Open design question: pick a shared core schema (e.g. <code>id, indicator, location, year, value, low, high</code>) and let source-specific extras live alongside. Possibly add a <code>bind_indicators(...)</code> helper. This is a breaking change, hence 0.6.0.</p>
+</div>
+<div class="section level3">
+<h3 id="other-candidates-surfaced-from-scanning-users-analytical-projects">Other candidates surfaced from scanning user’s analytical projects<a class="anchor" aria-label="anchor" href="#other-candidates-surfaced-from-scanning-users-analytical-projects"></a></h3>
+<p>Worth packaging once 0.5.1 ships:</p>
+<ul><li>
+<code>get_latest(df)</code> — keep the last-non-missing year per location. Used in 3+ WHI/SDG projects in the user’s working directory.</li>
+<li>
+<code>ggdot(df, ...)</code> — Likert-style dot plot built on <code><a href="reference/theme_dsi.html">theme_dsi()</a></code>. Used in SCORE and WHI projects.</li>
+</ul><p>Deliberately deferred:</p>
+<ul><li>
+<code>who_iso3(name)</code> — <code>countrycode::countrycode()</code> with a <code>custom_match</code> argument covers the same ground. Consider exporting only a named vector <code>who_short_name_overrides</code> (e.g. <code>c("DPR Korea" = "PRK", "DR Congo" = "COD", "Lao PDR" = "LAO", ...)</code>) if those overrides recur across many user scripts.</li>
+<li>
+<code>ggbar()</code> / <code>ggcol()</code> — too thin (<code>geom_col</code> + <code>fct_reorder</code>).</li>
+<li>ACM / excess-mortality helpers (<code>annotate_events_dt</code>, <code>create_period_indicator</code>, <code>loadEventsData</code>, <code>validate_*</code>) — wait for the ACM calculator 1.0 to stabilize the Excel template assumptions before extracting.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="source-folder-for-these-candidates">Source folder for these candidates<a class="anchor" aria-label="anchor" href="#source-folder-for-these-candidates"></a></h3>
+<p>The candidate list came from scanning <code>C:\Users\User\OneDrive - World Health Organization\Documents\CAT\DSI</code> (the user’s analytical working directory containing 2024–2026 WHO WPRO projects). Conversation memory for that scan lives at <code>C:\Users\User\.claude\projects\C--Users-User-OneDrive---World-Health-Organization-Documents-CAT-DSI\memory\</code>.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="common-commands">Common commands<a class="anchor" aria-label="anchor" href="#common-commands"></a></h2>
 <p>Run from the package root in an R session (or via <code>Rscript -e '...'</code>):</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Regenerate NAMESPACE and man/*.Rd from roxygen2 comments.</span></span>
 <span><span class="co"># ALWAYS run after editing any roxygen block or adding/removing an @export.</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>

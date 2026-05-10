@@ -19,6 +19,105 @@ Health in R”), targeted at CRAN. It provides:
 The package is CRAN-bound, so conventions below are driven by
 `R CMD check` and CRAN policy, not just taste.
 
+## Current development state — 0.5.1 in preparation (last updated 2026-05-08)
+
+Two new functions are written, tested, exported, and documented in
+`NEWS.md`. **Code is committed-ready but the release scripts have not
+yet been run.** Resume from this point.
+
+### What was added in 0.5.1
+
+- `geomean(x, na.rm = TRUE)` — geometric mean. For ratio-based indicator
+  aggregation (e.g. UHC service-coverage tracers). Returns 0 if any
+  element is 0; warns + returns `NaN` for negative input.
+- `iso3_to_region(iso3, long = FALSE)` — ISO3 → WHO region using the
+  bundled `who_countries` dataset. `long = TRUE` gives full names.
+  Non-Member codes return `NA`.
+
+### Files touched in this release
+
+- `R/geomean.R`, `R/iso3_to_region.R` (new)
+- `tests/testthat/test-geomean.R`,
+  `tests/testthat/test-iso3_to_region.R` (new)
+- `R/DSIR-package.R` — added `utils::globalVariables("who_countries")`
+  to silence R CMD check NOTE; listed new functions in `@details`
+- `NAMESPACE` — manually added `export(geomean)` and
+  `export(iso3_to_region)` (will be regenerated identically by
+  `devtools::document()`)
+- `DESCRIPTION` — Version bumped to 0.5.1; Description field updated
+- `NEWS.md` — added 0.5.1 section
+
+### Pending steps before tagging
+
+``` r
+
+devtools::document()   # regenerate NAMESPACE + man/*.Rd from roxygen
+devtools::test()       # all tests should pass
+devtools::check()      # R CMD check — expect 0 errors / 0 warnings / 0 notes
+```
+
+Then commit + tag:
+
+``` bash
+git add R/ tests/ NAMESPACE DESCRIPTION NEWS.md CLAUDE.md
+git commit -m "Release 0.5.1: add geomean() and iso3_to_region()"
+git tag v0.5.1
+```
+
+### Known doc staleness (not blocking 0.5.1)
+
+The “What this repo is” section above still describes only `wpro_cty` as
+the bundled dataset. Since 0.4.0 the package also ships `who_countries`,
+the full `afro_cty/.../wpro_cty` regional vectors, and `pic_cty`. Worth
+refreshing during a future doc cleanup.
+
+## Roadmap — 0.6.0 candidates
+
+### High priority — schema alignment for `gho_clean()` / `sdg_clean()`
+
+Their outputs cannot currently be `bind_rows()`-ed cleanly:
+
+| Source | Columns |
+|----|----|
+| [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md) | `id, location, year, dim1, dim2, dim3, value, value_num, low, high, indicator` |
+| [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md) | `goal, target, indicator, series, location, location_name, year, value, low, high` |
+
+Open design question: pick a shared core schema
+(e.g. `id, indicator, location, year, value, low, high`) and let
+source-specific extras live alongside. Possibly add a
+`bind_indicators(...)` helper. This is a breaking change, hence 0.6.0.
+
+### Other candidates surfaced from scanning user’s analytical projects
+
+Worth packaging once 0.5.1 ships:
+
+- `get_latest(df)` — keep the last-non-missing year per location. Used
+  in 3+ WHI/SDG projects in the user’s working directory.
+- `ggdot(df, ...)` — Likert-style dot plot built on
+  [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md).
+  Used in SCORE and WHI projects.
+
+Deliberately deferred:
+
+- `who_iso3(name)` — `countrycode::countrycode()` with a `custom_match`
+  argument covers the same ground. Consider exporting only a named
+  vector `who_short_name_overrides`
+  (e.g. `c("DPR Korea" = "PRK", "DR Congo" = "COD", "Lao PDR" = "LAO", ...)`)
+  if those overrides recur across many user scripts.
+- `ggbar()` / `ggcol()` — too thin (`geom_col` + `fct_reorder`).
+- ACM / excess-mortality helpers (`annotate_events_dt`,
+  `create_period_indicator`, `loadEventsData`, `validate_*`) — wait for
+  the ACM calculator 1.0 to stabilize the Excel template assumptions
+  before extracting.
+
+### Source folder for these candidates
+
+The candidate list came from scanning
+`C:\Users\User\OneDrive - World Health Organization\Documents\CAT\DSI`
+(the user’s analytical working directory containing 2024–2026 WHO WPRO
+projects). Conversation memory for that scan lives at
+`C:\Users\User\.claude\projects\C--Users-User-OneDrive---World-Health-Organization-Documents-CAT-DSI\memory\`.
+
 ## Common commands
 
 Run from the package root in an R session (or via `Rscript -e '...'`):
