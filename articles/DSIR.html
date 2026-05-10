@@ -66,27 +66,30 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p><img src="../reference/figures/logo.jpg" align="right" height="120" alt="DSIR website"></p>
+<p><img src="../reference/figures/logo.jpg" align="right" height="120" alt="DSIR logo"></p>
 <p>DSIR is a small R package for global health data work. It consists of
 WHO Member State metadata, lightweight clients for the GHO and UN SDG
-APIs, and reusable WHO-style ggplot2 and flextable themes. DSIR is
-designed for health professionals, WHO staff, and global health
-researchers — the kind of users who do the same routine tasks every
-day.</p>
+APIs, and reusable WHO-style <code>ggplot2</code> and
+<code>flextable</code> themes. DSIR is designed for health
+professionals, WHO staff, and global health researchers — the kind of
+users who do the same routine tasks every day.</p>
 <p>This vignette walks through the typical workflow: looking up
 countries, fetching data from GHO and SDG, cleaning the raw response,
 and producing publication-style charts and tables.</p>
+<p><em>Code chunks below are not evaluated when this vignette is built,
+since they make network calls. Run them in your own R session to see the
+output.</em></p>
 <div class="section level2">
 <h2 id="who-member-state-metadata">WHO Member State metadata<a class="anchor" aria-label="anchor" href="#who-member-state-metadata"></a>
 </h2>
 <p>The <code>who_countries</code> tibble lists all 194 WHO Member States
-with their ISO3C, ISO2C, UN M49 codes, official names, short names, and
+with their ISO3, ISO2, UN M49 codes, official names, short names, and
 WHO region. For Western Pacific countries, an extra column
 <code>is_pic</code> identifies the 14 Pacific Island Countries.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">who_countries</span></span></code></pre></div>
-<p>For convenience, DSIR offers some pre-defined vectors of ISO3C codes
-for each WHO region.</p>
+<p>For convenience, DSIR offers pre-defined vectors of ISO3 codes for
+each WHO region.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wpro_cty</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wpro_cty</span><span class="op">)</span>   <span class="co"># 28 Member States in WPR (since May 2025)</span></span></code></pre></div>
@@ -97,6 +100,15 @@ demographic and geographic profiles.</p>
 <code class="sourceCode R"><span><span class="va">who_countries</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_pic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">name_short</span><span class="op">)</span></span></code></pre></div>
+<p>When you have a vector of ISO3 codes and need to know which WHO
+region each belongs to, <code><a href="../reference/iso3_to_region.html">iso3_to_region()</a></code> provides the
+lookup. It is vectorised and returns <code>NA</code> for codes that do
+not match a WHO Member State.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/iso3_to_region.html">iso3_to_region</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"FRA"</span>, <span class="st">"ZAF"</span>, <span class="st">"USA"</span>, <span class="st">"XYZ"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># "WPR" "EUR" "AFR" "AMR" NA</span></span></code></pre></div>
+<p>This is convenient when joining external datasets (which often arrive
+keyed only by ISO3) to the WHO regional structure.</p>
 </div>
 <div class="section level2">
 <h2 id="fetching-indicator-data-from-gho">Fetching indicator data from GHO<a class="anchor" aria-label="anchor" href="#fetching-indicator-data-from-gho"></a>
@@ -108,7 +120,7 @@ region can be pulled in one call.</p>
 <div class="section level3">
 <h3 id="step-1-search-for-an-indicator">Step 1: Search for an indicator<a class="anchor" aria-label="anchor" href="#step-1-search-for-an-indicator"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
@@ -116,7 +128,7 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <div class="section level3">
 <h3 id="step-2-fetch-the-data">Step 2: Fetch the data<a class="anchor" aria-label="anchor" href="#step-2-fetch-the-data"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span></span>
 <span>  indicator    <span class="op">=</span> <span class="st">"UHC_INDEX_REPORTED"</span>,</span>
 <span>  spatial_type <span class="op">=</span> <span class="st">"country"</span>,</span>
@@ -133,24 +145,45 @@ all 28 WPR countries in one call.</p>
 </h3>
 <p><code><a href="../reference/gho_clean.html">gho_clean()</a></code> drops the internal OData columns and renames
 what remains, leaving a compact tibble with <code>indicator</code>,
-<code>location</code>, <code>year</code>, three optional dimensions and
+<code>location</code>, <code>year</code>, three optional dimensions, and
 <code>value</code> / <code>low</code> / <code>high</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">uhc</span><span class="op">)</span></span>
 <span><span class="va">uhc_clean</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="aggregating-indicators-with-geomean">Aggregating indicators with geomean()<a class="anchor" aria-label="anchor" href="#aggregating-indicators-with-geomean"></a>
+</h2>
+<p>Some health indicators are constructed as the geometric mean of
+component values rather than the arithmetic mean. The UHC Service
+Coverage Index, for example, aggregates 14 tracer indicators using
+nested geometric means. DSIR provides <code><a href="../reference/geomean.html">geomean()</a></code> for
+this:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Unweighted geometric mean</span></span>
+<span><span class="fu"><a href="../reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 0.7720589</span></span>
+<span></span>
+<span><span class="co"># With optional weights — useful when tracers have different </span></span>
+<span><span class="co"># methodological importance</span></span>
+<span><span class="fu"><a href="../reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/geomean.html">geomean()</a></code> handles missing values, zeros, and negative
+values sensibly — see <code><a href="../reference/geomean.html">?geomean</a></code> for details. It is a small
+helper, but it removes a common source of bugs when re-implementing
+index calculations from indicator components.</p>
 </div>
 <div class="section level2">
 <h2 id="plotting-with-theme_dsi">Plotting with theme_dsi()<a class="anchor" aria-label="anchor" href="#plotting-with-theme_dsi"></a>
 </h2>
 <p><code><a href="../reference/theme_dsi.html">theme_dsi()</a></code> is a <code>ggplot2</code> theme tuned for
 WHO-style charts — clean panels, a modest grid, and a consistent accent
-color. Use it as a drop-in replacement for <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal()</a></code>
+colour. Use it as a drop-in replacement for <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal()</a></code>
 whenever a chart is heading into a WHO deliverable.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">value</span>, group <span class="op">=</span> <span class="va">iso3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.6</span>, color <span class="op">=</span> <span class="st">"#0093D5"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_dsi.html">theme_dsi</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"UHC Service Coverage Index, WPR Member States"</span>,</span>
@@ -165,7 +198,7 @@ whenever a chart is heading into a WHO deliverable.</p>
 <code>flextable</code> globally — booktabs theme, bold headers, modest
 padding. Call it once near the top of your report and every subsequent
 <code><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable()</a></code> picks up the formatting.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dsi_flextable_defaults.html">dsi_flextable_defaults</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -184,17 +217,17 @@ padding. Call it once near the top of your report and every subsequent
 fetch-then-tidy pattern as their GHO counterparts. The main differences
 are that indicator codes use the dotted SDG format
 (e.g. <code>"3.4.1"</code>) and that <code>value</code>,
-<code>low</code> and <code>high</code> are kept as character — the SDG
+<code>low</code>, and <code>high</code> are kept as character — the SDG
 API returns non-numeric entries (<code>"&lt;0.1"</code>, aggregate
 notes) for some rows, so coerce with <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> only when
 you are ready to drop them.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span></span>
 <span>  indicator <span class="op">=</span> <span class="st">"3.4.1"</span>,</span>
 <span>  area      <span class="op">=</span> <span class="va">wpro_cty</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sdg</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -202,10 +235,8 @@ you are ready to drop them.</p>
 </h2>
 <ul>
 <li>Source code lives at <a href="https://github.com/shanlong-who/DSIR" class="external-link uri">https://github.com/shanlong-who/DSIR</a>.</li>
-<li>Bug reports, feature requests and pull requests are all welcome —
+<li>Bug reports, feature requests, and pull requests are all welcome —
 please file them on the GitHub issue tracker.</li>
-<li>DSIR is maintained at the WHO Western Pacific Regional Office,
-Manila, and is shaped by the daily reporting work of that team.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -8,7 +8,11 @@ sensible `flextable` defaults
 a quick pie chart helper
 ([`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md)),
 regional country-code datasets
-([wpro_cty](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md)),
+([wpro_cty](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md))
+with a WHO region lookup
+([`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)),
+a geometric mean helper for indicator aggregation
+([`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)),
 and thin clients for the WHO Global Health Observatory API
 ([`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md),
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
@@ -33,3 +37,7 @@ Useful links:
 ## Author
 
 **Maintainer**: Shanlong Ding <dings@who.int>
+
+Authors:
+
+- Shanlong Ding <dings@who.int>

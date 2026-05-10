@@ -76,6 +76,16 @@ emro_cty   # 21 Eastern Mediterranean Region Member States
 pic_cty    # 14 Pacific Island Country Member States (subset of WPR)
 ```
 
+**[`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)**
+— quick lookup from ISO3 codes to WHO regions. Vectorized; returns `NA`
+for codes not matching a Member State.
+
+``` r
+
+iso3_to_region("PHL")                          # "WPR"
+iso3_to_region(c("PHL", "FRA", "ZAF", "XYZ"))  # "WPR" "EUR" "AFR" NA
+```
+
 ### Visualization
 
 **[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)**
@@ -115,6 +125,19 @@ df <- data.frame(
   countries = c(47, 35, 53, 28, 10, 21)
 )
 ggpie(df, "region", "countries", .offset = 1.2)
+```
+
+### Utilities
+
+**[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)**
+— geometric mean, with optional weights. Useful for aggregating
+ratio-based health indicators where the composite is multiplicative —
+e.g. UHC service-coverage tracers.
+
+``` r
+
+geomean(c(0.6, 0.8, 0.95))                      # ~0.772
+geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
 ```
 
 ### WHO GHO API
@@ -186,7 +209,7 @@ MIT — © 2026 Shanlong Ding
 
 ## WHO country metadata
 
-Datasets identifying WHO Member States and regional groupings.
+Datasets and helpers for WHO Member States and regional groupings.
 
 - [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
   : WHO Member States with regional and Pacific classifications
@@ -199,6 +222,8 @@ Datasets identifying WHO Member States and regional groupings.
   : WHO regional Member State ISO3 vectors
 - [`pic_cty`](https://shanlong-who.github.io/DSIR/reference/pic_cty.md)
   : Pacific Island Country ISO3 codes
+- [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)
+  : Look Up the WHO Region for ISO3 Codes
 
 ## GHO indicator data
 
@@ -241,6 +266,13 @@ ggplot2 and flextable styling helpers for WHO-style outputs.
   : Set DSIR Flextable Defaults
 - [`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md) :
   Create a Pie Chart with ggplot2
+
+## Utilities
+
+Small mathematical and data helpers.
+
+- [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+  : Geometric Mean
 
 # Articles
 

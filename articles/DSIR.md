@@ -7,11 +7,11 @@ library(dplyr)
 library(ggplot2)
 ```
 
-![DSIR website](../reference/figures/logo.jpg)
+![DSIR logo](../reference/figures/logo.jpg)
 
 DSIR is a small R package for global health data work. It consists of
 WHO Member State metadata, lightweight clients for the GHO and UN SDG
-APIs, and reusable WHO-style ggplot2 and flextable themes. DSIR is
+APIs, and reusable WHO-style `ggplot2` and `flextable` themes. DSIR is
 designed for health professionals, WHO staff, and global health
 researchers — the kind of users who do the same routine tasks every day.
 
@@ -19,10 +19,14 @@ This vignette walks through the typical workflow: looking up countries,
 fetching data from GHO and SDG, cleaning the raw response, and producing
 publication-style charts and tables.
 
+*Code chunks below are not evaluated when this vignette is built, since
+they make network calls. Run them in your own R session to see the
+output.*
+
 ## WHO Member State metadata
 
 The `who_countries` tibble lists all 194 WHO Member States with their
-ISO3C, ISO2C, UN M49 codes, official names, short names, and WHO region.
+ISO3, ISO2, UN M49 codes, official names, short names, and WHO region.
 For Western Pacific countries, an extra column `is_pic` identifies the
 14 Pacific Island Countries.
 
@@ -31,8 +35,8 @@ For Western Pacific countries, an extra column `is_pic` identifies the
 who_countries
 ```
 
-For convenience, DSIR offers some pre-defined vectors of ISO3C codes for
-each WHO region.
+For convenience, DSIR offers pre-defined vectors of ISO3 codes for each
+WHO region.
 
 ``` r
 
@@ -50,6 +54,21 @@ who_countries |>
   filter(is_pic) |>
   select(iso3, name_short)
 ```
+
+When you have a vector of ISO3 codes and need to know which WHO region
+each belongs to,
+[`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)
+provides the lookup. It is vectorised and returns `NA` for codes that do
+not match a WHO Member State.
+
+``` r
+
+iso3_to_region(c("PHL", "FRA", "ZAF", "USA", "XYZ"))
+# "WPR" "EUR" "AFR" "AMR" NA
+```
+
+This is convenient when joining external datasets (which often arrive
+keyed only by ISO3) to the WHO regional structure.
 
 ## Fetching indicator data from GHO
 
@@ -91,7 +110,7 @@ countries in one call.
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
 drops the internal OData columns and renames what remains, leaving a
 compact tibble with `indicator`, `location`, `year`, three optional
-dimensions and `value` / `low` / `high`.
+dimensions, and `value` / `low` / `high`.
 
 ``` r
 
@@ -99,11 +118,38 @@ uhc_clean <- gho_clean(uhc)
 uhc_clean
 ```
 
+## Aggregating indicators with geomean()
+
+Some health indicators are constructed as the geometric mean of
+component values rather than the arithmetic mean. The UHC Service
+Coverage Index, for example, aggregates 14 tracer indicators using
+nested geometric means. DSIR provides
+[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+for this:
+
+``` r
+
+# Unweighted geometric mean
+geomean(c(0.6, 0.8, 0.95))
+#> 0.7720589
+
+# With optional weights — useful when tracers have different 
+# methodological importance
+geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))
+```
+
+[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+handles missing values, zeros, and negative values sensibly — see
+[`?geomean`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+for details. It is a small helper, but it removes a common source of
+bugs when re-implementing index calculations from indicator components.
+
 ## Plotting with theme_dsi()
 
 [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
 is a `ggplot2` theme tuned for WHO-style charts — clean panels, a modest
-grid, and a consistent accent color. Use it as a drop-in replacement for
+grid, and a consistent accent colour. Use it as a drop-in replacement
+for
 [`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)
 whenever a chart is heading into a WHO deliverable.
 
@@ -111,7 +157,7 @@ whenever a chart is heading into a WHO deliverable.
 
 uhc_clean |>
   ggplot(aes(x = year, y = value, group = iso3)) +
-  geom_line(alpha = 0.6) +
+  geom_line(alpha = 0.6, color = "#0093D5") +
   theme_dsi() +
   labs(
     title    = "UHC Service Coverage Index, WPR Member States",
@@ -150,7 +196,7 @@ and
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
 follow the same fetch-then-tidy pattern as their GHO counterparts. The
 main differences are that indicator codes use the dotted SDG format
-(e.g. `"3.4.1"`) and that `value`, `low` and `high` are kept as
+(e.g. `"3.4.1"`) and that `value`, `low`, and `high` are kept as
 character — the SDG API returns non-numeric entries (`"<0.1"`, aggregate
 notes) for some rows, so coerce with
 [`as.numeric()`](https://rdrr.io/r/base/numeric.html) only when you are
@@ -173,7 +219,5 @@ sdg_clean(sdg)
 ## Where to next
 
 - Source code lives at <https://github.com/shanlong-who/DSIR>.
-- Bug reports, feature requests and pull requests are all welcome —
+- Bug reports, feature requests, and pull requests are all welcome —
   please file them on the GitHub issue tracker.
-- DSIR is maintained at the WHO Western Pacific Regional Office, Manila,
-  and is shaped by the daily reporting work of that team.

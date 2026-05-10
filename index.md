@@ -76,6 +76,16 @@ emro_cty   # 21 Eastern Mediterranean Region Member States
 pic_cty    # 14 Pacific Island Country Member States (subset of WPR)
 ```
 
+**[`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)**
+— quick lookup from ISO3 codes to WHO regions. Vectorized; returns `NA`
+for codes not matching a Member State.
+
+``` r
+
+iso3_to_region("PHL")                          # "WPR"
+iso3_to_region(c("PHL", "FRA", "ZAF", "XYZ"))  # "WPR" "EUR" "AFR" NA
+```
+
 ### Visualization
 
 **[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)**
@@ -115,6 +125,19 @@ df <- data.frame(
   countries = c(47, 35, 53, 28, 10, 21)
 )
 ggpie(df, "region", "countries", .offset = 1.2)
+```
+
+### Utilities
+
+**[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)**
+— geometric mean, with optional weights. Useful for aggregating
+ratio-based health indicators where the composite is multiplicative —
+e.g. UHC service-coverage tracers.
+
+``` r
+
+geomean(c(0.6, 0.8, 0.95))                      # ~0.772
+geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
 ```
 
 ### WHO GHO API

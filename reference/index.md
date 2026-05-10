@@ -2,7 +2,7 @@
 
 ## WHO country metadata
 
-Datasets identifying WHO Member States and regional groupings.
+Datasets and helpers for WHO Member States and regional groupings.
 
 - [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
   : WHO Member States with regional and Pacific classifications
@@ -15,6 +15,8 @@ Datasets identifying WHO Member States and regional groupings.
   : WHO regional Member State ISO3 vectors
 - [`pic_cty`](https://shanlong-who.github.io/DSIR/reference/pic_cty.md)
   : Pacific Island Country ISO3 codes
+- [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)
+  : Look Up the WHO Region for ISO3 Codes
 
 ## GHO indicator data
 
@@ -57,3 +59,10 @@ ggplot2 and flextable styling helpers for WHO-style outputs.
   : Set DSIR Flextable Defaults
 - [`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md) :
   Create a Pie Chart with ggplot2
+
+## Utilities
+
+Small mathematical and data helpers.
+
+- [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+  : Geometric Mean

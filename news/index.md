@@ -4,18 +4,22 @@
 
 ### New features
 
-- New `geomean()`: geometric mean of a numeric vector. Useful for
-  aggregating ratio-based health indicators such as UHC service-coverage
-  tracers, where the composite index is the geometric mean of component
-  coverages. `na.rm = TRUE` by default. Returns `0` when any element is
-  zero, and warns + returns `NaN` when any element is negative.
+- New
+  [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md):
+  geometric mean of a numeric vector. Useful for aggregating ratio-based
+  health indicators such as UHC service-coverage tracers, where the
+  composite index is the geometric mean of component coverages.
+  `na.rm = TRUE` by default. Returns `0` when any element is zero, and
+  warns + returns `NaN` when any element is negative.
 
-- New `iso3_to_region()`: maps ISO3 country codes to WHO region codes
-  (`"AFR"`, `"AMR"`, `"SEAR"`, `"EUR"`, `"EMR"`, `"WPR"`) using the
-  bundled `who_countries` dataset. Pass `long = TRUE` for full names
-  (`"Western Pacific"`, etc.). Non-Member codes (e.g. Associate Members
-  like `"PRI"`) return `NA`. Stays in sync with WHO governance changes
-  reflected in DSIR — e.g. Indonesia in WPR since EB156 (May 2025).
+- New
+  [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md):
+  maps ISO3 country codes to WHO region codes (`"AFR"`, `"AMR"`,
+  `"SEAR"`, `"EUR"`, `"EMR"`, `"WPR"`) using the bundled `who_countries`
+  dataset. Pass `long = TRUE` for full names (`"Western Pacific"`,
+  etc.). Non-Member codes (e.g. Associate Members like `"PRI"`) return
+  `NA`. Stays in sync with WHO governance changes reflected in DSIR —
+  e.g. Indonesia in WPR since EB156 (May 2025).
 
 ## DSIR 0.5.0
 

@@ -21,15 +21,15 @@ gho_clean(df)
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with
-columns `indicator`, `location`, `year`, `dim1`, `dim2`, `dim3`,
-`value`, `low`, `high`, sorted by `location` then `year`. An empty input
-returns an empty tibble with the same columns.
+columns `id`, `location`, `year`, `dim1`, `dim2`, `dim3`, `value`,
+`value_num`, `low`, `high`, `indicator`, sorted by `location` then
+`year`. An empty input returns an empty tibble with the same columns.
 
 ## Details
 
 The mapping is:
 
-- `IndicatorCode` -\> `indicator`
+- `IndicatorCode` -\> `id`
 
 - `SpatialDim` -\> `location`
 
@@ -37,9 +37,13 @@ The mapping is:
 
 - `Dim1`, `Dim2`, `Dim3` -\> `dim1`, `dim2`, `dim3`
 
-- `NumericValue` -\> `value`
+- `Value` -\> `value`
+
+- `NumericValue` -\> `value_num`
 
 - `Low`, `High` -\> `low`, `high`
+
+- `IndicatorName` -\> `indicator`
 
 Source columns that are absent from `df` (for example `Low` / `High` on
 indicators without confidence intervals) are filled with `NA`, so the
