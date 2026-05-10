@@ -10,9 +10,9 @@ gho_clean(df)
 \item{df}{A data frame returned by \code{\link[=gho_data]{gho_data()}}.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with columns \code{indicator},
-\code{location}, \code{year}, \code{dim1}, \code{dim2}, \code{dim3}, \code{value}, \code{low},
-\code{high}, sorted by \code{location} then \code{year}. An empty input
+A \link[tibble:tibble]{tibble} with columns \code{id},
+\code{location}, \code{year}, \code{dim1}, \code{dim2}, \code{dim3}, \code{value}, \code{value_num}, \code{low},
+\code{high}, \code{indicator}, sorted by \code{location} then \code{year}. An empty input
 returns an empty tibble with the same columns.
 }
 \description{
@@ -23,12 +23,14 @@ for downstream analysis.
 \details{
 The mapping is:
 \itemize{
-\item \code{IndicatorCode} -> \code{indicator}
+\item \code{IndicatorCode} -> \code{id}
 \item \code{SpatialDim}    -> \code{location}
 \item \code{TimeDim}       -> \code{year}
 \item \code{Dim1}, \code{Dim2}, \code{Dim3} -> \code{dim1}, \code{dim2}, \code{dim3}
-\item \code{NumericValue}  -> \code{value}
+\item \code{Value}         -> \code{value}
+\item \code{NumericValue}  -> \code{value_num}
 \item \code{Low}, \code{High}   -> \code{low}, \code{high}
+\item \code{IndicatorName} -> \code{indicator}
 }
 
 Source columns that are absent from \code{df} (for example \code{Low} /
