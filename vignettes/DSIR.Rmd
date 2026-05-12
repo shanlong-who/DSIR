@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment  = "#>", 
-  eval     = FALSE
+  eval     = TRUE
 )
 ```
 
@@ -32,10 +32,6 @@ researchers — the kind of users who do the same routine tasks every day.
 This vignette walks through the typical workflow: looking up countries, 
 fetching data from GHO and SDG, cleaning the raw response, and 
 producing publication-style charts and tables.
-
-*Code chunks below are not evaluated when this vignette is built, 
-since they make network calls. Run them in your own R session to 
-see the output.*
 
 ## WHO Member State metadata
 
@@ -205,23 +201,97 @@ sensibly — see `?geomean` for details. It is a small helper, but
 it removes a common source of bugs when re-implementing index 
 calculations from indicator components.
 
-## Plotting with theme_dsi()
+## Plotting with theme_dsi() and theme_dsi_facet()
 
-`theme_dsi()` is a `ggplot2` theme tuned for WHO-style charts — clean 
-panels, a modest grid, and a consistent accent colour. Use it as a 
-drop-in replacement for `theme_minimal()` whenever a chart is heading 
-into a WHO deliverable.
+DSIR provides two paired `ggplot2` themes tuned for WHO-style charts — 
+clean panels, modest grids, and a consistent accent colour. Use them as 
+drop-in replacements for `theme_minimal()` and `theme_bw()` respectively 
+whenever a chart is heading into a WHO deliverable.
+
+The rule of thumb is simple: **single-panel plots use `theme_dsi()`, 
+faceted plots use `theme_dsi_facet()`**. The two share typography, title 
+treatment, and legend handling, but differ in how they frame the data — 
+the facet variant adds panel borders, light strip backgrounds, and 
+breathing room between panels, all of which would look heavy on a 
+single-panel chart.
+
+### Single panel: `theme_dsi()`
+
+`theme_dsi()` keeps the chart chrome minimal — a half-frame axis, light grid lines, and the WHO-blue accent on the axis line. By default the grid runs in both directions; pass `grid = "y"` for the minimalist horizontal-only look.
 
 ```{r, fig.width = 7, fig.height = 4}
 uhc_clean |>
-  ggplot(aes(x = year, y = value, group = iso3)) +
-  geom_line(alpha = 0.6, color = "#0093D5") +
+  filter(location %in% c("AUS", "CHN", "PHL", "FJI")) |>
+  left_join(who_countries, by = c("location" = "iso3")) |>
+  ggplot(aes(x = year, y = value, group = location, color = name_short)) +
+  geom_line(linewidth = .8) +
+  geom_point(size = 1.8) +
   theme_dsi() +
   labs(
-    title    = "UHC Service Coverage Index, WPR Member States",
+    title    = "UHC Service Coverage Index, selected WPR Member States",
     subtitle = "2015 onwards",
+    x = NULL, y = "SCI", color = NULL
+  )
+```
+
+For bar charts, pair `theme_dsi()` with `scale_y_dsi_col()` (or `scale_x_dsi_col()` when `value` is mapped to `x`) — these are thin wrappers around `scale_*_continuous()` that remove the lower axis expansion, so columns sit flush with the axis instead of floating above it.
+
+```{r, fig.width = 7, fig.height = 4}
+uhc_clean |>
+  filter(year == max(year)) |>
+  left_join(who_countries, by = c("location" = "iso3")) |>
+  arrange(desc(value)) |>
+  head(10) |>
+  ggplot(aes(reorder(name_short, value_num), value_num)) +
+  geom_col(fill = "#0093D5") +
+  coord_flip() +
+  scale_y_dsi_col() +
+  theme_dsi(grid = "x") +
+  labs(
+    title    = "UHC Service Coverage Index, top 10 WPR Member States",
+    subtitle = "Latest available year",
     x = NULL, y = "SCI"
   )
+```
+
+### Faceted: `theme_dsi_facet()`
+
+When the same chart is split across many small panels, the half-frame 
+look becomes visually noisy — the accent-blue axis line repeats across 
+every facet. `theme_dsi_facet()` switches to a full panel border, adds a 
+light grey strip background to clearly mark each facet's label, and 
+introduces panel spacing so adjacent panels don't run together.
+
+```{r, fig.width = 8, fig.height = 5}
+uhc_clean |>
+  left_join(who_countries, by = c("location" = "iso3")) |>
+  filter(is_pic) |>
+  ggplot(aes(x = year, y = value_num)) +
+  geom_line(color = "#0093D5", linewidth = 0.8) +
+  geom_point(color = "#0093D5", size = 1.5) +
+  facet_wrap(~ name_short, ncol = 4) +
+  theme_dsi_facet() +
+  labs(
+    title    = "UHC Service Coverage Index, Pacific Island Countries",
+    subtitle = "Each panel shows one country's trajectory",
+    x = NULL, y = "SCI"
+  )
+```
+
+The `strip_fill` argument lets you change the strip background colour 
+for emphasis — for example, a light-blue tone derived from the WHO 
+accent for a deliverable where the strips themselves carry meaning:
+
+```{r, fig.width = 8, fig.height = 5}
+uhc_clean |>
+  left_join(who_countries, by = c("location" = "iso3")) |>
+  filter(is_pic) |>
+  ggplot(aes(x = year, y = value_num)) +
+  geom_line(color = "#0093D5", linewidth = 0.8) +
+  facet_wrap(~ name_short, ncol = 4) +
+  theme_dsi_facet(strip_fill = "#E5F4FB") +
+  labs(title = "UHC SCI, PIC — with custom strip colour",
+       x = NULL, y = "SCI")
 ```
 
 ## Tables with dsi_flextable_defaults()
@@ -233,14 +303,15 @@ up the formatting.
 
 ```{r}
 library(flextable)
-dsi_flextable_defaults()
+dsi_flextable_defaults(font_family = "Geogria")
 
 uhc_clean |>
   filter(year == max(year)) |>
-  left_join(who_countries, by = "iso3") |>
+  left_join(who_countries, by = c("location" = "iso3")) |>
   select(name_short, value) |>
   arrange(desc(value)) |>
   flextable() |>
+  set_table_properties("autofit", width = .6) %>% 
   set_caption("UHC SCI in WPR, latest year")
 ```
 

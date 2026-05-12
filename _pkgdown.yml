@@ -63,8 +63,11 @@ reference:
   desc: ggplot2 and flextable styling helpers for WHO-style outputs.
   contents:
   - theme_dsi
+  - theme_dsi_facet
   - dsi_flextable_defaults
   - ggpie
+  - scale_x_dsi_col
+  - scale_y_dsi_col
 - title: Utilities
   desc: Small mathematical and data helpers.
   contents:

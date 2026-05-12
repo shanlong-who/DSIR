@@ -4,8 +4,28 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
 
 # DSIR 0.6.0
 
+## Behavior changes
+
+* `theme_dsi()` now draws grid lines in both directions by default. New
+  `grid` argument controls direction — pass `grid = "y"` to restore the
+  previous look (horizontal grid only). This change fixes the visual
+  glitch where horizontal bar charts (made with `coord_flip()`) had grid
+  lines running parallel to the bars instead of crossing them.
+
+* `theme_dsi_facet()` gains a `grid` argument mirroring `theme_dsi()`'s — 
+  defaults to `"both"` (unchanged behaviour); pass `"y"`, `"x"`, or 
+  `"none"` to control which direction(s) the grid runs.
+
 ## New features
 
+* New `scale_y_dsi_col()` and `scale_x_dsi_col()` — drop-in replacements
+  for `scale_y_continuous()` / `scale_x_continuous()` that remove the
+  lower axis expansion, so columns in bar charts sit flush with the
+  axis (WHO publication style).
+
+* New `theme_dsi_facet()` for faceted plots — uses panel borders,
+  light-grey strip backgrounds, and bilateral grid lines.
+  
 * New GHO data-availability helpers, for screening indicator /
   filter combinations before pulling a full result set:
     - `gho_has_data()` returns `TRUE` / `FALSE` / `NA` for whether

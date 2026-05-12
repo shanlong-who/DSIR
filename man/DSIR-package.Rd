@@ -7,7 +7,9 @@
 \title{DSIR: Data Science Infrastructure for Global Health in R}
 \description{
 A small, opinionated toolkit for global health data analysis.
-It bundles a publication-ready \code{ggplot2} theme (\code{\link[=theme_dsi]{theme_dsi()}}),
+It bundles a publication-ready \code{ggplot2} theme (\code{\link[=theme_dsi]{theme_dsi()}},
+\code{\link[=theme_dsi_facet]{theme_dsi_facet()}}) with flush-axis bar-chart scales
+(\code{\link[=scale_y_dsi_col]{scale_y_dsi_col()}}, \code{\link[=scale_x_dsi_col]{scale_x_dsi_col()}}),
 sensible \code{flextable} defaults (\code{\link[=dsi_flextable_defaults]{dsi_flextable_defaults()}}),
 a quick pie chart helper (\code{\link[=ggpie]{ggpie()}}), regional country-code
 datasets (\link{wpro_cty}) with WHO region and UN M49 lookups

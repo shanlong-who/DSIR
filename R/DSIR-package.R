@@ -1,7 +1,9 @@
 #' DSIR: Data Science Infrastructure for Global Health in R
 #'
 #' A small, opinionated toolkit for global health data analysis.
-#' It bundles a publication-ready `ggplot2` theme ([theme_dsi()]),
+#' It bundles a publication-ready `ggplot2` theme ([theme_dsi()],
+#' [theme_dsi_facet()]) with flush-axis bar-chart scales
+#' ([scale_y_dsi_col()], [scale_x_dsi_col()]),
 #' sensible `flextable` defaults ([dsi_flextable_defaults()]),
 #' a quick pie chart helper ([ggpie()]), regional country-code
 #' datasets ([wpro_cty]) with WHO region and UN M49 lookups

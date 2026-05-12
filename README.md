@@ -104,20 +104,59 @@ the conversion internally.
 
 ### Visualization
 
-**`theme_dsi()`** — publication-ready `ggplot2` theme.
+**`theme_dsi()` and `theme_dsi_facet()`** — publication-ready `ggplot2` 
+themes. Use `theme_dsi()` for single-panel charts and `theme_dsi_facet()` 
+for faceted plots; the facet variant adds panel borders, light strip 
+backgrounds, and panel spacing tuned for multi-panel layouts.
 
 ```r
 library(ggplot2)
 library(dplyr)
 
-# WHO Member States by region
+# Single panel — theme_dsi()
 who_countries |>
   count(who_region) |>
   ggplot(aes(reorder(who_region, n), n)) +
   geom_col(fill = "#0093D5") +
   coord_flip() +
+  scale_y_dsi_col() +
   theme_dsi() +
   labs(title = "WHO Member States by region", x = NULL, y = NULL)
+
+# Faceted — theme_dsi_facet()
+who_countries |>
+  count(who_region, is_pic) |>
+  ggplot(aes(reorder(who_region, n), n, fill = is_pic)) +
+  geom_col() +
+  coord_flip() +
+  scale_y_dsi_col() +
+  facet_wrap(~ is_pic, labeller = as_labeller(
+    c(`TRUE` = "Pacific Island Countries", `FALSE` = "Other Member States")
+  )) +
+  scale_fill_manual(values = c(`TRUE` = "#0093D5", `FALSE` = "grey70"),
+                    guide = "none") +
+  theme_dsi_facet() +
+  labs(title = "WHO Member States by region and PIC status",
+       x = NULL, y = NULL)
+```
+
+**`scale_y_dsi_col()` and `scale_x_dsi_col()`** — drop-in replacements for 
+`scale_y_continuous()` and `scale_x_continuous()` that remove the default 
+lower expansion, so columns in bar charts sit flush with the axis instead 
+of floating above it. Pick the one that matches where you mapped the 
+value: `scale_y_dsi_col()` when `value` is the `y` aesthetic (including 
+horizontal bars made with `coord_flip()` — the aesthetic is still `y`), 
+and `scale_x_dsi_col()` when `value` is the `x` aesthetic (e.g. 
+`geom_col(aes(value, category))`). Both accept any argument that 
+`scale_*_continuous()` accepts.
+
+```r
+# Vertical bars
+ggplot(mtcars, aes(factor(cyl))) +
+  geom_bar(fill = "#0093D5") +
+  scale_y_dsi_col() +
+  theme_dsi() +
+  labs(title = "Cars by cylinder count", x = "Cylinders", y = NULL)
 ```
 
 **`dsi_flextable_defaults()`** — one-line setup for `flextable` 

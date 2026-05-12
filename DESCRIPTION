@@ -34,7 +34,8 @@ Suggests:
     officer,
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown, 
+    dplyr
 Config/testthat/edition: 3
 LazyData: true
 VignetteBuilder: knitr

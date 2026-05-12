@@ -9,6 +9,7 @@ theme_dsi(
   base_family = "",
   accent = "#0093D5",
   grid_color = "grey92",
+  grid = c("both", "x", "y", "none"),
   legend_position = "bottom"
 )
 }
@@ -24,8 +25,14 @@ Linux check machines, where Calibri is unavailable.}
 highlight elements. Default \code{"#0093D5"} (WHO blue). Pass any colour
 string.}
 
-\item{grid_color}{Colour of the (horizontal) major grid. Default
+\item{grid_color}{Colour of the major grid. Default
 \code{"grey92"} — a very light grey, close to bbplot and OECD style.}
+
+\item{grid}{Which direction(s) to draw major grid lines. One of
+\code{"both"} (default — draws both horizontal and vertical, works
+correctly under \code{coord_flip()}), \code{"y"} (only horizontal grid lines,
+the look used in DSIR <= 0.5.x), \code{"x"} (only vertical grid lines),
+or \code{"none"}.}
 
 \item{legend_position}{Position of the legend. Default \code{"bottom"}.
 Pass \code{"none"}, \code{"top"}, \code{"right"}, or a numeric vector \code{c(x, y)}.}
@@ -35,18 +42,30 @@ A \code{ggplot2} theme object.
 }
 \description{
 A clean, modern theme tuned for WHO and global-health publications.
-Removes the panel border, retains only horizontal grid lines, and uses
-a muted text colour so that the data — not the chart chrome — is the
-visual focus.
+Removes the panel border, draws light grid lines, and uses a muted
+text colour so that the data — not the chart chrome — is the visual
+focus. The \code{grid} argument controls which direction(s) the grid
+lines run, so the theme works equally well for vertical bars,
+horizontal bars (via \code{coord_flip()}), scatter plots, and line charts.
 }
 \examples{
 library(ggplot2)
+
+# Default — grid in both directions, works under coord_flip()
 ggplot(mtcars, aes(wt, mpg, color = factor(cyl))) +
   geom_point(size = 3) +
   theme_dsi() +
   labs(title = "Fuel efficiency by weight",
-       subtitle = "From the mtcars dataset",
        x = "Weight (1000 lbs)", y = "Miles per gallon",
        color = "Cylinders")
 
+# Minimal look — only horizontal grid lines
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(size = 3, color = "#0093D5") +
+  theme_dsi(grid = "y") +
+  labs(x = "Weight (1000 lbs)", y = "Miles per gallon")
+
+}
+\seealso{
+\code{\link[=theme_dsi_facet]{theme_dsi_facet()}} for a sibling theme tuned for faceted plots.
 }
