@@ -11,7 +11,7 @@
 #' [gho_dimensions()], [gho_has_data()], [gho_count()],
 #' [gho_coverage()]) and the UN Sustainable Development Goals API
 #' ([sdg_goals()], [sdg_targets()], [sdg_indicators()], [sdg_areas()],
-#' [sdg_data()]).
+#' [sdg_data()], [sdg_coverage()]).
 #'
 #' @keywords internal
 "_PACKAGE"

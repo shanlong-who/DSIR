@@ -17,7 +17,7 @@ Health Observatory API (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\
 \code{\link[=gho_dimensions]{gho_dimensions()}}, \code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}},
 \code{\link[=gho_coverage]{gho_coverage()}}) and the UN Sustainable Development Goals API
 (\code{\link[=sdg_goals]{sdg_goals()}}, \code{\link[=sdg_targets]{sdg_targets()}}, \code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}},
-\code{\link[=sdg_data]{sdg_data()}}).
+\code{\link[=sdg_data]{sdg_data()}}, \code{\link[=sdg_coverage]{sdg_coverage()}}).
 }
 \seealso{
 Useful links:

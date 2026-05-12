@@ -247,6 +247,38 @@ sdg |> glimpse()
 sdg_clean(sdg)
 ```
 
+### Exploring series with sdg_coverage()
+
+A single SDG indicator often contains several **series** — for
+example different vaccines, sex strata, or causes of death — each
+with its own country and year coverage. Indicator `"3.b.1"`
+(vaccine coverage) is a clear case: it is published as four
+separate series (DTP3, MCV2, PCV3, HPV), and the year coverage of
+the newer vaccines is much shorter than that of DTP3.
+
+`sdg_coverage()` summarises the year range and observation count
+per `(location, series)`, so you can inspect what series exist and
+how each is covered before deciding which one to analyse.
+
+```{r}
+sdg_coverage("3.b.1", area = c("156", "608"))
+#>   location series      year_min year_max n_obs
+#> 1 156      SH_ACS_DTP3     2000     2023    24
+#> 2 156      SH_ACS_HPV      2018     2023     6
+#> 3 156      SH_ACS_MCV2     2000     2023    24
+#> 4 156      SH_ACS_PCV3     2017     2023     7
+#> 5 608      SH_ACS_DTP3     2000     2023    24
+#> 6 608      SH_ACS_HPV      2017     2023     7
+#> 7 608      SH_ACS_MCV2     2000     2023    24
+#> 8 608      SH_ACS_PCV3     2014     2023    10
+```
+
+Note that DSIR intentionally does *not* provide SDG analogues of
+`gho_has_data()` and `gho_count()`. SDG data is generally complete
+enough that those screening helpers add little value — the more
+useful pre-analysis question for SDG is "which series are
+available?", which is what `sdg_coverage()` answers.
+
 ## Where to next
 
 - Source code lives at <https://github.com/shanlong-who/DSIR>.

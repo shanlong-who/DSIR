@@ -122,24 +122,21 @@ sdg_data <- function(indicator, area = NULL,
                      year_from = NULL, year_to = NULL,
                      page_size = 1000L) {
   stopifnot(is.character(indicator), length(indicator) >= 1L)
-  params <- list(
-    indicator = paste(indicator, collapse = ","),
-    pageSize  = page_size
-  )
 
-  if (!is.null(area))      params$areaCode        <- paste(area, collapse = ",")
-  if (!is.null(year_from)) params$timePeriodStart <- year_from
-  if (!is.null(year_to))   params$timePeriodEnd   <- year_to
+  # The SDG API expects multi-value parameters as repeated keys
+  # (`indicator=3.4.1&indicator=3.4.2`) rather than comma-separated.
+  # A comma-separated value is silently dropped and the filter is
+  # ignored, returning all rows for the indicator.
+  parts <- c(
+    paste0("indicator=", indicator),
+    paste0("pageSize=", page_size)
+  )
+  if (!is.null(area))      parts <- c(parts, paste0("areaCode=", area))
+  if (!is.null(year_from)) parts <- c(parts, paste0("timePeriodStart=", year_from))
+  if (!is.null(year_to))   parts <- c(parts, paste0("timePeriodEnd=", year_to))
 
   base_url <- "https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data"
-
-  query <- paste(
-    names(params),
-    vapply(params, as.character, character(1)),
-    sep = "=",
-    collapse = "&"
-  )
-  url <- paste0(base_url, "?", query)
+  url <- paste0(base_url, "?", paste(parts, collapse = "&"))
 
   all_data <- list()
   page <- 1
@@ -162,8 +159,11 @@ sdg_data <- function(indicator, area = NULL,
     return(tibble::tibble())
   }
 
-  out <- do.call(rbind, c(all_data, list(make.row.names = FALSE)))
-  rownames(out) <- NULL
+  # Default `make.row.names = TRUE` so rbind disambiguates the
+  # per-page tibble row names (which are otherwise "1", "2", ...
+  # repeated across pages and would error). The names are then
+  # discarded by tibble::as_tibble.
+  out <- do.call(rbind, all_data)
   tibble::as_tibble(out)
 }
 
