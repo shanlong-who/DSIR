@@ -1,0 +1,6 @@
+devtools::load_all(".", quiet = TRUE)
+cat("\n=== sdg_coverage('3.b.1', area = c('156', '608')) ===\n")
+out <- sdg_coverage("3.b.1", area = c("156", "608"))
+print(out)
+cat("\nRows per location:\n")
+print(table(out$location))

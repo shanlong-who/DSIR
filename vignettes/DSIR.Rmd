@@ -76,8 +76,27 @@ iso3_to_region(c("PHL", "FRA", "ZAF", "USA", "XYZ"))
 # "WPR" "EUR" "AFR" "AMR" NA
 ```
 
-This is convenient when joining external datasets (which often arrive 
+This is convenient when joining external datasets (which often arrive
 keyed only by ISO3) to the WHO regional structure.
+
+The companion helper `iso3_to_m49()` converts ISO3 codes to UN M49
+numeric codes — useful because the WHO GHO API is keyed by ISO3
+(`"PHL"`) while the UN SDG API is keyed by M49 (`"608"`). The M49
+values are returned as three-character zero-padded strings, exactly
+as stored in `who_countries$m49_code`.
+
+```{r}
+iso3_to_m49(c("PHL", "FRA", "JPN"))
+# "608" "250" "392"
+
+# Case-insensitive; non-Member areas return NA
+iso3_to_m49(c("phl", "PRI"))
+# "608" NA
+```
+
+In practice you can usually skip the explicit conversion: `sdg_data()`
+and `sdg_coverage()` accept ISO3 codes for their `area` argument and
+do the lookup internally (see the SDG section below).
 
 ## Checking availability before fetching
 
@@ -227,20 +246,44 @@ uhc_clean |>
 
 ## Working with SDG indicators
 
-`sdg_data()` and `sdg_clean()` follow the same fetch-then-tidy 
-pattern as their GHO counterparts. The main differences are that 
-indicator codes use the dotted SDG format (e.g. `"3.4.1"`) and that 
-`value`, `low`, and `high` are kept as character — the SDG API 
-returns non-numeric entries (`"<0.1"`, aggregate notes) for some 
-rows, so coerce with `as.numeric()` only when you are ready to drop 
+`sdg_data()` and `sdg_clean()` follow the same fetch-then-tidy
+pattern as their GHO counterparts. The main differences are that
+indicator codes use the dotted SDG format (e.g. `"3.4.1"`) and that
+`value`, `low`, and `high` are kept as character — the SDG API
+returns non-numeric entries (`"<0.1"`, aggregate notes) for some
+rows, so coerce with `as.numeric()` only when you are ready to drop
 them.
 
+`sdg_indicators()` accepts an optional `search` argument with the
+same behaviour as `gho_indicators()` — multiple keywords are AND-ed
+together and matched case-insensitively against the indicator
+description. The filter runs client-side because the UN SDG
+indicator list is short (~250 rows) and the endpoint is not OData.
+
 ```{r}
+# All indicators that mention both mortality and cancer
+sdg_indicators("mortality cancer")
+
+# Same as above, but with explicit terms (allows whitespace inside a term)
+sdg_indicators(c("maternal", "mortality"))
+```
+
+The `area` argument of `sdg_data()` and `sdg_coverage()` accepts
+either ISO3 codes (converted internally via `iso3_to_m49()`) or UN
+M49 numeric codes — so DSIR's regional vectors (`wpro_cty`,
+`afro_cty`, etc.) work directly, the same way they do with the GHO
+client. Do not mix the two formats in a single call.
+
+```{r}
+# ISO3 — regional vector passed straight through
 sdg <- sdg_data(
   indicator = "3.4.1",
   area      = wpro_cty
 )
 sdg |> glimpse()
+
+# M49 also works (e.g. when copy-pasting codes from sdg_areas())
+sdg_data("3.4.1", area = c("608", "250"))
 ```
 
 ```{r}

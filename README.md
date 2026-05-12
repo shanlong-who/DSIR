@@ -87,6 +87,21 @@ iso3_to_region("PHL")                          # "WPR"
 iso3_to_region(c("PHL", "FRA", "ZAF", "XYZ"))  # "WPR" "EUR" "AFR" NA
 ```
 
+**`iso3_to_m49()`** — convert ISO3 codes to UN M49 numeric codes.
+Useful for moving between GHO (ISO3) and SDG (M49) workflows.
+Case-insensitive; returns three-character zero-padded strings;
+`NA` for non-Members.
+
+```r
+iso3_to_m49("PHL")                             # "608"
+iso3_to_m49(c("PHL", "FRA", "JPN"))            # "608" "250" "392"
+iso3_to_m49(c("PRI", "PHL"))                   # NA "608"
+```
+
+In practice you rarely need to call this directly: `sdg_data()` and
+`sdg_coverage()` accept ISO3 codes for their `area` argument and do
+the conversion internally.
+
 ### Visualization
 
 **`theme_dsi()`** — publication-ready `ggplot2` theme.
@@ -196,11 +211,23 @@ sdg_targets()
 sdg_indicators()
 sdg_areas()
 
-# Fetch indicator data
-sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
+# Search indicators by keyword — AND semantics, case-insensitive
+# substring match on the indicator description (client-side filter)
+sdg_indicators("mortality")
+sdg_indicators("mortality cancer")
+sdg_indicators(c("maternal", "mortality"))
+
+# Fetch indicator data — `area` accepts ISO3 codes (converted internally)
+# or UN M49 numeric codes. ISO3 lets DSIR's regional vectors be passed
+# directly, the same way they work with the GHO client.
+sdg_data("3.2.1", area = "PHL", year_from = 2015, year_to = 2023)
+sdg_data("3.4.1", area = wpro_cty)
+
+# M49 also works (e.g. when copy-pasting codes from sdg_areas())
+sdg_data("3.2.1", area = "608", year_from = 2015, year_to = 2023)
 
 # Tidy the SDG response
-raw <- sdg_data("3.2.1", area = "156")
+raw <- sdg_data("3.2.1", area = "PHL")
 sdg_clean(raw)
 ```
 

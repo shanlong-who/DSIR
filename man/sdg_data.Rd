@@ -16,9 +16,11 @@ sdg_data(
 \item{indicator}{Character vector of indicator codes
 (e.g. \code{"1.1.1"}). Use \code{\link[=sdg_indicators]{sdg_indicators()}} to find codes.}
 
-\item{area}{Character vector of area codes (e.g.
-\code{c("32", "76")}). Use \code{\link[=sdg_areas]{sdg_areas()}} to find codes.
-Default \code{NULL} returns all areas.}
+\item{area}{Character vector of country/area codes. Accepts either
+ISO3 codes (e.g. \code{c("PHL", "FRA")}) — converted automatically via
+\code{\link[=iso3_to_m49]{iso3_to_m49()}} — or UN M49 numeric codes (e.g. \code{c("608", "250")})
+as returned by \code{\link[=sdg_areas]{sdg_areas()}}. Do not mix the two formats in a
+single call. Default \code{NULL} returns all areas.}
 
 \item{year_from}{Numeric. Start year filter (inclusive).
 Default \code{NULL}.}
@@ -45,8 +47,12 @@ sdg_data("1.1.1")
 
 # Specific area and year range
 sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
+
+# ISO3 codes work directly — DSIR's regional vectors can be passed in
+sdg_data("3.4.1", area = wpro_cty)
+sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
 }
 }
 \seealso{
-\code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}.
+\code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}.
 }

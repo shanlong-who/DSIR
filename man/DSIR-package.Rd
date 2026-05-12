@@ -10,9 +10,10 @@ A small, opinionated toolkit for global health data analysis.
 It bundles a publication-ready \code{ggplot2} theme (\code{\link[=theme_dsi]{theme_dsi()}}),
 sensible \code{flextable} defaults (\code{\link[=dsi_flextable_defaults]{dsi_flextable_defaults()}}),
 a quick pie chart helper (\code{\link[=ggpie]{ggpie()}}), regional country-code
-datasets (\link{wpro_cty}) with a WHO region lookup
-(\code{\link[=iso3_to_region]{iso3_to_region()}}), a geometric mean helper for indicator
-aggregation (\code{\link[=geomean]{geomean()}}), and thin clients for the WHO Global
+datasets (\link{wpro_cty}) with WHO region and UN M49 lookups
+(\code{\link[=iso3_to_region]{iso3_to_region()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}), a geometric mean helper
+for indicator aggregation (\code{\link[=geomean]{geomean()}}), and thin clients for the
+WHO Global
 Health Observatory API (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}},
 \code{\link[=gho_dimensions]{gho_dimensions()}}, \code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}},
 \code{\link[=gho_coverage]{gho_coverage()}}) and the UN Sustainable Development Goals API

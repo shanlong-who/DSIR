@@ -38,6 +38,7 @@ reference:
   - emro_cty
   - pic_cty
   - iso3_to_region
+  - iso3_to_m49
 - title: GHO indicator data
   desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
   contents:

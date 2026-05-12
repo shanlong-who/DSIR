@@ -4,9 +4,10 @@
 #' It bundles a publication-ready `ggplot2` theme ([theme_dsi()]),
 #' sensible `flextable` defaults ([dsi_flextable_defaults()]),
 #' a quick pie chart helper ([ggpie()]), regional country-code
-#' datasets ([wpro_cty]) with a WHO region lookup
-#' ([iso3_to_region()]), a geometric mean helper for indicator
-#' aggregation ([geomean()]), and thin clients for the WHO Global
+#' datasets ([wpro_cty]) with WHO region and UN M49 lookups
+#' ([iso3_to_region()], [iso3_to_m49()]), a geometric mean helper
+#' for indicator aggregation ([geomean()]), and thin clients for the
+#' WHO Global
 #' Health Observatory API ([gho_indicators()], [gho_data()],
 #' [gho_dimensions()], [gho_has_data()], [gho_count()],
 #' [gho_coverage()]) and the UN Sustainable Development Goals API

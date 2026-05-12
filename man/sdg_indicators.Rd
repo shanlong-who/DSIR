@@ -4,18 +4,48 @@
 \alias{sdg_indicators}
 \title{List SDG Indicators}
 \usage{
-sdg_indicators()
+sdg_indicators(search = NULL)
+}
+\arguments{
+\item{search}{Optional character. Search keywords matched against
+the \code{description} column (case-insensitive). All terms must
+match (AND semantics). Accepts either:
+\itemize{
+\item a single string, which is split on whitespace into terms
+(e.g. \code{"mortality cancer"} keeps rows whose description
+contains both "mortality" and "cancer"), or
+\item a character vector, whose elements are used as terms verbatim
+(so a term may itself contain whitespace, e.g.
+\code{c("mortality rate", "attributed")}).
+}
+
+The filter is applied client-side using
+\code{\link[=grepl]{grepl()}} with \code{fixed = TRUE} because the UN SDG
+\verb{/Indicator/List} endpoint is not OData and exposes no
+server-side search parameter; the full list is small
+(~250 rows) so this is cheap.}
 }
 \value{
 A list (or \link[tibble:tibble]{tibble}) of SDG indicators,
-or \code{NULL} when the service is unreachable.
+or \code{NULL} when the service is unreachable. When \code{search} matches
+no rows, an empty tibble with the same columns as the unfiltered
+response is returned.
 }
 \description{
-Fetches the list of SDG indicators from the UN SDG API.
+Fetches the list of SDG indicators from the UN SDG API, with
+optional keyword filtering on the indicator description.
 }
 \examples{
 \dontrun{
+# Full list
 sdg_indicators()
+
+# Single keyword
+sdg_indicators("mortality")
+
+# Multi-keyword — AND semantics
+sdg_indicators("mortality cancer")
+sdg_indicators(c("maternal", "mortality"))
 }
 }
 \seealso{

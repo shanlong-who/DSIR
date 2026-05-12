@@ -7,9 +7,18 @@
 gho_indicators(search = NULL)
 }
 \arguments{
-\item{search}{Optional character string. If supplied, only
-indicators whose name contains \code{search} (case-insensitive)
-are returned.}
+\item{search}{Optional character. Search keywords matched against
+\code{IndicatorName} (case-insensitive). All terms must match
+(AND semantics). Accepts either:
+\itemize{
+\item a single string, which is split on whitespace into terms
+(e.g. \code{"child mortality"} matches indicators containing both
+"child" and "mortality"), or
+\item a character vector, whose elements are used as terms verbatim
+(whitespace inside an element is treated as part of the term).
+}
+
+Single quotes in any term are escaped for the OData filter.}
 }
 \value{
 A \link[tibble:tibble]{tibble} with columns \code{IndicatorCode},
@@ -25,8 +34,14 @@ Observatory (GHO) OData API.
 # All indicators
 inds <- gho_indicators()
 
-# Search by keyword
+# Single keyword
 gho_indicators("mortality")
+
+# Multiple keywords from one string (AND): both terms must appear
+gho_indicators("child mortality")
+
+# Or pass terms as a vector
+gho_indicators(c("child", "mortality"))
 }
 }
 \seealso{

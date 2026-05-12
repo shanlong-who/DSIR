@@ -3,9 +3,16 @@
 #' Fetches the catalog of indicators from the WHO Global Health
 #' Observatory (GHO) OData API.
 #'
-#' @param search Optional character string. If supplied, only
-#'   indicators whose name contains `search` (case-insensitive)
-#'   are returned.
+#' @param search Optional character. Search keywords matched against
+#'   `IndicatorName` (case-insensitive). All terms must match
+#'   (AND semantics). Accepts either:
+#'   * a single string, which is split on whitespace into terms
+#'     (e.g. `"child mortality"` matches indicators containing both
+#'     "child" and "mortality"), or
+#'   * a character vector, whose elements are used as terms verbatim
+#'     (whitespace inside an element is treated as part of the term).
+#'
+#'   Single quotes in any term are escaped for the OData filter.
 #'
 #' @return A [tibble][tibble::tibble] with columns `IndicatorCode`,
 #'   `IndicatorName` and `Language`. Returns an empty tibble (with
@@ -18,18 +25,17 @@
 #' # All indicators
 #' inds <- gho_indicators()
 #'
-#' # Search by keyword
+#' # Single keyword
 #' gho_indicators("mortality")
+#'
+#' # Multiple keywords from one string (AND): both terms must appear
+#' gho_indicators("child mortality")
+#'
+#' # Or pass terms as a vector
+#' gho_indicators(c("child", "mortality"))
 #' }
 gho_indicators <- function(search = NULL) {
-  base_url <- "https://ghoapi.azureedge.net/api/Indicator"
-
-  if (!is.null(search)) {
-    filter <- paste0("contains(tolower(IndicatorName),'", tolower(search), "')")
-    url <- paste0(base_url, "?$filter=", utils::URLencode(filter, reserved = TRUE))
-  } else {
-    url <- base_url
-  }
+  url <- .gho_indicators_build_url(search)
 
   res <- .gho_get(url)
   if (is.null(res) || nrow(res) == 0L) {
@@ -38,6 +44,33 @@ gho_indicators <- function(search = NULL) {
                           Language = character()))
   }
   res[, c("IndicatorCode", "IndicatorName", "Language")]
+}
+
+
+#' @noRd
+.gho_indicators_build_url <- function(search = NULL) {
+  base_url <- "https://ghoapi.azureedge.net/api/Indicator"
+  if (is.null(search)) return(base_url)
+
+  stopifnot(
+    is.character(search),
+    length(search) >= 1L,
+    !anyNA(search),
+    all(nzchar(search))
+  )
+
+  terms <- if (length(search) == 1L) {
+    strsplit(search, "\\s+")[[1]]
+  } else {
+    search
+  }
+  terms <- terms[nzchar(terms)]
+  stopifnot(length(terms) >= 1L)
+
+  terms_escaped <- gsub("'", "''", tolower(terms), fixed = TRUE)
+  clauses <- paste0("contains(tolower(IndicatorName),'", terms_escaped, "')")
+  filter <- paste(clauses, collapse = " and ")
+  paste0(base_url, "?$filter=", utils::URLencode(filter, reserved = TRUE))
 }
 
 
