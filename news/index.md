@@ -2,7 +2,39 @@
 
 ## DSIR 0.6.0
 
+### Behavior changes
+
+- [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
+  now draws grid lines in both directions by default. New `grid`
+  argument controls direction — pass `grid = "y"` to restore the
+  previous look (horizontal grid only). This change fixes the visual
+  glitch where horizontal bar charts (made with
+  [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html))
+  had grid lines running parallel to the bars instead of crossing them.
+
+- [`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md)
+  gains a `grid` argument mirroring
+  [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)’s
+  — defaults to `"both"` (unchanged behaviour); pass `"y"`, `"x"`, or
+  `"none"` to control which direction(s) the grid runs.
+
 ### New features
+
+- New
+  [`scale_y_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
+  and
+  [`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
+  — drop-in replacements for
+  [`scale_y_continuous()`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
+  /
+  [`scale_x_continuous()`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
+  that remove the lower axis expansion, so columns in bar charts sit
+  flush with the axis (WHO publication style).
+
+- New
+  [`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md)
+  for faceted plots — uses panel borders, light-grey strip backgrounds,
+  and bilateral grid lines.
 
 - New GHO data-availability helpers, for screening indicator / filter
   combinations before pulling a full result set:

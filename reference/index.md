@@ -65,10 +65,15 @@ ggplot2 and flextable styling helpers for WHO-style outputs.
 
 - [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
   : DSIR ggplot2 theme — WHO publication-style
+- [`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md)
+  : DSIR ggplot2 theme for faceted plots
 - [`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)
   : Set DSIR Flextable Defaults
 - [`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md) :
   Create a Pie Chart with ggplot2
+- [`scale_y_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
+  [`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
+  : Continuous Scales for DSIR Bar / Column Charts
 
 ## Utilities
 

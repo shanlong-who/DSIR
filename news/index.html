@@ -36,8 +36,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="dsir-060">DSIR 0.6.0<a class="anchor" aria-label="anchor" href="#dsir-060"></a></h2>
 <div class="section level3">
+<h3 id="behavior-changes-0-6-0">Behavior changes<a class="anchor" aria-label="anchor" href="#behavior-changes-0-6-0"></a></h3>
+<ul><li><p><code><a href="../reference/theme_dsi.html">theme_dsi()</a></code> now draws grid lines in both directions by default. New <code>grid</code> argument controls direction — pass <code>grid = "y"</code> to restore the previous look (horizontal grid only). This change fixes the visual glitch where horizontal bar charts (made with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code>) had grid lines running parallel to the bars instead of crossing them.</p></li>
+<li><p><code><a href="../reference/theme_dsi_facet.html">theme_dsi_facet()</a></code> gains a <code>grid</code> argument mirroring <code><a href="../reference/theme_dsi.html">theme_dsi()</a></code>’s — defaults to <code>"both"</code> (unchanged behaviour); pass <code>"y"</code>, <code>"x"</code>, or <code>"none"</code> to control which direction(s) the grid runs.</p></li>
+</ul></div>
+<div class="section level3">
 <h3 id="new-features-0-6-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h3>
-<ul><li>
+<ul><li><p>New <code><a href="../reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> and <code><a href="../reference/scale_dsi_col.html">scale_x_dsi_col()</a></code> — drop-in replacements for <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous()</a></code> / <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous()</a></code> that remove the lower axis expansion, so columns in bar charts sit flush with the axis (WHO publication style).</p></li>
+<li><p>New <code><a href="../reference/theme_dsi_facet.html">theme_dsi_facet()</a></code> for faceted plots — uses panel borders, light-grey strip backgrounds, and bilateral grid lines.</p></li>
+<li>
 <p>New GHO data-availability helpers, for screening indicator / filter combinations before pulling a full result set:</p>
 <ul><li>
 <code><a href="../reference/gho_has_data.html">gho_has_data()</a></code> returns <code>TRUE</code> / <code>FALSE</code> / <code>NA</code> for whether the server has any rows for an indicator and filter.</li>

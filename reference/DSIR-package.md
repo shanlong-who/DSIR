@@ -2,7 +2,11 @@
 
 A small, opinionated toolkit for global health data analysis. It bundles
 a publication-ready `ggplot2` theme
-([`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)),
+([`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md),
+[`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md))
+with flush-axis bar-chart scales
+([`scale_y_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md),
+[`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)),
 sensible `flextable` defaults
 ([`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)),
 a quick pie chart helper
