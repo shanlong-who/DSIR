@@ -34,11 +34,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.1" id="dsir-051">DSIR 0.5.1<a class="anchor" aria-label="anchor" href="#dsir-051"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="dsir-060">DSIR 0.6.0<a class="anchor" aria-label="anchor" href="#dsir-060"></a></h2>
 <div class="section level3">
-<h3 id="new-features-0-5-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-1"></a></h3>
-<ul><li><p>New <code><a href="../reference/geomean.html">geomean()</a></code>: geometric mean of a numeric vector, with optional weights via <code>w</code>. Useful for aggregating ratio-based health indicators such as UHC service-coverage tracers. Handles NA (removed by default), zeros (returns 0), and negative values (warns and returns NaN).</p></li>
+<h3 id="new-features-0-6-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h3>
+<ul><li>
+<p>New GHO data-availability helpers, for screening indicator / filter combinations before pulling a full result set:</p>
+<ul><li>
+<code><a href="../reference/gho_has_data.html">gho_has_data()</a></code> returns <code>TRUE</code> / <code>FALSE</code> / <code>NA</code> for whether the server has any rows for an indicator and filter.</li>
+<li>
+<code><a href="../reference/gho_count.html">gho_count()</a></code> returns the row count the same filter would yield, using the OData <code>$count=true</code> endpoint (no rows transferred).</li>
+<li>
+<code><a href="../reference/gho_coverage.html">gho_coverage()</a></code> returns a tibble with <code>location</code>, <code>year_min</code>, <code>year_max</code>, <code>n_obs</code> per area, using <code>$select=SpatialDim,TimeDim</code> to keep the payload small.</li>
+</ul></li>
+<li><p>New <code><a href="../reference/geomean.html">geomean()</a></code>: geometric mean of a numeric vector, with optional weights via <code>w</code>. Useful for aggregating ratio-based health indicators such as UHC service-coverage tracers. Handles NA (removed by default), zeros (returns 0), and negative values (warns and returns NaN).</p></li>
 <li><p>New <code><a href="../reference/iso3_to_region.html">iso3_to_region()</a></code>: maps ISO3 country codes to WHO region codes (<code>"AFR"</code>, <code>"AMR"</code>, <code>"SEAR"</code>, <code>"EUR"</code>, <code>"EMR"</code>, <code>"WPR"</code>) using the bundled <code>who_countries</code> dataset. Pass <code>long = TRUE</code> for full names (<code>"Western Pacific"</code>, etc.). Non-Member codes (e.g. Associate Members like <code>"PRI"</code>) return <code>NA</code>. Stays in sync with WHO governance changes reflected in DSIR — e.g. Indonesia in WPR since EB156 (May 2025).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-6-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0"></a></h3>
+<ul><li>The internal pagination helper <code>.gho_get()</code> previously produced a spurious 1-row, 1-column tibble (<code>V1</code> of type list) when the server returned an empty result set (<code>value = []</code>). Empty <code>value</code> chunks are now skipped and an empty tibble is returned when no rows accumulate. This affected <code><a href="../reference/gho_data.html">gho_data()</a></code> on filters with no matches (e.g. an indicator + area combination GHO has no data for) and <code>gho_indicators(search)</code> when no indicator name matched the search term.</li>
 </ul></div>
 </div>
     <div class="section level2">

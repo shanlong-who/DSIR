@@ -1,8 +1,22 @@
 # Changelog
 
-## DSIR 0.5.1
+## DSIR 0.6.0
 
 ### New features
+
+- New GHO data-availability helpers, for screening indicator / filter
+  combinations before pulling a full result set:
+
+  - [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+    returns `TRUE` / `FALSE` / `NA` for whether the server has any rows
+    for an indicator and filter.
+  - [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+    returns the row count the same filter would yield, using the OData
+    `$count=true` endpoint (no rows transferred).
+  - [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
+    returns a tibble with `location`, `year_min`, `year_max`, `n_obs`
+    per area, using `$select=SpatialDim,TimeDim` to keep the payload
+    small.
 
 - New
   [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md):
@@ -19,6 +33,18 @@
   etc.). Non-Member codes (e.g. Associate Members like `"PRI"`) return
   `NA`. Stays in sync with WHO governance changes reflected in DSIR —
   e.g. Indonesia in WPR since EB156 (May 2025).
+
+### Bug fixes
+
+- The internal pagination helper `.gho_get()` previously produced a
+  spurious 1-row, 1-column tibble (`V1` of type list) when the server
+  returned an empty result set (`value = []`). Empty `value` chunks are
+  now skipped and an empty tibble is returned when no rows accumulate.
+  This affected
+  [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
+  on filters with no matches (e.g. an indicator + area combination GHO
+  has no data for) and `gho_indicators(search)` when no indicator name
+  matched the search term.
 
 ## DSIR 0.5.0
 

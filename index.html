@@ -151,8 +151,22 @@
 <div class="section level3">
 <h3 id="who-gho-api">WHO GHO API<a class="anchor" aria-label="anchor" href="#who-gho-api"></a>
 </h3>
-<p>The typical workflow is <strong>search → fetch → clean</strong>.</p>
+<p><strong>Check availability before downloading.</strong> GHO has thousands of indicators but any one of them may not cover the countries or years you need. Three lightweight helpers ask the server what is available without transferring observations:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)</span></span>
+<span><span class="fu"><a href="reference/gho_has_data.html">gho_has_data</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Row count the same filter would return — useful for sizing a download</span></span>
+<span><span class="fu"><a href="reference/gho_count.html">gho_count</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Per-country year coverage and observation counts</span></span>
+<span><span class="fu"><a href="reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   location year_min year_max n_obs</span></span>
+<span><span class="co">#&gt; 1 DEU          2000     2021    66</span></span>
+<span><span class="co">#&gt; 2 FRA          2000     2021    66</span></span>
+<span><span class="co">#&gt; 3 JPN          2000     2021    66</span></span></code></pre></div>
+<p><strong>Fetch and clean.</strong> The typical workflow is <strong>search → fetch → clean</strong>:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Search indicators by keyword</span></span>
 <span><span class="fu"><a href="reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"mortality"</span><span class="op">)</span></span>
 <span></span>
@@ -179,7 +193,7 @@
 <h3 id="un-sdg-api">UN SDG API<a class="anchor" aria-label="anchor" href="#un-sdg-api"></a>
 </h3>
 <p>Same pattern as GHO: <strong>search → fetch → clean</strong>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Browse goals, targets, indicators, and geographic areas</span></span>
 <span><span class="fu"><a href="reference/sdg_goals.html">sdg_goals</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/sdg_targets.html">sdg_targets</a></span><span class="op">(</span><span class="op">)</span></span>

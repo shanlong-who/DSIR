@@ -70,6 +70,55 @@ iso3_to_region(c("PHL", "FRA", "ZAF", "USA", "XYZ"))
 This is convenient when joining external datasets (which often arrive
 keyed only by ISO3) to the WHO regional structure.
 
+## Checking availability before fetching
+
+GHO has thousands of indicators, but any single indicator may not cover
+the countries or years you need. Before issuing a full download with
+[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
+three lightweight helpers let you ask the server what is available
+without transferring any observations.
+
+[`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+is a quick yes / no for a given indicator and filter — useful when
+screening a list of candidate indicators.
+
+``` r
+
+# Does WHO have life-expectancy data for France?
+gho_has_data("WHOSIS_000001", area = "FRA")
+# TRUE
+
+# Bulk-screen several indicators at once
+inds <- c("WHOSIS_000001", "NCDMORT3070", "MDG_0000000026")
+vapply(inds, gho_has_data, logical(1), area = "PHL")
+```
+
+It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a
+non-existent indicator code — GHO returns HTTP 404 in that case).
+
+[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+returns the number of rows the same filter would produce, which is
+useful for sizing a download.
+
+``` r
+
+gho_count("WHOSIS_000001", area = wpro_cty)
+```
+
+[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
+summarises year coverage and observation counts per country. The payload
+is small because only `SpatialDim` and `TimeDim` are requested from the
+server.
+
+``` r
+
+gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
+#>   location year_min year_max n_obs
+#> 1 DEU          2000     2021    66
+#> 2 FRA          2000     2021    66
+#> 3 JPN          2000     2021    66
+```
+
 ## Fetching indicator data from GHO
 
 To fetch indicators from GHO, the typical workflow is three steps:

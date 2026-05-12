@@ -142,7 +142,28 @@ geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
 
 ### WHO GHO API
 
-The typical workflow is **search → fetch → clean**.
+**Check availability before downloading.** GHO has thousands of
+indicators but any one of them may not cover the countries or years you
+need. Three lightweight helpers ask the server what is available without
+transferring observations:
+
+``` r
+
+# Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)
+gho_has_data("WHOSIS_000001", area = "FRA")
+
+# Row count the same filter would return — useful for sizing a download
+gho_count("WHOSIS_000001", area = wpro_cty)
+
+# Per-country year coverage and observation counts
+gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
+#>   location year_min year_max n_obs
+#> 1 DEU          2000     2021    66
+#> 2 FRA          2000     2021    66
+#> 3 JPN          2000     2021    66
+```
+
+**Fetch and clean.** The typical workflow is **search → fetch → clean**:
 
 ``` r
 

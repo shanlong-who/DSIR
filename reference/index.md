@@ -31,6 +31,12 @@ Observatory.
   : Fetch GHO Data
 - [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
   : Tidy a GHO Data Frame
+- [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+  : Count Observations for a GHO Indicator Filter
+- [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
+  : Summarise Per-Location Data Coverage of a GHO Indicator
+- [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+  : Check Whether a GHO Indicator Has Data for a Filter
 
 ## SDG indicator data
 

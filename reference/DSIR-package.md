@@ -16,7 +16,10 @@ a geometric mean helper for indicator aggregation
 and thin clients for the WHO Global Health Observatory API
 ([`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md),
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
-[`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md))
+[`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md),
+[`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md),
+[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
+[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md))
 and the UN Sustainable Development Goals API
 ([`sdg_goals()`](https://shanlong-who.github.io/DSIR/reference/sdg_goals.md),
 [`sdg_targets()`](https://shanlong-who.github.io/DSIR/reference/sdg_targets.md),
