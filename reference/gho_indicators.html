@@ -51,9 +51,14 @@ Observatory (GHO) OData API.</p>
 
 
 <dl><dt id="arg-search">search<a class="anchor" aria-label="anchor" href="#arg-search"></a></dt>
-<dd><p>Optional character string. If supplied, only
-indicators whose name contains <code>search</code> (case-insensitive)
-are returned.</p></dd>
+<dd><p>Optional character. Search keywords matched against
+<code>IndicatorName</code> (case-insensitive). All terms must match
+(AND semantics). Accepts either:</p><ul><li><p>a single string, which is split on whitespace into terms
+(e.g. <code>"child mortality"</code> matches indicators containing both
+"child" and "mortality"), or</p></li>
+<li><p>a character vector, whose elements are used as terms verbatim
+(whitespace inside an element is treated as part of the term).</p></li>
+</ul><p>Single quotes in any term are escaped for the OData filter.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -73,8 +78,14 @@ a message) when the service is unreachable.</p>
 <span class="r-in"><span><span class="co"># All indicators</span></span></span>
 <span class="r-in"><span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu">gho_indicators</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Search by keyword</span></span></span>
+<span class="r-in"><span><span class="co"># Single keyword</span></span></span>
 <span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="st">"mortality"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Multiple keywords from one string (AND): both terms must appear</span></span></span>
+<span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="st">"child mortality"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Or pass terms as a vector</span></span></span>
+<span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"child"</span>, <span class="st">"mortality"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

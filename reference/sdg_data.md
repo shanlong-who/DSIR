@@ -25,9 +25,13 @@ sdg_data(
 
 - area:
 
-  Character vector of area codes (e.g. `c("32", "76")`). Use
-  [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md)
-  to find codes. Default `NULL` returns all areas.
+  Character vector of country/area codes. Accepts either ISO3 codes
+  (e.g. `c("PHL", "FRA")`) — converted automatically via
+  [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+  — or UN M49 numeric codes (e.g. `c("608", "250")`) as returned by
+  [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md).
+  Do not mix the two formats in a single call. Default `NULL` returns
+  all areas.
 
 - year_from:
 
@@ -50,7 +54,8 @@ unreachable or there are no matching rows.
 ## See also
 
 [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md),
-[`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md).
+[`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md),
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md).
 
 ## Examples
 
@@ -61,5 +66,9 @@ sdg_data("1.1.1")
 
 # Specific area and year range
 sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
+
+# ISO3 codes work directly — DSIR's regional vectors can be passed in
+sdg_data("3.4.1", area = wpro_cty)
+sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
 } # }
 ```

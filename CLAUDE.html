@@ -41,69 +41,72 @@
 <p><code>DSIR</code> is a small R package (“Data Science Infrastructure for Global Health in R”), targeted at CRAN. It provides:</p>
 <ul><li>A <code>ggplot2</code> theme (<code>theme_dsi</code>) and <code>flextable</code> defaults helper (<code>dsi_flextable_defaults</code>)</li>
 <li>A pie-chart wrapper (<code>ggpie</code>)</li>
-<li>A bundled dataset (<code>wpro_cty</code>, ISO3 codes for WHO Western Pacific Region)</li>
-<li>Thin API clients for the WHO Global Health Observatory (<code>gho_*</code>) and UN SDG (<code>sdg_*</code>) APIs</li>
+<li>Bundled WHO Member State data: the <code>who_countries</code> tibble plus regional ISO3 vectors (<code>wpro_cty</code>, <code>afro_cty</code>, <code>amro_cty</code>, <code>searo_cty</code>, <code>euro_cty</code>, <code>emro_cty</code>, <code>pic_cty</code>) and lookup helpers (<code><a href="reference/iso3_to_region.html">iso3_to_region()</a></code>, <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code>)</li>
+<li>
+<code><a href="reference/geomean.html">geomean()</a></code> for ratio-based indicator aggregation</li>
+<li>Thin clients for the WHO Global Health Observatory OData API (<code>gho_indicators</code>, <code>gho_data</code>, <code>gho_dimensions</code>, <code>gho_clean</code>, plus the availability helpers <code>gho_has_data</code>, <code>gho_count</code>, <code>gho_coverage</code>)</li>
+<li>Thin clients for the UN SDG API (<code>sdg_goals</code>, <code>sdg_targets</code>, <code>sdg_indicators</code>, <code>sdg_areas</code>, <code>sdg_data</code>, <code>sdg_clean</code>, plus the series-exploration helper <code>sdg_coverage</code>)</li>
 </ul><p>The package is CRAN-bound, so conventions below are driven by <code>R CMD check</code> and CRAN policy, not just taste.</p>
 </div>
 <div class="section level2">
-<h2 id="current-development-state--051-in-preparation-last-updated-2026-05-08">Current development state — 0.5.1 in preparation (last updated 2026-05-08)<a class="anchor" aria-label="anchor" href="#current-development-state--051-in-preparation-last-updated-2026-05-08"></a></h2>
-<p>Two new functions are written, tested, exported, and documented in <code>NEWS.md</code>. <strong>Code is committed-ready but the release scripts have not yet been run.</strong> Resume from this point.</p>
+<h2 id="current-development-state--060-in-preparation-last-updated-2026-05-12">Current development state — 0.6.0 in preparation (last updated 2026-05-12)<a class="anchor" aria-label="anchor" href="#current-development-state--060-in-preparation-last-updated-2026-05-12"></a></h2>
+<p>Version bumped to 0.6.0 in <code>DESCRIPTION</code>. All planned code is written, tested, exported, and described in <code>NEWS.md</code>. README and vignette are updated to integrate every new function. <strong>The full release is uncommitted on <code>main</code></strong>; <code>devtools::check()</code> is clean (0 errors / 0 warnings / 0 notes). Resume from a <code>git status</code> to see what is staged.</p>
 <div class="section level3">
-<h3 id="what-was-added-in-051">What was added in 0.5.1<a class="anchor" aria-label="anchor" href="#what-was-added-in-051"></a></h3>
-<ul><li>
-<code>geomean(x, na.rm = TRUE)</code> — geometric mean. For ratio-based indicator aggregation (e.g. UHC service-coverage tracers). Returns 0 if any element is 0; warns + returns <code>NaN</code> for negative input.</li>
-<li>
-<code>iso3_to_region(iso3, long = FALSE)</code> — ISO3 → WHO region using the bundled <code>who_countries</code> dataset. <code>long = TRUE</code> gives full names. Non-Member codes return <code>NA</code>.</li>
-</ul></div>
+<h3 id="what-was-added-across-060">What was added across 0.6.0<a class="anchor" aria-label="anchor" href="#what-was-added-across-060"></a></h3>
+<p>GHO availability helpers (screening before a full download): - <code><a href="reference/gho_has_data.html">gho_has_data()</a></code> — <code>TRUE</code> / <code>FALSE</code> / <code>NA</code> for whether the server has any rows. - <code><a href="reference/gho_count.html">gho_count()</a></code> — row count via OData <code>$count=true</code> (no rows transferred). - <code><a href="reference/gho_coverage.html">gho_coverage()</a></code> — <code>(location, year_min, year_max, n_obs)</code> per area, using <code>$select=SpatialDim,TimeDim</code> to keep the payload small.</p>
+<p>SDG additions: - <code>sdg_indicators(search = NULL)</code> — gains a keyword filter mirroring <code><a href="reference/gho_indicators.html">gho_indicators()</a></code>. AND semantics; case-insensitive substring match on the indicator <code>description</code>. Applied <strong>client-side</strong> (<code>grepl(..., fixed = TRUE)</code>) because the UN SDG <code>/Indicator/List</code> endpoint is not OData and exposes no server-side search parameter; the catalog is small (~250 rows). Validation runs before the network call so it is unit-testable offline. Default <code>search = NULL</code> preserves the previous behaviour exactly. - <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> — series-exploration helper. Groups by <code>(location, series)</code>, not just <code>(location)</code>. Returns <code>(location, series, year_min, year_max, n_obs)</code>. Intentional asymmetry vs. GHO: no <code>sdg_has_data()</code> or <code>sdg_count()</code> is provided because SDG data is generally complete, so per-series exploration is the more useful pre-analysis question. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> and <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> now accept ISO3 codes for <code>area</code> — converted internally via <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code> through the internal <code>.resolve_area()</code> helper. M49 still works. ISO3 ↔︎ M49 cannot be mixed within one call. This lets DSIR’s regional vectors (<code>wpro_cty</code>, etc.) be passed straight through, matching the GHO workflow.</p>
+<p>Cross-API helper: - <code>iso3_to_m49(iso3)</code> — case-insensitive ISO3 → UN M49 lookup against <code>who_countries$m49_code</code>. Non-Member codes return <code>NA</code>. Returned values are three-character zero-padded strings, the same form the dataset stores.</p>
+<p>Carried over (already in <code>NEWS.md</code> before this round): - <code>geomean(x, na.rm = TRUE, w = NULL)</code> - <code>iso3_to_region(iso3, long = FALSE)</code></p>
+<p>Bug fixes captured in 0.6.0: - <code>.gho_get()</code> no longer produces a spurious 1×1 list-column tibble when GHO returns <code>value = []</code>. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> now sends multi-value <code>indicator</code> / <code>areaCode</code> filters as repeated keys (not comma-joined) and no longer trips <code>duplicate 'row.names' are not allowed</code> when paginating. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> year filtering (<code>year_from</code> / <code>year_to</code>) is now applied <strong>client-side</strong>. The UN SDG API’s server-side <code>timePeriodStart</code> / <code>timePeriodEnd</code> parameters cause HTTP 500 errors and ~30x slowdowns on at least some indicator/area combinations (e.g. <code>3.2.1</code> with <code>area = "608"</code>). The filter runs after the pagination loop assembles <code>out</code>; if <code>timePeriodStart</code> is missing the function warns and returns unfiltered. <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> inherits the fix automatically. - <code>.sdg_get()</code> now has a 20-second per-request timeout (<code>req_timeout(20)</code>) and exponential backoff (<code>backoff = ~ min(2 ^ .x, 30)</code>), so a hung upstream request cannot stall a call indefinitely.</p>
+</div>
 <div class="section level3">
-<h3 id="files-touched-in-this-release">Files touched in this release<a class="anchor" aria-label="anchor" href="#files-touched-in-this-release"></a></h3>
+<h3 id="implementation-notes-worth-remembering">Implementation notes worth remembering<a class="anchor" aria-label="anchor" href="#implementation-notes-worth-remembering"></a></h3>
 <ul><li>
-<code>R/geomean.R</code>, <code>R/iso3_to_region.R</code> (new)</li>
+<strong>The M49 column is <code>who_countries$m49_code</code>, not <code>un_m49</code>.</strong> Easy to misremember when reading historical task briefs. Values are zero-padded to three characters (e.g. <code>"076"</code> for Brazil). The SDG API accepts both <code>"076"</code> and <code>"76"</code> for the same area, so the bundled zero-padded form is fine to pass straight through.</li>
 <li>
-<code>tests/testthat/test-geomean.R</code>, <code>tests/testthat/test-iso3_to_region.R</code> (new)</li>
+<code>.resolve_area()</code> (internal to <code>R/sdg.R</code>) detects format with <code>^[A-Za-z]{3}$</code> for ISO3 and <code>^[0-9]+$</code> for M49. These two regexes can never both match the same value, so format detection is unambiguous. Mixed input errors (refused, not coerced). Unknown ISO3 codes are dropped with a warning; if every code is unknown, the function errors.</li>
 <li>
-<code>R/DSIR-package.R</code> — added <code>utils::globalVariables("who_countries")</code> to silence R CMD check NOTE; listed new functions in <code>@details</code>
-</li>
+<code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> calls <code>.resolve_area()</code> <strong>before</strong> the internal <code>suppressWarnings(sdg_data(...))</code> call, so the legitimate “dropped unknown ISO3” warning surfaces cleanly from <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> rather than being swallowed. <code><a href="reference/sdg_data.html">sdg_data()</a></code> re-runs <code>.resolve_area()</code> on the already-resolved vector — that’s a no-op (M49 passes through), so the duplication is safe.</li>
 <li>
-<code>NAMESPACE</code> — manually added <code>export(geomean)</code> and <code>export(iso3_to_region)</code> (will be regenerated identically by <code>devtools::document()</code>)</li>
-<li>
-<code>DESCRIPTION</code> — Version bumped to 0.5.1; Description field updated</li>
-<li>
-<code>NEWS.md</code> — added 0.5.1 section</li>
+<code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> calls <code><a href="reference/sdg_data.html">sdg_data()</a></code> internally — SDG offers no payload-reduction option equivalent to GHO’s <code>$select</code>, so there is no efficiency win from going around it. The grouping key is <code>paste(location, series, sep = "\x1f")</code> (US, unit separator — can’t collide with M49 codes or SDG series codes). Mirror the <code>yr_range</code> / <code>vapply</code> idiom from <code><a href="reference/gho_coverage.html">gho_coverage()</a></code>.</li>
+<li>For <code>sdg_indicators(search)</code>: the source-of-truth probe (see <code>scratch/probe_sdg.R</code>) confirmed the description column is named <code>description</code> (plain <code>chr</code>, not nested in <code>series</code>). The <code>series</code> column on <code><a href="reference/sdg_data.html">sdg_data()</a></code> output is also plain <code>chr</code> — no <code>as.character(v[[1]])</code> flatten needed (that flatten in <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> is only for the <code>indicator</code> list-column).</li>
+<li>The 20-second timeout on <code>.sdg_get()</code> is fine for typical 2–6s SDG responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious “Timeout was reached” failures, bumping the constant to 30–60s is the right move. <code>req_retry()</code> runs three attempts, so the worst-case wall time is bounded around 66s.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="pending-steps-before-tagging">Pending steps before tagging<a class="anchor" aria-label="anchor" href="#pending-steps-before-tagging"></a></h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>   <span class="co"># regenerate NAMESPACE + man/*.Rd from roxygen</span></span>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>   <span class="co"># may need TWO passes when a new function is added —</span></span>
+<span>                       <span class="co"># the first pass writes the Rd, the second resolves</span></span>
+<span>                       <span class="co"># cross-references that point at it</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>       <span class="co"># all tests should pass</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span>      <span class="co"># R CMD check — expect 0 errors / 0 warnings / 0 notes</span></span></code></pre></div>
-<p>Then commit + tag:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">git</span> add R/ tests/ NAMESPACE DESCRIPTION NEWS.md CLAUDE.md</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Release 0.5.1: add geomean() and iso3_to_region()"</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">git</span> tag v0.5.1</span></code></pre></div>
+<p>Then commit + tag. The 0.6.0 work is several independent themes (GHO availability helpers; SDG series exploration + search; SDG year-filter workaround; ISO3-friendly SDG functions + <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code>) and can be split into separate commits if a clean history is wanted.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">git</span> tag v0.6.0</span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="known-doc-staleness-not-blocking-051">Known doc staleness (not blocking 0.5.1)<a class="anchor" aria-label="anchor" href="#known-doc-staleness-not-blocking-051"></a></h3>
-<p>The “What this repo is” section above still describes only <code>wpro_cty</code> as the bundled dataset. Since 0.4.0 the package also ships <code>who_countries</code>, the full <code>afro_cty/.../wpro_cty</code> regional vectors, and <code>pic_cty</code>. Worth refreshing during a future doc cleanup.</p>
+<h3 id="pandoc-on-this-machine">Pandoc on this machine<a class="anchor" aria-label="anchor" href="#pandoc-on-this-machine"></a></h3>
+<p><code>devtools::check()</code> rebuilds the vignette, which needs Pandoc. Pandoc is not on <code>PATH</code> on this laptop but ships with RStudio. Point <code>RSTUDIO_PANDOC</code> at the bundled binary before running <code>check()</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>RSTUDIO_PANDOC <span class="op">=</span> <span class="st">"C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="roadmap--060-candidates">Roadmap — 0.6.0 candidates<a class="anchor" aria-label="anchor" href="#roadmap--060-candidates"></a></h2>
+<h2 id="roadmap--070-candidates">Roadmap — 0.7.0 candidates<a class="anchor" aria-label="anchor" href="#roadmap--070-candidates"></a></h2>
 <div class="section level3">
 <h3 id="high-priority--schema-alignment-for-gho_clean--sdg_clean">High priority — schema alignment for <code>gho_clean()</code> / <code>sdg_clean()</code>
 <a class="anchor" aria-label="anchor" href="#high-priority--schema-alignment-for-gho_clean--sdg_clean"></a></h3>
-<p>Their outputs cannot currently be <code>bind_rows()</code>-ed cleanly:</p>
+<p>Their outputs still cannot be <code>bind_rows()</code>-ed cleanly:</p>
 <table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Source</th>
 <th>Columns</th>
 </tr></thead><tbody><tr><td><code><a href="reference/gho_clean.html">gho_clean()</a></code></td>
 <td><code>id, location, year, dim1, dim2, dim3, value, value_num, low, high, indicator</code></td>
 </tr><tr><td><code><a href="reference/sdg_clean.html">sdg_clean()</a></code></td>
 <td><code>goal, target, indicator, series, location, location_name, year, value, low, high</code></td>
-</tr></tbody></table><p>Open design question: pick a shared core schema (e.g. <code>id, indicator, location, year, value, low, high</code>) and let source-specific extras live alongside. Possibly add a <code>bind_indicators(...)</code> helper. This is a breaking change, hence 0.6.0.</p>
+</tr></tbody></table><p>Open design question: pick a shared core schema (e.g. <code>id, indicator, location, year, value, low, high</code>) and let source-specific extras live alongside. Possibly add a <code>bind_indicators(...)</code> helper. This is a breaking change, hence a minor-version bump.</p>
 </div>
 <div class="section level3">
 <h3 id="other-candidates-surfaced-from-scanning-users-analytical-projects">Other candidates surfaced from scanning user’s analytical projects<a class="anchor" aria-label="anchor" href="#other-candidates-surfaced-from-scanning-users-analytical-projects"></a></h3>
-<p>Worth packaging once 0.5.1 ships:</p>
 <ul><li>
 <code>get_latest(df)</code> — keep the last-non-missing year per location. Used in 3+ WHI/SDG projects in the user’s working directory.</li>
 <li>
@@ -123,7 +126,7 @@
 <div class="section level2">
 <h2 id="common-commands">Common commands<a class="anchor" aria-label="anchor" href="#common-commands"></a></h2>
 <p>Run from the package root in an R session (or via <code>Rscript -e '...'</code>):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Regenerate NAMESPACE and man/*.Rd from roxygen2 comments.</span></span>
 <span><span class="co"># ALWAYS run after editing any roxygen block or adding/removing an @export.</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>
@@ -148,14 +151,14 @@
 </div>
 <div class="section level3">
 <h3 id="network-functions-must-fail-soft">Network functions must fail soft<a class="anchor" aria-label="anchor" href="#network-functions-must-fail-soft"></a></h3>
-<p><code>gho_*()</code> and <code>sdg_*()</code> hit live APIs. Per CRAN policy, they must not error when the remote is unreachable. The pattern (see <code>.gho_get</code> in <code>R/gho.R:153</code> and <code>.sdg_get</code> in <code>R/sdg.R:171</code>):</p>
+<p><code>gho_*()</code> and <code>sdg_*()</code> hit live APIs. Per CRAN policy, they must not error when the remote is unreachable. The pattern (see <code>.gho_get</code> in <code>R/gho.R</code> and <code>.sdg_get</code> in <code>R/sdg.R</code>):</p>
 <ol style="list-style-type: decimal"><li>
-<code>httr2::request() |&gt; req_retry(max_tries = 3) |&gt; req_perform()</code> wrapped in <code>tryCatch</code>
+<code>httr2::request() |&gt; req_timeout(20) |&gt; req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30)) |&gt; req_perform()</code>, wrapped in <code>tryCatch</code>
 </li>
 <li>On failure, <code><a href="https://cli.r-lib.org/reference/cli_abort.html" class="external-link">cli::cli_warn()</a></code> and return <code>NULL</code>
 </li>
 <li>Public wrappers turn <code>NULL</code> into an empty <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> (or <code>NULL</code> for list endpoints) so downstream code doesn’t crash</li>
-</ol><p>When adding a new network call, follow this pattern — do not <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> on HTTP failure.</p>
+</ol><p><code>.gho_get()</code> currently uses <code>req_retry(max_tries = 3)</code> without <code>req_timeout</code> or an explicit backoff; <code>.sdg_get()</code> has both. If you touch the GHO helper, consider aligning it with the SDG pattern. When adding a new network call, follow this pattern — do not <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> on HTTP failure.</p>
 </div>
 <div class="section level3">
 <h3 id="gho-uses-odata-sdg-uses-query-params">GHO uses OData; SDG uses query params<a class="anchor" aria-label="anchor" href="#gho-uses-odata-sdg-uses-query-params"></a></h3>

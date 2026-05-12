@@ -70,6 +70,30 @@ iso3_to_region(c("PHL", "FRA", "ZAF", "USA", "XYZ"))
 This is convenient when joining external datasets (which often arrive
 keyed only by ISO3) to the WHO regional structure.
 
+The companion helper
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+converts ISO3 codes to UN M49 numeric codes — useful because the WHO GHO
+API is keyed by ISO3 (`"PHL"`) while the UN SDG API is keyed by M49
+(`"608"`). The M49 values are returned as three-character zero-padded
+strings, exactly as stored in `who_countries$m49_code`.
+
+``` r
+
+iso3_to_m49(c("PHL", "FRA", "JPN"))
+# "608" "250" "392"
+
+# Case-insensitive; non-Member areas return NA
+iso3_to_m49(c("phl", "PRI"))
+# "608" NA
+```
+
+In practice you can usually skip the explicit conversion:
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+and
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+accept ISO3 codes for their `area` argument and do the lookup internally
+(see the SDG section below).
+
 ## Checking availability before fetching
 
 GHO has thousands of indicators, but any single indicator may not cover
@@ -251,13 +275,44 @@ notes) for some rows, so coerce with
 [`as.numeric()`](https://rdrr.io/r/base/numeric.html) only when you are
 ready to drop them.
 
+[`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md)
+accepts an optional `search` argument with the same behaviour as
+[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
+— multiple keywords are AND-ed together and matched case-insensitively
+against the indicator description. The filter runs client-side because
+the UN SDG indicator list is short (~250 rows) and the endpoint is not
+OData.
+
 ``` r
 
+# All indicators that mention both mortality and cancer
+sdg_indicators("mortality cancer")
+
+# Same as above, but with explicit terms (allows whitespace inside a term)
+sdg_indicators(c("maternal", "mortality"))
+```
+
+The `area` argument of
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+and
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+accepts either ISO3 codes (converted internally via
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md))
+or UN M49 numeric codes — so DSIR’s regional vectors (`wpro_cty`,
+`afro_cty`, etc.) work directly, the same way they do with the GHO
+client. Do not mix the two formats in a single call.
+
+``` r
+
+# ISO3 — regional vector passed straight through
 sdg <- sdg_data(
   indicator = "3.4.1",
   area      = wpro_cty
 )
 sdg |> glimpse()
+
+# M49 also works (e.g. when copy-pasting codes from sdg_areas())
+sdg_data("3.4.1", area = c("608", "250"))
 ```
 
 ``` r

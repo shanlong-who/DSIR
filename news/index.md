@@ -18,6 +18,16 @@
     per area, using `$select=SpatialDim,TimeDim` to keep the payload
     small.
 
+- [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md)
+  gains a `search` parameter, mirroring `gho_indicators(search)`.
+  Accepts either a single string (split on whitespace into terms) or a
+  character vector (terms used verbatim). All terms must match (AND
+  semantics, case-insensitive substring on the indicator `description`
+  column). The filter is applied client-side because the UN SDG
+  `/Indicator/List` endpoint is not OData and exposes no server-side
+  search parameter; the list is small enough (~250 rows) that this is
+  cheap.
+
 - New
   [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md):
   series-exploration helper for SDG indicators. An SDG indicator
@@ -41,6 +51,21 @@
   (returns 0), and negative values (warns and returns NaN).
 
 - New
+  [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md):
+  maps ISO3 country codes to UN M49 numeric codes using the bundled
+  `who_countries` dataset. Non-Member codes return `NA`. Input is
+  case-insensitive.
+
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  and
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  now accept ISO3 codes directly for the `area` argument; M49 codes
+  continue to work unchanged. DSIR’s regional vectors (`wpro_cty`,
+  `afro_cty`, etc.) can now be passed directly to SDG functions,
+  matching the existing GHO workflow. ISO3 and M49 cannot be mixed
+  within a single call.
+
+- New
   [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md):
   maps ISO3 country codes to WHO region codes (`"AFR"`, `"AMR"`,
   `"SEAR"`, `"EUR"`, `"EMR"`, `"WPR"`) using the bundled `who_countries`
@@ -50,6 +75,21 @@
   e.g. Indonesia in WPR since EB156 (May 2025).
 
 ### Bug fixes
+
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md):
+  year filtering (`year_from` / `year_to`) is now applied client-side.
+  The UN SDG API’s server-side `timePeriodStart` / `timePeriodEnd`
+  parameters were causing HTTP 500 errors and ~30x slowdowns on at least
+  some indicator/area combinations (e.g. `3.2.1` with `area = "608"`);
+  client-side filtering avoids the issue. User-facing behaviour is
+  unchanged.
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  inherits the fix automatically because it dispatches through
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md).
+
+- `.sdg_get()` now sets a 20-second per-request timeout and exponential
+  backoff between retries (`backoff = ~ min(2^.x, 30)`), so a hung
+  upstream request cannot stall a call indefinitely.
 
 - The internal pagination helper `.gho_get()` previously produced a
   spurious 1-row, 1-column tibble (`V1` of type list) when the server

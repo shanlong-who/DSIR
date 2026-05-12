@@ -17,6 +17,8 @@ Datasets and helpers for WHO Member States and regional groupings.
   : Pacific Island Country ISO3 codes
 - [`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)
   : Look Up the WHO Region for ISO3 Codes
+- [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+  : Convert ISO3 Codes to UN M49 Numeric Codes
 
 ## GHO indicator data
 
@@ -55,7 +57,7 @@ Functions for fetching and cleaning data from the UN SDG API.
 - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
   : Tidy an SDG Data Frame
 - [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-  : Explore Series Coverage of an SDG Indicator
+  : Summarise Series-Level Coverage of an SDG Indicator
 
 ## Visual themes
 

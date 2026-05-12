@@ -11,71 +11,178 @@ Health in R”), targeted at CRAN. It provides:
 - A `ggplot2` theme (`theme_dsi`) and `flextable` defaults helper
   (`dsi_flextable_defaults`)
 - A pie-chart wrapper (`ggpie`)
-- A bundled dataset (`wpro_cty`, ISO3 codes for WHO Western Pacific
-  Region)
-- Thin API clients for the WHO Global Health Observatory (`gho_*`) and
-  UN SDG (`sdg_*`) APIs
+- Bundled WHO Member State data: the `who_countries` tibble plus
+  regional ISO3 vectors (`wpro_cty`, `afro_cty`, `amro_cty`,
+  `searo_cty`, `euro_cty`, `emro_cty`, `pic_cty`) and lookup helpers
+  ([`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md),
+  [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md))
+- [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
+  for ratio-based indicator aggregation
+- Thin clients for the WHO Global Health Observatory OData API
+  (`gho_indicators`, `gho_data`, `gho_dimensions`, `gho_clean`, plus the
+  availability helpers `gho_has_data`, `gho_count`, `gho_coverage`)
+- Thin clients for the UN SDG API (`sdg_goals`, `sdg_targets`,
+  `sdg_indicators`, `sdg_areas`, `sdg_data`, `sdg_clean`, plus the
+  series-exploration helper `sdg_coverage`)
 
 The package is CRAN-bound, so conventions below are driven by
 `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.5.1 in preparation (last updated 2026-05-08)
+## Current development state — 0.6.0 in preparation (last updated 2026-05-12)
 
-Two new functions are written, tested, exported, and documented in
-`NEWS.md`. **Code is committed-ready but the release scripts have not
-yet been run.** Resume from this point.
+Version bumped to 0.6.0 in `DESCRIPTION`. All planned code is written,
+tested, exported, and described in `NEWS.md`. README and vignette are
+updated to integrate every new function. **The full release is
+uncommitted on `main`**; `devtools::check()` is clean (0 errors / 0
+warnings / 0 notes). Resume from a `git status` to see what is staged.
 
-### What was added in 0.5.1
+### What was added across 0.6.0
 
-- `geomean(x, na.rm = TRUE)` — geometric mean. For ratio-based indicator
-  aggregation (e.g. UHC service-coverage tracers). Returns 0 if any
-  element is 0; warns + returns `NaN` for negative input.
-- `iso3_to_region(iso3, long = FALSE)` — ISO3 → WHO region using the
-  bundled `who_countries` dataset. `long = TRUE` gives full names.
-  Non-Member codes return `NA`.
+GHO availability helpers (screening before a full download): -
+[`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+— `TRUE` / `FALSE` / `NA` for whether the server has any rows. -
+[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+— row count via OData `$count=true` (no rows transferred). -
+[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
+— `(location, year_min, year_max, n_obs)` per area, using
+`$select=SpatialDim,TimeDim` to keep the payload small.
 
-### Files touched in this release
+SDG additions: - `sdg_indicators(search = NULL)` — gains a keyword
+filter mirroring
+[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md).
+AND semantics; case-insensitive substring match on the indicator
+`description`. Applied **client-side** (`grepl(..., fixed = TRUE)`)
+because the UN SDG `/Indicator/List` endpoint is not OData and exposes
+no server-side search parameter; the catalog is small (~250 rows).
+Validation runs before the network call so it is unit-testable offline.
+Default `search = NULL` preserves the previous behaviour exactly. -
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+— series-exploration helper. Groups by `(location, series)`, not just
+`(location)`. Returns `(location, series, year_min, year_max, n_obs)`.
+Intentional asymmetry vs. GHO: no `sdg_has_data()` or `sdg_count()` is
+provided because SDG data is generally complete, so per-series
+exploration is the more useful pre-analysis question. -
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+and
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+now accept ISO3 codes for `area` — converted internally via
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+through the internal `.resolve_area()` helper. M49 still works. ISO3 ↔︎
+M49 cannot be mixed within one call. This lets DSIR’s regional vectors
+(`wpro_cty`, etc.) be passed straight through, matching the GHO
+workflow.
 
-- `R/geomean.R`, `R/iso3_to_region.R` (new)
-- `tests/testthat/test-geomean.R`,
-  `tests/testthat/test-iso3_to_region.R` (new)
-- `R/DSIR-package.R` — added `utils::globalVariables("who_countries")`
-  to silence R CMD check NOTE; listed new functions in `@details`
-- `NAMESPACE` — manually added `export(geomean)` and
-  `export(iso3_to_region)` (will be regenerated identically by
-  `devtools::document()`)
-- `DESCRIPTION` — Version bumped to 0.5.1; Description field updated
-- `NEWS.md` — added 0.5.1 section
+Cross-API helper: - `iso3_to_m49(iso3)` — case-insensitive ISO3 → UN M49
+lookup against `who_countries$m49_code`. Non-Member codes return `NA`.
+Returned values are three-character zero-padded strings, the same form
+the dataset stores.
+
+Carried over (already in `NEWS.md` before this round): -
+`geomean(x, na.rm = TRUE, w = NULL)` -
+`iso3_to_region(iso3, long = FALSE)`
+
+Bug fixes captured in 0.6.0: - `.gho_get()` no longer produces a
+spurious 1×1 list-column tibble when GHO returns `value = []`. -
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+now sends multi-value `indicator` / `areaCode` filters as repeated keys
+(not comma-joined) and no longer trips
+`duplicate 'row.names' are not allowed` when paginating. -
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+year filtering (`year_from` / `year_to`) is now applied **client-side**.
+The UN SDG API’s server-side `timePeriodStart` / `timePeriodEnd`
+parameters cause HTTP 500 errors and ~30x slowdowns on at least some
+indicator/area combinations (e.g. `3.2.1` with `area = "608"`). The
+filter runs after the pagination loop assembles `out`; if
+`timePeriodStart` is missing the function warns and returns unfiltered.
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+inherits the fix automatically. - `.sdg_get()` now has a 20-second
+per-request timeout (`req_timeout(20)`) and exponential backoff
+(`backoff = ~ min(2 ^ .x, 30)`), so a hung upstream request cannot stall
+a call indefinitely.
+
+### Implementation notes worth remembering
+
+- **The M49 column is `who_countries$m49_code`, not `un_m49`.** Easy to
+  misremember when reading historical task briefs. Values are
+  zero-padded to three characters (e.g. `"076"` for Brazil). The SDG API
+  accepts both `"076"` and `"76"` for the same area, so the bundled
+  zero-padded form is fine to pass straight through.
+- `.resolve_area()` (internal to `R/sdg.R`) detects format with
+  `^[A-Za-z]{3}$` for ISO3 and `^[0-9]+$` for M49. These two regexes can
+  never both match the same value, so format detection is unambiguous.
+  Mixed input errors (refused, not coerced). Unknown ISO3 codes are
+  dropped with a warning; if every code is unknown, the function errors.
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  calls `.resolve_area()` **before** the internal
+  `suppressWarnings(sdg_data(...))` call, so the legitimate “dropped
+  unknown ISO3” warning surfaces cleanly from
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  rather than being swallowed.
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  re-runs `.resolve_area()` on the already-resolved vector — that’s a
+  no-op (M49 passes through), so the duplication is safe.
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  calls
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  internally — SDG offers no payload-reduction option equivalent to
+  GHO’s `$select`, so there is no efficiency win from going around it.
+  The grouping key is `paste(location, series, sep = "\x1f")` (US, unit
+  separator — can’t collide with M49 codes or SDG series codes). Mirror
+  the `yr_range` / `vapply` idiom from
+  [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md).
+- For `sdg_indicators(search)`: the source-of-truth probe (see
+  `scratch/probe_sdg.R`) confirmed the description column is named
+  `description` (plain `chr`, not nested in `series`). The `series`
+  column on
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  output is also plain `chr` — no `as.character(v[[1]])` flatten needed
+  (that flatten in
+  [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+  is only for the `indicator` list-column).
+- The 20-second timeout on `.sdg_get()` is fine for typical 2–6s SDG
+  responses, but the un.org endpoint occasionally spikes well past 20s.
+  If users start reporting spurious “Timeout was reached” failures,
+  bumping the constant to 30–60s is the right move. `req_retry()` runs
+  three attempts, so the worst-case wall time is bounded around 66s.
 
 ### Pending steps before tagging
 
 ``` r
 
-devtools::document()   # regenerate NAMESPACE + man/*.Rd from roxygen
+devtools::document()   # may need TWO passes when a new function is added —
+                       # the first pass writes the Rd, the second resolves
+                       # cross-references that point at it
 devtools::test()       # all tests should pass
 devtools::check()      # R CMD check — expect 0 errors / 0 warnings / 0 notes
 ```
 
-Then commit + tag:
+Then commit + tag. The 0.6.0 work is several independent themes (GHO
+availability helpers; SDG series exploration + search; SDG year-filter
+workaround; ISO3-friendly SDG functions +
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md))
+and can be split into separate commits if a clean history is wanted.
 
 ``` bash
-git add R/ tests/ NAMESPACE DESCRIPTION NEWS.md CLAUDE.md
-git commit -m "Release 0.5.1: add geomean() and iso3_to_region()"
-git tag v0.5.1
+git tag v0.6.0
 ```
 
-### Known doc staleness (not blocking 0.5.1)
+### Pandoc on this machine
 
-The “What this repo is” section above still describes only `wpro_cty` as
-the bundled dataset. Since 0.4.0 the package also ships `who_countries`,
-the full `afro_cty/.../wpro_cty` regional vectors, and `pic_cty`. Worth
-refreshing during a future doc cleanup.
+`devtools::check()` rebuilds the vignette, which needs Pandoc. Pandoc is
+not on `PATH` on this laptop but ships with RStudio. Point
+`RSTUDIO_PANDOC` at the bundled binary before running `check()`:
 
-## Roadmap — 0.6.0 candidates
+``` r
+
+Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools")
+devtools::check()
+```
+
+## Roadmap — 0.7.0 candidates
 
 ### High priority — schema alignment for `gho_clean()` / `sdg_clean()`
 
-Their outputs cannot currently be `bind_rows()`-ed cleanly:
+Their outputs still cannot be `bind_rows()`-ed cleanly:
 
 | Source | Columns |
 |----|----|
@@ -85,11 +192,10 @@ Their outputs cannot currently be `bind_rows()`-ed cleanly:
 Open design question: pick a shared core schema
 (e.g. `id, indicator, location, year, value, low, high`) and let
 source-specific extras live alongside. Possibly add a
-`bind_indicators(...)` helper. This is a breaking change, hence 0.6.0.
+`bind_indicators(...)` helper. This is a breaking change, hence a
+minor-version bump.
 
 ### Other candidates surfaced from scanning user’s analytical projects
-
-Worth packaging once 0.5.1 ships:
 
 - `get_latest(df)` — keep the last-non-missing year per location. Used
   in 3+ WHI/SDG projects in the user’s working directory.
@@ -158,9 +264,9 @@ directives in `R/DSIR-package.R`. If a function disappears from
 
 `gho_*()` and `sdg_*()` hit live APIs. Per CRAN policy, they must not
 error when the remote is unreachable. The pattern (see `.gho_get` in
-`R/gho.R:153` and `.sdg_get` in `R/sdg.R:171`):
+`R/gho.R` and `.sdg_get` in `R/sdg.R`):
 
-1.  `httr2::request() |> req_retry(max_tries = 3) |> req_perform()`
+1.  `httr2::request() |> req_timeout(20) |> req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30)) |> req_perform()`,
     wrapped in `tryCatch`
 2.  On failure,
     [`cli::cli_warn()`](https://cli.r-lib.org/reference/cli_abort.html)
@@ -169,7 +275,10 @@ error when the remote is unreachable. The pattern (see `.gho_get` in
     [`data.frame()`](https://rdrr.io/r/base/data.frame.html) (or `NULL`
     for list endpoints) so downstream code doesn’t crash
 
-When adding a new network call, follow this pattern — do not
+`.gho_get()` currently uses `req_retry(max_tries = 3)` without
+`req_timeout` or an explicit backoff; `.sdg_get()` has both. If you
+touch the GHO helper, consider aligning it with the SDG pattern. When
+adding a new network call, follow this pattern — do not
 [`stop()`](https://rdrr.io/r/base/stop.html) on HTTP failure.
 
 ### GHO uses OData; SDG uses query params

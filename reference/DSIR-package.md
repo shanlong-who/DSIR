@@ -9,8 +9,9 @@ a quick pie chart helper
 ([`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md)),
 regional country-code datasets
 ([wpro_cty](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md))
-with a WHO region lookup
-([`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)),
+with WHO region and UN M49 lookups
+([`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md),
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)),
 a geometric mean helper for indicator aggregation
 ([`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)),
 and thin clients for the WHO Global Health Observatory API
