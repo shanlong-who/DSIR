@@ -19,6 +19,21 @@
     small.
 
 - New
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md):
+  series-exploration helper for SDG indicators. An SDG indicator
+  (e.g. `"3.4.1"`) typically contains several series stratified by sex,
+  age, or cause;
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  returns a tibble of `(location, series, year_min, year_max, n_obs)` so
+  you can see which series exist and how each is covered. This is
+  intentionally framed as series-exploration rather than as a
+  [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+  /
+  [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)-style
+  availability precheck — SDG data is generally complete, so those
+  screening helpers are deliberately not provided for SDG.
+
+- New
   [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md):
   geometric mean of a numeric vector, with optional weights via `w`.
   Useful for aggregating ratio-based health indicators such as UHC
@@ -45,6 +60,18 @@
   on filters with no matches (e.g. an indicator + area combination GHO
   has no data for) and `gho_indicators(search)` when no indicator name
   matched the search term.
+
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  now correctly filters when more than one indicator or area code is
+  supplied. The SDG API expects multi-value parameters as repeated keys
+  (`indicator=A&indicator=B`), but the previous implementation joined
+  them with commas (`indicator=A,B`); the API silently dropped the
+  filter and returned all rows. Single-value calls were unaffected.
+
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  no longer errors with `duplicate 'row.names' are not allowed` when the
+  result spans more than one page. The per-page row-name handling has
+  been simplified.
 
 ## DSIR 0.5.0
 

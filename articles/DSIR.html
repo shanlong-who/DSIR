@@ -264,6 +264,36 @@ you are ready to drop them.</p>
 <span><span class="va">sdg</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="exploring-series-with-sdg_coverage">Exploring series with sdg_coverage()<a class="anchor" aria-label="anchor" href="#exploring-series-with-sdg_coverage"></a>
+</h3>
+<p>A single SDG indicator often contains several <strong>series</strong>
+— for example different vaccines, sex strata, or causes of death — each
+with its own country and year coverage. Indicator <code>"3.b.1"</code>
+(vaccine coverage) is a clear case: it is published as four separate
+series (DTP3, MCV2, PCV3, HPV), and the year coverage of the newer
+vaccines is much shorter than that of DTP3.</p>
+<p><code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> summarises the year range and observation
+count per <code>(location, series)</code>, so you can inspect what
+series exist and how each is covered before deciding which one to
+analyse.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
+<span><span class="co">#&gt; 1 156      SH_ACS_DTP3     2000     2023    24</span></span>
+<span><span class="co">#&gt; 2 156      SH_ACS_HPV      2018     2023     6</span></span>
+<span><span class="co">#&gt; 3 156      SH_ACS_MCV2     2000     2023    24</span></span>
+<span><span class="co">#&gt; 4 156      SH_ACS_PCV3     2017     2023     7</span></span>
+<span><span class="co">#&gt; 5 608      SH_ACS_DTP3     2000     2023    24</span></span>
+<span><span class="co">#&gt; 6 608      SH_ACS_HPV      2017     2023     7</span></span>
+<span><span class="co">#&gt; 7 608      SH_ACS_MCV2     2000     2023    24</span></span>
+<span><span class="co">#&gt; 8 608      SH_ACS_PCV3     2014     2023    10</span></span></code></pre></div>
+<p>Note that DSIR intentionally does <em>not</em> provide SDG analogues
+of <code><a href="../reference/gho_has_data.html">gho_has_data()</a></code> and <code><a href="../reference/gho_count.html">gho_count()</a></code>. SDG data is
+generally complete enough that those screening helpers add little value
+— the more useful pre-analysis question for SDG is “which series are
+available?”, which is what <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> answers.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="where-to-next">Where to next<a class="anchor" aria-label="anchor" href="#where-to-next"></a>

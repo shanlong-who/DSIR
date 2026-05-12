@@ -54,6 +54,8 @@ Functions for fetching and cleaning data from the UN SDG API.
   : Fetch SDG Data
 - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
   : Tidy an SDG Data Frame
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  : Explore Series Coverage of an SDG Indicator
 
 ## Visual themes
 

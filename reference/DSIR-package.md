@@ -25,7 +25,8 @@ and the UN Sustainable Development Goals API
 [`sdg_targets()`](https://shanlong-who.github.io/DSIR/reference/sdg_targets.md),
 [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md),
 [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md),
-[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)).
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md),
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)).
 
 ## See also
 

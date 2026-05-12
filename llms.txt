@@ -222,6 +222,34 @@ and `high` are returned as character to preserve non-numeric entries
 (`"<0.1"`, aggregate notes); coerce with
 [`as.numeric()`](https://rdrr.io/r/base/numeric.html) downstream.
 
+**Exploring series.** A single SDG indicator often contains several
+series — for example different vaccines, sex strata, or causes of death
+— each with its own country / year coverage.
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+summarises the year range and observation count per `(location, series)`
+so you can see what is available before deciding which series to
+analyse.
+
+``` r
+
+# 3.b.1 (vaccine coverage) is published as four separate series
+sdg_coverage("3.b.1", area = c("156", "608"))
+#>   location series      year_min year_max n_obs
+#> 1 156      SH_ACS_DTP3     2000     2023    24
+#> 2 156      SH_ACS_HPV      2018     2023     6
+#> 3 156      SH_ACS_MCV2     2000     2023    24
+#> 4 156      SH_ACS_PCV3     2017     2023     7
+#> 5 608      SH_ACS_DTP3     2000     2023    24
+#> 6 608      SH_ACS_HPV      2017     2023     7
+#> 7 608      SH_ACS_MCV2     2000     2023    24
+#> 8 608      SH_ACS_PCV3     2014     2023    10
+```
+
+GHO-style `has_data()` /
+[`count()`](https://dplyr.tidyverse.org/reference/count.html) helpers
+are intentionally not provided for SDG because SDG data is generally
+complete enough that pre-flight checks add little value.
+
 ## License
 
 MIT — © 2026 Shanlong Ding
@@ -282,6 +310,8 @@ Functions for fetching and cleaning data from the UN SDG API.
   : Fetch SDG Data
 - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
   : Tidy an SDG Data Frame
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  : Explore Series Coverage of an SDG Indicator
 
 ## Visual themes
 
