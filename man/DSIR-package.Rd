@@ -14,7 +14,8 @@ datasets (\link{wpro_cty}) with a WHO region lookup
 (\code{\link[=iso3_to_region]{iso3_to_region()}}), a geometric mean helper for indicator
 aggregation (\code{\link[=geomean]{geomean()}}), and thin clients for the WHO Global
 Health Observatory API (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}},
-\code{\link[=gho_dimensions]{gho_dimensions()}}) and the UN Sustainable Development Goals API
+\code{\link[=gho_dimensions]{gho_dimensions()}}, \code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}},
+\code{\link[=gho_coverage]{gho_coverage()}}) and the UN Sustainable Development Goals API
 (\code{\link[=sdg_goals]{sdg_goals()}}, \code{\link[=sdg_targets]{sdg_targets()}}, \code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}},
 \code{\link[=sdg_data]{sdg_data()}}).
 }

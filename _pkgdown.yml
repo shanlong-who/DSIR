@@ -45,6 +45,9 @@ reference:
   - gho_dimensions
   - gho_data
   - gho_clean
+  - gho_count
+  - gho_coverage
+  - gho_has_data
 - title: SDG indicator data
   desc: Functions for fetching and cleaning data from the UN SDG API.
   contents:

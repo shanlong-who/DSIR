@@ -8,7 +8,8 @@
 #' ([iso3_to_region()]), a geometric mean helper for indicator
 #' aggregation ([geomean()]), and thin clients for the WHO Global
 #' Health Observatory API ([gho_indicators()], [gho_data()],
-#' [gho_dimensions()]) and the UN Sustainable Development Goals API
+#' [gho_dimensions()], [gho_has_data()], [gho_count()],
+#' [gho_coverage()]) and the UN Sustainable Development Goals API
 #' ([sdg_goals()], [sdg_targets()], [sdg_indicators()], [sdg_areas()],
 #' [sdg_data()]).
 #'
