@@ -2,7 +2,7 @@
 
 This is the initial CRAN submission for `DSIR`.
 
-Maintainer: Shanlong WHO <dings@who.int>
+Maintainer: Shanlong Ding <dings@who.int>
 
 `DSIR` is not a rename of the existing CRAN package `DSI` by
 Yannick Marcon. It is an unrelated package for global health data
