@@ -57,6 +57,7 @@ reference:
   - sdg_indicators
   - sdg_data
   - sdg_clean
+  - sdg_coverage
 - title: Visual themes
   desc: ggplot2 and flextable styling helpers for WHO-style outputs.
   contents:
