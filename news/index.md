@@ -76,6 +76,20 @@
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
   call indefinitely.
 
+- [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  now actually populates the `indicator` column. The GHO data endpoint
+  (`/api/{IndicatorCode}`) does not return `IndicatorName`, so the old
+  implementation left `indicator` `NA` for every row despite the
+  documented mapping.
+  [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  now lazy-loads the indicator catalog (via
+  [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md))
+  once per R session and resolves `IndicatorCode` against it to fill the
+  `indicator` column with the human-readable name. The output schema is
+  unchanged; if the catalog cannot be fetched, `indicator` falls back to
+  `NA` and a warning surfaces from
+  [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md).
+
 ### Documentation
 
 - All network examples now use `\donttest{}` instead of `\dontrun{}`, so

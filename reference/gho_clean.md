@@ -37,7 +37,9 @@ The mapping (GHO source → unified column) is:
 
 - `IndicatorCode` → `id`
 
-- `IndicatorName` → `indicator`
+- `IndicatorCode` resolved against the GHO indicator catalog →
+  `indicator` (the human-readable name; cached at session level after
+  the first call)
 
 - `SpatialDim` → `location`; also `iso3` when it matches a WHO Member
   State, otherwise `iso3 = NA`
@@ -61,6 +63,16 @@ Source columns absent from `df` (e.g. `Low` / `High` for indicators
 without confidence intervals) are filled with typed `NA`, so the output
 always has the same 15 columns with the same column types.
 
+The GHO data endpoint (`/api/{IndicatorCode}`) does not return
+`IndicatorName`; that field lives on the catalog endpoint queried by
+[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md).
+On the first call within an R session, `gho_clean()` fetches the catalog
+once and caches it for the rest of the session, so the `indicator`
+column carries the full human-readable indicator name. If the catalog
+cannot be fetched (e.g. no network),
+[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
+emits a warning and the `indicator` column falls back to `NA`.
+
 ## See also
 
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
@@ -78,16 +90,16 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
 #> # A tibble: 12,210 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… NA        AFG      AFG   NA             2000 43.2…      43.2
-#>  2 gho    NCDMORT3… NA        AFG      AFG   NA             2000 46.7…      46.7
-#>  3 gho    NCDMORT3… NA        AFG      AFG   NA             2000 40.0…      40  
-#>  4 gho    NCDMORT3… NA        AFG      AFG   NA             2001 43.5…      43.5
-#>  5 gho    NCDMORT3… NA        AFG      AFG   NA             2001 46.8…      46.8
-#>  6 gho    NCDMORT3… NA        AFG      AFG   NA             2001 40.5…      40.5
-#>  7 gho    NCDMORT3… NA        AFG      AFG   NA             2002 46.0…      46  
-#>  8 gho    NCDMORT3… NA        AFG      AFG   NA             2002 43.1…      43.1
-#>  9 gho    NCDMORT3… NA        AFG      AFG   NA             2002 40.3…      40.3
-#> 10 gho    NCDMORT3… NA        AFG      AFG   NA             2003 42.5…      42.5
+#>  1 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 43.2…      43.2
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 46.7…      46.7
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 40.0…      40  
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 43.5…      43.5
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 46.8…      46.8
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 40.5…      40.5
+#>  7 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 46.0…      46  
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 43.1…      43.1
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 40.3…      40.3
+#> 10 gho    NCDMORT3… Probabil… AFG      AFG   NA             2003 42.5…      42.5
 #> # ℹ 12,200 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>

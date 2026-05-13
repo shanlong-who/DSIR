@@ -307,20 +307,21 @@ filled with typed `NA`.
 ``` r
 
 uhc_clean <- gho_clean(uhc)
+#> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 uhc_clean
 #> # A tibble: 252 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    UHC_INDE… NA        AUS      AUS   NA             2015 89           89
-#>  2 gho    UHC_INDE… NA        AUS      AUS   NA             2016 89           89
-#>  3 gho    UHC_INDE… NA        AUS      AUS   NA             2017 89           89
-#>  4 gho    UHC_INDE… NA        AUS      AUS   NA             2018 89           89
-#>  5 gho    UHC_INDE… NA        AUS      AUS   NA             2019 89           89
-#>  6 gho    UHC_INDE… NA        AUS      AUS   NA             2020 89           89
-#>  7 gho    UHC_INDE… NA        AUS      AUS   NA             2021 89           89
-#>  8 gho    UHC_INDE… NA        AUS      AUS   NA             2022 89           89
-#>  9 gho    UHC_INDE… NA        AUS      AUS   NA             2023 89           89
-#> 10 gho    UHC_INDE… NA        BRN      BRN   NA             2015 84           84
+#>  1 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2015 89           89
+#>  2 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2016 89           89
+#>  3 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2017 89           89
+#>  4 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2018 89           89
+#>  5 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2019 89           89
+#>  6 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2020 89           89
+#>  7 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2021 89           89
+#>  8 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2022 89           89
+#>  9 gho    UHC_INDE… UHC Serv… AUS      AUS   NA             2023 89           89
+#> 10 gho    UHC_INDE… UHC Serv… BRN      BRN   NA             2015 84           84
 #> # ℹ 242 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
@@ -532,7 +533,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-b9b63c9e
+UHC SCI in WPR, latest year {.table .cl-34bc0d9e
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators
@@ -702,7 +703,7 @@ bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
 #> Columns: 15
 #> $ source        <chr> "gho", "gho", "gho", "gho", "gho", "gho", "gho", "gho", …
 #> $ id            <chr> "NCDMORT3070", "NCDMORT3070", "NCDMORT3070", "NCDMORT307…
-#> $ indicator     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#> $ indicator     <chr> "Probability (%) of dying between age 30 and exact age 7…
 #> $ location      <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
 #> $ iso3          <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
 #> $ location_name <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …

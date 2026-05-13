@@ -322,20 +322,21 @@ dimensions <code>dim1</code>–<code>dim3</code>. Columns absent from the
 raw response are filled with typed <code>NA</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">uhc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fetching: <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator&gt;</span></span></span>
 <span><span class="va">uhc_clean</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 252 × 15</span></span></span>
 <span><span class="co">#&gt;    source id        indicator location iso3  location_name  year value value_num</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>015 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>016 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>017 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>018 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>019 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>020 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>021 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>022 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>023 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> gho    UHC_INDE… <span style="color: #BB0000;">NA</span>        BRN      BRN   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>015 84           84</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>015 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>016 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>017 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>018 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>019 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>020 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>021 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>022 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> gho    UHC_INDE… UHC Serv… AUS      AUS   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>023 89           89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> gho    UHC_INDE… UHC Serv… BRN      BRN   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>015 84           84</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 242 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
@@ -485,125 +486,125 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-b9b63c9e{table-layout:auto;width:60%;}.cl-b9ad0052{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-b9ad0066{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-b9b16f0c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-b9b16f20{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-b9b19d38{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b9b19d42{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b9b19d4c{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b9b19d4d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b9b19d4e{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b9b19d56{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-b9b63c9e">
+<style>.cl-34bc0d9e{table-layout:auto;width:60%;}.cl-34b48e8e{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-34b48ea2{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-34b82346{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-34b82350{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-34b851fe{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-34b85208{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-34b85212{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-34b85213{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-34b8521c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-34b8521d{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-34bc0d9e">
 <caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-b9b19d38"><p class="cl-b9b16f0c"><span class="cl-b9ad0052">name_short</span></p></th>
-<th class="cl-b9b19d42"><p class="cl-b9b16f20"><span class="cl-b9ad0052">value_num</span></p></th>
+<th class="cl-34b851fe"><p class="cl-34b82346"><span class="cl-34b48e8e">name_short</span></p></th>
+<th class="cl-34b85208"><p class="cl-34b82350"><span class="cl-34b48e8e">value_num</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Australia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">89</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Australia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">New Zealand</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">89</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">New Zealand</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Republic of Korea</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">88</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Republic of Korea</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Singapore</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">88</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Singapore</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Japan</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">86</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Japan</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">86</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">China</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">85</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">China</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">85</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Brunei Darussalam</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">84</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Brunei Darussalam</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Malaysia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">80</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Malaysia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">80</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Cook Islands</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">75</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Cook Islands</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Palau</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">75</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Palau</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Tonga</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">71</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Tonga</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Viet Nam</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">71</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Viet Nam</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Mongolia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">70</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Mongolia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">70</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Fiji</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">69</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Fiji</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Philippines</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">69</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Philippines</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Indonesia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">67</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Indonesia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Niue</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">67</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Niue</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Marshall Islands</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">66</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Marshall Islands</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">66</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Micronesia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">65</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Micronesia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Tuvalu</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">65</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Tuvalu</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Lao PDR</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">64</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Lao PDR</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">64</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Cambodia</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">62</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Cambodia</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Nauru</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">62</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Nauru</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Samoa</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">62</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Samoa</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Vanuatu</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">52</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Vanuatu</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">52</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Kiribati</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">51</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Kiribati</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">51</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4c"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Solomon Islands</span></p></td>
-<td class="cl-b9b19d4d"><p class="cl-b9b16f20"><span class="cl-b9ad0066">47</span></p></td>
+<td class="cl-34b85212"><p class="cl-34b82346"><span class="cl-34b48ea2">Solomon Islands</span></p></td>
+<td class="cl-34b85213"><p class="cl-34b82350"><span class="cl-34b48ea2">47</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b9b19d4e"><p class="cl-b9b16f0c"><span class="cl-b9ad0066">Papua New Guinea</span></p></td>
-<td class="cl-b9b19d56"><p class="cl-b9b16f20"><span class="cl-b9ad0066">32</span></p></td>
+<td class="cl-34b8521c"><p class="cl-34b82346"><span class="cl-34b48ea2">Papua New Guinea</span></p></td>
+<td class="cl-34b8521d"><p class="cl-34b82350"><span class="cl-34b48ea2">32</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -755,7 +756,7 @@ remembering which frame came from which API.</p>
 <span><span class="co">#&gt; Columns: 15</span></span>
 <span><span class="co">#&gt; $ source        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ id            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT307…</span></span>
-<span><span class="co">#&gt; $ indicator     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ indicator     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Probability (%) of dying between age 30 and exact age 7…</span></span>
 <span><span class="co">#&gt; $ location      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ iso3          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ location_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
