@@ -413,6 +413,36 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 
 
 #' @noRd
+.gho_resolve_location_name <- function(location) {
+  if (length(location) == 0L) return(character(0))
+
+  # WHO regional and aggregate codes. Hardcoded because they are stable
+  # and not part of who_countries (which lists Member States only).
+  region_names <- c(
+    AFR    = "Africa",
+    AMR    = "Americas",
+    SEAR   = "South-East Asia",
+    EUR    = "Europe",
+    EMR    = "Eastern Mediterranean",
+    WPR    = "Western Pacific",
+    GLOBAL = "Global"
+  )
+
+  out <- rep(NA_character_, length(location))
+
+  iso3_match <- match(location, who_countries$iso3)
+  has_iso3 <- !is.na(iso3_match)
+  out[has_iso3] <- who_countries$name_short[iso3_match[has_iso3]]
+
+  region_match <- match(location, names(region_names))
+  has_region <- !is.na(region_match)
+  out[has_region] <- region_names[region_match[has_region]]
+
+  out
+}
+
+
+#' @noRd
 .gho_resolve_indicator_name <- function(codes) {
   if (all(is.na(codes))) return(.fill_na(length(codes), "chr"))
 
@@ -445,9 +475,12 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' * `Low`, `High`   → `low`, `high` (numeric)
 #' * `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 #'
-#' Two columns are always present but never populated for GHO output:
-#' `location_name` (no GHO field for it; use [`who_countries`] if you
-#' need names) and `series` (an SDG-only concept).
+#' The `series` column is always `NA` for GHO output (it is an SDG-only
+#' concept). The `location_name` column is populated by looking up
+#' `location` (an ISO3 code or a WHO region code) against the
+#' [`who_countries`] dataset and a hardcoded set of WHO regional names;
+#' locations that match neither (e.g. non-Member State areas) are left
+#' as `NA`.
 #'
 #' Source columns absent from `df` (e.g. `Low` / `High` for indicators
 #' without confidence intervals) are filled with typed `NA`, so the
@@ -465,9 +498,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' @param df A data frame returned by [gho_data()].
 #'
 #' @return A [tibble][tibble::tibble] with 15 columns: `source` (always
-#'   `"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`
-#'   (`NA`), `year`, `value`, `value_num`, `low`, `high`, `series`
-#'   (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location` then `year`.
+#'   `"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
+#'   `year`, `value`, `value_num`, `low`, `high`, `series` (`NA`),
+#'   `dim1`, `dim2`, `dim3`. Sorted by `location` then `year`.
 #'   Empty input returns an empty tibble with the same columns and
 #'   types.
 #' @seealso [gho_data()], [sdg_clean()], [bind_indicators()].
@@ -514,7 +547,7 @@ gho_clean <- function(df) {
     indicator     = .gho_resolve_indicator_name(pick_chr("IndicatorCode")),
     location      = location,
     iso3          = iso3,
-    location_name = .fill_na(n, "chr"),
+    location_name = .gho_resolve_location_name(location),
     year          = pick_int("TimeDim"),
     value         = pick_chr("Value"),
     value_num     = pick_num("NumericValue"),

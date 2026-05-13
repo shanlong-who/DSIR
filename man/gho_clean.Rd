@@ -11,9 +11,9 @@ gho_clean(df)
 }
 \value{
 A \link[tibble:tibble]{tibble} with 15 columns: \code{source} (always
-\code{"gho"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name}
-(\code{NA}), \code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series}
-(\code{NA}), \code{dim1}, \code{dim2}, \code{dim3}. Sorted by \code{location} then \code{year}.
+\code{"gho"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name},
+\code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series} (\code{NA}),
+\code{dim1}, \code{dim2}, \code{dim3}. Sorted by \code{location} then \code{year}.
 Empty input returns an empty tibble with the same columns and
 types.
 }
@@ -40,9 +40,12 @@ Member State, otherwise \code{iso3 = NA}
 \item \code{Dim1}, \code{Dim2}, \code{Dim3} → \code{dim1}, \code{dim2}, \code{dim3} (character)
 }
 
-Two columns are always present but never populated for GHO output:
-\code{location_name} (no GHO field for it; use \code{\link{who_countries}} if you
-need names) and \code{series} (an SDG-only concept).
+The \code{series} column is always \code{NA} for GHO output (it is an SDG-only
+concept). The \code{location_name} column is populated by looking up
+\code{location} (an ISO3 code or a WHO region code) against the
+\code{\link{who_countries}} dataset and a hardcoded set of WHO regional names;
+locations that match neither (e.g. non-Member State areas) are left
+as \code{NA}.
 
 Source columns absent from \code{df} (e.g. \code{Low} / \code{High} for indicators
 without confidence intervals) are filled with typed \code{NA}, so the

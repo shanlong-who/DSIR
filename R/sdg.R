@@ -308,6 +308,25 @@ sdg_data <- function(indicator, area = NULL,
 }
 
 
+#' @noRd
+.sdg_resolve_location_name <- function(iso3, raw_geo_area_name) {
+  if (length(iso3) == 0L) return(character(0))
+
+  out <- rep(NA_character_, length(iso3))
+
+  iso3_match <- match(iso3, who_countries$iso3)
+  has_iso3 <- !is.na(iso3_match)
+  out[has_iso3] <- who_countries$name_short[iso3_match[has_iso3]]
+
+  if (!is.null(raw_geo_area_name)) {
+    still_na <- is.na(out)
+    out[still_na] <- as.character(raw_geo_area_name[still_na])
+  }
+
+  out
+}
+
+
 #' Tidy an SDG Data Frame
 #'
 #' Selects, renames, and type-casts the most useful columns from an
@@ -324,7 +343,11 @@ sdg_data <- function(indicator, area = NULL,
 #'   as character); also `iso3` via [m49_to_iso3()] for WHO Member
 #'   States — region / world aggregates and non-Member areas get
 #'   `iso3 = NA`
-#' * `geoAreaName`                        → `location_name`
+#' * `location_name` is resolved by looking up `iso3` against
+#'   [`who_countries`] (so a WHO Member State has the same
+#'   `location_name` here and in [gho_clean()] output), with a
+#'   fallback to the SDG API's raw `geoAreaName` for non-Member-State
+#'   rows (e.g. regional / world aggregates)
 #' * `timePeriodStart`                    → `year` (integer)
 #' * `value`                              → `value` (character; raw)
 #'   and `value_num` (numeric; `NA` for non-numeric entries like
@@ -390,6 +413,7 @@ sdg_clean <- function(df) {
   }
 
   location <- pick_chr("geoAreaCode")
+  iso3 <- m49_to_iso3(location)
   value_chr <- pick_chr("value")
 
   out <- tibble::tibble(
@@ -397,8 +421,11 @@ sdg_clean <- function(df) {
     id            = flatten_chr("indicator"),
     indicator     = pick_chr("seriesDescription"),
     location      = location,
-    iso3          = m49_to_iso3(location),
-    location_name = pick_chr("geoAreaName"),
+    iso3          = iso3,
+    location_name = .sdg_resolve_location_name(
+      iso3,
+      if ("geoAreaName" %in% names(df)) df[["geoAreaName"]] else NULL
+    ),
     year          = pick_int("timePeriodStart"),
     value         = value_chr,
     value_num     = suppressWarnings(as.numeric(value_chr)),

@@ -34,7 +34,11 @@ label; \code{NA} if the API response does not include it)
 as character); also \code{iso3} via \code{\link[=m49_to_iso3]{m49_to_iso3()}} for WHO Member
 States — region / world aggregates and non-Member areas get
 \code{iso3 = NA}
-\item \code{geoAreaName}                        → \code{location_name}
+\item \code{location_name} is resolved by looking up \code{iso3} against
+\code{\link{who_countries}} (so a WHO Member State has the same
+\code{location_name} here and in \code{\link[=gho_clean]{gho_clean()}} output), with a
+fallback to the SDG API's raw \code{geoAreaName} for non-Member-State
+rows (e.g. regional / world aggregates)
 \item \code{timePeriodStart}                    → \code{year} (integer)
 \item \code{value}                              → \code{value} (character; raw)
 and \code{value_num} (numeric; \code{NA} for non-numeric entries like

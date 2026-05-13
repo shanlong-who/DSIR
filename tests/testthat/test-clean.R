@@ -65,7 +65,7 @@ test_that("gho_clean maps GHO columns to the unified schema", {
   expect_equal(out$indicator[1],  "Life expectancy at birth (years)")
   expect_setequal(out$location,   c("FRA", "DEU"))
   expect_equal(out$iso3,          out$location)  # both are valid ISO3
-  expect_true(all(is.na(out$location_name)))
+  expect_setequal(out$location_name, c("France", "Germany"))
   expect_type(out$year,           "integer")
   expect_equal(out$value_num,
                c(78.9, 82.5))                    # sorted by location: DEU, FRA
@@ -86,6 +86,49 @@ test_that("gho_clean sets iso3 to NA for non-Member spatial codes", {
   out <- gho_clean(raw)
   expect_true(all(is.na(out$iso3)))
   expect_setequal(out$location, c("EUR", "GLOBAL"))
+})
+
+# ── gho_clean: location_name resolution ──────────────────────────────
+
+test_that("gho_clean populates location_name for WHO Member States", {
+  raw <- tibble::tibble(
+    IndicatorCode = c("FAKE_001", "FAKE_001", "FAKE_001"),
+    SpatialDim    = c("PHL", "FRA", "USA"),
+    TimeDim       = c(2020L, 2020L, 2020L),
+    Value         = c("10", "10", "10"),
+    NumericValue  = c(10, 10, 10)
+  )
+  out <- gho_clean(raw)
+  expect_false(any(is.na(out$location_name)))
+  expect_true("Philippines" %in% out$location_name)
+  expect_true("France"      %in% out$location_name)
+})
+
+test_that("gho_clean populates location_name for WHO regions and GLOBAL", {
+  raw <- tibble::tibble(
+    IndicatorCode = c("FAKE_001", "FAKE_001", "FAKE_001"),
+    SpatialDim    = c("WPR", "AFR", "GLOBAL"),
+    TimeDim       = c(2020L, 2020L, 2020L),
+    Value         = c("10", "10", "10"),
+    NumericValue  = c(10, 10, 10)
+  )
+  out <- gho_clean(raw)
+  expect_equal(
+    sort(out$location_name),
+    sort(c("Africa", "Global", "Western Pacific"))
+  )
+})
+
+test_that("gho_clean returns NA location_name for unknown spatial codes", {
+  raw <- tibble::tibble(
+    IndicatorCode = c("FAKE_001", "FAKE_001"),
+    SpatialDim    = c("XYZ", "ZZ"),
+    TimeDim       = c(2020L, 2020L),
+    Value         = c("10", "10"),
+    NumericValue  = c(10, 10)
+  )
+  out <- gho_clean(raw)
+  expect_true(all(is.na(out$location_name)))
 })
 
 test_that("gho_clean fills missing source columns with typed NA", {
@@ -247,6 +290,64 @@ test_that("sdg_clean iso3 is NA for region/world M49 aggregates", {
   )
   out <- sdg_clean(raw)
   expect_true(all(is.na(out$iso3)))
+})
+
+test_that("sdg_clean prefers who_countries names over SDG API names", {
+  # Pass a deliberately different geoAreaName ("Philippine Islands") to
+  # verify the cleaner uses who_countries$name_short ("Philippines")
+  # instead of the SDG API's raw label for WHO Member States.
+  raw <- tibble::tibble(
+    indicator       = list("3.4.1"),
+    geoAreaCode     = "608",
+    geoAreaName     = "Philippine Islands",
+    timePeriodStart = 2020L,
+    value           = "10"
+  )
+  out <- sdg_clean(raw)
+  expect_equal(
+    out$location_name[1],
+    who_countries$name_short[who_countries$iso3 == "PHL"]
+  )
+  expect_false(out$location_name[1] == "Philippine Islands")
+})
+
+test_that("sdg_clean falls back to geoAreaName for non-Member-State rows", {
+  raw <- tibble::tibble(
+    indicator       = list("3.4.1"),
+    geoAreaCode     = "001",          # World aggregate
+    geoAreaName     = "World",
+    timePeriodStart = 2020L,
+    value           = "10"
+  )
+  out <- sdg_clean(raw)
+  expect_true(is.na(out$iso3[1]))
+  expect_equal(out$location_name[1], "World")
+})
+
+test_that("sdg_clean location_name matches gho_clean for the same iso3", {
+  # The point of the change: cross-API consistency. The same country
+  # must have the same `location_name` whether routed via gho_clean
+  # (ISO3) or sdg_clean (M49).
+  gho_raw <- tibble::tibble(
+    IndicatorCode = "X",
+    SpatialDim    = c("PHL", "FRA"),
+    TimeDim       = c(2020L, 2020L),
+    Value         = c("1", "2"),
+    NumericValue  = c(1, 2)
+  )
+  sdg_raw <- tibble::tibble(
+    indicator       = list("3.4.1", "3.4.1"),
+    geoAreaCode     = c("608", "250"),      # PHL, FRA
+    geoAreaName     = c("Philippines", "France"),
+    timePeriodStart = c(2020L, 2020L),
+    value           = c("1", "2")
+  )
+  g <- gho_clean(gho_raw)
+  s <- sdg_clean(sdg_raw)
+  expect_equal(
+    g$location_name[order(g$iso3)],
+    s$location_name[order(s$iso3)]
+  )
 })
 
 test_that("sdg_clean indicator column accepts atomic or list source", {
