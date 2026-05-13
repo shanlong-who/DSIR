@@ -69,11 +69,35 @@ row per location and columns:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Year coverage of life expectancy for three countries
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&$select=SpatialDim,TimeDim>
+#> # A tibble: 3 × 4
+#>   location year_min year_max n_obs
+#>   <chr>       <int>    <int> <int>
+#> 1 DEU          2000     2021    66
+#> 2 FRA          2000     2021    66
+#> 3 JPN          2000     2021    66
 
 # All countries with any life-expectancy data, since 2010
 gho_coverage("WHOSIS_000001", year_from = 2010)
-} # }
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&$select=SpatialDim,TimeDim>
+#> # A tibble: 185 × 4
+#>    location year_min year_max n_obs
+#>    <chr>       <int>    <int> <int>
+#>  1 AFG          2010     2021    36
+#>  2 AGO          2010     2021    36
+#>  3 ALB          2010     2021    36
+#>  4 ARE          2010     2021    36
+#>  5 ARG          2010     2021    36
+#>  6 ARM          2010     2021    36
+#>  7 ATG          2010     2021    36
+#>  8 AUS          2010     2021    36
+#>  9 AUT          2010     2021    36
+#> 10 AZE          2010     2021    36
+#> # ℹ 175 more rows
+# }
 ```

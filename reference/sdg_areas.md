@@ -20,7 +20,22 @@ codes and names, or `NULL` when the service is unreachable.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 sdg_areas()
-} # }
+#> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/GeoArea/List>
+#> # A tibble: 460 × 2
+#>    geoAreaCode geoAreaName        
+#>    <chr>       <chr>              
+#>  1 4           Afghanistan        
+#>  2 248         Åland Islands      
+#>  3 8           Albania            
+#>  4 12          Algeria            
+#>  5 16          American Samoa     
+#>  6 20          Andorra            
+#>  7 24          Angola             
+#>  8 660         Anguilla           
+#>  9 10          Antarctica         
+#> 10 28          Antigua and Barbuda
+#> # ℹ 450 more rows
+# }
 ```

@@ -1,9 +1,13 @@
 # Tidy a GHO Data Frame
 
-Selects and renames the most useful columns from a GHO observation table
-returned by
+Selects, renames, and type-casts the most useful columns from a GHO
+observation table returned by
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
-producing a compact tibble suitable for downstream analysis.
+producing a compact tibble in the **unified DSIR cleaned-indicator
+schema** — the same schema produced by
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
+so the two outputs can be combined directly with
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md).
 
 ## Usage
 
@@ -20,44 +24,72 @@ gho_clean(df)
 
 ## Value
 
-A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with
-columns `id`, `location`, `year`, `dim1`, `dim2`, `dim3`, `value`,
-`value_num`, `low`, `high`, `indicator`, sorted by `location` then
-`year`. An empty input returns an empty tibble with the same columns.
+A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with 15
+columns: `source` (always `"gho"`), `id`, `indicator`, `location`,
+`iso3`, `location_name` (`NA`), `year`, `value`, `value_num`, `low`,
+`high`, `series` (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location`
+then `year`. Empty input returns an empty tibble with the same columns
+and types.
 
 ## Details
 
-The mapping is:
+The mapping (GHO source → unified column) is:
 
-- `IndicatorCode` -\> `id`
+- `IndicatorCode` → `id`
 
-- `SpatialDim` -\> `location`
+- `IndicatorName` → `indicator`
 
-- `TimeDim` -\> `year`
+- `SpatialDim` → `location`; also `iso3` when it matches a WHO Member
+  State, otherwise `iso3 = NA`
 
-- `Dim1`, `Dim2`, `Dim3` -\> `dim1`, `dim2`, `dim3`
+- `TimeDim` → `year` (integer)
 
-- `Value` -\> `value`
+- `Value` → `value` (character; raw)
 
-- `NumericValue` -\> `value_num`
+- `NumericValue` → `value_num` (numeric)
 
-- `Low`, `High` -\> `low`, `high`
+- `Low`, `High` → `low`, `high` (numeric)
 
-- `IndicatorName` -\> `indicator`
+- `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 
-Source columns that are absent from `df` (for example `Low` / `High` on
-indicators without confidence intervals) are filled with `NA`, so the
-output always has the same nine columns.
+Two columns are always present but never populated for GHO output:
+`location_name` (no GHO field for it; use
+[`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
+if you need names) and `series` (an SDG-only concept).
+
+Source columns absent from `df` (e.g. `Low` / `High` for indicators
+without confidence intervals) are filled with typed `NA`, so the output
+always has the same 15 columns with the same column types.
 
 ## See also
 
-[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md).
+[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md).
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
-} # }
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> # A tibble: 12,210 × 15
+#>    source id        indicator location iso3  location_name  year value value_num
+#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 gho    NCDMORT3… NA        AFG      AFG   NA             2000 43.2…      43.2
+#>  2 gho    NCDMORT3… NA        AFG      AFG   NA             2000 46.7…      46.7
+#>  3 gho    NCDMORT3… NA        AFG      AFG   NA             2000 40.0…      40  
+#>  4 gho    NCDMORT3… NA        AFG      AFG   NA             2001 43.5…      43.5
+#>  5 gho    NCDMORT3… NA        AFG      AFG   NA             2001 46.8…      46.8
+#>  6 gho    NCDMORT3… NA        AFG      AFG   NA             2001 40.5…      40.5
+#>  7 gho    NCDMORT3… NA        AFG      AFG   NA             2002 46.0…      46  
+#>  8 gho    NCDMORT3… NA        AFG      AFG   NA             2002 43.1…      43.1
+#>  9 gho    NCDMORT3… NA        AFG      AFG   NA             2002 40.3…      40.3
+#> 10 gho    NCDMORT3… NA        AFG      AFG   NA             2003 42.5…      42.5
+#> # ℹ 12,200 more rows
+#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>
+# }
 ```

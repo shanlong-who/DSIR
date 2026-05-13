@@ -19,6 +19,8 @@ Datasets and helpers for WHO Member States and regional groupings.
   : Look Up the WHO Region for ISO3 Codes
 - [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
   : Convert ISO3 Codes to UN M49 Numeric Codes
+- [`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)
+  : Convert UN M49 Numeric Codes to ISO3 Codes
 
 ## GHO indicator data
 
@@ -39,6 +41,8 @@ Observatory.
   : Summarise Per-Location Data Coverage of a GHO Indicator
 - [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
   : Check Whether a GHO Indicator Has Data for a Filter
+- [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+  : Bind Cleaned Indicator Tibbles
 
 ## SDG indicator data
 
@@ -57,7 +61,7 @@ Functions for fetching and cleaning data from the UN SDG API.
 - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
   : Tidy an SDG Data Frame
 - [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-  : Summarise Series-Level Coverage of an SDG Indicator
+  : Explore Series Coverage of an SDG Indicator
 
 ## Visual themes
 

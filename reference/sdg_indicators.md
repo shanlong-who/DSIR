@@ -46,15 +46,52 @@ unfiltered response is returned.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Full list
 sdg_indicators()
+#> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
+#> # A tibble: 251 × 7
+#>    goal  target code  description                             tier  uri   series
+#>    <chr> <chr>  <chr> <chr>                                   <chr> <chr> <list>
+#>  1 1     1.1    1.1.1 Proportion of the population living be… 1     /v1/… <df>  
+#>  2 1     1.2    1.2.1 Proportion of population living below … 1     /v1/… <df>  
+#>  3 1     1.2    1.2.2 Proportion of men, women and children … 2     /v1/… <df>  
+#>  4 1     1.3    1.3.1 Proportion of population covered by so… 1     /v1/… <df>  
+#>  5 1     1.4    1.4.1 Proportion of population living in hou… 1     /v1/… <df>  
+#>  6 1     1.4    1.4.2 Proportion of total adult population w… 2     /v1/… <df>  
+#>  7 1     1.5    1.5.1 Number of deaths, missing persons and … 1     /v1/… <df>  
+#>  8 1     1.5    1.5.2 Direct economic loss attributed to dis… 1     /v1/… <df>  
+#>  9 1     1.5    1.5.3 Number of countries that adopt and imp… 1     /v1/… <df>  
+#> 10 1     1.5    1.5.4 Proportion of local governments that a… 2     /v1/… <df>  
+#> # ℹ 241 more rows
 
 # Single keyword
 sdg_indicators("mortality")
+#> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
+#> # A tibble: 8 × 7
+#>   goal  target code  description                              tier  uri   series
+#>   <chr> <chr>  <chr> <chr>                                    <chr> <chr> <list>
+#> 1 3     3.1    3.1.1 Maternal mortality ratio                 1     /v1/… <df>  
+#> 2 3     3.2    3.2.1 Under‑5 mortality rate                   1     /v1/… <df>  
+#> 3 3     3.2    3.2.2 Neonatal mortality rate                  1     /v1/… <df>  
+#> 4 3     3.4    3.4.1 Mortality rate attributed to cardiovasc… 1     /v1/… <df>  
+#> 5 3     3.4    3.4.2 Suicide mortality rate                   1     /v1/… <df>  
+#> 6 3     3.9    3.9.1 Mortality rate attributed to household … 1     /v1/… <df>  
+#> 7 3     3.9    3.9.2 Mortality rate attributed to unsafe wat… 1     /v1/… <df>  
+#> 8 3     3.9    3.9.3 Mortality rate attributed to unintentio… 1     /v1/… <df>  
 
 # Multi-keyword — AND semantics
 sdg_indicators("mortality cancer")
+#> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
+#> # A tibble: 1 × 7
+#>   goal  target code  description                              tier  uri   series
+#>   <chr> <chr>  <chr> <chr>                                    <chr> <chr> <list>
+#> 1 3     3.4    3.4.1 Mortality rate attributed to cardiovasc… 1     /v1/… <df>  
 sdg_indicators(c("maternal", "mortality"))
-} # }
+#> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
+#> # A tibble: 1 × 7
+#>   goal  target code  description              tier  uri                   series
+#>   <chr> <chr>  <chr> <chr>                    <chr> <chr>                 <list>
+#> 1 3     3.1    3.1.1 Maternal mortality ratio 1     /v1/sdg/Indicator/3.… <df>  
+# }
 ```

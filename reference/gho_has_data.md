@@ -65,12 +65,27 @@ A logical scalar:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Does WHO have life-expectancy data for France?
 gho_has_data("WHOSIS_000001", area = "FRA")
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> [1] TRUE
 
 # Quickly screen a list of indicators before downloading any data
 inds <- c("WHOSIS_000001", "NCDMORT3070")
 vapply(inds, gho_has_data, logical(1), area = "FRA")
-} # }
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> WHOSIS_000001   NCDMORT3070 
+#>          TRUE          TRUE 
+# }
 ```

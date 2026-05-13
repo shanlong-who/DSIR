@@ -40,17 +40,52 @@ empty tibble (with a message) when the service is unreachable.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # All indicators
 inds <- gho_indicators()
+#> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 
 # Single keyword
 gho_indicators("mortality")
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> # A tibble: 32 × 3
+#>    IndicatorCode  IndicatorName                                         Language
+#>    <chr>          <chr>                                                 <chr>   
+#>  1 imr            Infant mortality rate (deaths per 1000 live births)   EN      
+#>  2 MDG_0000000001 Infant mortality rate (probability of dying between … EN      
+#>  3 MDG_0000000007 Under-five mortality rate (probability of dying by a… EN      
+#>  4 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
+#>  5 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
+#>  6 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
+#>  7 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
+#>  8 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      
+#>  9 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
+#> 10 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
+#> # ℹ 22 more rows
 
 # Multiple keywords from one string (AND): both terms must appear
 gho_indicators("child mortality")
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> # A tibble: 4 × 3
+#>   IndicatorCode              IndicatorName                              Language
+#>   <chr>                      <chr>                                      <chr>   
+#> 1 CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      
+#> 2 WHS10_4                    Number of national population surveys - c… EN      
+#> 3 WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      
+#> 4 CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      
 
 # Or pass terms as a vector
 gho_indicators(c("child", "mortality"))
-} # }
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> # A tibble: 4 × 3
+#>   IndicatorCode              IndicatorName                              Language
+#>   <chr>                      <chr>                                      <chr>   
+#> 1 CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      
+#> 2 WHS10_4                    Number of national population surveys - c… EN      
+#> 3 WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      
+#> 4 CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      
+# }
 ```

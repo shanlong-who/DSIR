@@ -232,14 +232,14 @@ gho_indicators("UHC") |> head()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
 #> # A tibble: 6 × 3
-#>   IndicatorCode          IndicatorName                                  Language
-#>   <chr>                  <chr>                                          <chr>   
-#> 1 HSS_UHCLEGISLATION     Countries that have passed legislation on Uni… EN      
-#> 2 UHC_SCI_INFECT         UHC Service Coverage sub-index on infectious … EN      
-#> 3 UHC_AVAILABILITY_SCORE Primary data availability for UHC Service Cov… EN      
-#> 4 UHC_DATA_AVAIL_CODE    Data availability for UHC index of essential … EN      
-#> 5 UHC_SCI_CAPACITY       UHC Service Coverage sub-index on service cap… EN      
-#> 6 UHC_SCI_RMNCH          UHC Service Coverage sub-index on reproductiv… EN
+#>   IndicatorCode       IndicatorName                                     Language
+#>   <chr>               <chr>                                             <chr>   
+#> 1 HSS_UHCLEGISLATION  Countries that have passed legislation on Univer… EN      
+#> 2 GOE_Q002            strategy refers to the use of ICT to support UHC  EN      
+#> 3 GOE_Q004            National eHealth strategy refers to objectives o… EN      
+#> 4 GOE_Q070            Strategy includes objectives as to how telehealt… EN      
+#> 5 UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN      
+#> 6 UHC_SCI_CAPACITY    UHC Service Coverage sub-index on service capaci… EN
 ```
 
 Pick an `IndicatorCode` from the result — this is the value you pass to
@@ -262,15 +262,15 @@ uhc <- gho_data(
 uhc |> glimpse()
 #> Rows: 252
 #> Columns: 25
-#> $ Id                 <int> 4218560, 4249516, 4367637, 4376434, 4404965, 441300…
+#> $ Id                 <int> 9203621, 9208141, 9222972, 9225884, 9233499, 932452…
 #> $ IndicatorCode      <chr> "UHC_INDEX_REPORTED", "UHC_INDEX_REPORTED", "UHC_IN…
 #> $ SpatialDimType     <chr> "COUNTRY", "COUNTRY", "COUNTRY", "COUNTRY", "COUNTR…
-#> $ SpatialDim         <chr> "PNG", "MYS", "WSM", "SGP", "LAO", "TON", "MYS", "K…
+#> $ SpatialDim         <chr> "CHN", "SLB", "PLW", "FSM", "FSM", "KOR", "BRN", "W…
 #> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
 #> $ ParentLocationCode <chr> "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "W…
 #> $ ParentLocation     <chr> "Western Pacific", "Western Pacific", "Western Paci…
 #> $ Dim1Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ TimeDim            <int> 2023, 2019, 2019, 2018, 2021, 2018, 2016, 2019, 202…
+#> $ TimeDim            <int> 2016, 2021, 2018, 2015, 2022, 2022, 2018, 2023, 201…
 #> $ Dim1               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim2Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim2               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
@@ -278,15 +278,15 @@ uhc |> glimpse()
 #> $ Dim3               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDimType  <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDim      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Value              <chr> "32", "80", "63", "88", "60", "69", "80", "87", "52…
-#> $ NumericValue       <dbl> 32, 80, 63, 88, 60, 69, 80, 87, 52, 71, 89, 71, 66,…
+#> $ Value              <chr> "80", "46", "74", "64", "65", "88", "83", "62", "70…
+#> $ NumericValue       <dbl> 80, 46, 74, 64, 65, 88, 83, 62, 70, 89, 65, 84, 66,…
 #> $ Low                <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ High               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Comments           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Date               <chr> "2025-12-05T11:39:13.277+01:00", "2025-12-05T11:39:…
-#> $ TimeDimensionValue <chr> "2023", "2019", "2019", "2018", "2021", "2018", "20…
-#> $ TimeDimensionBegin <chr> "2023-01-01T00:00:00+01:00", "2019-01-01T00:00:00+0…
-#> $ TimeDimensionEnd   <chr> "2023-12-31T00:00:00+01:00", "2019-12-31T00:00:00+0…
+#> $ TimeDimensionValue <chr> "2016", "2021", "2018", "2015", "2022", "2022", "20…
+#> $ TimeDimensionBegin <chr> "2016-01-01T00:00:00+01:00", "2021-01-01T00:00:00+0…
+#> $ TimeDimensionEnd   <chr> "2016-12-31T00:00:00+01:00", "2021-12-31T00:00:00+0…
 ```
 
 Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
@@ -295,28 +295,35 @@ countries in one call.
 ### Step 3: Clean the raw response
 
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-drops the internal OData columns and renames what remains, leaving a
-compact tibble with `indicator`, `location`, `year`, three optional
-dimensions, and `value` / `low` / `high`.
+produces the **unified DSIR cleaned-indicator schema** — the same
+15-column shape as
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md).
+Columns include `source` (`"gho"`), `id`, `indicator`, `location`,
+`iso3`, `location_name` (empty for GHO), `year`, `value`, `value_num`,
+`low`, `high`, `series` (empty for GHO), and the three optional GHO
+dimensions `dim1`–`dim3`. Columns absent from the raw response are
+filled with typed `NA`.
 
 ``` r
 
 uhc_clean <- gho_clean(uhc)
 uhc_clean
-#> # A tibble: 252 × 11
-#>    id     location  year dim1  dim2  dim3  value value_num low   high  indicator
-#>    <chr>  <chr>    <int> <lgl> <lgl> <lgl> <chr>     <dbl> <lgl> <lgl> <lgl>    
-#>  1 UHC_I… AUS       2015 NA    NA    NA    89           89 NA    NA    NA       
-#>  2 UHC_I… AUS       2016 NA    NA    NA    89           89 NA    NA    NA       
-#>  3 UHC_I… AUS       2017 NA    NA    NA    89           89 NA    NA    NA       
-#>  4 UHC_I… AUS       2018 NA    NA    NA    89           89 NA    NA    NA       
-#>  5 UHC_I… AUS       2019 NA    NA    NA    89           89 NA    NA    NA       
-#>  6 UHC_I… AUS       2020 NA    NA    NA    89           89 NA    NA    NA       
-#>  7 UHC_I… AUS       2021 NA    NA    NA    89           89 NA    NA    NA       
-#>  8 UHC_I… AUS       2022 NA    NA    NA    89           89 NA    NA    NA       
-#>  9 UHC_I… AUS       2023 NA    NA    NA    89           89 NA    NA    NA       
-#> 10 UHC_I… BRN       2015 NA    NA    NA    84           84 NA    NA    NA       
+#> # A tibble: 252 × 15
+#>    source id        indicator location iso3  location_name  year value value_num
+#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 gho    UHC_INDE… NA        AUS      AUS   NA             2015 89           89
+#>  2 gho    UHC_INDE… NA        AUS      AUS   NA             2016 89           89
+#>  3 gho    UHC_INDE… NA        AUS      AUS   NA             2017 89           89
+#>  4 gho    UHC_INDE… NA        AUS      AUS   NA             2018 89           89
+#>  5 gho    UHC_INDE… NA        AUS      AUS   NA             2019 89           89
+#>  6 gho    UHC_INDE… NA        AUS      AUS   NA             2020 89           89
+#>  7 gho    UHC_INDE… NA        AUS      AUS   NA             2021 89           89
+#>  8 gho    UHC_INDE… NA        AUS      AUS   NA             2022 89           89
+#>  9 gho    UHC_INDE… NA        AUS      AUS   NA             2023 89           89
+#> 10 gho    UHC_INDE… NA        BRN      BRN   NA             2015 84           84
 #> # ℹ 242 more rows
+#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>
 ```
 
 ## Aggregating indicators with geomean()
@@ -376,9 +383,9 @@ look.
 ``` r
 
 uhc_clean |>
-  filter(location %in% c("AUS", "CHN", "PHL", "FJI")) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  ggplot(aes(x = year, y = value, group = location, color = name_short)) +
+  filter(iso3 %in% c("AUS", "CHN", "PHL", "FJI")) |>
+  left_join(who_countries, by = "iso3") |>
+  ggplot(aes(x = year, y = value_num, group = iso3, color = name_short)) +
   geom_line(linewidth = .8) +
   geom_point(size = 1.8) +
   theme_dsi() +
@@ -405,8 +412,8 @@ sit flush with the axis instead of floating above it.
 
 uhc_clean |>
   filter(year == max(year)) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  arrange(desc(value)) |>
+  left_join(who_countries, by = "iso3") |>
+  arrange(desc(value_num)) |>
   head(10) |>
   ggplot(aes(reorder(name_short, value_num), value_num)) +
   geom_col(fill = "#0093D5") +
@@ -435,7 +442,7 @@ adjacent panels don’t run together.
 ``` r
 
 uhc_clean |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
+  left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
   ggplot(aes(x = year, y = value_num)) +
   geom_line(color = "#0093D5", linewidth = 0.8) +
@@ -458,7 +465,7 @@ accent for a deliverable where the strips themselves carry meaning:
 ``` r
 
 uhc_clean |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
+  left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
   ggplot(aes(x = year, y = value_num)) +
   geom_line(color = "#0093D5", linewidth = 0.8) +
@@ -486,46 +493,46 @@ dsi_flextable_defaults(font_family = "Geogria")
 
 uhc_clean |>
   filter(year == max(year)) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  select(name_short, value) |>
-  arrange(desc(value)) |>
+  left_join(who_countries, by = "iso3") |>
+  select(name_short, value_num) |>
+  arrange(desc(value_num)) |>
   flextable() |>
-  set_table_properties("autofit", width = .6) %>% 
+  set_table_properties("autofit", width = .6) %>%
   set_caption("UHC SCI in WPR, latest year")
 ```
 
-| name_short        | value |
-|-------------------|-------|
-| Australia         | 89    |
-| New Zealand       | 89    |
-| Republic of Korea | 88    |
-| Singapore         | 88    |
-| Japan             | 86    |
-| China             | 85    |
-| Brunei Darussalam | 84    |
-| Malaysia          | 80    |
-| Cook Islands      | 75    |
-| Palau             | 75    |
-| Tonga             | 71    |
-| Viet Nam          | 71    |
-| Mongolia          | 70    |
-| Fiji              | 69    |
-| Philippines       | 69    |
-| Indonesia         | 67    |
-| Niue              | 67    |
-| Marshall Islands  | 66    |
-| Micronesia        | 65    |
-| Tuvalu            | 65    |
-| Lao PDR           | 64    |
-| Cambodia          | 62    |
-| Nauru             | 62    |
-| Samoa             | 62    |
-| Vanuatu           | 52    |
-| Kiribati          | 51    |
-| Solomon Islands   | 47    |
-| Papua New Guinea  | 32    |
+| name_short        | value_num |
+|-------------------|-----------|
+| Australia         | 89        |
+| New Zealand       | 89        |
+| Republic of Korea | 88        |
+| Singapore         | 88        |
+| Japan             | 86        |
+| China             | 85        |
+| Brunei Darussalam | 84        |
+| Malaysia          | 80        |
+| Cook Islands      | 75        |
+| Palau             | 75        |
+| Tonga             | 71        |
+| Viet Nam          | 71        |
+| Mongolia          | 70        |
+| Fiji              | 69        |
+| Philippines       | 69        |
+| Indonesia         | 67        |
+| Niue              | 67        |
+| Marshall Islands  | 66        |
+| Micronesia        | 65        |
+| Tuvalu            | 65        |
+| Lao PDR           | 64        |
+| Cambodia          | 62        |
+| Nauru             | 62        |
+| Samoa             | 62        |
+| Vanuatu           | 52        |
+| Kiribati          | 51        |
+| Solomon Islands   | 47        |
+| Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-09f0779e
+UHC SCI in WPR, latest year {.table .cl-b9b63c9e
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators
@@ -641,20 +648,73 @@ sdg_data("3.4.1", area = c("608", "250"))
 ``` r
 
 sdg_clean(sdg)
-#> # A tibble: 462 × 10
-#>    goal  target indicator series  location location_name  year value low   high 
-#>    <chr> <chr>  <chr>     <chr>   <chr>    <chr>         <int> <chr> <chr> <chr>
-#>  1 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2000 28.1  17.7  37.1 
-#>  2 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2000 25.4  15.8  33.9 
-#>  3 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2000 31.8  20.2  41.3 
-#>  4 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2005 22.5  14.1  30.4 
-#>  5 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2005 25.6  16.2  34.2 
-#>  6 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2005 29.7  19.1  39.2 
-#>  7 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2010 24.4  15.7  33.2 
-#>  8 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2010 20.9  13.2  28.5 
-#>  9 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2010 29.1  19    39.2 
-#> 10 3     3.4    3.4.1     SH_DTH… 116      Cambodia       2015 28.3  19.4  40.5 
+#> # A tibble: 462 × 15
+#>    source id    indicator     location iso3  location_name  year value value_num
+#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 28.1       28.1
+#>  2 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 25.4       25.4
+#>  3 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 31.8       31.8
+#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
+#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
+#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
+#>  7 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 24.4       24.4
+#>  8 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 20.9       20.9
+#>  9 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 29.1       29.1
+#> 10 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2015 28.3       28.3
 #> # ℹ 452 more rows
+#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>
+```
+
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+produces the same 15-column schema as
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
+so the two outputs can be combined directly with
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md).
+SDG rows populate the `series` column (and the `iso3` column via
+\[[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)\]
+for Member States), while leaving the GHO-only `dim1`–`dim3` columns as
+`NA`.
+
+### Combining GHO and SDG with bind_indicators()
+
+When an analysis pulls indicators from both sources,
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+stacks any number of cleaned tibbles into one. The `source` column
+(`"gho"` / `"sdg"`) lets you filter or facet by origin without
+remembering which frame came from which API.
+
+``` r
+
+# Two indicators on the same topic from different APIs:
+#   GHO NCDMORT3070 (probability of premature NCD mortality)
+#   SDG 3.4.1       (mortality rate from NCDs)
+gho_ncd <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
+sdg_ncd <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
+bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
+#> Rows: 1,914
+#> Columns: 15
+#> $ source        <chr> "gho", "gho", "gho", "gho", "gho", "gho", "gho", "gho", …
+#> $ id            <chr> "NCDMORT3070", "NCDMORT3070", "NCDMORT3070", "NCDMORT307…
+#> $ indicator     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#> $ location      <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
+#> $ iso3          <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
+#> $ location_name <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#> $ year          <int> 2000, 2000, 2000, 2001, 2001, 2001, 2002, 2002, 2002, 20…
+#> $ value         <chr> "13.0 [11.3-14.7]", "16.0 [14.1-18.0]", "9.8 [8.4-11.2]"…
+#> $ value_num     <dbl> 13.0, 16.0, 9.8, 9.6, 15.6, 12.6, 15.0, 9.6, 12.3, 9.1, …
+#> $ low           <dbl> 11.3, 14.1, 8.4, 8.2, 13.7, 11.0, 13.1, 8.2, 10.7, 7.8, …
+#> $ high          <dbl> 14.7, 18.0, 11.2, 11.0, 17.5, 14.3, 16.8, 10.9, 13.9, 10…
+#> $ series        <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#> $ dim1          <chr> "SEX_BTSX", "SEX_MLE", "SEX_FMLE", "SEX_FMLE", "SEX_MLE"…
+#> $ dim2          <chr> "AGEGROUP_YEARS30-69", "AGEGROUP_YEARS30-69", "AGEGROUP_…
+#> $ dim3          <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 ```
 
 ### Exploring series with sdg_coverage()

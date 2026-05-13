@@ -3,7 +3,7 @@
 ## Authors
 
 - **[Shanlong Ding](https://github.com/shanlong-who)**. Author,
-  maintainer.
+  maintainer. [](https://orcid.org/0000-0002-8831-1684)
 
 ## Citation
 
@@ -11,12 +11,12 @@ Source:
 [`DESCRIPTION`](https://github.com/shanlong-who/DSIR/blob/main/DESCRIPTION)
 
 Ding S (2026). *DSIR: Data Science Infrastructure for Global Health*. R
-package version 0.6.0, <https://github.com/shanlong-who/DSIR>.
+package version 0.7.0, <https://github.com/shanlong-who/DSIR>.
 
     @Manual{,
       title = {DSIR: Data Science Infrastructure for Global Health},
       author = {Shanlong Ding},
       year = {2026},
-      note = {R package version 0.6.0},
+      note = {R package version 0.7.0},
       url = {https://github.com/shanlong-who/DSIR},
     }

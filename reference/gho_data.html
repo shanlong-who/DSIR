@@ -11,7 +11,7 @@ region and year range."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,13 +97,57 @@ an empty tibble when the service is unreachable.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Country-level data for one indicator</span></span></span>
 <span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,210 × 25</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 9.12<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        AFG        EMR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 9.12<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        JAM        AMR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 9.13<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        PRY        AMR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 9.13<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        SWE        EUR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 9.13<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        HRV        EUR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 9.13<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        MDV        SEAR               YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 9.13<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        ERI        AFR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 9.14<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        AFG        EMR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 9.14<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        COG        AFR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 9.14<span style="color: #949494;">e</span>6 NCDMORT3070   COUNTRY        BRB        AMR                YEAR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,200 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 19 more variables: ParentLocation &lt;chr&gt;, Dim1Type &lt;chr&gt;, TimeDim &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Dim1 &lt;chr&gt;, Dim2Type &lt;chr&gt;, Dim2 &lt;chr&gt;, Dim3Type &lt;lgl&gt;, Dim3 &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DataSourceDimType &lt;lgl&gt;, DataSourceDim &lt;lgl&gt;, Value &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NumericValue &lt;dbl&gt;, Low &lt;dbl&gt;, High &lt;dbl&gt;, Comments &lt;chr&gt;, Date &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDimensionValue &lt;chr&gt;, TimeDimensionBegin &lt;chr&gt;, TimeDimensionEnd &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specific countries and years</span></span></span>
 <span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span><span class="op">)</span>, year_from <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 42 × 25</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 9.42<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 9.86<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2.05<span style="color: #949494;">e</span>5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2.96<span style="color: #949494;">e</span>5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 8.63<span style="color: #949494;">e</span>5 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 9.58<span style="color: #949494;">e</span>5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 1.11<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 1.21<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 1.54<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 1.54<span style="color: #949494;">e</span>6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 32 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 19 more variables: ParentLocation &lt;chr&gt;, Dim1Type &lt;chr&gt;, Dim1 &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDim &lt;int&gt;, Dim2Type &lt;lgl&gt;, Dim2 &lt;lgl&gt;, Dim3Type &lt;lgl&gt;, Dim3 &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DataSourceDimType &lt;lgl&gt;, DataSourceDim &lt;lgl&gt;, Value &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NumericValue &lt;dbl&gt;, Low &lt;dbl&gt;, High &lt;dbl&gt;, Comments &lt;lgl&gt;, Date &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDimensionValue &lt;chr&gt;, TimeDimensionBegin &lt;chr&gt;, TimeDimensionEnd &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -58,12 +58,23 @@ Returns `NA_integer_` (with a warning) if the request fails.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # How many rows would gho_data() pull for France?
 gho_count("WHOSIS_000001", area = "FRA")
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=0&$count=true>
+#> [1] 66
 
 # Compare coverage across regions
 gho_count("NCDMORT3070", spatial_type = "country")
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&$top=0&$count=true>
+#> [1] 12210
 gho_count("NCDMORT3070", spatial_type = "region")
-} # }
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&$top=0&$count=true>
+#> [1] 396
+# }
 ```

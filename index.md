@@ -17,7 +17,7 @@ The current CRAN release (0.2.0) has a known issue where
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
 returns an HTTP 400 error when called with the full `wpro_cty` vector
 (28 countries) or other long region vectors. This has been **fixed in
-the GitHub development version** (0.5.0).
+the GitHub development version** (0.7.0).
 
 If you are using DSIR for regional analysis with all WPR / EUR / AFR /
 AMR countries, please install from GitHub for now:
@@ -27,7 +27,7 @@ AMR countries, please install from GitHub for now:
 remotes::install_github("shanlong-who/DSIR")
 ```
 
-CRAN release 0.5.0 is planned for early June 2026.
+CRAN release 0.7.0 is planned for mid 2026.
 
 ## Installation
 
@@ -86,24 +86,35 @@ iso3_to_region("PHL")                          # "WPR"
 iso3_to_region(c("PHL", "FRA", "ZAF", "XYZ"))  # "WPR" "EUR" "AFR" NA
 ```
 
-**[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)**
-— convert ISO3 codes to UN M49 numeric codes. Useful for moving between
-GHO (ISO3) and SDG (M49) workflows. Case-insensitive; returns
-three-character zero-padded strings; `NA` for non-Members.
+**[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+/
+[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)**
+— convert between ISO3 codes and UN M49 numeric codes in either
+direction. Useful for moving between GHO (ISO3) and SDG (M49) workflows.
+Case-insensitive on the ISO3 side; both accept zero-padded or bare M49
+input on the M49 side; non-Member areas return `NA`.
 
 ``` r
 
 iso3_to_m49("PHL")                             # "608"
 iso3_to_m49(c("PHL", "FRA", "JPN"))            # "608" "250" "392"
 iso3_to_m49(c("PRI", "PHL"))                   # NA "608"
+
+m49_to_iso3(c("608", "250", "392"))            # "PHL" "FRA" "JPN"
+m49_to_iso3(c("076", "76"))                    # "BRA" "BRA"
+m49_to_iso3("900")                             # NA  (world aggregate)
 ```
 
-In practice you rarely need to call this directly:
+In practice you rarely need to call these directly:
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
 and
 [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-accept ISO3 codes for their `area` argument and do the conversion
-internally.
+accept ISO3 codes for their `area` argument and convert via
+[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
+internally, and
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+populates its `iso3` column via
+[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md).
 
 ### Visualization
 
@@ -262,9 +273,16 @@ gho_clean(raw)
 ```
 
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-selects the useful columns and renames them to `indicator`, `location`,
-`year`, `dim1`–`dim3`, `value`, `low`, `high`. Output schema is stable
-across indicators — missing columns are filled with `NA`.
+produces the **unified DSIR cleaned-indicator schema** — the same
+15-column shape produced by
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
+so GHO and SDG output can be combined directly with
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+(see below). Output columns: `source`, `id`, `indicator`, `location`,
+`iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
+`series`, `dim1`–`dim3`. Source columns missing from the raw response
+(e.g. `Low` / `High` for indicators without confidence intervals) are
+filled with typed `NA`.
 
 ### UN SDG API
 
@@ -299,12 +317,33 @@ sdg_clean(raw)
 ```
 
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-renames the SDG API columns to snake_case (`goal`, `target`,
-`indicator`, `series`, `location`, `location_name`, `year`, `value`,
-`low`, `high`) and flattens the `indicator` list-column. `value`, `low`,
-and `high` are returned as character to preserve non-numeric entries
-(`"<0.1"`, aggregate notes); coerce with
-[`as.numeric()`](https://rdrr.io/r/base/numeric.html) downstream.
+produces the same **unified 15-column schema** as
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md):
+`source`, `id`, `indicator`, `location`, `iso3`, `location_name`,
+`year`, `value`, `value_num`, `low`, `high`, `series`, `dim1`–`dim3`.
+SDG-side fields populate `id` (the indicator code, e.g. `"3.4.1"`),
+`indicator` (the human-readable series description), `location` (UN M49
+numeric code), `iso3` (via
+[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)
+— `NA` for region / world aggregates and non-Member areas),
+`location_name`, and `series`. The GHO-only `dim1`–`dim3` columns are
+`NA` for SDG rows. `value` is kept as character to preserve non-numeric
+entries (`"<0.1"`, aggregate notes); `value_num` is the numeric coercion
+(`NA` where coercion fails).
+
+### Combining GHO and SDG output
+
+Because both cleaners produce the same schema, you can stack their
+output with
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+and use the `source` column to keep track of where each row came from:
+
+``` r
+
+gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
+sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+bind_indicators(gho, sdg)
+```
 
 **Exploring series.** A single SDG indicator often contains several
 series — for example different vaccines, sex strata, or causes of death

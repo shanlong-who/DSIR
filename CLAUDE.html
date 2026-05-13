@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,74 +49,89 @@
 </ul><p>The package is CRAN-bound, so conventions below are driven by <code>R CMD check</code> and CRAN policy, not just taste.</p>
 </div>
 <div class="section level2">
-<h2 id="current-development-state--060-in-preparation-last-updated-2026-05-12">Current development state — 0.6.0 in preparation (last updated 2026-05-12)<a class="anchor" aria-label="anchor" href="#current-development-state--060-in-preparation-last-updated-2026-05-12"></a></h2>
-<p>Version bumped to 0.6.0 in <code>DESCRIPTION</code>. All planned code is written, tested, exported, and described in <code>NEWS.md</code>. README and vignette are updated to integrate every new function. <strong>The full release is uncommitted on <code>main</code></strong>; <code>devtools::check()</code> is clean (0 errors / 0 warnings / 0 notes). Resume from a <code>git status</code> to see what is staged.</p>
+<h2 id="current-development-state--070-ready-to-commit-last-updated-2026-05-13">Current development state — 0.7.0 ready to commit (last updated 2026-05-13)<a class="anchor" aria-label="anchor" href="#current-development-state--070-ready-to-commit-last-updated-2026-05-13"></a></h2>
+<p>Version bumped to 0.7.0 in <code>DESCRIPTION</code>. All planned code is written, tested, exported, and described in <code>NEWS.md</code>. README and vignette are updated to reflect the new schema. <code>devtools::check()</code> is clean (0 errors / 0 warnings / 0 notes), including <code>--run-donttest</code> and vignette rebuild. <code>devtools::test()</code> is <strong>449 PASS / 0 FAIL / 0 SKIP</strong>.</p>
+<p>0.6.0 was already shipped to the GitHub <code>main</code> branch (commits <code>1eeee49</code>, <code>15cb85a</code>, <code>4eb5a08</code>, <code>78e79e4</code>, <code>1debc4b</code>) but never reached CRAN — CRAN is still on 0.2.0. Plan is to skip 0.6.x on CRAN and submit 0.7.0 directly.</p>
 <div class="section level3">
-<h3 id="what-was-added-across-060">What was added across 0.6.0<a class="anchor" aria-label="anchor" href="#what-was-added-across-060"></a></h3>
-<p>GHO availability helpers (screening before a full download): - <code><a href="reference/gho_has_data.html">gho_has_data()</a></code> — <code>TRUE</code> / <code>FALSE</code> / <code>NA</code> for whether the server has any rows. - <code><a href="reference/gho_count.html">gho_count()</a></code> — row count via OData <code>$count=true</code> (no rows transferred). - <code><a href="reference/gho_coverage.html">gho_coverage()</a></code> — <code>(location, year_min, year_max, n_obs)</code> per area, using <code>$select=SpatialDim,TimeDim</code> to keep the payload small.</p>
-<p>SDG additions: - <code>sdg_indicators(search = NULL)</code> — gains a keyword filter mirroring <code><a href="reference/gho_indicators.html">gho_indicators()</a></code>. AND semantics; case-insensitive substring match on the indicator <code>description</code>. Applied <strong>client-side</strong> (<code>grepl(..., fixed = TRUE)</code>) because the UN SDG <code>/Indicator/List</code> endpoint is not OData and exposes no server-side search parameter; the catalog is small (~250 rows). Validation runs before the network call so it is unit-testable offline. Default <code>search = NULL</code> preserves the previous behaviour exactly. - <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> — series-exploration helper. Groups by <code>(location, series)</code>, not just <code>(location)</code>. Returns <code>(location, series, year_min, year_max, n_obs)</code>. Intentional asymmetry vs. GHO: no <code>sdg_has_data()</code> or <code>sdg_count()</code> is provided because SDG data is generally complete, so per-series exploration is the more useful pre-analysis question. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> and <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> now accept ISO3 codes for <code>area</code> — converted internally via <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code> through the internal <code>.resolve_area()</code> helper. M49 still works. ISO3 ↔︎ M49 cannot be mixed within one call. This lets DSIR’s regional vectors (<code>wpro_cty</code>, etc.) be passed straight through, matching the GHO workflow.</p>
-<p>Cross-API helper: - <code>iso3_to_m49(iso3)</code> — case-insensitive ISO3 → UN M49 lookup against <code>who_countries$m49_code</code>. Non-Member codes return <code>NA</code>. Returned values are three-character zero-padded strings, the same form the dataset stores.</p>
-<p>Carried over (already in <code>NEWS.md</code> before this round): - <code>geomean(x, na.rm = TRUE, w = NULL)</code> - <code>iso3_to_region(iso3, long = FALSE)</code></p>
-<p>Bug fixes captured in 0.6.0: - <code>.gho_get()</code> no longer produces a spurious 1×1 list-column tibble when GHO returns <code>value = []</code>. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> now sends multi-value <code>indicator</code> / <code>areaCode</code> filters as repeated keys (not comma-joined) and no longer trips <code>duplicate 'row.names' are not allowed</code> when paginating. - <code><a href="reference/sdg_data.html">sdg_data()</a></code> year filtering (<code>year_from</code> / <code>year_to</code>) is now applied <strong>client-side</strong>. The UN SDG API’s server-side <code>timePeriodStart</code> / <code>timePeriodEnd</code> parameters cause HTTP 500 errors and ~30x slowdowns on at least some indicator/area combinations (e.g. <code>3.2.1</code> with <code>area = "608"</code>). The filter runs after the pagination loop assembles <code>out</code>; if <code>timePeriodStart</code> is missing the function warns and returns unfiltered. <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> inherits the fix automatically. - <code>.sdg_get()</code> now has a 20-second per-request timeout (<code>req_timeout(20)</code>) and exponential backoff (<code>backoff = ~ min(2 ^ .x, 30)</code>), so a hung upstream request cannot stall a call indefinitely.</p>
+<h3 id="what-was-added-across-070">What was added across 0.7.0<a class="anchor" aria-label="anchor" href="#what-was-added-across-070"></a></h3>
+<p><strong>Breaking: unified 15-column cleaned-indicator schema.</strong> <code><a href="reference/gho_clean.html">gho_clean()</a></code> and <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> now both produce the same shape:</p>
+<pre><code>source id indicator location iso3 location_name year value value_num low high series dim1 dim2 dim3</code></pre>
+<p>so GHO and SDG output can be <code>bind_rows()</code>-ed (or formally, <code><a href="reference/bind_indicators.html">bind_indicators()</a></code>-ed) without column-shape work. <code>source</code> is <code>"gho"</code> or <code>"sdg"</code>. <code>value</code> stays raw character (preserves SDG <code>"&lt;0.1"</code> and similar); <code>value_num</code> is the numeric coercion (NA where coercion fails). <code>year</code> is integer. <code>iso3</code> for GHO is set when <code>SpatialDim %in% who_countries$iso3</code> else NA; for SDG it comes from <code>m49_to_iso3(geoAreaCode)</code>.</p>
+<p>For SDG specifically: <code>id</code> now holds the <strong>indicator code</strong> (e.g. <code>"3.4.1"</code>, formerly named <code>indicator</code>) and <code>indicator</code> holds the <strong><code>seriesDescription</code></strong> text from the API. The pre-0.7.0 SDG columns <code>goal</code> and <code>target</code> are no longer carried forward. <code>series</code> is the SDG series code (e.g. <code>"SH_DTH_NCD"</code>). <code>dim1</code> / <code>dim2</code> / <code>dim3</code> are always NA for SDG (GHO-only).</p>
+<p>For GHO specifically: <code>location_name</code> and <code>series</code> are always NA. <code>dim1</code> / <code>dim2</code> / <code>dim3</code> come from <code>Dim1</code> / <code>Dim2</code> / <code>Dim3</code>.</p>
+<p><strong>New functions:</strong> - <code>bind_indicators(...)</code> — variadic, rbinds any number of cleaned tibbles into one. Validates that each input has the full 15-column schema; drops NULL arguments; column re-ordering across inputs is tolerated. - <code>m49_to_iso3(m49)</code> — counterpart to <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code>. Accepts zero-padded (<code>"076"</code>) or bare (<code>"76"</code>) input. Non-Member areas and region/world aggregates return NA. Used internally by <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> to populate <code>iso3</code>.</p>
+<p><strong>Bug fixes:</strong> - <strong><code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> duplicate definition.</strong> The function was defined in <strong>both</strong> <code>R/sdg.R</code> and <code>R/sdg_coverage.R</code> from 0.6.0; R loads files alphabetically so the <code>sdg_coverage.R</code> version overrode the one in <code>sdg.R</code>. The two implementations had subtly different behaviour. Resolved by deleting the version in <code>sdg.R</code> and hardening the survivor (separator <code>\r</code> → <code>\x1f</code>, added upfront <code>.resolve_area(area)</code> so the “dropped unknown ISO3” warning surfaces from <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> rather than being swallowed by <code>suppressWarnings(sdg_data(...))</code>). - <strong><code>.gho_get()</code> retry parity with <code>.sdg_get()</code></strong> — added <code>req_timeout(20)</code> and <code>backoff = ~ min(2 ^ .x, 30)</code>. Same change applied to the inline HTTP call in <code><a href="reference/gho_count.html">gho_count()</a></code> (which doesn’t go through <code>.gho_get</code> because it needs <code>@odata.count</code> rather than <code>value</code>). - <strong><code><a href="reference/sdg_data.html">sdg_data()</a></code> multi-page <code>rbind</code> failure.</strong> The 0.6.0 fix relied on <code>make.row.names = TRUE</code> (the default) to disambiguate per-page tibble row names like <code>"1"</code>..<code>"1000"</code>. That actually <strong>does not</strong> disambiguate when each page has 1000 rows numbered identically; the rbind still trips <code>duplicate 'row.names' are not allowed</code>. Surfaced when <code>R CMD check --run-donttest</code> ran <code>sdg_data("1.1.1")</code> (26+ pages of ~1000 rows). Fixed by passing <code>make.row.names = FALSE</code> explicitly. The existing test was too weak to catch this (each mock page had only 1 row); the new regression test uses 2-row pages so the collision actually fires. - <strong><code><a href="reference/sdg_data.html">sdg_data()</a></code> example simplified.</strong> The first example was <code>sdg_data("1.1.1")</code> (unfiltered, 26+ pages) — too slow for <code>R CMD check</code>. Now <code>sdg_data("1.1.1", area = "PHL")</code>.</p>
+<p><strong>Documentation:</strong> - All network examples switched from <code>\dontrun{}</code> to <code>\donttest{}</code>. CRAN reviewers can opt to run them; <code>R CMD check --run-donttest</code> exercises them locally. - <code>DESCRIPTION</code> <code>Authors@R</code> now carries the user’s ORCID (<code>0000-0002-8831-1684</code>). - <code>cran-comments.md</code> rewritten as a 0.7.0 resubmission note (explains the 0.2.0 → 0.7.0 jump, points at NEWS for the unified-schema breaking change, confirms <code>--run-donttest</code> is also clean). The pre-0.7.0 file was still the initial-submission template.</p>
+<p><strong>Internal:</strong> - New <code>R/clean_schema.R</code> centralises the 15-column schema (<code>.dsi_clean_schema()</code>), the typed-empty-tibble template (<code>.dsi_empty_clean()</code>), and the typed-NA filler (<code>.fill_na(n, type)</code>). Any change to the schema should start here. - <code>httptest2</code> added to <code>Suggests</code>. The mocking tests use <code><a href="https://httr2.r-lib.org/reference/with_mocked_responses.html" class="external-link">httr2::with_mocked_responses()</a></code> directly (httptest2 is a peer of httr2 for offline testing); see implementation notes below for the gotcha. - <code>test-gho-dimensions.R</code> added — <code><a href="reference/gho_dimensions.html">gho_dimensions()</a></code> was the last exported network function without offline coverage. Uses the same <code>mock_json()</code> pattern as <code>test-gho-get-mock.R</code> / <code>test-sdg-get-mock.R</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="implementation-notes-worth-remembering">Implementation notes worth remembering<a class="anchor" aria-label="anchor" href="#implementation-notes-worth-remembering"></a></h3>
 <ul><li>
-<strong>The M49 column is <code>who_countries$m49_code</code>, not <code>un_m49</code>.</strong> Easy to misremember when reading historical task briefs. Values are zero-padded to three characters (e.g. <code>"076"</code> for Brazil). The SDG API accepts both <code>"076"</code> and <code>"76"</code> for the same area, so the bundled zero-padded form is fine to pass straight through.</li>
+<strong>The unified schema’s source of truth is <code>R/clean_schema.R</code>.</strong> <code>.dsi_clean_schema()</code> returns the canonical column order and the type code (<code>"chr"</code>, <code>"int"</code>, <code>"num"</code>). <code>.dsi_empty_clean()</code> produces the typed 0-row tibble used by both cleaners for empty input and by <code><a href="reference/bind_indicators.html">bind_indicators()</a></code> for the no-input / all-NULL case. Adding a new column means updating this file and then both <code><a href="reference/gho_clean.html">gho_clean()</a></code> / <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> to populate it.</li>
 <li>
-<code>.resolve_area()</code> (internal to <code>R/sdg.R</code>) detects format with <code>^[A-Za-z]{3}$</code> for ISO3 and <code>^[0-9]+$</code> for M49. These two regexes can never both match the same value, so format detection is unambiguous. Mixed input errors (refused, not coerced). Unknown ISO3 codes are dropped with a warning; if every code is unknown, the function errors.</li>
+<strong><code><a href="reference/gho_clean.html">gho_clean()</a></code>’s old <code>n = 0</code> bug:</strong> the pre-0.7.0 cleaners used <code>rep(NA, n)</code>, which for <code>n = 0</code> produces <code>logical(0)</code>. The empty-output column types were therefore all <code>logical</code>, not matching the documented types. 0.7.0 fixes this by routing empty input through <code>.dsi_empty_clean()</code> directly.</li>
 <li>
-<code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> calls <code>.resolve_area()</code> <strong>before</strong> the internal <code>suppressWarnings(sdg_data(...))</code> call, so the legitimate “dropped unknown ISO3” warning surfaces cleanly from <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> rather than being swallowed. <code><a href="reference/sdg_data.html">sdg_data()</a></code> re-runs <code>.resolve_area()</code> on the already-resolved vector — that’s a no-op (M49 passes through), so the duplication is safe.</li>
+<strong>The M49 column is <code>who_countries$m49_code</code>, not <code>un_m49</code>.</strong> Values are 3-char zero-padded (e.g. <code>"076"</code> for Brazil). The SDG API accepts both <code>"076"</code> and <code>"76"</code>; <code><a href="reference/m49_to_iso3.html">m49_to_iso3()</a></code> normalises both before lookup via <code>formatC(as.integer(m49), width = 3, flag = "0")</code> — note the <code>padded[padded == "NA"] &lt;- NA_character_</code> step that handles <code>formatC(NA_integer_)</code> returning the literal string <code>"NA"</code>.</li>
 <li>
-<code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> calls <code><a href="reference/sdg_data.html">sdg_data()</a></code> internally — SDG offers no payload-reduction option equivalent to GHO’s <code>$select</code>, so there is no efficiency win from going around it. The grouping key is <code>paste(location, series, sep = "\x1f")</code> (US, unit separator — can’t collide with M49 codes or SDG series codes). Mirror the <code>yr_range</code> / <code>vapply</code> idiom from <code><a href="reference/gho_coverage.html">gho_coverage()</a></code>.</li>
-<li>For <code>sdg_indicators(search)</code>: the source-of-truth probe (see <code>scratch/probe_sdg.R</code>) confirmed the description column is named <code>description</code> (plain <code>chr</code>, not nested in <code>series</code>). The <code>series</code> column on <code><a href="reference/sdg_data.html">sdg_data()</a></code> output is also plain <code>chr</code> — no <code>as.character(v[[1]])</code> flatten needed (that flatten in <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> is only for the <code>indicator</code> list-column).</li>
-<li>The 20-second timeout on <code>.sdg_get()</code> is fine for typical 2–6s SDG responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious “Timeout was reached” failures, bumping the constant to 30–60s is the right move. <code>req_retry()</code> runs three attempts, so the worst-case wall time is bounded around 66s.</li>
+<strong>GHO <code>iso3</code> heuristic.</strong> <code><a href="reference/gho_clean.html">gho_clean()</a></code> sets <code>iso3 = location</code> when <code>location %in% who_countries$iso3</code>, else <code>NA</code>. This is a pure-lookup check, not a regex — so weird-but-valid 3-letter codes like <code>"COG"</code> work, but region codes (<code>"EUR"</code>, <code>"GLOBAL"</code>) correctly get NA.</li>
+<li>
+<strong>SDG <code>indicator</code> column source.</strong> Comes from <code>seriesDescription</code> in the raw <code><a href="reference/sdg_data.html">sdg_data()</a></code> response, not from the indicator-list endpoint. For some series, <code>seriesDescription</code> is absent; in that case <code>indicator</code> is NA. If you want a human label for those, join the result against <code><a href="reference/sdg_indicators.html">sdg_indicators()</a></code> on <code>id</code>.</li>
+<li>
+<strong><code>.resolve_area()</code> (in <code>R/sdg.R</code>)</strong> detects format with <code>^[A-Za-z]{3}$</code> for ISO3 and <code>^[0-9]+$</code> for M49. Mixed input errors. Unknown ISO3 codes are dropped with a warning; if every code is unknown, the function errors.</li>
+<li>
+<strong><code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> calls <code>.resolve_area()</code> upfront</strong> so the legitimate “dropped unknown ISO3” warning surfaces from <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> rather than being swallowed by the <code>suppressWarnings(sdg_data(...))</code> wrapper. <code><a href="reference/sdg_data.html">sdg_data()</a></code> re-runs <code>.resolve_area()</code> on the already-resolved vector — that’s a no-op (M49 passes through), so the duplication is safe. The grouping key is <code>paste(location, series, sep = "\x1f")</code>; <code>\x1f</code> (US, unit separator) cannot appear in either an M49 numeric code or an SDG series code.</li>
+<li>
+<strong>httr2 1.x mocking gotcha.</strong> <code>httr2::with_mocked_responses(mock, code)</code> requires <code>mock</code> to be a <strong>function, list, or NULL</strong> — passing a bare <code><a href="https://httr2.r-lib.org/reference/response.html" class="external-link">httr2::response()</a></code> object errors with <code>mock must be function, list, or NULL</code>. The <code>mock_json()</code> helper in the test files wraps its single response in <code>list(...)</code>; when chaining two pages, the tests use <code>c(mock_json(p1), mock_json(p2))</code> to concatenate the two length-1 lists into a length-2 list. URL-capturing tests pass a <code>function(req)</code> mock so they can inspect the outgoing URL before returning the canned response.</li>
+<li>
+<strong><code><a href="reference/gho_count.html">gho_count()</a></code> uses its own HTTP call site,</strong> not <code>.gho_get()</code>, because it needs <code>@odata.count</code> from the response envelope, not <code>value</code>. If you touch retry/timeout config for one, mirror the change in the other (currently they are in sync).</li>
+<li>
+<strong>The 20-second timeout on <code>.sdg_get()</code> / <code>.gho_get()</code></strong> is fine for typical 2–6s responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious “Timeout was reached” failures, bumping the constant to 30–60s is the right move. <code>req_retry()</code> runs three attempts, so the worst-case wall time is bounded around 66s × 1 retry cycle ≈ several minutes.</li>
+<li>
+<strong><code>devtools::document()</code> may need two passes</strong> when a new function adds a roxygen cross-reference (<code>@seealso [new_fn()]</code>). First pass writes the new Rd; second pass resolves the cross-reference.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="pending-steps-before-tagging">Pending steps before tagging<a class="anchor" aria-label="anchor" href="#pending-steps-before-tagging"></a></h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>   <span class="co"># may need TWO passes when a new function is added —</span></span>
-<span>                       <span class="co"># the first pass writes the Rd, the second resolves</span></span>
-<span>                       <span class="co"># cross-references that point at it</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>       <span class="co"># all tests should pass</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span>      <span class="co"># R CMD check — expect 0 errors / 0 warnings / 0 notes</span></span></code></pre></div>
-<p>Then commit + tag. The 0.6.0 work is several independent themes (GHO availability helpers; SDG series exploration + search; SDG year-filter workaround; ISO3-friendly SDG functions + <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code>) and can be split into separate commits if a clean history is wanted.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">git</span> tag v0.6.0</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>       <span class="co"># baseline</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span>      <span class="co"># 0 errors / 0 warnings / 0 notes  ← already verified</span></span></code></pre></div>
+<p>Then commit + tag. The 0.7.0 work is several independent themes (schema alignment + <code>bind_indicators</code>; <code>m49_to_iso3</code>; <code>sdg_coverage</code> dedup; retry parity; documentation polish; test coverage; httptest2 mocking) and can be split into separate commits if a clean history is wanted.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">git</span> tag v0.7.0</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="pandoc-on-this-machine">Pandoc on this machine<a class="anchor" aria-label="anchor" href="#pandoc-on-this-machine"></a></h3>
 <p><code>devtools::check()</code> rebuilds the vignette, which needs Pandoc. Pandoc is not on <code>PATH</code> on this laptop but ships with RStudio. Point <code>RSTUDIO_PANDOC</code> at the bundled binary before running <code>check()</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>RSTUDIO_PANDOC <span class="op">=</span> <span class="st">"C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="roadmap--070-candidates">Roadmap — 0.7.0 candidates<a class="anchor" aria-label="anchor" href="#roadmap--070-candidates"></a></h2>
+<h2 id="roadmap--post-070">Roadmap — post-0.7.0<a class="anchor" aria-label="anchor" href="#roadmap--post-070"></a></h2>
+<p>The package is approaching steady state. The user explicitly intends to enter a stable phase after 0.7.0 ships. <strong>Do not propose new exports unprompted.</strong> New features should only be added when the user asks; this section records what was considered and what was declined, so future sessions don’t reopen settled questions.</p>
 <div class="section level3">
-<h3 id="high-priority--schema-alignment-for-gho_clean--sdg_clean">High priority — schema alignment for <code>gho_clean()</code> / <code>sdg_clean()</code>
-<a class="anchor" aria-label="anchor" href="#high-priority--schema-alignment-for-gho_clean--sdg_clean"></a></h3>
-<p>Their outputs still cannot be <code>bind_rows()</code>-ed cleanly:</p>
-<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Source</th>
-<th>Columns</th>
-</tr></thead><tbody><tr><td><code><a href="reference/gho_clean.html">gho_clean()</a></code></td>
-<td><code>id, location, year, dim1, dim2, dim3, value, value_num, low, high, indicator</code></td>
-</tr><tr><td><code><a href="reference/sdg_clean.html">sdg_clean()</a></code></td>
-<td><code>goal, target, indicator, series, location, location_name, year, value, low, high</code></td>
-</tr></tbody></table><p>Open design question: pick a shared core schema (e.g. <code>id, indicator, location, year, value, low, high</code>) and let source-specific extras live alongside. Possibly add a <code>bind_indicators(...)</code> helper. This is a breaking change, hence a minor-version bump.</p>
-</div>
+<h3 id="done-in-070">Done in 0.7.0<a class="anchor" aria-label="anchor" href="#done-in-070"></a></h3>
+<ul><li>Schema alignment for <code><a href="reference/gho_clean.html">gho_clean()</a></code> / <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> → unified 15-column shape. <strong>Settled — do not reopen.</strong>
+</li>
+<li>
+<code>bind_indicators(...)</code> — implemented as part of the schema work.</li>
+<li>
+<code><a href="reference/m49_to_iso3.html">m49_to_iso3()</a></code> — added as the counterpart to <code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code>, used by <code><a href="reference/sdg_clean.html">sdg_clean()</a></code> to populate <code>iso3</code>.</li>
+</ul></div>
 <div class="section level3">
-<h3 id="other-candidates-surfaced-from-scanning-users-analytical-projects">Other candidates surfaced from scanning user’s analytical projects<a class="anchor" aria-label="anchor" href="#other-candidates-surfaced-from-scanning-users-analytical-projects"></a></h3>
+<h3 id="declined-by-the-user-2026-05-13">Declined by the user (2026-05-13)<a class="anchor" aria-label="anchor" href="#declined-by-the-user-2026-05-13"></a></h3>
+<p>The user reviewed the 0.7.0-candidates list and decided not to add these. <strong>Do not propose them again</strong> unless the user asks:</p>
 <ul><li>
-<code>get_latest(df)</code> — keep the last-non-missing year per location. Used in 3+ WHI/SDG projects in the user’s working directory.</li>
+<code>get_latest(df)</code> — too narrow; users can write <code>slice_max(year, by = location, na_rm = TRUE)</code> themselves when they need it.</li>
 <li>
-<code>ggdot(df, ...)</code> — Likert-style dot plot built on <code><a href="reference/theme_dsi.html">theme_dsi()</a></code>. Used in SCORE and WHI projects.</li>
-</ul><p>Deliberately deferred:</p>
+<code>ggdot(df, ...)</code> — too narrow; chart-builder helpers belong in project code, not the package.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="deferred-still-on-the-long-list">Deferred (still on the long list)<a class="anchor" aria-label="anchor" href="#deferred-still-on-the-long-list"></a></h3>
 <ul><li>
-<code>who_iso3(name)</code> — <code>countrycode::countrycode()</code> with a <code>custom_match</code> argument covers the same ground. Consider exporting only a named vector <code>who_short_name_overrides</code> (e.g. <code>c("DPR Korea" = "PRK", "DR Congo" = "COD", "Lao PDR" = "LAO", ...)</code>) if those overrides recur across many user scripts.</li>
+<code>who_iso3(name)</code> — <code>countrycode::countrycode()</code> with <code>custom_match</code> covers the same ground. If WHO-specific short-name overrides (<code>"DPR Korea" = "PRK"</code>, <code>"DR Congo" = "COD"</code>, <code>"Lao PDR" = "LAO"</code>, etc.) come up repeatedly across user scripts, consider exporting <strong>only</strong> a named vector <code>who_short_name_overrides</code> so users can plug it into <code>countrycode()</code>.</li>
 <li>
-<code>ggbar()</code> / <code>ggcol()</code> — too thin (<code>geom_col</code> + <code>fct_reorder</code>).</li>
-<li>ACM / excess-mortality helpers (<code>annotate_events_dt</code>, <code>create_period_indicator</code>, <code>loadEventsData</code>, <code>validate_*</code>) — wait for the ACM calculator 1.0 to stabilize the Excel template assumptions before extracting.</li>
+<code>ggbar()</code> / <code>ggcol()</code> — too thin (<code>geom_col</code> + <code>fct_reorder</code>); explicit ggplot reads better.</li>
+<li>ACM / excess-mortality helpers (<code>annotate_events_dt</code>, <code>create_period_indicator</code>, <code>loadEventsData</code>, <code>validate_*</code>) — wait for the ACM calculator 1.0 to stabilise the Excel template assumptions before extracting.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="source-folder-for-these-candidates">Source folder for these candidates<a class="anchor" aria-label="anchor" href="#source-folder-for-these-candidates"></a></h3>
@@ -124,9 +139,29 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="pre-stable-polish--remaining-items">Pre-stable polish — remaining items<a class="anchor" aria-label="anchor" href="#pre-stable-polish--remaining-items"></a></h2>
+<p>The user did the three highest-impact pre-stable items on 2026-05-13: <code>cran-comments.md</code> rewritten, <code><a href="reference/gho_dimensions.html">gho_dimensions()</a></code> test coverage added, ORCID added to <code>Authors@R</code>. The package is now in fully shippable shape for 0.7.0.</p>
+<p>These two cosmetic items are still open but are explicitly skippable:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>README’s “Note about CRAN version” banner</strong> will be wrong the moment 0.7.0 lands on CRAN. Remove it then, or rewrite to point at the new development version.</li>
+<li>
+<strong><code>README.md</code> lifecycle badge says “stable”</strong> while the package is 0.x. Either bump to 1.0.0 (the API is now what it would be at 1.0) or change the badge to <code>maturing</code>.</li>
+</ol><p>Skippable nice-to-have:</p>
+<ul><li>
+<strong><code>inst/CITATION</code></strong> — so <code>citation("DSIR")</code> returns a user-preferred citation rather than the auto-generated default. Add only if the user starts asking how others should cite the package.</li>
+</ul><div class="section level3">
+<h3 id="path-to-100">Path to 1.0.0<a class="anchor" aria-label="anchor" href="#path-to-100"></a></h3>
+<p>The user has signalled they want to enter a stable state. The recommended sequence:</p>
+<ul><li>Commit + tag <code>v0.7.0</code>. Submit 0.7.0 to CRAN.</li>
+<li>Let it sit on CRAN for ~1 month while running real WHO projects against it.</li>
+<li>If no API regret surfaces, bump <code>Version: 1.0.0</code>, write a one-line NEWS entry, and submit again.</li>
+<li>The 0.7.0 schema and <code><a href="reference/bind_indicators.html">bind_indicators()</a></code> design are intentionally future-proof, so 1.0.0 should be a no-code-change version bump.</li>
+</ul></div>
+</div>
+<div class="section level2">
 <h2 id="common-commands">Common commands<a class="anchor" aria-label="anchor" href="#common-commands"></a></h2>
 <p>Run from the package root in an R session (or via <code>Rscript -e '...'</code>):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Regenerate NAMESPACE and man/*.Rd from roxygen2 comments.</span></span>
 <span><span class="co"># ALWAYS run after editing any roxygen block or adding/removing an @export.</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>

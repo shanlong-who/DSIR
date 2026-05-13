@@ -60,15 +60,74 @@ unreachable or there are no matching rows.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# All data for indicator 1.1.1
-sdg_data("1.1.1")
+# \donttest{
+# One indicator, one country — the typical entry point
+sdg_data("1.1.1", area = "PHL")
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=1.1.1&pageSize=1000&areaCode=608&page=1>
+#> # A tibble: 144 × 21
+#>    goal      target indicator series   seriesDescription seriesCount geoAreaCode
+#>    <list>    <list> <list>    <chr>    <chr>             <chr>       <chr>      
+#>  1 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  2 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  3 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  4 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  5 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  6 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  7 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  8 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#>  9 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#> 10 <chr [1]> <chr>  <chr [1]> SI_POV_… Proportion of po… 10800       608        
+#> # ℹ 134 more rows
+#> # ℹ 14 more variables: geoAreaName <chr>, timePeriodStart <int>, value <chr>,
+#> #   valueType <chr>, time_detail <lgl>, timeCoverage <lgl>, upperBound <lgl>,
+#> #   lowerBound <lgl>, basePeriod <chr>, source <chr>, geoInfoUrl <lgl>,
+#> #   footnotes <list>, attributes <df[,1]>, dimensions <df[,2]>
 
-# Specific area and year range
+# Specific area and year range (M49 code)
 sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&pageSize=1000&areaCode=156&page=1>
+#> # A tibble: 108 × 21
+#>    goal      target indicator series   seriesDescription seriesCount geoAreaCode
+#>    <list>    <list> <list>    <chr>    <chr>             <chr>       <chr>      
+#>  1 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  2 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  3 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  4 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  5 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  6 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  7 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  8 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#>  9 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#> 10 <chr [1]> <chr>  <chr [1]> SH_DYN_… Infant deaths (n… 16500       156        
+#> # ℹ 98 more rows
+#> # ℹ 14 more variables: geoAreaName <chr>, timePeriodStart <int>, value <chr>,
+#> #   valueType <chr>, time_detail <lgl>, timeCoverage <lgl>, upperBound <chr>,
+#> #   lowerBound <chr>, basePeriod <lgl>, source <chr>, geoInfoUrl <lgl>,
+#> #   footnotes <list>, attributes <df[,1]>, dimensions <df[,1]>
 
 # ISO3 codes work directly — DSIR's regional vectors can be passed in
-sdg_data("3.4.1", area = wpro_cty)
 sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
-} # }
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=608&areaCode=250&areaCode=392&page=1>
+#> # A tibble: 63 × 21
+#>    goal      target indicator series   seriesDescription seriesCount geoAreaCode
+#>    <list>    <list> <list>    <chr>    <chr>             <chr>       <chr>      
+#>  1 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  2 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  3 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  4 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  5 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  6 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  7 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  8 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#>  9 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#> 10 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
+#> # ℹ 53 more rows
+#> # ℹ 14 more variables: geoAreaName <chr>, timePeriodStart <int>, value <chr>,
+#> #   valueType <chr>, time_detail <lgl>, timeCoverage <lgl>, upperBound <chr>,
+#> #   lowerBound <chr>, basePeriod <lgl>, source <chr>, geoInfoUrl <lgl>,
+#> #   footnotes <list>, attributes <df[,1]>, dimensions <df[,1]>
+# }
 ```

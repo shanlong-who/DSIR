@@ -6,28 +6,32 @@ theme_dsi_facet()) with flush-axis bar-chart scales
 sensible flextable defaults (dsi_flextable_defaults()),
 a quick pie chart helper (ggpie()), regional country-code
 datasets (wpro_cty) with WHO region and UN M49 lookups
-(iso3_to_region(), iso3_to_m49()), a geometric mean helper
-for indicator aggregation (geomean()), and thin clients for the
-WHO Global
-Health Observatory API (gho_indicators(), gho_data(),
-gho_dimensions(), gho_has_data(), gho_count(),
-gho_coverage()) and the UN Sustainable Development Goals API
-(sdg_goals(), sdg_targets(), sdg_indicators(), sdg_areas(),
-sdg_data(), sdg_coverage())."><meta property="og:description" content="A small, opinionated toolkit for global health data analysis.
+(iso3_to_region(), iso3_to_m49(), m49_to_iso3()), a
+geometric mean helper for indicator aggregation (geomean()),
+thin clients for the WHO Global Health Observatory API
+(gho_indicators(), gho_data(), gho_dimensions(),
+gho_has_data(), gho_count(), gho_coverage()) and the UN
+Sustainable Development Goals API (sdg_goals(), sdg_targets(),
+sdg_indicators(), sdg_areas(), sdg_data(), sdg_coverage()),
+plus a unified cleaning / binding pipeline (gho_clean(),
+sdg_clean(), bind_indicators()) that puts GHO and SDG output
+into the same 15-column schema."><meta property="og:description" content="A small, opinionated toolkit for global health data analysis.
 It bundles a publication-ready ggplot2 theme (theme_dsi(),
 theme_dsi_facet()) with flush-axis bar-chart scales
 (scale_y_dsi_col(), scale_x_dsi_col()),
 sensible flextable defaults (dsi_flextable_defaults()),
 a quick pie chart helper (ggpie()), regional country-code
 datasets (wpro_cty) with WHO region and UN M49 lookups
-(iso3_to_region(), iso3_to_m49()), a geometric mean helper
-for indicator aggregation (geomean()), and thin clients for the
-WHO Global
-Health Observatory API (gho_indicators(), gho_data(),
-gho_dimensions(), gho_has_data(), gho_count(),
-gho_coverage()) and the UN Sustainable Development Goals API
-(sdg_goals(), sdg_targets(), sdg_indicators(), sdg_areas(),
-sdg_data(), sdg_coverage())."></head><body>
+(iso3_to_region(), iso3_to_m49(), m49_to_iso3()), a
+geometric mean helper for indicator aggregation (geomean()),
+thin clients for the WHO Global Health Observatory API
+(gho_indicators(), gho_data(), gho_dimensions(),
+gho_has_data(), gho_count(), gho_coverage()) and the UN
+Sustainable Development Goals API (sdg_goals(), sdg_targets(),
+sdg_indicators(), sdg_areas(), sdg_data(), sdg_coverage()),
+plus a unified cleaning / binding pipeline (gho_clean(),
+sdg_clean(), bind_indicators()) that puts GHO and SDG output
+into the same 15-column schema."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +39,7 @@ sdg_data(), sdg_coverage())."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,14 +74,16 @@ It bundles a publication-ready <code>ggplot2</code> theme (<code><a href="theme_
 sensible <code>flextable</code> defaults (<code><a href="dsi_flextable_defaults.html">dsi_flextable_defaults()</a></code>),
 a quick pie chart helper (<code><a href="ggpie.html">ggpie()</a></code>), regional country-code
 datasets (<a href="who_region_vectors.html">wpro_cty</a>) with WHO region and UN M49 lookups
-(<code><a href="iso3_to_region.html">iso3_to_region()</a></code>, <code><a href="iso3_to_m49.html">iso3_to_m49()</a></code>), a geometric mean helper
-for indicator aggregation (<code><a href="geomean.html">geomean()</a></code>), and thin clients for the
-WHO Global
-Health Observatory API (<code><a href="gho_indicators.html">gho_indicators()</a></code>, <code><a href="gho_data.html">gho_data()</a></code>,
-<code><a href="gho_dimensions.html">gho_dimensions()</a></code>, <code><a href="gho_has_data.html">gho_has_data()</a></code>, <code><a href="gho_count.html">gho_count()</a></code>,
-<code><a href="gho_coverage.html">gho_coverage()</a></code>) and the UN Sustainable Development Goals API
-(<code><a href="sdg_goals.html">sdg_goals()</a></code>, <code><a href="sdg_targets.html">sdg_targets()</a></code>, <code><a href="sdg_indicators.html">sdg_indicators()</a></code>, <code><a href="sdg_areas.html">sdg_areas()</a></code>,
-<code><a href="sdg_data.html">sdg_data()</a></code>, <code><a href="sdg_coverage.html">sdg_coverage()</a></code>).</p>
+(<code><a href="iso3_to_region.html">iso3_to_region()</a></code>, <code><a href="iso3_to_m49.html">iso3_to_m49()</a></code>, <code><a href="m49_to_iso3.html">m49_to_iso3()</a></code>), a
+geometric mean helper for indicator aggregation (<code><a href="geomean.html">geomean()</a></code>),
+thin clients for the WHO Global Health Observatory API
+(<code><a href="gho_indicators.html">gho_indicators()</a></code>, <code><a href="gho_data.html">gho_data()</a></code>, <code><a href="gho_dimensions.html">gho_dimensions()</a></code>,
+<code><a href="gho_has_data.html">gho_has_data()</a></code>, <code><a href="gho_count.html">gho_count()</a></code>, <code><a href="gho_coverage.html">gho_coverage()</a></code>) and the UN
+Sustainable Development Goals API (<code><a href="sdg_goals.html">sdg_goals()</a></code>, <code><a href="sdg_targets.html">sdg_targets()</a></code>,
+<code><a href="sdg_indicators.html">sdg_indicators()</a></code>, <code><a href="sdg_areas.html">sdg_areas()</a></code>, <code><a href="sdg_data.html">sdg_data()</a></code>, <code><a href="sdg_coverage.html">sdg_coverage()</a></code>),
+plus a unified cleaning / binding pipeline (<code><a href="gho_clean.html">gho_clean()</a></code>,
+<code><a href="sdg_clean.html">sdg_clean()</a></code>, <code><a href="bind_indicators.html">bind_indicators()</a></code>) that puts GHO and SDG output
+into the same 15-column schema.</p>
     </div>
 
 
@@ -90,8 +96,8 @@ Health Observatory API (<code><a href="gho_indicators.html">gho_indicators()</a>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p><strong>Maintainer</strong>: Shanlong Ding <a href="mailto:dings@who.int">dings@who.int</a></p>
-<p>Authors:</p><ul><li><p>Shanlong Ding <a href="mailto:dings@who.int">dings@who.int</a></p></li>
+    <p><strong>Maintainer</strong>: Shanlong Ding <a href="mailto:dings@who.int">dings@who.int</a> (<a href="https://orcid.org/0000-0002-8831-1684" class="external-link">ORCID</a>)</p>
+<p>Authors:</p><ul><li><p>Shanlong Ding <a href="mailto:dings@who.int">dings@who.int</a> (<a href="https://orcid.org/0000-0002-8831-1684" class="external-link">ORCID</a>)</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

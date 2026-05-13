@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,40 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.0" id="dsir-070">DSIR 0.7.0<a class="anchor" aria-label="anchor" href="#dsir-070"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-7-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-7-0"></a></h3>
+<ul><li>
+<code><a href="../reference/gho_clean.html">gho_clean()</a></code> and <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> now share a single 15-column output schema: <code>source</code>, <code>id</code>, <code>indicator</code>, <code>location</code>, <code>iso3</code>, <code>location_name</code>, <code>year</code>, <code>value</code>, <code>value_num</code>, <code>low</code>, <code>high</code>, <code>series</code>, <code>dim1</code>, <code>dim2</code>, <code>dim3</code>. This lets results from the two APIs be combined directly (see <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code> below). Migration notes from 0.6.x:
+<ul><li>
+<code><a href="../reference/gho_clean.html">gho_clean()</a></code> output no longer has 11 columns; it has 15. New columns include <code>source</code> (<code>"gho"</code>), <code>iso3</code> (the ISO3 alpha-3 code when the spatial dim matches a WHO Member State, <code>NA</code> otherwise), <code>location_name</code> (always <code>NA</code> — GHO does not return names), and <code>series</code> (always <code>NA</code> — an SDG-only concept).</li>
+<li>
+<code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> output no longer has 10 columns and is reshaped to the unified schema. Several columns moved or were renamed: the SDG <code>goal</code> and <code>target</code> columns are no longer carried forward; the SDG indicator code is now in <code>id</code> (was <code>indicator</code>); the human-readable series description has moved to <code>indicator</code> (was not present before); a new <code>iso3</code> column holds the ISO3 alpha-3 code via <code><a href="../reference/m49_to_iso3.html">m49_to_iso3()</a></code> for Member States.</li>
+<li>Both cleaners now coerce <code>value_num</code> / <code>low</code> / <code>high</code> to numeric; non-numeric raw values (e.g. SDG <code>"&lt;0.1"</code>) yield <code>NA</code> in those columns while <code>value</code> keeps the raw character form.</li>
+<li>Both cleaners now coerce <code>year</code> to integer.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-7-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h3>
+<ul><li><p>New <code>bind_indicators(...)</code>: stacks any number of tibbles returned by <code><a href="../reference/gho_clean.html">gho_clean()</a></code> and <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> into a single tibble. Because the two cleaners now share a schema, the result is uniform and can be filtered, joined, or visualised without source-specific code paths; use the <code>source</code> column to distinguish GHO from SDG rows.</p></li>
+<li><p>New <code><a href="../reference/m49_to_iso3.html">m49_to_iso3()</a></code>: maps UN M49 numeric area codes to ISO3 country codes, the counterpart to <code><a href="../reference/iso3_to_m49.html">iso3_to_m49()</a></code>. Accepts zero-padded (<code>"076"</code>) and bare (<code>"76"</code>) input. Non-Member areas — including region / world aggregates — return <code>NA</code>. Used internally by <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> to populate the new <code>iso3</code> column.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-7-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-7-0"></a></h3>
+<ul><li><p>Fixed a duplicate definition of <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code>: the function was defined in both <code>R/sdg.R</code> and <code>R/sdg_coverage.R</code>, and R’s alphabetical source-file loading meant the wrong copy (with a fragile <code>\r</code> composite-key separator and no upfront <code>.resolve_area()</code> call) was the one actually in effect. The surviving implementation now uses <code>\x1f</code> as the composite-key separator and resolves the <code>area</code> argument up-front, so the documented “unknown ISO3 codes warn and are dropped” message surfaces cleanly from <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> rather than being swallowed inside an internal call to <code><a href="../reference/sdg_data.html">sdg_data()</a></code>.</p></li>
+<li><p><code>.gho_get()</code> now sets a 20-second per-request timeout and applies the same exponential backoff (<code>backoff = ~ min(2 ^ .x, 30)</code>) as <code>.sdg_get()</code>. Previously a hung upstream request could stall an entire <code><a href="../reference/gho_data.html">gho_data()</a></code> call indefinitely.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-7-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-7-0"></a></h3>
+<ul><li>All network examples now use <code>\donttest{}</code> instead of <code>\dontrun{}</code>, so CRAN reviewers can opt to run them.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-0-7-0">Internal<a class="anchor" aria-label="anchor" href="#internal-0-7-0"></a></h3>
+<ul><li><p>Added <code>httptest2</code> to Suggests. The GHO and SDG helpers gain offline regression tests covering the empty <code>value=[]</code> fix, the OData pagination loop, the multi-value SDG <code>indicator</code> / <code>areaCode</code> repeated-key URL form, the client-side SDG year filter, and the graceful-failure behaviour on HTTP errors.</p></li>
+<li><p>Test coverage expanded for <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code>, <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code>, <code><a href="../reference/m49_to_iso3.html">m49_to_iso3()</a></code>, <code>scale_*_dsi_col()</code>, the <code>who_countries</code> dataset, and the regional ISO3 vectors.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="dsir-060">DSIR 0.6.0<a class="anchor" aria-label="anchor" href="#dsir-060"></a></h2>
 <div class="section level3">
