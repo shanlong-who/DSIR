@@ -61,6 +61,16 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   `.sdg_get()`. Previously a hung upstream request could stall an
   entire `gho_data()` call indefinitely.
 
+* `gho_clean()` now actually populates the `indicator` column. The
+  GHO data endpoint (`/api/{IndicatorCode}`) does not return
+  `IndicatorName`, so the old implementation left `indicator` `NA`
+  for every row despite the documented mapping. `gho_clean()` now
+  lazy-loads the indicator catalog (via `gho_indicators()`) once per
+  R session and resolves `IndicatorCode` against it to fill the
+  `indicator` column with the human-readable name. The output
+  schema is unchanged; if the catalog cannot be fetched, `indicator`
+  falls back to `NA` and a warning surfaces from `gho_indicators()`.
+
 ## Documentation
 
 * All network examples now use `\donttest{}` instead of `\dontrun{}`,

@@ -1,3 +1,8 @@
+# Package-level cache for session-scoped data. Currently used to memoise
+# the GHO indicator catalog (see .gho_indicator_catalog()).
+.dsi_cache <- new.env(parent = emptyenv())
+
+
 #' List GHO Indicators
 #'
 #' Fetches the catalog of indicators from the WHO Global Health
@@ -398,6 +403,27 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 }
 
 
+#' @noRd
+.gho_indicator_catalog <- function() {
+  if (is.null(.dsi_cache$gho_indicator_catalog)) {
+    .dsi_cache$gho_indicator_catalog <- gho_indicators()
+  }
+  .dsi_cache$gho_indicator_catalog
+}
+
+
+#' @noRd
+.gho_resolve_indicator_name <- function(codes) {
+  if (all(is.na(codes))) return(.fill_na(length(codes), "chr"))
+
+  catalog <- .gho_indicator_catalog()
+
+  if (nrow(catalog) == 0L) return(.fill_na(length(codes), "chr"))
+
+  catalog$IndicatorName[match(codes, catalog$IndicatorCode)]
+}
+
+
 #' Tidy a GHO Data Frame
 #'
 #' Selects, renames, and type-casts the most useful columns from a GHO
@@ -408,7 +434,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'
 #' The mapping (GHO source → unified column) is:
 #' * `IndicatorCode` → `id`
-#' * `IndicatorName` → `indicator`
+#' * `IndicatorCode` resolved against the GHO indicator catalog →
+#'   `indicator` (the human-readable name; cached at session level
+#'   after the first call)
 #' * `SpatialDim`    → `location`; also `iso3` when it matches a WHO
 #'   Member State, otherwise `iso3 = NA`
 #' * `TimeDim`       → `year` (integer)
@@ -424,6 +452,15 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' Source columns absent from `df` (e.g. `Low` / `High` for indicators
 #' without confidence intervals) are filled with typed `NA`, so the
 #' output always has the same 15 columns with the same column types.
+#'
+#' The GHO data endpoint (`/api/{IndicatorCode}`) does not return
+#' `IndicatorName`; that field lives on the catalog endpoint queried by
+#' [gho_indicators()]. On the first call within an R session,
+#' `gho_clean()` fetches the catalog once and caches it for the rest of
+#' the session, so the `indicator` column carries the full
+#' human-readable indicator name. If the catalog cannot be fetched
+#' (e.g. no network), [gho_indicators()] emits a warning and the
+#' `indicator` column falls back to `NA`.
 #'
 #' @param df A data frame returned by [gho_data()].
 #'
@@ -474,7 +511,7 @@ gho_clean <- function(df) {
   out <- tibble::tibble(
     source        = rep("gho", n),
     id            = pick_chr("IndicatorCode"),
-    indicator     = pick_chr("IndicatorName"),
+    indicator     = .gho_resolve_indicator_name(pick_chr("IndicatorCode")),
     location      = location,
     iso3          = iso3,
     location_name = .fill_na(n, "chr"),

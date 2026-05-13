@@ -89,11 +89,14 @@ test_that("gho_clean sets iso3 to NA for non-Member spatial codes", {
 })
 
 test_that("gho_clean fills missing source columns with typed NA", {
+  # "NOT_IN_CATALOG" misses the helper-injected catalog, so `indicator`
+  # falls back to NA via catalog-miss rather than via a missing source
+  # column (the old IndicatorName route — no longer used).
   raw <- tibble::tibble(
-    IndicatorCode = "WHOSIS_000001",
+    IndicatorCode = "NOT_IN_CATALOG",
     SpatialDim    = "FRA",
     TimeDim       = 2019L
-    # IndicatorName, Value, NumericValue, Low, High, Dim1-3 all absent
+    # Value, NumericValue, Low, High, Dim1-3 all absent
   )
   out <- gho_clean(raw)
   expect_named(out, unified_cols)
@@ -105,6 +108,82 @@ test_that("gho_clean fills missing source columns with typed NA", {
   expect_true(is.na(out$high))
   expect_type(out$value_num, "double")
   expect_type(out$year,      "integer")
+})
+
+# ── gho_clean: indicator column resolved from catalog ────────────────
+
+test_that("gho_clean populates indicator from the GHO catalog", {
+  # Helper pre-populates the cache with WHOSIS_000001 → "Life
+  # expectancy at birth (years)". gho_clean() should pick that up
+  # from IndicatorCode alone, even when the source frame does not
+  # carry IndicatorName (which the data endpoint never returns).
+  raw <- tibble::tibble(
+    IndicatorCode = c("WHOSIS_000001", "WHOSIS_000001"),
+    SpatialDim    = c("FRA", "DEU"),
+    TimeDim       = c(2019L, 2019L),
+    Value         = c("82.5", "81.0"),
+    NumericValue  = c(82.5, 81.0)
+  )
+  out <- gho_clean(raw)
+  expect_true(all(out$indicator == "Life expectancy at birth (years)"))
+})
+
+test_that(".gho_indicator_catalog() reads from the cache deterministically", {
+  old <- .dsi_cache$gho_indicator_catalog
+  on.exit(.dsi_cache$gho_indicator_catalog <- old, add = TRUE)
+
+  marker <- tibble::tibble(
+    IndicatorCode = "MARKER_XYZ",
+    IndicatorName = "test marker",
+    Language      = "EN"
+  )
+  .dsi_cache$gho_indicator_catalog <- marker
+
+  expect_identical(.gho_indicator_catalog(), marker)
+  # A second call must not replace the cached value.
+  invisible(.gho_indicator_catalog())
+  expect_identical(.dsi_cache$gho_indicator_catalog, marker)
+})
+
+test_that("gho_clean falls back to NA indicator when the catalog is empty", {
+  old <- .dsi_cache$gho_indicator_catalog
+  on.exit(.dsi_cache$gho_indicator_catalog <- old, add = TRUE)
+  .dsi_cache$gho_indicator_catalog <- tibble::tibble(
+    IndicatorCode = character(),
+    IndicatorName = character(),
+    Language      = character()
+  )
+
+  raw <- tibble::tibble(
+    IndicatorCode = "WHOSIS_000001",
+    SpatialDim    = "FRA",
+    TimeDim       = 2019L,
+    Value         = "82.5",
+    NumericValue  = 82.5
+  )
+  out <- gho_clean(raw)
+  expect_equal(nrow(out), 1L)
+  expect_true(is.na(out$indicator))
+})
+
+test_that("gho_clean populates indicator from live catalog (integration)", {
+  skip_on_cran()
+  skip_if_offline()
+
+  old <- .dsi_cache$gho_indicator_catalog
+  on.exit(.dsi_cache$gho_indicator_catalog <- old, add = TRUE)
+  rm("gho_indicator_catalog", envir = .dsi_cache)
+
+  raw <- gho_data("WHOSIS_000001", area = "FRA")
+  skip_if(nrow(raw) == 0L, "GHO returned no rows for WHOSIS_000001/FRA")
+
+  clean <- gho_clean(raw)
+  expect_true(any(!is.na(clean$indicator)))
+  expect_match(
+    clean$indicator[!is.na(clean$indicator)][1],
+    "life expectancy",
+    ignore.case = TRUE
+  )
 })
 
 # ── sdg_clean: realistic row ─────────────────────────────────────────

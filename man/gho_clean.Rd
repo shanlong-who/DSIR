@@ -28,7 +28,9 @@ directly with \code{\link[=bind_indicators]{bind_indicators()}}.
 The mapping (GHO source → unified column) is:
 \itemize{
 \item \code{IndicatorCode} → \code{id}
-\item \code{IndicatorName} → \code{indicator}
+\item \code{IndicatorCode} resolved against the GHO indicator catalog →
+\code{indicator} (the human-readable name; cached at session level
+after the first call)
 \item \code{SpatialDim}    → \code{location}; also \code{iso3} when it matches a WHO
 Member State, otherwise \code{iso3 = NA}
 \item \code{TimeDim}       → \code{year} (integer)
@@ -45,6 +47,15 @@ need names) and \code{series} (an SDG-only concept).
 Source columns absent from \code{df} (e.g. \code{Low} / \code{High} for indicators
 without confidence intervals) are filled with typed \code{NA}, so the
 output always has the same 15 columns with the same column types.
+
+The GHO data endpoint (\verb{/api/\{IndicatorCode\}}) does not return
+\code{IndicatorName}; that field lives on the catalog endpoint queried by
+\code{\link[=gho_indicators]{gho_indicators()}}. On the first call within an R session,
+\code{gho_clean()} fetches the catalog once and caches it for the rest of
+the session, so the \code{indicator} column carries the full
+human-readable indicator name. If the catalog cannot be fetched
+(e.g. no network), \code{\link[=gho_indicators]{gho_indicators()}} emits a warning and the
+\code{indicator} column falls back to \code{NA}.
 }
 \examples{
 \donttest{
