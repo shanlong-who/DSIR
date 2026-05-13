@@ -17,8 +17,9 @@
     output no longer has 11 columns; it has 15. New columns include
     `source` (`"gho"`), `iso3` (the ISO3 alpha-3 code when the spatial
     dim matches a WHO Member State, `NA` otherwise), `location_name`
-    (always `NA` — GHO does not return names), and `series` (always `NA`
-    — an SDG-only concept).
+    (resolved against `who_countries` and WHO regional codes; see the
+    bug-fix note below), and `series` (always `NA` — an SDG-only
+    concept).
   - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
     output no longer has 10 columns and is reshaped to the unified
     schema. Several columns moved or were renamed: the SDG `goal` and
@@ -75,6 +76,21 @@
   `.sdg_get()`. Previously a hung upstream request could stall an entire
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
   call indefinitely.
+
+- [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  and
+  [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+  now populate `location_name` consistently across both APIs. WHO Member
+  States are resolved against `who_countries$name_short` in both
+  cleaners, so the same country has the same `location_name` regardless
+  of source.
+  [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  additionally resolves the WHO regional codes (`AFR`, `AMR`, `SEAR`,
+  `EUR`, `EMR`, `WPR`) and `GLOBAL` to their human-readable names.
+  [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+  falls back to the SDG API’s original `geoAreaName` for
+  non-Member-State rows (e.g. regional and world aggregates), preserving
+  information that `who_countries` does not carry.
 
 - [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
   now actually populates the `indicator` column. The GHO data endpoint

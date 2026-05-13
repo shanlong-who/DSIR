@@ -34,7 +34,7 @@ Version bumped to 0.7.0 in `DESCRIPTION`. All planned code is written,
 tested, exported, and described in `NEWS.md`. README and vignette are
 updated to reflect the new schema. `devtools::check()` is clean (0
 errors / 0 warnings / 0 notes), including `--run-donttest` and vignette
-rebuild. `devtools::test()` is **449 PASS / 0 FAIL / 0 SKIP**.
+rebuild. `devtools::test()` is **483 PASS / 0 FAIL / 0 SKIP**.
 
 0.6.0 was already shipped to the GitHub `main` branch (commits
 `1eeee49`, `15cb85a`, `4eb5a08`, `78e79e4`, `1debc4b`) but never reached
@@ -66,8 +66,11 @@ For SDG specifically: `id` now holds the **indicator code**
 series code (e.g. `"SH_DTH_NCD"`). `dim1` / `dim2` / `dim3` are always
 NA for SDG (GHO-only).
 
-For GHO specifically: `location_name` and `series` are always NA. `dim1`
-/ `dim2` / `dim3` come from `Dim1` / `Dim2` / `Dim3`.
+For GHO specifically: `series` is always NA (SDG-only concept).
+`location_name` is resolved from `location` against
+`who_countries$name_short` plus a hardcoded WHO regional/GLOBAL map (see
+the location_name fix below). `dim1` / `dim2` / `dim3` come from `Dim1`
+/ `Dim2` / `Dim3`.
 
 **New functions:** - `bind_indicators(...)` — variadic, rbinds any
 number of cleaned tibbles into one. Validates that each input has the
@@ -110,7 +113,28 @@ fires. -
 **[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
 example simplified.** The first example was `sdg_data("1.1.1")`
 (unfiltered, 26+ pages) — too slow for `R CMD check`. Now
-`sdg_data("1.1.1", area = "PHL")`.
+`sdg_data("1.1.1", area = "PHL")`. -
+**[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+/
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+cross-API `location_name` consistency.** Before the fix,
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+left `location_name` always NA (GHO data endpoint returns no name
+field), and
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+used the SDG API’s raw `geoAreaName`. The two sides could disagree on
+the spelling for the same country, breaking
+[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+consumers that group by `location_name`. New helpers
+`.gho_resolve_location_name()` and `.sdg_resolve_location_name()` (in
+`R/gho.R` / `R/sdg.R`) route both cleaners through
+`who_countries$name_short` for WHO Member States. GHO additionally
+resolves the regional codes
+`AFR / AMR / SEAR / EUR / EMR / WPR / GLOBAL` to human names via a
+hardcoded map. SDG falls back to the raw `geoAreaName` for non-Member
+rows (region/world aggregates), preserving information `who_countries`
+does not carry. Schema, column order, and types unchanged — zero
+breaking change.
 
 **Documentation:** - All network examples switched from `\dontrun{}` to
 `\donttest{}`. CRAN reviewers can opt to run them;
@@ -168,6 +192,22 @@ the same `mock_json()` pattern as `test-gho-get-mock.R` /
   `NA`. This is a pure-lookup check, not a regex — so weird-but-valid
   3-letter codes like `"COG"` work, but region codes (`"EUR"`,
   `"GLOBAL"`) correctly get NA.
+- **`location_name` resolution.** Both cleaners delegate to a small
+  helper next to the public function:
+  `.gho_resolve_location_name(location)` in `R/gho.R` and
+  `.sdg_resolve_location_name(iso3, raw_geo_area_name)` in `R/sdg.R`.
+  GHO order of resolution: ISO3 → `who_countries$name_short`, else WHO
+  regional code → hardcoded `region_names` map
+  (`AFR/AMR/SEAR/EUR/EMR/WPR/GLOBAL`), else NA. SDG order: ISO3 →
+  `who_countries$name_short`, else SDG API raw `geoAreaName`, else NA.
+  The hardcoded regional map is intentionally **GHO-only** — SDG
+  `geoAreaName` already carries readable names for M49 region/world
+  aggregates (`"World"`, `"Sub-Saharan Africa"`, etc.), so duplicating
+  that map on the SDG side would be redundant and fragile. The “fallback
+  to `geoAreaName`” rule means SDG output retains a `location_name` for
+  rows where ISO3 is NA (region/world aggregates), while GHO output is
+  `NA` for unknown/non-Member spatial codes. That asymmetry is by
+  design: GHO has no equivalent of `geoAreaName` to fall back on.
 - **SDG `indicator` column source.** Comes from `seriesDescription` in
   the raw
   [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)

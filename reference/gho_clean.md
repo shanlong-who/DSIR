@@ -26,10 +26,10 @@ gho_clean(df)
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with 15
 columns: `source` (always `"gho"`), `id`, `indicator`, `location`,
-`iso3`, `location_name` (`NA`), `year`, `value`, `value_num`, `low`,
-`high`, `series` (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location`
-then `year`. Empty input returns an empty tibble with the same columns
-and types.
+`iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
+`series` (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location` then
+`year`. Empty input returns an empty tibble with the same columns and
+types.
 
 ## Details
 
@@ -54,10 +54,12 @@ The mapping (GHO source → unified column) is:
 
 - `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 
-Two columns are always present but never populated for GHO output:
-`location_name` (no GHO field for it; use
+The `series` column is always `NA` for GHO output (it is an SDG-only
+concept). The `location_name` column is populated by looking up
+`location` (an ISO3 code or a WHO region code) against the
 [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
-if you need names) and `series` (an SDG-only concept).
+dataset and a hardcoded set of WHO regional names; locations that match
+neither (e.g. non-Member State areas) are left as `NA`.
 
 Source columns absent from `df` (e.g. `Low` / `High` for indicators
 without confidence intervals) are filled with typed `NA`, so the output
@@ -90,16 +92,16 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
 #> # A tibble: 12,210 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 43.2…      43.2
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 46.7…      46.7
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   NA             2000 40.0…      40  
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 43.5…      43.5
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 46.8…      46.8
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   NA             2001 40.5…      40.5
-#>  7 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 46.0…      46  
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 43.1…      43.1
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   NA             2002 40.3…      40.3
-#> 10 gho    NCDMORT3… Probabil… AFG      AFG   NA             2003 42.5…      42.5
+#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
+#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
+#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.5…      42.5
 #> # ℹ 12,200 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>

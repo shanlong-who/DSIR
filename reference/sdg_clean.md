@@ -46,7 +46,12 @@ The mapping (SDG source → unified column) is:
   for WHO Member States — region / world aggregates and non-Member areas
   get `iso3 = NA`
 
-- `geoAreaName` → `location_name`
+- `location_name` is resolved by looking up `iso3` against
+  [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
+  (so a WHO Member State has the same `location_name` here and in
+  [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  output), with a fallback to the SDG API's raw `geoAreaName` for
+  non-Member-State rows (e.g. regional / world aggregates)
 
 - `timePeriodStart` → `year` (integer)
 

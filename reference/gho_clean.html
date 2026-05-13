@@ -66,9 +66,9 @@ directly with <code><a href="bind_indicators.html">bind_indicators()</a></code>.
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> with 15 columns: <code>source</code> (always
-<code>"gho"</code>), <code>id</code>, <code>indicator</code>, <code>location</code>, <code>iso3</code>, <code>location_name</code>
-(<code>NA</code>), <code>year</code>, <code>value</code>, <code>value_num</code>, <code>low</code>, <code>high</code>, <code>series</code>
-(<code>NA</code>), <code>dim1</code>, <code>dim2</code>, <code>dim3</code>. Sorted by <code>location</code> then <code>year</code>.
+<code>"gho"</code>), <code>id</code>, <code>indicator</code>, <code>location</code>, <code>iso3</code>, <code>location_name</code>,
+<code>year</code>, <code>value</code>, <code>value_num</code>, <code>low</code>, <code>high</code>, <code>series</code> (<code>NA</code>),
+<code>dim1</code>, <code>dim2</code>, <code>dim3</code>. Sorted by <code>location</code> then <code>year</code>.
 Empty input returns an empty tibble with the same columns and
 types.</p>
     </div>
@@ -85,9 +85,12 @@ Member State, otherwise <code>iso3 = NA</code></p></li>
 <li><p><code>NumericValue</code>  → <code>value_num</code> (numeric)</p></li>
 <li><p><code>Low</code>, <code>High</code>   → <code>low</code>, <code>high</code> (numeric)</p></li>
 <li><p><code>Dim1</code>, <code>Dim2</code>, <code>Dim3</code> → <code>dim1</code>, <code>dim2</code>, <code>dim3</code> (character)</p></li>
-</ul><p>Two columns are always present but never populated for GHO output:
-<code>location_name</code> (no GHO field for it; use <code><a href="who_countries.html">who_countries</a></code> if you
-need names) and <code>series</code> (an SDG-only concept).</p>
+</ul><p>The <code>series</code> column is always <code>NA</code> for GHO output (it is an SDG-only
+concept). The <code>location_name</code> column is populated by looking up
+<code>location</code> (an ISO3 code or a WHO region code) against the
+<code><a href="who_countries.html">who_countries</a></code> dataset and a hardcoded set of WHO regional names;
+locations that match neither (e.g. non-Member State areas) are left
+as <code>NA</code>.</p>
 <p>Source columns absent from <code>df</code> (e.g. <code>Low</code> / <code>High</code> for indicators
 without confidence intervals) are filled with typed <code>NA</code>, so the
 output always has the same 15 columns with the same column types.</p>
@@ -115,16 +118,16 @@ human-readable indicator name. If the catalog cannot be fetched
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,210 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    source id        indicator location iso3  location_name  year value value_num</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>000 43.2…      43.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>000 46.7…      46.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>000 40.0…      40  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>001 43.5…      43.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>001 46.8…      46.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>001 40.5…      40.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>002 46.0…      46  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>002 43.1…      43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>002 40.3…      40.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">2</span>003 42.5…      42.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2…      43.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 46.7…      46.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40.0…      40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 43.5…      43.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8…      46.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5…      40.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46.0…      46  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1…      43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3…      40.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 42.5…      42.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,200 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>

@@ -81,7 +81,11 @@ label; <code>NA</code> if the API response does not include it)</p></li>
 as character); also <code>iso3</code> via <code><a href="m49_to_iso3.html">m49_to_iso3()</a></code> for WHO Member
 States — region / world aggregates and non-Member areas get
 <code>iso3 = NA</code></p></li>
-<li><p><code>geoAreaName</code>                        → <code>location_name</code></p></li>
+<li><p><code>location_name</code> is resolved by looking up <code>iso3</code> against
+<code><a href="who_countries.html">who_countries</a></code> (so a WHO Member State has the same
+<code>location_name</code> here and in <code><a href="gho_clean.html">gho_clean()</a></code> output), with a
+fallback to the SDG API's raw <code>geoAreaName</code> for non-Member-State
+rows (e.g. regional / world aggregates)</p></li>
 <li><p><code>timePeriodStart</code>                    → <code>year</code> (integer)</p></li>
 <li><p><code>value</code>                              → <code>value</code> (character; raw)
 and <code>value_num</code> (numeric; <code>NA</code> for non-numeric entries like
