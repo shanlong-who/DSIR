@@ -64,7 +64,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sdg_goals()
 #' sdg_goals(include_children = TRUE)
 #' }
@@ -90,7 +90,7 @@ sdg_goals <- function(include_children = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sdg_targets()
 #' }
 sdg_targets <- function(include_children = FALSE) {
@@ -131,7 +131,7 @@ sdg_targets <- function(include_children = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Full list
 #' sdg_indicators()
 #'
@@ -191,7 +191,7 @@ sdg_indicators <- function(search = NULL) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sdg_areas()
 #' }
 sdg_areas <- function() {
@@ -225,15 +225,14 @@ sdg_areas <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # All data for indicator 1.1.1
-#' sdg_data("1.1.1")
+#' \donttest{
+#' # One indicator, one country — the typical entry point
+#' sdg_data("1.1.1", area = "PHL")
 #'
-#' # Specific area and year range
+#' # Specific area and year range (M49 code)
 #' sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
 #'
 #' # ISO3 codes work directly — DSIR's regional vectors can be passed in
-#' sdg_data("3.4.1", area = wpro_cty)
 #' sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
 #' }
 sdg_data <- function(indicator, area = NULL,
@@ -281,11 +280,11 @@ sdg_data <- function(indicator, area = NULL,
     return(tibble::tibble())
   }
 
-  # Default `make.row.names = TRUE` so rbind disambiguates the
-  # per-page tibble row names (which are otherwise "1", "2", ...
-  # repeated across pages and would error). The names are then
-  # discarded by tibble::as_tibble.
-  out <- do.call(rbind, all_data)
+  # `make.row.names = FALSE` is essential: with the default TRUE, rbind
+  # tries to combine each tibble's "1".."pageSize" row names, which
+  # collide across pages and trip `duplicate 'row.names' are not allowed`
+  # for indicators that span more than one full page.
+  out <- do.call(rbind, c(all_data, list(make.row.names = FALSE)))
   out <- tibble::as_tibble(out)
 
   # Client-side year filter — workaround for UN SDG API bug where
@@ -309,143 +308,47 @@ sdg_data <- function(indicator, area = NULL,
 }
 
 
-#' Summarise Series-Level Coverage of an SDG Indicator
-#'
-#' Fetches an SDG indicator via [sdg_data()] and summarises how each
-#' constituent **series** is covered, by location and year. SDG
-#' indicators are typically published as several series stratified
-#' by sex, age, cause, vaccine, or similar — for example, indicator
-#' `"3.b.1"` (vaccine coverage) is split into `SH_ACS_DTP3`,
-#' `SH_ACS_MCV2`, `SH_ACS_PCV3`, and `SH_ACS_HPV`. Each series can
-#' have its own country / year coverage; `sdg_coverage()` makes
-#' those differences visible before committing to an analysis.
-#'
-#' This is a *series-exploration* helper, not an availability
-#' precheck. SDG data is generally complete enough that GHO-style
-#' [gho_has_data()] / [gho_count()] analogues add little value, and
-#' are intentionally not provided. The more useful pre-analysis
-#' question for SDG is "which series exist, and how is each
-#' covered?", which is what this function answers.
-#'
-#' @param indicator Character scalar. The indicator code
-#'   (e.g. `"3.b.1"`). Use [sdg_indicators()] to find codes.
-#' @param area Character vector of country/area codes. Accepts either
-#'   ISO3 codes (e.g. `c("PHL", "FRA")`) — converted automatically via
-#'   [iso3_to_m49()] — or UN M49 numeric codes (e.g. `c("608", "250")`)
-#'   as returned by [sdg_areas()]. Do not mix the two formats in a
-#'   single call. Default `NULL` returns all areas.
-#' @param year_from Numeric. Start year filter (inclusive).
-#'   Default `NULL`.
-#' @param year_to Numeric. End year filter (inclusive).
-#'   Default `NULL`.
-#'
-#' @return A [tibble][tibble::tibble] with one row per
-#'   `(location, series)` combination and columns:
-#' * `location` (chr) — the `geoAreaCode` value (M49 numeric, as a
-#'   string).
-#' * `series` (chr) — the SDG series code (e.g. `"SH_ACS_DTP3"`).
-#' * `year_min` (int) — earliest year with data.
-#' * `year_max` (int) — latest year with data.
-#' * `n_obs` (int) — number of observations.
-#'
-#'   Sorted by `location`, then `series`. Empty input or service
-#'   failure returns an empty tibble with the same five columns
-#'   and the same column types.
-#' @seealso [sdg_data()], [sdg_indicators()], [gho_coverage()].
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Vaccine coverage in China and Brazil — four series per country
-#' sdg_coverage("3.b.1", area = c("156", "76"))
-#'
-#' # NCD mortality in WPR since 2010
-#' sdg_coverage("3.4.1", area = wpro_cty, year_from = 2010)
-#' }
-sdg_coverage <- function(indicator, area = NULL,
-                         year_from = NULL, year_to = NULL) {
-  area <- .resolve_area(area)
-  empty <- tibble::tibble(
-    location = character(),
-    series   = character(),
-    year_min = integer(),
-    year_max = integer(),
-    n_obs    = integer()
-  )
-
-  res <- suppressWarnings(
-    sdg_data(indicator, area = area,
-             year_from = year_from, year_to = year_to)
-  )
-  if (!is.data.frame(res) || nrow(res) == 0L) return(empty)
-  if (!all(c("geoAreaCode", "timePeriodStart", "series") %in% names(res))) {
-    return(empty)
-  }
-
-  loc <- as.character(res$geoAreaCode)
-  ser <- as.character(res$series)
-  yr  <- suppressWarnings(as.integer(res$timePeriodStart))
-
-  # Composite key: \x1f (US, unit separator) cannot appear in either
-  # an M49 numeric code or an SDG series code, so it safely separates
-  # the two parts and the split is unambiguous.
-  key <- paste(loc, ser, sep = "\x1f")
-  by_key <- split(seq_along(key), key)
-  by_key <- by_key[order(names(by_key))]
-
-  yr_range <- function(x, fn) {
-    x <- x[!is.na(x)]
-    if (length(x) == 0L) NA_integer_ else as.integer(fn(x))
-  }
-
-  parts <- strsplit(names(by_key), "\x1f", fixed = TRUE)
-  tibble::tibble(
-    location = vapply(parts, `[[`, character(1), 1L),
-    series   = vapply(parts, `[[`, character(1), 2L),
-    year_min = vapply(by_key, function(i) yr_range(yr[i], min), integer(1)),
-    year_max = vapply(by_key, function(i) yr_range(yr[i], max), integer(1)),
-    n_obs    = vapply(by_key, length, integer(1))
-  )
-}
-
-
 #' Tidy an SDG Data Frame
 #'
-#' Selects and renames the most useful columns from an SDG
-#' observation table returned by [sdg_data()], producing a compact
-#' tibble suitable for downstream analysis.
+#' Selects, renames, and type-casts the most useful columns from an
+#' SDG observation table returned by [sdg_data()], producing a compact
+#' tibble in the **unified DSIR cleaned-indicator schema** — the same
+#' schema produced by [gho_clean()], so the two outputs can be combined
+#' directly with [bind_indicators()].
 #'
-#' The mapping is:
-#' * `goal`            -> `goal`
-#' * `target`          -> `target`
-#' * `indicator`       -> `indicator` (flattened to the first code
-#'   when the source column is a list)
-#' * `series`          -> `series`
-#' * `geoAreaCode`     -> `location`
-#' * `geoAreaName`     -> `location_name`
-#' * `timePeriodStart` -> `year`
-#' * `value`           -> `value`
-#' * `lowerBound`      -> `low`
-#' * `upperBound`      -> `high`
+#' The mapping (SDG source → unified column) is:
+#' * `indicator` (list-column, flattened) → `id` (e.g. `"3.4.1"`)
+#' * `seriesDescription`                  → `indicator` (human-readable
+#'   label; `NA` if the API response does not include it)
+#' * `geoAreaCode`                        → `location` (UN M49 numeric,
+#'   as character); also `iso3` via [m49_to_iso3()] for WHO Member
+#'   States — region / world aggregates and non-Member areas get
+#'   `iso3 = NA`
+#' * `geoAreaName`                        → `location_name`
+#' * `timePeriodStart`                    → `year` (integer)
+#' * `value`                              → `value` (character; raw)
+#'   and `value_num` (numeric; `NA` for non-numeric entries like
+#'   `"<0.1"` or aggregate notes)
+#' * `lowerBound`, `upperBound`           → `low`, `high` (numeric)
+#' * `series`                             → `series`
 #'
-#' Source columns that are absent from `df` are filled with `NA`,
-#' so the output always has the same ten columns. `value`, `low`
-#' and `high` are returned in their original character form because
-#' the SDG API returns non-numeric values (e.g. `"<0.1"` or
-#' aggregate notes) for some rows; coerce with [as.numeric()]
-#' downstream when appropriate.
+#' Three columns are always present but never populated for SDG
+#' output: `dim1`, `dim2`, `dim3` (GHO-only concepts).
 #'
 #' @param df A data frame returned by [sdg_data()].
 #'
-#' @return A [tibble][tibble::tibble] with columns `goal`, `target`,
-#'   `indicator`, `series`, `location`, `location_name`, `year`,
-#'   `value`, `low`, `high`, sorted by `location` then `year`. An
-#'   empty input returns an empty tibble with the same columns.
-#' @seealso [sdg_data()].
+#' @return A [tibble][tibble::tibble] with 15 columns: `source` (always
+#'   `"sdg"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
+#'   `year`, `value`, `value_num`, `low`, `high`, `series`, `dim1`
+#'   (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by `location` then
+#'   `year`. Empty input returns an empty tibble with the same columns
+#'   and types.
+#' @seealso [sdg_data()], [gho_clean()], [bind_indicators()],
+#'   [m49_to_iso3()].
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' sdg_data("3.2.1", area = "156", year_from = 2015) |>
 #'   sdg_clean()
 #' }
@@ -454,32 +357,58 @@ sdg_clean <- function(df) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
 
-  rename_map <- c(
-    goal          = "goal",
-    target        = "target",
-    indicator     = "indicator",
-    series        = "series",
-    location      = "geoAreaCode",
-    location_name = "geoAreaName",
-    year          = "timePeriodStart",
-    value         = "value",
-    low           = "lowerBound",
-    high          = "upperBound"
-  )
-
   n <- nrow(df)
-  cols <- lapply(rename_map, function(src) {
-    if (!src %in% names(df)) return(rep(NA, n))
+  if (n == 0L) return(.dsi_empty_clean())
+
+  flatten_chr <- function(src) {
+    if (!src %in% names(df)) return(.fill_na(n, "chr"))
     x <- df[[src]]
     if (is.list(x)) {
       vapply(x, function(v) {
-        if (length(v) == 0) NA_character_ else as.character(v[[1]])
+        if (length(v) == 0L) NA_character_ else as.character(v[[1]])
       }, character(1))
     } else {
-      x
+      as.character(x)
     }
-  })
-  out <- tibble::as_tibble(cols)
+  }
+  pick_chr <- function(src) {
+    if (src %in% names(df)) as.character(df[[src]]) else .fill_na(n, "chr")
+  }
+  pick_num <- function(src) {
+    if (src %in% names(df)) {
+      suppressWarnings(as.numeric(df[[src]]))
+    } else {
+      .fill_na(n, "num")
+    }
+  }
+  pick_int <- function(src) {
+    if (src %in% names(df)) {
+      suppressWarnings(as.integer(df[[src]]))
+    } else {
+      .fill_na(n, "int")
+    }
+  }
+
+  location <- pick_chr("geoAreaCode")
+  value_chr <- pick_chr("value")
+
+  out <- tibble::tibble(
+    source        = rep("sdg", n),
+    id            = flatten_chr("indicator"),
+    indicator     = pick_chr("seriesDescription"),
+    location      = location,
+    iso3          = m49_to_iso3(location),
+    location_name = pick_chr("geoAreaName"),
+    year          = pick_int("timePeriodStart"),
+    value         = value_chr,
+    value_num     = suppressWarnings(as.numeric(value_chr)),
+    low           = pick_num("lowerBound"),
+    high          = pick_num("upperBound"),
+    series        = pick_chr("series"),
+    dim1          = .fill_na(n, "chr"),
+    dim2          = .fill_na(n, "chr"),
+    dim3          = .fill_na(n, "chr")
+  )
 
   out[order(out$location, out$year), , drop = FALSE]
 }

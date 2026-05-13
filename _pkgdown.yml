@@ -39,6 +39,7 @@ reference:
   - pic_cty
   - iso3_to_region
   - iso3_to_m49
+  - m49_to_iso3
 - title: GHO indicator data
   desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
   contents:
@@ -49,6 +50,7 @@ reference:
   - gho_count
   - gho_coverage
   - gho_has_data
+  - bind_indicators
 - title: SDG indicator data
   desc: Functions for fetching and cleaning data from the UN SDG API.
   contents:

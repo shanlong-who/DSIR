@@ -36,7 +36,7 @@ Fetches the list of SDG indicators from the UN SDG API, with
 optional keyword filtering on the indicator description.
 }
 \examples{
-\dontrun{
+\donttest{
 # Full list
 sdg_indicators()
 

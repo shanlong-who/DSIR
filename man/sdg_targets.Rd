@@ -18,7 +18,7 @@ A list (or \link[tibble:tibble]{tibble}) of SDG targets, or
 Fetches the list of SDG targets from the UN SDG API.
 }
 \examples{
-\dontrun{
+\donttest{
 sdg_targets()
 }
 }

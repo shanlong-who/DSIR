@@ -39,7 +39,7 @@ OData API, with optional filters by spatial level, country /
 region and year range.
 }
 \examples{
-\dontrun{
+\donttest{
 # Country-level data for one indicator
 gho_data("NCDMORT3070", spatial_type = "country")
 

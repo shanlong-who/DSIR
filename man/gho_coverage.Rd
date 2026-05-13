@@ -52,7 +52,7 @@ answering "which countries have data, and for what years?"
 before committing to a full download.
 }
 \examples{
-\dontrun{
+\donttest{
 # Year coverage of life expectancy for three countries
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 

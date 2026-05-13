@@ -21,7 +21,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # All indicators
 #' inds <- gho_indicators()
 #'
@@ -98,7 +98,7 @@ gho_indicators <- function(search = NULL) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Country-level data for one indicator
 #' gho_data("NCDMORT3070", spatial_type = "country")
 #'
@@ -205,7 +205,7 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Does WHO have life-expectancy data for France?
 #' gho_has_data("WHOSIS_000001", area = "FRA")
 #'
@@ -240,7 +240,7 @@ gho_has_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # How many rows would gho_data() pull for France?
 #' gho_count("WHOSIS_000001", area = "FRA")
 #'
@@ -259,7 +259,11 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
   resp <- tryCatch(
     httr2::request(url) |>
       httr2::req_headers(Accept = "application/json") |>
-      httr2::req_retry(max_tries = 3) |>
+      httr2::req_timeout(20) |>
+      httr2::req_retry(
+        max_tries = 3,
+        backoff   = ~ min(2 ^ .x, 30)
+      ) |>
       httr2::req_perform(),
     error = function(e) {
       cli::cli_warn(c(
@@ -314,7 +318,7 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Year coverage of life expectancy for three countries
 #' gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 #'
@@ -379,7 +383,7 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' gho_dimensions("NCDMORT3070")
 #' gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #' }
@@ -396,35 +400,44 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 
 #' Tidy a GHO Data Frame
 #'
-#' Selects and renames the most useful columns from a GHO observation
-#' table returned by [gho_data()], producing a compact tibble suitable
-#' for downstream analysis.
+#' Selects, renames, and type-casts the most useful columns from a GHO
+#' observation table returned by [gho_data()], producing a compact
+#' tibble in the **unified DSIR cleaned-indicator schema** — the same
+#' schema produced by [sdg_clean()], so the two outputs can be combined
+#' directly with [bind_indicators()].
 #'
-#' The mapping is:
-#' * `IndicatorCode` -> `id`
-#' * `SpatialDim`    -> `location`
-#' * `TimeDim`       -> `year`
-#' * `Dim1`, `Dim2`, `Dim3` -> `dim1`, `dim2`, `dim3`
-#' * `Value`         -> `value`
-#' * `NumericValue`  -> `value_num`
-#' * `Low`, `High`   -> `low`, `high`
-#' * `IndicatorName` -> `indicator`
+#' The mapping (GHO source → unified column) is:
+#' * `IndicatorCode` → `id`
+#' * `IndicatorName` → `indicator`
+#' * `SpatialDim`    → `location`; also `iso3` when it matches a WHO
+#'   Member State, otherwise `iso3 = NA`
+#' * `TimeDim`       → `year` (integer)
+#' * `Value`         → `value` (character; raw)
+#' * `NumericValue`  → `value_num` (numeric)
+#' * `Low`, `High`   → `low`, `high` (numeric)
+#' * `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 #'
-#' Source columns that are absent from `df` (for example `Low` /
-#' `High` on indicators without confidence intervals) are filled
-#' with `NA`, so the output always has the same nine columns.
+#' Two columns are always present but never populated for GHO output:
+#' `location_name` (no GHO field for it; use [`who_countries`] if you
+#' need names) and `series` (an SDG-only concept).
+#'
+#' Source columns absent from `df` (e.g. `Low` / `High` for indicators
+#' without confidence intervals) are filled with typed `NA`, so the
+#' output always has the same 15 columns with the same column types.
 #'
 #' @param df A data frame returned by [gho_data()].
 #'
-#' @return A [tibble][tibble::tibble] with columns `id`,
-#'   `location`, `year`, `dim1`, `dim2`, `dim3`, `value`, `value_num`, `low`,
-#'   `high`, `indicator`, sorted by `location` then `year`. An empty input
-#'   returns an empty tibble with the same columns.
-#' @seealso [gho_data()].
+#' @return A [tibble][tibble::tibble] with 15 columns: `source` (always
+#'   `"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`
+#'   (`NA`), `year`, `value`, `value_num`, `low`, `high`, `series`
+#'   (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location` then `year`.
+#'   Empty input returns an empty tibble with the same columns and
+#'   types.
+#' @seealso [gho_data()], [sdg_clean()], [bind_indicators()].
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' gho_data("NCDMORT3070", spatial_type = "country") |>
 #'   gho_clean()
 #' }
@@ -433,25 +446,48 @@ gho_clean <- function(df) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
 
-  rename_map <- c(
-    id        = "IndicatorCode",
-    location  = "SpatialDim",
-    year      = "TimeDim",
-    dim1      = "Dim1",
-    dim2      = "Dim2",
-    dim3      = "Dim3",
-    value     = "Value",
-    value_num = "NumericValue",
-    low       = "Low",
-    high      = "High", 
-    indicator = "IndicatorName"
-  )
-
   n <- nrow(df)
-  cols <- lapply(rename_map, function(src) {
-    if (src %in% names(df)) df[[src]] else rep(NA, n)
-  })
-  out <- tibble::as_tibble(cols)
+  if (n == 0L) return(.dsi_empty_clean())
+
+  pick_chr <- function(src) {
+    if (src %in% names(df)) as.character(df[[src]]) else .fill_na(n, "chr")
+  }
+  pick_num <- function(src) {
+    if (src %in% names(df)) {
+      suppressWarnings(as.numeric(df[[src]]))
+    } else {
+      .fill_na(n, "num")
+    }
+  }
+  pick_int <- function(src) {
+    if (src %in% names(df)) {
+      suppressWarnings(as.integer(df[[src]]))
+    } else {
+      .fill_na(n, "int")
+    }
+  }
+
+  location <- pick_chr("SpatialDim")
+  iso3     <- ifelse(location %in% who_countries$iso3,
+                     location, NA_character_)
+
+  out <- tibble::tibble(
+    source        = rep("gho", n),
+    id            = pick_chr("IndicatorCode"),
+    indicator     = pick_chr("IndicatorName"),
+    location      = location,
+    iso3          = iso3,
+    location_name = .fill_na(n, "chr"),
+    year          = pick_int("TimeDim"),
+    value         = pick_chr("Value"),
+    value_num     = pick_num("NumericValue"),
+    low           = pick_num("Low"),
+    high          = pick_num("High"),
+    series        = .fill_na(n, "chr"),
+    dim1          = pick_chr("Dim1"),
+    dim2          = pick_chr("Dim2"),
+    dim3          = pick_chr("Dim3")
+  )
 
   out[order(out$location, out$year), , drop = FALSE]
 }
@@ -468,7 +504,11 @@ gho_clean <- function(df) {
     resp <- tryCatch(
       httr2::request(next_url) |>
         httr2::req_headers(Accept = "application/json") |>
-        httr2::req_retry(max_tries = 3) |>
+        httr2::req_timeout(20) |>
+        httr2::req_retry(
+          max_tries = 3,
+          backoff   = ~ min(2 ^ .x, 30)
+        ) |>
         httr2::req_perform(),
       error = function(e) {
         cli::cli_warn(c(

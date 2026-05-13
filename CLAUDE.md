@@ -15,58 +15,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The package is CRAN-bound, so conventions below are driven by `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.6.0 in preparation (last updated 2026-05-12)
+## Current development state — 0.7.0 ready to commit (last updated 2026-05-13)
 
-Version bumped to 0.6.0 in `DESCRIPTION`. All planned code is written, tested, exported, and described in `NEWS.md`. README and vignette are updated to integrate every new function. **The full release is uncommitted on `main`**; `devtools::check()` is clean (0 errors / 0 warnings / 0 notes). Resume from a `git status` to see what is staged.
+Version bumped to 0.7.0 in `DESCRIPTION`. All planned code is written, tested, exported, and described in `NEWS.md`. README and vignette are updated to reflect the new schema. `devtools::check()` is clean (0 errors / 0 warnings / 0 notes), including `--run-donttest` and vignette rebuild. `devtools::test()` is **449 PASS / 0 FAIL / 0 SKIP**.
 
-### What was added across 0.6.0
+0.6.0 was already shipped to the GitHub `main` branch (commits `1eeee49`, `15cb85a`, `4eb5a08`, `78e79e4`, `1debc4b`) but never reached CRAN — CRAN is still on 0.2.0. Plan is to skip 0.6.x on CRAN and submit 0.7.0 directly.
 
-GHO availability helpers (screening before a full download):
-- `gho_has_data()` — `TRUE` / `FALSE` / `NA` for whether the server has any rows.
-- `gho_count()` — row count via OData `$count=true` (no rows transferred).
-- `gho_coverage()` — `(location, year_min, year_max, n_obs)` per area, using `$select=SpatialDim,TimeDim` to keep the payload small.
+### What was added across 0.7.0
 
-SDG additions:
-- `sdg_indicators(search = NULL)` — gains a keyword filter mirroring `gho_indicators()`. AND semantics; case-insensitive substring match on the indicator `description`. Applied **client-side** (`grepl(..., fixed = TRUE)`) because the UN SDG `/Indicator/List` endpoint is not OData and exposes no server-side search parameter; the catalog is small (~250 rows). Validation runs before the network call so it is unit-testable offline. Default `search = NULL` preserves the previous behaviour exactly.
-- `sdg_coverage()` — series-exploration helper. Groups by `(location, series)`, not just `(location)`. Returns `(location, series, year_min, year_max, n_obs)`. Intentional asymmetry vs. GHO: no `sdg_has_data()` or `sdg_count()` is provided because SDG data is generally complete, so per-series exploration is the more useful pre-analysis question.
-- `sdg_data()` and `sdg_coverage()` now accept ISO3 codes for `area` — converted internally via `iso3_to_m49()` through the internal `.resolve_area()` helper. M49 still works. ISO3 ↔ M49 cannot be mixed within one call. This lets DSIR's regional vectors (`wpro_cty`, etc.) be passed straight through, matching the GHO workflow.
+**Breaking: unified 15-column cleaned-indicator schema.** `gho_clean()` and `sdg_clean()` now both produce the same shape:
 
-Cross-API helper:
-- `iso3_to_m49(iso3)` — case-insensitive ISO3 → UN M49 lookup against `who_countries$m49_code`. Non-Member codes return `NA`. Returned values are three-character zero-padded strings, the same form the dataset stores.
+```
+source id indicator location iso3 location_name year value value_num low high series dim1 dim2 dim3
+```
 
-Carried over (already in `NEWS.md` before this round):
-- `geomean(x, na.rm = TRUE, w = NULL)`
-- `iso3_to_region(iso3, long = FALSE)`
+so GHO and SDG output can be `bind_rows()`-ed (or formally, `bind_indicators()`-ed) without column-shape work. `source` is `"gho"` or `"sdg"`. `value` stays raw character (preserves SDG `"<0.1"` and similar); `value_num` is the numeric coercion (NA where coercion fails). `year` is integer. `iso3` for GHO is set when `SpatialDim %in% who_countries$iso3` else NA; for SDG it comes from `m49_to_iso3(geoAreaCode)`.
 
-Bug fixes captured in 0.6.0:
-- `.gho_get()` no longer produces a spurious 1×1 list-column tibble when GHO returns `value = []`.
-- `sdg_data()` now sends multi-value `indicator` / `areaCode` filters as repeated keys (not comma-joined) and no longer trips `duplicate 'row.names' are not allowed` when paginating.
-- `sdg_data()` year filtering (`year_from` / `year_to`) is now applied **client-side**. The UN SDG API's server-side `timePeriodStart` / `timePeriodEnd` parameters cause HTTP 500 errors and ~30x slowdowns on at least some indicator/area combinations (e.g. `3.2.1` with `area = "608"`). The filter runs after the pagination loop assembles `out`; if `timePeriodStart` is missing the function warns and returns unfiltered. `sdg_coverage()` inherits the fix automatically.
-- `.sdg_get()` now has a 20-second per-request timeout (`req_timeout(20)`) and exponential backoff (`backoff = ~ min(2 ^ .x, 30)`), so a hung upstream request cannot stall a call indefinitely.
+For SDG specifically: `id` now holds the **indicator code** (e.g. `"3.4.1"`, formerly named `indicator`) and `indicator` holds the **`seriesDescription`** text from the API. The pre-0.7.0 SDG columns `goal` and `target` are no longer carried forward. `series` is the SDG series code (e.g. `"SH_DTH_NCD"`). `dim1` / `dim2` / `dim3` are always NA for SDG (GHO-only).
+
+For GHO specifically: `location_name` and `series` are always NA. `dim1` / `dim2` / `dim3` come from `Dim1` / `Dim2` / `Dim3`.
+
+**New functions:**
+- `bind_indicators(...)` — variadic, rbinds any number of cleaned tibbles into one. Validates that each input has the full 15-column schema; drops NULL arguments; column re-ordering across inputs is tolerated.
+- `m49_to_iso3(m49)` — counterpart to `iso3_to_m49()`. Accepts zero-padded (`"076"`) or bare (`"76"`) input. Non-Member areas and region/world aggregates return NA. Used internally by `sdg_clean()` to populate `iso3`.
+
+**Bug fixes:**
+- **`sdg_coverage()` duplicate definition.** The function was defined in **both** `R/sdg.R` and `R/sdg_coverage.R` from 0.6.0; R loads files alphabetically so the `sdg_coverage.R` version overrode the one in `sdg.R`. The two implementations had subtly different behaviour. Resolved by deleting the version in `sdg.R` and hardening the survivor (separator `\r` → `\x1f`, added upfront `.resolve_area(area)` so the "dropped unknown ISO3" warning surfaces from `sdg_coverage()` rather than being swallowed by `suppressWarnings(sdg_data(...))`).
+- **`.gho_get()` retry parity with `.sdg_get()`** — added `req_timeout(20)` and `backoff = ~ min(2 ^ .x, 30)`. Same change applied to the inline HTTP call in `gho_count()` (which doesn't go through `.gho_get` because it needs `@odata.count` rather than `value`).
+- **`sdg_data()` multi-page `rbind` failure.** The 0.6.0 fix relied on `make.row.names = TRUE` (the default) to disambiguate per-page tibble row names like `"1"`..`"1000"`. That actually **does not** disambiguate when each page has 1000 rows numbered identically; the rbind still trips `duplicate 'row.names' are not allowed`. Surfaced when `R CMD check --run-donttest` ran `sdg_data("1.1.1")` (26+ pages of ~1000 rows). Fixed by passing `make.row.names = FALSE` explicitly. The existing test was too weak to catch this (each mock page had only 1 row); the new regression test uses 2-row pages so the collision actually fires.
+- **`sdg_data()` example simplified.** The first example was `sdg_data("1.1.1")` (unfiltered, 26+ pages) — too slow for `R CMD check`. Now `sdg_data("1.1.1", area = "PHL")`.
+
+**Documentation:**
+- All network examples switched from `\dontrun{}` to `\donttest{}`. CRAN reviewers can opt to run them; `R CMD check --run-donttest` exercises them locally.
+- `DESCRIPTION` `Authors@R` now carries the user's ORCID (`0000-0002-8831-1684`).
+- `cran-comments.md` rewritten as a 0.7.0 resubmission note (explains the 0.2.0 → 0.7.0 jump, points at NEWS for the unified-schema breaking change, confirms `--run-donttest` is also clean). The pre-0.7.0 file was still the initial-submission template.
+
+**Internal:**
+- New `R/clean_schema.R` centralises the 15-column schema (`.dsi_clean_schema()`), the typed-empty-tibble template (`.dsi_empty_clean()`), and the typed-NA filler (`.fill_na(n, type)`). Any change to the schema should start here.
+- `httptest2` added to `Suggests`. The mocking tests use `httr2::with_mocked_responses()` directly (httptest2 is a peer of httr2 for offline testing); see implementation notes below for the gotcha.
+- `test-gho-dimensions.R` added — `gho_dimensions()` was the last exported network function without offline coverage. Uses the same `mock_json()` pattern as `test-gho-get-mock.R` / `test-sdg-get-mock.R`.
 
 ### Implementation notes worth remembering
 
-- **The M49 column is `who_countries$m49_code`, not `un_m49`.** Easy to misremember when reading historical task briefs. Values are zero-padded to three characters (e.g. `"076"` for Brazil). The SDG API accepts both `"076"` and `"76"` for the same area, so the bundled zero-padded form is fine to pass straight through.
-- `.resolve_area()` (internal to `R/sdg.R`) detects format with `^[A-Za-z]{3}$` for ISO3 and `^[0-9]+$` for M49. These two regexes can never both match the same value, so format detection is unambiguous. Mixed input errors (refused, not coerced). Unknown ISO3 codes are dropped with a warning; if every code is unknown, the function errors.
-- `sdg_coverage()` calls `.resolve_area()` **before** the internal `suppressWarnings(sdg_data(...))` call, so the legitimate "dropped unknown ISO3" warning surfaces cleanly from `sdg_coverage()` rather than being swallowed. `sdg_data()` re-runs `.resolve_area()` on the already-resolved vector — that's a no-op (M49 passes through), so the duplication is safe.
-- `sdg_coverage()` calls `sdg_data()` internally — SDG offers no payload-reduction option equivalent to GHO's `$select`, so there is no efficiency win from going around it. The grouping key is `paste(location, series, sep = "\x1f")` (US, unit separator — can't collide with M49 codes or SDG series codes). Mirror the `yr_range` / `vapply` idiom from `gho_coverage()`.
-- For `sdg_indicators(search)`: the source-of-truth probe (see `scratch/probe_sdg.R`) confirmed the description column is named `description` (plain `chr`, not nested in `series`). The `series` column on `sdg_data()` output is also plain `chr` — no `as.character(v[[1]])` flatten needed (that flatten in `sdg_clean()` is only for the `indicator` list-column).
-- The 20-second timeout on `.sdg_get()` is fine for typical 2–6s SDG responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious "Timeout was reached" failures, bumping the constant to 30–60s is the right move. `req_retry()` runs three attempts, so the worst-case wall time is bounded around 66s.
+- **The unified schema's source of truth is `R/clean_schema.R`.** `.dsi_clean_schema()` returns the canonical column order and the type code (`"chr"`, `"int"`, `"num"`). `.dsi_empty_clean()` produces the typed 0-row tibble used by both cleaners for empty input and by `bind_indicators()` for the no-input / all-NULL case. Adding a new column means updating this file and then both `gho_clean()` / `sdg_clean()` to populate it.
+- **`gho_clean()`'s old `n = 0` bug:** the pre-0.7.0 cleaners used `rep(NA, n)`, which for `n = 0` produces `logical(0)`. The empty-output column types were therefore all `logical`, not matching the documented types. 0.7.0 fixes this by routing empty input through `.dsi_empty_clean()` directly.
+- **The M49 column is `who_countries$m49_code`, not `un_m49`.** Values are 3-char zero-padded (e.g. `"076"` for Brazil). The SDG API accepts both `"076"` and `"76"`; `m49_to_iso3()` normalises both before lookup via `formatC(as.integer(m49), width = 3, flag = "0")` — note the `padded[padded == "NA"] <- NA_character_` step that handles `formatC(NA_integer_)` returning the literal string `"NA"`.
+- **GHO `iso3` heuristic.** `gho_clean()` sets `iso3 = location` when `location %in% who_countries$iso3`, else `NA`. This is a pure-lookup check, not a regex — so weird-but-valid 3-letter codes like `"COG"` work, but region codes (`"EUR"`, `"GLOBAL"`) correctly get NA.
+- **SDG `indicator` column source.** Comes from `seriesDescription` in the raw `sdg_data()` response, not from the indicator-list endpoint. For some series, `seriesDescription` is absent; in that case `indicator` is NA. If you want a human label for those, join the result against `sdg_indicators()` on `id`.
+- **`.resolve_area()` (in `R/sdg.R`)** detects format with `^[A-Za-z]{3}$` for ISO3 and `^[0-9]+$` for M49. Mixed input errors. Unknown ISO3 codes are dropped with a warning; if every code is unknown, the function errors.
+- **`sdg_coverage()` calls `.resolve_area()` upfront** so the legitimate "dropped unknown ISO3" warning surfaces from `sdg_coverage()` rather than being swallowed by the `suppressWarnings(sdg_data(...))` wrapper. `sdg_data()` re-runs `.resolve_area()` on the already-resolved vector — that's a no-op (M49 passes through), so the duplication is safe. The grouping key is `paste(location, series, sep = "\x1f")`; `\x1f` (US, unit separator) cannot appear in either an M49 numeric code or an SDG series code.
+- **httr2 1.x mocking gotcha.** `httr2::with_mocked_responses(mock, code)` requires `mock` to be a **function, list, or NULL** — passing a bare `httr2::response()` object errors with `mock must be function, list, or NULL`. The `mock_json()` helper in the test files wraps its single response in `list(...)`; when chaining two pages, the tests use `c(mock_json(p1), mock_json(p2))` to concatenate the two length-1 lists into a length-2 list. URL-capturing tests pass a `function(req)` mock so they can inspect the outgoing URL before returning the canned response.
+- **`gho_count()` uses its own HTTP call site,** not `.gho_get()`, because it needs `@odata.count` from the response envelope, not `value`. If you touch retry/timeout config for one, mirror the change in the other (currently they are in sync).
+- **The 20-second timeout on `.sdg_get()` / `.gho_get()`** is fine for typical 2–6s responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious "Timeout was reached" failures, bumping the constant to 30–60s is the right move. `req_retry()` runs three attempts, so the worst-case wall time is bounded around 66s × 1 retry cycle ≈ several minutes.
+- **`devtools::document()` may need two passes** when a new function adds a roxygen cross-reference (`@seealso [new_fn()]`). First pass writes the new Rd; second pass resolves the cross-reference.
 
 ### Pending steps before tagging
 
 ```r
-devtools::document()   # may need TWO passes when a new function is added —
-                       # the first pass writes the Rd, the second resolves
-                       # cross-references that point at it
-devtools::test()       # all tests should pass
-devtools::check()      # R CMD check — expect 0 errors / 0 warnings / 0 notes
+devtools::test()       # baseline
+devtools::check()      # 0 errors / 0 warnings / 0 notes  ← already verified
 ```
 
-Then commit + tag. The 0.6.0 work is several independent themes (GHO availability helpers; SDG series exploration + search; SDG year-filter workaround; ISO3-friendly SDG functions + `iso3_to_m49()`) and can be split into separate commits if a clean history is wanted.
+Then commit + tag. The 0.7.0 work is several independent themes (schema alignment + `bind_indicators`; `m49_to_iso3`; `sdg_coverage` dedup; retry parity; documentation polish; test coverage; httptest2 mocking) and can be split into separate commits if a clean history is wanted.
 
 ```bash
-git tag v0.6.0
+git tag v0.7.0
 ```
 
 ### Pandoc on this machine
@@ -78,33 +91,54 @@ Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/resources/app/bin/quarto/b
 devtools::check()
 ```
 
-## Roadmap — 0.7.0 candidates
+## Roadmap — post-0.7.0
 
-### High priority — schema alignment for `gho_clean()` / `sdg_clean()`
+The package is approaching steady state. The user explicitly intends to enter a stable phase after 0.7.0 ships. **Do not propose new exports unprompted.** New features should only be added when the user asks; this section records what was considered and what was declined, so future sessions don't reopen settled questions.
 
-Their outputs still cannot be `bind_rows()`-ed cleanly:
+### Done in 0.7.0
 
-| Source | Columns |
-|---|---|
-| `gho_clean()` | `id, location, year, dim1, dim2, dim3, value, value_num, low, high, indicator` |
-| `sdg_clean()` | `goal, target, indicator, series, location, location_name, year, value, low, high` |
+- Schema alignment for `gho_clean()` / `sdg_clean()` → unified 15-column shape. **Settled — do not reopen.**
+- `bind_indicators(...)` — implemented as part of the schema work.
+- `m49_to_iso3()` — added as the counterpart to `iso3_to_m49()`, used by `sdg_clean()` to populate `iso3`.
 
-Open design question: pick a shared core schema (e.g. `id, indicator, location, year, value, low, high`) and let source-specific extras live alongside. Possibly add a `bind_indicators(...)` helper. This is a breaking change, hence a minor-version bump.
+### Declined by the user (2026-05-13)
 
-### Other candidates surfaced from scanning user's analytical projects
+The user reviewed the 0.7.0-candidates list and decided not to add these. **Do not propose them again** unless the user asks:
 
-- `get_latest(df)` — keep the last-non-missing year per location. Used in 3+ WHI/SDG projects in the user's working directory.
-- `ggdot(df, ...)` — Likert-style dot plot built on `theme_dsi()`. Used in SCORE and WHI projects.
+- `get_latest(df)` — too narrow; users can write `slice_max(year, by = location, na_rm = TRUE)` themselves when they need it.
+- `ggdot(df, ...)` — too narrow; chart-builder helpers belong in project code, not the package.
 
-Deliberately deferred:
+### Deferred (still on the long list)
 
-- `who_iso3(name)` — `countrycode::countrycode()` with a `custom_match` argument covers the same ground. Consider exporting only a named vector `who_short_name_overrides` (e.g. `c("DPR Korea" = "PRK", "DR Congo" = "COD", "Lao PDR" = "LAO", ...)`) if those overrides recur across many user scripts.
-- `ggbar()` / `ggcol()` — too thin (`geom_col` + `fct_reorder`).
-- ACM / excess-mortality helpers (`annotate_events_dt`, `create_period_indicator`, `loadEventsData`, `validate_*`) — wait for the ACM calculator 1.0 to stabilize the Excel template assumptions before extracting.
+- `who_iso3(name)` — `countrycode::countrycode()` with `custom_match` covers the same ground. If WHO-specific short-name overrides (`"DPR Korea" = "PRK"`, `"DR Congo" = "COD"`, `"Lao PDR" = "LAO"`, etc.) come up repeatedly across user scripts, consider exporting **only** a named vector `who_short_name_overrides` so users can plug it into `countrycode()`.
+- `ggbar()` / `ggcol()` — too thin (`geom_col` + `fct_reorder`); explicit ggplot reads better.
+- ACM / excess-mortality helpers (`annotate_events_dt`, `create_period_indicator`, `loadEventsData`, `validate_*`) — wait for the ACM calculator 1.0 to stabilise the Excel template assumptions before extracting.
 
 ### Source folder for these candidates
 
 The candidate list came from scanning `C:\Users\User\OneDrive - World Health Organization\Documents\CAT\DSI` (the user's analytical working directory containing 2024–2026 WHO WPRO projects). Conversation memory for that scan lives at `C:\Users\User\.claude\projects\C--Users-User-OneDrive---World-Health-Organization-Documents-CAT-DSI\memory\`.
+
+## Pre-stable polish — remaining items
+
+The user did the three highest-impact pre-stable items on 2026-05-13: `cran-comments.md` rewritten, `gho_dimensions()` test coverage added, ORCID added to `Authors@R`. The package is now in fully shippable shape for 0.7.0.
+
+These two cosmetic items are still open but are explicitly skippable:
+
+1. **README's "Note about CRAN version" banner** will be wrong the moment 0.7.0 lands on CRAN. Remove it then, or rewrite to point at the new development version.
+2. **`README.md` lifecycle badge says "stable"** while the package is 0.x. Either bump to 1.0.0 (the API is now what it would be at 1.0) or change the badge to `maturing`.
+
+Skippable nice-to-have:
+
+- **`inst/CITATION`** — so `citation("DSIR")` returns a user-preferred citation rather than the auto-generated default. Add only if the user starts asking how others should cite the package.
+
+### Path to 1.0.0
+
+The user has signalled they want to enter a stable state. The recommended sequence:
+
+- Commit + tag `v0.7.0`. Submit 0.7.0 to CRAN.
+- Let it sit on CRAN for ~1 month while running real WHO projects against it.
+- If no API regret surfaces, bump `Version: 1.0.0`, write a one-line NEWS entry, and submit again.
+- The 0.7.0 schema and `bind_indicators()` design are intentionally future-proof, so 1.0.0 should be a no-code-change version bump.
 
 ## Common commands
 

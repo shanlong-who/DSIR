@@ -10,39 +10,48 @@ gho_clean(df)
 \item{df}{A data frame returned by \code{\link[=gho_data]{gho_data()}}.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with columns \code{id},
-\code{location}, \code{year}, \code{dim1}, \code{dim2}, \code{dim3}, \code{value}, \code{value_num}, \code{low},
-\code{high}, \code{indicator}, sorted by \code{location} then \code{year}. An empty input
-returns an empty tibble with the same columns.
+A \link[tibble:tibble]{tibble} with 15 columns: \code{source} (always
+\code{"gho"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name}
+(\code{NA}), \code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series}
+(\code{NA}), \code{dim1}, \code{dim2}, \code{dim3}. Sorted by \code{location} then \code{year}.
+Empty input returns an empty tibble with the same columns and
+types.
 }
 \description{
-Selects and renames the most useful columns from a GHO observation
-table returned by \code{\link[=gho_data]{gho_data()}}, producing a compact tibble suitable
-for downstream analysis.
+Selects, renames, and type-casts the most useful columns from a GHO
+observation table returned by \code{\link[=gho_data]{gho_data()}}, producing a compact
+tibble in the \strong{unified DSIR cleaned-indicator schema} — the same
+schema produced by \code{\link[=sdg_clean]{sdg_clean()}}, so the two outputs can be combined
+directly with \code{\link[=bind_indicators]{bind_indicators()}}.
 }
 \details{
-The mapping is:
+The mapping (GHO source → unified column) is:
 \itemize{
-\item \code{IndicatorCode} -> \code{id}
-\item \code{SpatialDim}    -> \code{location}
-\item \code{TimeDim}       -> \code{year}
-\item \code{Dim1}, \code{Dim2}, \code{Dim3} -> \code{dim1}, \code{dim2}, \code{dim3}
-\item \code{Value}         -> \code{value}
-\item \code{NumericValue}  -> \code{value_num}
-\item \code{Low}, \code{High}   -> \code{low}, \code{high}
-\item \code{IndicatorName} -> \code{indicator}
+\item \code{IndicatorCode} → \code{id}
+\item \code{IndicatorName} → \code{indicator}
+\item \code{SpatialDim}    → \code{location}; also \code{iso3} when it matches a WHO
+Member State, otherwise \code{iso3 = NA}
+\item \code{TimeDim}       → \code{year} (integer)
+\item \code{Value}         → \code{value} (character; raw)
+\item \code{NumericValue}  → \code{value_num} (numeric)
+\item \code{Low}, \code{High}   → \code{low}, \code{high} (numeric)
+\item \code{Dim1}, \code{Dim2}, \code{Dim3} → \code{dim1}, \code{dim2}, \code{dim3} (character)
 }
 
-Source columns that are absent from \code{df} (for example \code{Low} /
-\code{High} on indicators without confidence intervals) are filled
-with \code{NA}, so the output always has the same nine columns.
+Two columns are always present but never populated for GHO output:
+\code{location_name} (no GHO field for it; use \code{\link{who_countries}} if you
+need names) and \code{series} (an SDG-only concept).
+
+Source columns absent from \code{df} (e.g. \code{Low} / \code{High} for indicators
+without confidence intervals) are filled with typed \code{NA}, so the
+output always has the same 15 columns with the same column types.
 }
 \examples{
-\dontrun{
+\donttest{
 gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
 }
 }
 \seealso{
-\code{\link[=gho_data]{gho_data()}}.
+\code{\link[=gho_data]{gho_data()}}, \code{\link[=sdg_clean]{sdg_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}}.
 }

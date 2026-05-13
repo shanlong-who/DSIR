@@ -19,3 +19,16 @@ test_that("ggpie .legend and .label toggles work", {
   p1 <- ggpie(df, "x", "y", .label = FALSE, .legend = TRUE)
   expect_s3_class(p1, "ggplot")
 })
+
+test_that("ggpie rejects invalid .offset values", {
+  df <- data.frame(x = c("a", "b"), y = c(1, 2))
+  expect_error(ggpie(df, "x", "y", .offset = 0))      # must be > 0
+  expect_error(ggpie(df, "x", "y", .offset = -1))     # must be > 0
+  expect_error(ggpie(df, "x", "y", .offset = "1"))    # must be numeric
+  expect_error(ggpie(df, "x", "y", .offset = c(1, 2)))# must be length 1
+})
+
+test_that("ggpie rejects non-numeric .y column", {
+  df <- data.frame(x = c("a", "b"), y = c("1", "2"))
+  expect_error(ggpie(df, "x", "y"))
+})

@@ -41,15 +41,14 @@ Retrieves data for one or more SDG indicators from the UN SDG
 API, with optional filters by area and year.
 }
 \examples{
-\dontrun{
-# All data for indicator 1.1.1
-sdg_data("1.1.1")
+\donttest{
+# One indicator, one country — the typical entry point
+sdg_data("1.1.1", area = "PHL")
 
-# Specific area and year range
+# Specific area and year range (M49 code)
 sdg_data("3.2.1", area = "156", year_from = 2015, year_to = 2023)
 
 # ISO3 codes work directly — DSIR's regional vectors can be passed in
-sdg_data("3.4.1", area = wpro_cty)
 sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
 }
 }

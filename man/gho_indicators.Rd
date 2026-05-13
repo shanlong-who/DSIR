@@ -30,7 +30,7 @@ Fetches the catalog of indicators from the WHO Global Health
 Observatory (GHO) OData API.
 }
 \examples{
-\dontrun{
+\donttest{
 # All indicators
 inds <- gho_indicators()
 

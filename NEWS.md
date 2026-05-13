@@ -2,6 +2,82 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR 0.7.0
+
+## Breaking changes
+
+* `gho_clean()` and `sdg_clean()` now share a single 15-column output
+  schema: `source`, `id`, `indicator`, `location`, `iso3`,
+  `location_name`, `year`, `value`, `value_num`, `low`, `high`,
+  `series`, `dim1`, `dim2`, `dim3`. This lets results from the two
+  APIs be combined directly (see `bind_indicators()` below). Migration
+  notes from 0.6.x:
+    - `gho_clean()` output no longer has 11 columns; it has 15. New
+      columns include `source` (`"gho"`), `iso3` (the ISO3 alpha-3
+      code when the spatial dim matches a WHO Member State, `NA`
+      otherwise), `location_name` (always `NA` — GHO does not return
+      names), and `series` (always `NA` — an SDG-only concept).
+    - `sdg_clean()` output no longer has 10 columns and is reshaped
+      to the unified schema. Several columns moved or were renamed:
+      the SDG `goal` and `target` columns are no longer carried
+      forward; the SDG indicator code is now in `id` (was
+      `indicator`); the human-readable series description has moved
+      to `indicator` (was not present before); a new `iso3` column
+      holds the ISO3 alpha-3 code via `m49_to_iso3()` for Member
+      States.
+    - Both cleaners now coerce `value_num` / `low` / `high` to
+      numeric; non-numeric raw values (e.g. SDG `"<0.1"`) yield `NA`
+      in those columns while `value` keeps the raw character form.
+    - Both cleaners now coerce `year` to integer.
+
+## New features
+
+* New `bind_indicators(...)`: stacks any number of tibbles returned by
+  `gho_clean()` and `sdg_clean()` into a single tibble. Because the
+  two cleaners now share a schema, the result is uniform and can be
+  filtered, joined, or visualised without source-specific code paths;
+  use the `source` column to distinguish GHO from SDG rows.
+
+* New `m49_to_iso3()`: maps UN M49 numeric area codes to ISO3 country
+  codes, the counterpart to `iso3_to_m49()`. Accepts zero-padded
+  (`"076"`) and bare (`"76"`) input. Non-Member areas — including
+  region / world aggregates — return `NA`. Used internally by
+  `sdg_clean()` to populate the new `iso3` column.
+
+## Bug fixes
+
+* Fixed a duplicate definition of `sdg_coverage()`: the function was
+  defined in both `R/sdg.R` and `R/sdg_coverage.R`, and R's
+  alphabetical source-file loading meant the wrong copy (with a
+  fragile `\r` composite-key separator and no upfront `.resolve_area()`
+  call) was the one actually in effect. The surviving implementation
+  now uses `\x1f` as the composite-key separator and resolves the
+  `area` argument up-front, so the documented "unknown ISO3 codes
+  warn and are dropped" message surfaces cleanly from `sdg_coverage()`
+  rather than being swallowed inside an internal call to `sdg_data()`.
+
+* `.gho_get()` now sets a 20-second per-request timeout and applies
+  the same exponential backoff (`backoff = ~ min(2 ^ .x, 30)`) as
+  `.sdg_get()`. Previously a hung upstream request could stall an
+  entire `gho_data()` call indefinitely.
+
+## Documentation
+
+* All network examples now use `\donttest{}` instead of `\dontrun{}`,
+  so CRAN reviewers can opt to run them.
+
+## Internal
+
+* Added `httptest2` to Suggests. The GHO and SDG helpers gain offline
+  regression tests covering the empty `value=[]` fix, the OData
+  pagination loop, the multi-value SDG `indicator` / `areaCode`
+  repeated-key URL form, the client-side SDG year filter, and the
+  graceful-failure behaviour on HTTP errors.
+
+* Test coverage expanded for `gho_clean()`, `sdg_clean()`,
+  `bind_indicators()`, `m49_to_iso3()`, `scale_*_dsi_col()`, the
+  `who_countries` dataset, and the regional ISO3 vectors.
+
 # DSIR 0.6.0
 
 ## Behavior changes

@@ -40,7 +40,7 @@ which returns the matching row count without transferring any
 observations. Useful for sizing a download before issuing it.
 }
 \examples{
-\dontrun{
+\donttest{
 # How many rows would gho_data() pull for France?
 gho_count("WHOSIS_000001", area = "FRA")
 

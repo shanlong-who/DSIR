@@ -4,10 +4,14 @@ test_that("iso3_to_region returns short codes", {
   expect_equal(iso3_to_region(c("FRA", "USA", "JPN")), c("EUR", "AMR", "WPR"))
 })
 
-test_that("iso3_to_region returns long names when requested", {
-  expect_equal(iso3_to_region("PHL", long = TRUE), "Western Pacific")
+test_that("iso3_to_region returns long names for all six regions", {
+  # One country per region — ensures the short → long map has full coverage.
+  expect_equal(iso3_to_region("ZAF", long = TRUE), "Africa")
+  expect_equal(iso3_to_region("USA", long = TRUE), "Americas")
   expect_equal(iso3_to_region("IND", long = TRUE), "South-East Asia")
+  expect_equal(iso3_to_region("FRA", long = TRUE), "Europe")
   expect_equal(iso3_to_region("EGY", long = TRUE), "Eastern Mediterranean")
+  expect_equal(iso3_to_region("PHL", long = TRUE), "Western Pacific")
 })
 
 test_that("iso3_to_region returns NA for non-Member codes", {

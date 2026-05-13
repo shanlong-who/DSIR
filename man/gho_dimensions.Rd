@@ -27,7 +27,7 @@ ages, sexes, regions, or other breakdowns are available before
 calling \code{\link[=gho_data]{gho_data()}}.
 }
 \examples{
-\dontrun{
+\donttest{
 gho_dimensions("NCDMORT3070")
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
 }

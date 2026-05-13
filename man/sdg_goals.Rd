@@ -19,7 +19,7 @@ Fetches the list of Sustainable Development Goals from the UN
 SDG API.
 }
 \examples{
-\dontrun{
+\donttest{
 sdg_goals()
 sdg_goals(include_children = TRUE)
 }

@@ -7,14 +7,16 @@
 #' sensible `flextable` defaults ([dsi_flextable_defaults()]),
 #' a quick pie chart helper ([ggpie()]), regional country-code
 #' datasets ([wpro_cty]) with WHO region and UN M49 lookups
-#' ([iso3_to_region()], [iso3_to_m49()]), a geometric mean helper
-#' for indicator aggregation ([geomean()]), and thin clients for the
-#' WHO Global
-#' Health Observatory API ([gho_indicators()], [gho_data()],
-#' [gho_dimensions()], [gho_has_data()], [gho_count()],
-#' [gho_coverage()]) and the UN Sustainable Development Goals API
-#' ([sdg_goals()], [sdg_targets()], [sdg_indicators()], [sdg_areas()],
-#' [sdg_data()], [sdg_coverage()]).
+#' ([iso3_to_region()], [iso3_to_m49()], [m49_to_iso3()]), a
+#' geometric mean helper for indicator aggregation ([geomean()]),
+#' thin clients for the WHO Global Health Observatory API
+#' ([gho_indicators()], [gho_data()], [gho_dimensions()],
+#' [gho_has_data()], [gho_count()], [gho_coverage()]) and the UN
+#' Sustainable Development Goals API ([sdg_goals()], [sdg_targets()],
+#' [sdg_indicators()], [sdg_areas()], [sdg_data()], [sdg_coverage()]),
+#' plus a unified cleaning / binding pipeline ([gho_clean()],
+#' [sdg_clean()], [bind_indicators()]) that puts GHO and SDG output
+#' into the same 15-column schema.
 #'
 #' @keywords internal
 "_PACKAGE"

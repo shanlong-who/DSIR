@@ -10,45 +10,49 @@ sdg_clean(df)
 \item{df}{A data frame returned by \code{\link[=sdg_data]{sdg_data()}}.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with columns \code{goal}, \code{target},
-\code{indicator}, \code{series}, \code{location}, \code{location_name}, \code{year},
-\code{value}, \code{low}, \code{high}, sorted by \code{location} then \code{year}. An
-empty input returns an empty tibble with the same columns.
+A \link[tibble:tibble]{tibble} with 15 columns: \code{source} (always
+\code{"sdg"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name},
+\code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series}, \code{dim1}
+(\code{NA}), \code{dim2} (\code{NA}), \code{dim3} (\code{NA}). Sorted by \code{location} then
+\code{year}. Empty input returns an empty tibble with the same columns
+and types.
 }
 \description{
-Selects and renames the most useful columns from an SDG
-observation table returned by \code{\link[=sdg_data]{sdg_data()}}, producing a compact
-tibble suitable for downstream analysis.
+Selects, renames, and type-casts the most useful columns from an
+SDG observation table returned by \code{\link[=sdg_data]{sdg_data()}}, producing a compact
+tibble in the \strong{unified DSIR cleaned-indicator schema} — the same
+schema produced by \code{\link[=gho_clean]{gho_clean()}}, so the two outputs can be combined
+directly with \code{\link[=bind_indicators]{bind_indicators()}}.
 }
 \details{
-The mapping is:
+The mapping (SDG source → unified column) is:
 \itemize{
-\item \code{goal}            -> \code{goal}
-\item \code{target}          -> \code{target}
-\item \code{indicator}       -> \code{indicator} (flattened to the first code
-when the source column is a list)
-\item \code{series}          -> \code{series}
-\item \code{geoAreaCode}     -> \code{location}
-\item \code{geoAreaName}     -> \code{location_name}
-\item \code{timePeriodStart} -> \code{year}
-\item \code{value}           -> \code{value}
-\item \code{lowerBound}      -> \code{low}
-\item \code{upperBound}      -> \code{high}
+\item \code{indicator} (list-column, flattened) → \code{id} (e.g. \code{"3.4.1"})
+\item \code{seriesDescription}                  → \code{indicator} (human-readable
+label; \code{NA} if the API response does not include it)
+\item \code{geoAreaCode}                        → \code{location} (UN M49 numeric,
+as character); also \code{iso3} via \code{\link[=m49_to_iso3]{m49_to_iso3()}} for WHO Member
+States — region / world aggregates and non-Member areas get
+\code{iso3 = NA}
+\item \code{geoAreaName}                        → \code{location_name}
+\item \code{timePeriodStart}                    → \code{year} (integer)
+\item \code{value}                              → \code{value} (character; raw)
+and \code{value_num} (numeric; \code{NA} for non-numeric entries like
+\code{"<0.1"} or aggregate notes)
+\item \code{lowerBound}, \code{upperBound}           → \code{low}, \code{high} (numeric)
+\item \code{series}                             → \code{series}
 }
 
-Source columns that are absent from \code{df} are filled with \code{NA},
-so the output always has the same ten columns. \code{value}, \code{low}
-and \code{high} are returned in their original character form because
-the SDG API returns non-numeric values (e.g. \code{"<0.1"} or
-aggregate notes) for some rows; coerce with \code{\link[=as.numeric]{as.numeric()}}
-downstream when appropriate.
+Three columns are always present but never populated for SDG
+output: \code{dim1}, \code{dim2}, \code{dim3} (GHO-only concepts).
 }
 \examples{
-\dontrun{
+\donttest{
 sdg_data("3.2.1", area = "156", year_from = 2015) |>
   sdg_clean()
 }
 }
 \seealso{
-\code{\link[=sdg_data]{sdg_data()}}.
+\code{\link[=sdg_data]{sdg_data()}}, \code{\link[=gho_clean]{gho_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}},
+\code{\link[=m49_to_iso3]{m49_to_iso3()}}.
 }

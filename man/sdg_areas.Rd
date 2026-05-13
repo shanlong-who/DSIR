@@ -15,7 +15,7 @@ Fetches the list of geographic areas available from the UN SDG
 database.
 }
 \examples{
-\dontrun{
+\donttest{
 sdg_areas()
 }
 }

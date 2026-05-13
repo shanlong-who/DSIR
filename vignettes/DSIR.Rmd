@@ -170,9 +170,13 @@ countries in one call.
 
 ### Step 3: Clean the raw response
 
-`gho_clean()` drops the internal OData columns and renames what remains, 
-leaving a compact tibble with `indicator`, `location`, `year`, three 
-optional dimensions, and `value` / `low` / `high`.
+`gho_clean()` produces the **unified DSIR cleaned-indicator schema** —
+the same 15-column shape as `sdg_clean()`. Columns include `source`
+(`"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`
+(empty for GHO), `year`, `value`, `value_num`, `low`, `high`, `series`
+(empty for GHO), and the three optional GHO dimensions
+`dim1`–`dim3`. Columns absent from the raw response are filled with
+typed `NA`.
 
 ```{r}
 uhc_clean <- gho_clean(uhc)
@@ -221,9 +225,9 @@ single-panel chart.
 
 ```{r, fig.width = 7, fig.height = 4}
 uhc_clean |>
-  filter(location %in% c("AUS", "CHN", "PHL", "FJI")) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  ggplot(aes(x = year, y = value, group = location, color = name_short)) +
+  filter(iso3 %in% c("AUS", "CHN", "PHL", "FJI")) |>
+  left_join(who_countries, by = "iso3") |>
+  ggplot(aes(x = year, y = value_num, group = iso3, color = name_short)) +
   geom_line(linewidth = .8) +
   geom_point(size = 1.8) +
   theme_dsi() +
@@ -239,8 +243,8 @@ For bar charts, pair `theme_dsi()` with `scale_y_dsi_col()` (or `scale_x_dsi_col
 ```{r, fig.width = 7, fig.height = 4}
 uhc_clean |>
   filter(year == max(year)) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  arrange(desc(value)) |>
+  left_join(who_countries, by = "iso3") |>
+  arrange(desc(value_num)) |>
   head(10) |>
   ggplot(aes(reorder(name_short, value_num), value_num)) +
   geom_col(fill = "#0093D5") +
@@ -264,7 +268,7 @@ introduces panel spacing so adjacent panels don't run together.
 
 ```{r, fig.width = 8, fig.height = 5}
 uhc_clean |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
+  left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
   ggplot(aes(x = year, y = value_num)) +
   geom_line(color = "#0093D5", linewidth = 0.8) +
@@ -284,7 +288,7 @@ accent for a deliverable where the strips themselves carry meaning:
 
 ```{r, fig.width = 8, fig.height = 5}
 uhc_clean |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
+  left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
   ggplot(aes(x = year, y = value_num)) +
   geom_line(color = "#0093D5", linewidth = 0.8) +
@@ -307,11 +311,11 @@ dsi_flextable_defaults(font_family = "Geogria")
 
 uhc_clean |>
   filter(year == max(year)) |>
-  left_join(who_countries, by = c("location" = "iso3")) |>
-  select(name_short, value) |>
-  arrange(desc(value)) |>
+  left_join(who_countries, by = "iso3") |>
+  select(name_short, value_num) |>
+  arrange(desc(value_num)) |>
   flextable() |>
-  set_table_properties("autofit", width = .6) %>% 
+  set_table_properties("autofit", width = .6) %>%
   set_caption("UHC SCI in WPR, latest year")
 ```
 
@@ -359,6 +363,28 @@ sdg_data("3.4.1", area = c("608", "250"))
 
 ```{r}
 sdg_clean(sdg)
+```
+
+`sdg_clean()` produces the same 15-column schema as `gho_clean()`,
+so the two outputs can be combined directly with `bind_indicators()`.
+SDG rows populate the `series` column (and the `iso3` column via
+[`m49_to_iso3()`] for Member States), while leaving the GHO-only
+`dim1`–`dim3` columns as `NA`.
+
+### Combining GHO and SDG with bind_indicators()
+
+When an analysis pulls indicators from both sources, `bind_indicators()`
+stacks any number of cleaned tibbles into one. The `source` column
+(`"gho"` / `"sdg"`) lets you filter or facet by origin without
+remembering which frame came from which API.
+
+```{r}
+# Two indicators on the same topic from different APIs:
+#   GHO NCDMORT3070 (probability of premature NCD mortality)
+#   SDG 3.4.1       (mortality rate from NCDs)
+gho_ncd <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
+sdg_ncd <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
 ```
 
 ### Exploring series with sdg_coverage()

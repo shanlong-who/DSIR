@@ -46,7 +46,7 @@ indicator and filter combination, without downloading the full
 result set. Useful as a quick precheck before \code{\link[=gho_data]{gho_data()}}.
 }
 \examples{
-\dontrun{
+\donttest{
 # Does WHO have life-expectancy data for France?
 gho_has_data("WHOSIS_000001", area = "FRA")
 

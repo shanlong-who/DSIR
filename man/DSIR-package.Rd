@@ -13,14 +13,16 @@ It bundles a publication-ready \code{ggplot2} theme (\code{\link[=theme_dsi]{the
 sensible \code{flextable} defaults (\code{\link[=dsi_flextable_defaults]{dsi_flextable_defaults()}}),
 a quick pie chart helper (\code{\link[=ggpie]{ggpie()}}), regional country-code
 datasets (\link{wpro_cty}) with WHO region and UN M49 lookups
-(\code{\link[=iso3_to_region]{iso3_to_region()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}), a geometric mean helper
-for indicator aggregation (\code{\link[=geomean]{geomean()}}), and thin clients for the
-WHO Global
-Health Observatory API (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}},
-\code{\link[=gho_dimensions]{gho_dimensions()}}, \code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}},
-\code{\link[=gho_coverage]{gho_coverage()}}) and the UN Sustainable Development Goals API
-(\code{\link[=sdg_goals]{sdg_goals()}}, \code{\link[=sdg_targets]{sdg_targets()}}, \code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}},
-\code{\link[=sdg_data]{sdg_data()}}, \code{\link[=sdg_coverage]{sdg_coverage()}}).
+(\code{\link[=iso3_to_region]{iso3_to_region()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}, \code{\link[=m49_to_iso3]{m49_to_iso3()}}), a
+geometric mean helper for indicator aggregation (\code{\link[=geomean]{geomean()}}),
+thin clients for the WHO Global Health Observatory API
+(\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}}, \code{\link[=gho_dimensions]{gho_dimensions()}},
+\code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}}, \code{\link[=gho_coverage]{gho_coverage()}}) and the UN
+Sustainable Development Goals API (\code{\link[=sdg_goals]{sdg_goals()}}, \code{\link[=sdg_targets]{sdg_targets()}},
+\code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}, \code{\link[=sdg_data]{sdg_data()}}, \code{\link[=sdg_coverage]{sdg_coverage()}}),
+plus a unified cleaning / binding pipeline (\code{\link[=gho_clean]{gho_clean()}},
+\code{\link[=sdg_clean]{sdg_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}}) that puts GHO and SDG output
+into the same 15-column schema.
 }
 \seealso{
 Useful links:
@@ -32,11 +34,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Shanlong Ding \email{dings@who.int}
+\strong{Maintainer}: Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0002-8831-1684}{ORCID})
 
 Authors:
 \itemize{
-  \item Shanlong Ding \email{dings@who.int}
+  \item Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0002-8831-1684}{ORCID})
 }
 
 }
