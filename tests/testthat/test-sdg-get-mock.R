@@ -129,3 +129,20 @@ test_that("sdg_data applies year filter client-side", {
   expect_equal(nrow(out), 1L)
   expect_equal(out$timePeriodStart, 2015)
 })
+
+test_that(".sdg_get returns NULL with a warning on a malformed JSON body", {
+  # NEWS 0.7.0: the UN SDG endpoint occasionally returns a truncated
+  # response body; resp_body_json() surfaces that as a parse error.
+  # The body-parse tryCatch must downgrade it to a warning + NULL so a
+  # flaky endpoint cannot break an R CMD check example run.
+  httr2::with_mocked_responses(
+    mock_json('{"data": [{"series":"SH_DTH_NCD"'),  # truncated, unparseable
+    {
+      expect_warning(
+        out <- DSIR:::.sdg_get("https://example.test/v1/sdg/Goal/List"),
+        "could not be parsed as JSON"
+      )
+      expect_null(out)
+    }
+  )
+})

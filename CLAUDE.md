@@ -15,9 +15,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The package is CRAN-bound, so conventions below are driven by `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.7.0 ready to commit (last updated 2026-05-13)
+## Current development state — 0.7.0 ready to commit (last updated 2026-05-21)
 
-Version bumped to 0.7.0 in `DESCRIPTION`. All planned code is written, tested, exported, and described in `NEWS.md`. README and vignette are updated to reflect the new schema. `devtools::check()` is clean (0 errors / 0 warnings / 0 notes), including `--run-donttest` and vignette rebuild. `devtools::test()` is **483 PASS / 0 FAIL / 0 SKIP**.
+Version bumped to 0.7.0 in `DESCRIPTION`. All planned code is written, tested, exported, and described in `NEWS.md`. README and vignette are updated to reflect the new schema.
+
+**`devtools::check()` status (re-verified 2026-05-21).** All core `R CMD check` checks, examples, `--run-donttest` (236s), and the vignette rebuild are clean — 0 errors / 0 warnings / 0 notes. The **test phase** can still report an ERROR, but only because of UN-endpoint flakiness: `devtools::check()` sets `NOT_CRAN=true`, so the live network tests in `test-sdg-year-filter.R` *run* locally instead of being skipped by their `skip_on_cran()` guard, and they fail with "Timeout was reached" whenever `unstats.un.org` is slow (the 20s `.sdg_get()` timeout is exceeded). This is endpoint flakiness — **not a code defect, and not CRAN-blocking**, since on real CRAN those tests skip. Offline mock coverage is unaffected: **468 PASS / 0 FAIL** with the network tests excluded. The `devtools::test()` baseline was 483 PASS; the three new regression tests (below) take it to 486 when the UN endpoint is reachable.
 
 0.6.0 was already shipped to the GitHub `main` branch (commits `1eeee49`, `15cb85a`, `4eb5a08`, `78e79e4`, `1debc4b`) but never reached CRAN — CRAN is still on 0.2.0. Plan is to skip 0.6.x on CRAN and submit 0.7.0 directly.
 
@@ -45,6 +47,8 @@ For GHO specifically: `series` is always NA (SDG-only concept). `location_name` 
 - **`sdg_data()` multi-page `rbind` failure.** The 0.6.0 fix relied on `make.row.names = TRUE` (the default) to disambiguate per-page tibble row names like `"1"`..`"1000"`. That actually **does not** disambiguate when each page has 1000 rows numbered identically; the rbind still trips `duplicate 'row.names' are not allowed`. Surfaced when `R CMD check --run-donttest` ran `sdg_data("1.1.1")` (26+ pages of ~1000 rows). Fixed by passing `make.row.names = FALSE` explicitly. The existing test was too weak to catch this (each mock page had only 1 row); the new regression test uses 2-row pages so the collision actually fires.
 - **`sdg_data()` example simplified.** The first example was `sdg_data("1.1.1")` (unfiltered, 26+ pages) — too slow for `R CMD check`. Now `sdg_data("1.1.1", area = "PHL")`.
 - **`gho_clean()` / `sdg_clean()` cross-API `location_name` consistency.** Before the fix, `gho_clean()` left `location_name` always NA (GHO data endpoint returns no name field), and `sdg_clean()` used the SDG API's raw `geoAreaName`. The two sides could disagree on the spelling for the same country, breaking `bind_indicators()` consumers that group by `location_name`. New helpers `.gho_resolve_location_name()` and `.sdg_resolve_location_name()` (in `R/gho.R` / `R/sdg.R`) route both cleaners through `who_countries$name_short` for WHO Member States. GHO additionally resolves the regional codes `AFR / AMR / SEAR / EUR / EMR / WPR / GLOBAL` to human names via a hardcoded map. SDG falls back to the raw `geoAreaName` for non-Member rows (region/world aggregates), preserving information `who_countries` does not carry. Schema, column order, and types unchanged — zero breaking change.
+- **Network helpers now fail soft on malformed response bodies, not just on HTTP errors.** `.gho_get()`, `.sdg_get()`, and the inline HTTP call in `gho_count()` wrap `httr2::resp_body_json()` in `tryCatch()`. A truncated upstream body (premature EOF) now surfaces a `cli_warn()` and returns `NULL` / `NA_integer_` instead of propagating a `jsonlite` parse error — which would otherwise abort an `R CMD check` example run (CRAN-blocking). See `NEWS.md` for the user-facing entry.
+- **`cli::cli_warn()` glue-injection bug in the warning handlers (fixed 2026-05-21).** All six `tryCatch` error handlers in `R/gho.R` / `R/sdg.R` passed `conditionMessage(e)` *directly* as a message element: `cli::cli_warn(c(..., "x" = conditionMessage(e)))`. `cli` runs glue interpolation on every message string, so an error message containing literal `{` / `}` makes `cli` try to evaluate it as a glue expression and re-error *while reporting the original error*. HTTP error messages never carry braces, so this was latent — but a `jsonlite` parse error message embeds the offending JSON fragment, which always has braces, so the new body-parse handlers tripped it on the first malformed-body test. Fixed by assigning `msg <- conditionMessage(e)` and interpolating the variable: `"x" = "{msg}"` (glue inserts the variable's value verbatim and does not recurse into it). Applied to **all six** handlers — the three new body-parse ones and the three pre-existing HTTP-failure ones — so the pattern is uniform.
 
 **Documentation:**
 - All network examples switched from `\dontrun{}` to `\donttest{}`. CRAN reviewers can opt to run them; `R CMD check --run-donttest` exercises them locally.
@@ -55,6 +59,7 @@ For GHO specifically: `series` is always NA (SDG-only concept). `location_name` 
 - New `R/clean_schema.R` centralises the 15-column schema (`.dsi_clean_schema()`), the typed-empty-tibble template (`.dsi_empty_clean()`), and the typed-NA filler (`.fill_na(n, type)`). Any change to the schema should start here.
 - `httptest2` added to `Suggests`. The mocking tests use `httr2::with_mocked_responses()` directly (httptest2 is a peer of httr2 for offline testing); see implementation notes below for the gotcha.
 - `test-gho-dimensions.R` added — `gho_dimensions()` was the last exported network function without offline coverage. Uses the same `mock_json()` pattern as `test-gho-get-mock.R` / `test-sdg-get-mock.R`.
+- **Three regression tests for the malformed-body fail-soft path (added 2026-05-21).** `test-gho-get-mock.R` gained two (`.gho_get()` on a truncated JSON body → warning + `NULL`; `gho_count()` on a truncated body → `NA_integer_`) and `test-sdg-get-mock.R` gained one (`.sdg_get()` on a truncated body → warning + `NULL`). `gho_count()` previously had **no** offline coverage at all. Writing the `.sdg_get` one is what surfaced the `cli_warn()` glue-injection bug listed under Bug fixes — the malformed-body fix had shipped to `NEWS.md` without a test, so the bug in the fix went unnoticed until the test was written.
 
 ### Implementation notes worth remembering
 
@@ -70,12 +75,13 @@ For GHO specifically: `series` is always NA (SDG-only concept). `location_name` 
 - **`gho_count()` uses its own HTTP call site,** not `.gho_get()`, because it needs `@odata.count` from the response envelope, not `value`. If you touch retry/timeout config for one, mirror the change in the other (currently they are in sync).
 - **The 20-second timeout on `.sdg_get()` / `.gho_get()`** is fine for typical 2–6s responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious "Timeout was reached" failures, bumping the constant to 30–60s is the right move. `req_retry()` runs three attempts, so the worst-case wall time is bounded around 66s × 1 retry cycle ≈ several minutes.
 - **`devtools::document()` may need two passes** when a new function adds a roxygen cross-reference (`@seealso [new_fn()]`). First pass writes the new Rd; second pass resolves the cross-reference.
+- **`cli::cli_warn()` and untrusted error text.** Never pass `conditionMessage(e)` — or any string that may contain `{` / `}` — as a bare element of the `cli_warn()` message vector; `cli` glue-interpolates every element. Assign it to a variable first and interpolate the variable: `msg <- conditionMessage(e); cli::cli_warn(c(..., "x" = "{msg}"))`. glue inserts the variable's value literally and does not re-interpolate it. All six `tryCatch` warning handlers in `R/gho.R` / `R/sdg.R` follow this pattern — keep any new handler consistent.
 
 ### Pending steps before tagging
 
 ```r
-devtools::test()       # baseline
-devtools::check()      # 0 errors / 0 warnings / 0 notes  ← already verified
+devtools::test()       # baseline — needs unstats.un.org reachable for the SDG network tests
+devtools::check()      # 0E/0W/0N on all non-test phases; test phase ERRORs only on UN-endpoint timeout (see status above)
 ```
 
 Then commit + tag. The 0.7.0 work is several independent themes (schema alignment + `bind_indicators`; `m49_to_iso3`; `sdg_coverage` dedup; retry parity; documentation polish; test coverage; httptest2 mocking) and can be split into separate commits if a clean history is wanted.
@@ -84,14 +90,26 @@ Then commit + tag. The 0.7.0 work is several independent themes (schema alignmen
 git tag v0.7.0
 ```
 
-### Pandoc on this machine
+### Toolchain on this machine (verified 2026-05-21)
 
-`devtools::check()` rebuilds the vignette, which needs Pandoc. Pandoc is not on `PATH` on this laptop but ships with RStudio. Point `RSTUDIO_PANDOC` at the bundled binary before running `check()`:
+- **R** is installed under `D:/R/` — current version `D:/R/R-4.5.3/` — *not* under `C:/Program Files/R`. Older sessions assumed `C:/Program Files/R/R-4.4.2`; that path does not exist. Use `D:/R/R-4.5.3/bin/Rscript.exe`.
+- **No RStudio, Quarto, or system Pandoc is installed.** The earlier note pointing `RSTUDIO_PANDOC` at `C:/Program Files/RStudio/...` was stale and does not work.
+- **`devtools::check()` rebuilds the vignette, which needs Pandoc.** A standalone Pandoc was installed via the `pandoc` R package:
 
-```r
-Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools")
-devtools::check()
-```
+  ```r
+  install.packages("pandoc")
+  pandoc::pandoc_install()                          # installs Pandoc 3.9.0.2
+  pandoc::pandoc_activate("3.9.0.2", rmarkdown = TRUE)
+  ```
+
+  The binary lives at `C:/Users/User/AppData/Local/r-pandoc/r-pandoc/3.9.0.2/pandoc.exe`. Point `RSTUDIO_PANDOC` at its **directory** before `check()`:
+
+  ```r
+  Sys.setenv(RSTUDIO_PANDOC = "C:/Users/User/AppData/Local/r-pandoc/r-pandoc/3.9.0.2")
+  devtools::check()
+  ```
+
+- **`httptest2` (a `Suggests` dependency) had to be installed** in the `R-4.5.3` library. Without it the three mock test files (`test-gho-get-mock.R`, `test-sdg-get-mock.R`, `test-gho-dimensions.R`) `skip` instead of running, so the offline regression coverage silently disappears.
 
 ## Roadmap — post-0.7.0
 
@@ -124,10 +142,10 @@ The candidate list came from scanning `C:\Users\User\OneDrive - World Health Org
 
 The user did the three highest-impact pre-stable items on 2026-05-13: `cran-comments.md` rewritten, `gho_dimensions()` test coverage added, ORCID added to `Authors@R`. The package is now in fully shippable shape for 0.7.0.
 
-These two cosmetic items are still open but are explicitly skippable:
+Status of the cosmetic items:
 
-1. **README's "Note about CRAN version" banner** will be wrong the moment 0.7.0 lands on CRAN. Remove it then, or rewrite to point at the new development version.
-2. **`README.md` lifecycle badge says "stable"** while the package is 0.x. Either bump to 1.0.0 (the API is now what it would be at 1.0) or change the badge to `maturing`.
+1. ~~**README's "Note about CRAN version" banner**~~ — **done.** The "⚠️ Note about CRAN version" block (which described the 0.2.0 `gho_data()` HTTP 400 bug) has been removed from `README.md`.
+2. **`README.md` lifecycle badge says "stable"** while the package is 0.x — still open. Either bump to 1.0.0 (the API is now what it would be at 1.0) or change the badge to `maturing`.
 
 Skippable nice-to-have:
 

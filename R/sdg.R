@@ -455,16 +455,38 @@ sdg_clean <- function(df) {
       ) |>
       httr2::req_perform(),
     error = function(e) {
+      # Reference the message via a variable so cli does not glue-interpret
+      # any literal braces the error message may carry (see body parse below).
+      msg <- conditionMessage(e)
       cli::cli_warn(c(
         "SDG request failed.",
         "i" = "URL: {.url {url}}",
-        "x" = conditionMessage(e)
+        "x" = "{msg}"
       ))
       NULL
     }
   )
   if (is.null(resp)) return(NULL)
 
-  out <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  # Body parse must also fail soft: the UN SDG endpoint occasionally
+  # returns a truncated response body (premature EOF), which jsonlite
+  # surfaces as a parse error. Without this tryCatch the error would
+  # propagate and break R CMD check examples (CRAN-blocking).
+  out <- tryCatch(
+    httr2::resp_body_json(resp, simplifyVector = TRUE),
+    error = function(e) {
+      # Reference the message via a variable: a jsonlite parse error
+      # carries literal `{`/`}` from the offending JSON, which cli would
+      # otherwise try to interpret as glue expressions and re-error.
+      msg <- conditionMessage(e)
+      cli::cli_warn(c(
+        "SDG response could not be parsed as JSON.",
+        "i" = "URL: {.url {url}}",
+        "x" = "{msg}"
+      ))
+      NULL
+    }
+  )
+  if (is.null(out)) return(NULL)
   if (is.data.frame(out)) tibble::as_tibble(out) else out
 }

@@ -62,6 +62,15 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   `.sdg_get()`. Previously a hung upstream request could stall an
   entire `gho_data()` call indefinitely.
 
+* Network helpers now also fail soft on malformed response bodies.
+  `.gho_get()`, `.sdg_get()`, and the inline call in `gho_count()`
+  wrap `httr2::resp_body_json()` in `tryCatch()`, so a truncated
+  upstream response (premature EOF) surfaces a warning and returns
+  `NULL` / `NA_integer_` instead of propagating a parse error to the
+  caller. Previously such a response could halt an `R CMD check`
+  example run, e.g. `sdg_goals(include_children = TRUE)` against a
+  flaky UN endpoint.
+
 * `gho_clean()` and `sdg_clean()` now populate `location_name`
   consistently across both APIs. WHO Member States are resolved
   against `who_countries$name_short` in both cleaners, so the same

@@ -113,3 +113,37 @@ test_that("gho_data() sends area filter using the OData 'in' operator", {
   decoded <- utils::URLdecode(captured[1])
   expect_match(decoded, "SpatialDim in ('FRA','DEU','JPN')", fixed = TRUE)
 })
+
+test_that(".gho_get returns NULL with a warning on a malformed JSON body", {
+  # NEWS 0.7.0: a truncated upstream body (premature EOF) reaches
+  # resp_body_json() as unparseable JSON. The body-parse tryCatch must
+  # downgrade the jsonlite error to a warning + NULL, the same way an
+  # HTTP failure is handled. Without it the parse error would propagate
+  # and break R CMD check examples.
+  httr2::with_mocked_responses(
+    mock_json('{"value": [{"SpatialDim":"FRA"'),  # truncated, unparseable
+    {
+      expect_warning(
+        out <- DSIR:::.gho_get("https://example.test/api/X"),
+        "could not be parsed as JSON"
+      )
+      expect_null(out)
+    }
+  )
+})
+
+test_that("gho_count returns NA on a malformed JSON body", {
+  # NEWS 0.7.0: gho_count() has its own HTTP call site (it needs
+  # @odata.count, not value), so it carries its own body-parse
+  # tryCatch. A truncated body must yield NA_integer_, not an error.
+  httr2::with_mocked_responses(
+    mock_json('{"@odata.count": 4'),  # truncated, unparseable
+    {
+      expect_warning(
+        n <- gho_count("X", spatial_type = "country", area = "FRA"),
+        "could not be parsed as JSON"
+      )
+      expect_identical(n, NA_integer_)
+    }
+  )
+})

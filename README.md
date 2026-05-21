@@ -19,22 +19,6 @@ tables produced from this data look consistent across reports.
 
 Documentation: <https://shanlong-who.github.io/DSIR/>
 
-## ⚠️ Note about CRAN version
-
-The current CRAN release (0.2.0) has a known issue where 
-`gho_data()` returns an HTTP 400 error when called with the full 
-`wpro_cty` vector (28 countries) or other long region vectors. 
-This has been **fixed in the GitHub development version** (0.7.0).
-
-If you are using DSIR for regional analysis with all WPR / EUR / 
-AFR / AMR countries, please install from GitHub for now:
-
-```r
-remotes::install_github("shanlong-who/DSIR")
-```
-
-CRAN release 0.7.0 is planned for mid 2026.
-
 ## Installation
 
 ```r
