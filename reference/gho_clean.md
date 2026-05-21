@@ -93,14 +93,14 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
 #>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
 #>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
 #> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.5…      42.5
 #> # ℹ 12,200 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,

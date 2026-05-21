@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>DSIR — Data Science Infrastructure for Global Health • DSIR</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -63,18 +63,9 @@
 <p>An R package for global-health data work. Bundles country metadata and lightweight clients for the <a href="https://www.who.int/data/gho" class="external-link">WHO Global Health Observatory</a> and <a href="https://unstats.un.org/sdgs" class="external-link">UN Sustainable Development Goals</a> APIs, plus reusable WHO-style themes for <code>ggplot2</code> and <code>flextable</code> so that charts and tables produced from this data look consistent across reports.</p>
 <p>Documentation: <a href="https://shanlong-who.github.io/DSIR/" class="uri">https://shanlong-who.github.io/DSIR/</a></p>
 <div class="section level2">
-<h2 id="warning-note-about-cran-version">⚠️ Note about CRAN version<a class="anchor" aria-label="anchor" href="#warning-note-about-cran-version"></a>
-</h2>
-<p>The current CRAN release (0.2.0) has a known issue where <code><a href="reference/gho_data.html">gho_data()</a></code> returns an HTTP 400 error when called with the full <code>wpro_cty</code> vector (28 countries) or other long region vectors. This has been <strong>fixed in the GitHub development version</strong> (0.7.0).</p>
-<p>If you are using DSIR for regional analysis with all WPR / EUR / AFR / AMR countries, please install from GitHub for now:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span></code></pre></div>
-<p>CRAN release 0.7.0 is planned for mid 2026.</p>
-</div>
-<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># from CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
 <span></span>
@@ -89,7 +80,7 @@
 <h3 id="country-metadata">Country metadata<a class="anchor" aria-label="anchor" href="#country-metadata"></a>
 </h3>
 <p><strong><code>who_countries</code></strong> — a tibble of all 194 WHO Member States with ISO3, ISO2, UN M49 codes, official and short names, WHO region, and a <code>is_pic</code> flag for Pacific Island Countries.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -100,7 +91,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">who_region</span> <span class="op">==</span> <span class="st">"WPR"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">name_short</span>, <span class="va">is_pic</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Regional ISO3 vectors</strong> — convenience character vectors for each WHO region, derived from <code>who_countries</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wpro_cty</span>   <span class="co"># 28 Western Pacific Member States (since May 2025)</span></span>
 <span><span class="va">afro_cty</span>   <span class="co"># 47 African Region Member States</span></span>
 <span><span class="va">amro_cty</span>   <span class="co"># 35 Region of the Americas Member States</span></span>
@@ -109,11 +100,11 @@
 <span><span class="va">emro_cty</span>   <span class="co"># 21 Eastern Mediterranean Region Member States</span></span>
 <span><span class="va">pic_cty</span>    <span class="co"># 14 Pacific Island Country Member States (subset of WPR)</span></span></code></pre></div>
 <p><strong><code><a href="reference/iso3_to_region.html">iso3_to_region()</a></code></strong> — quick lookup from ISO3 codes to WHO regions. Vectorized; returns <code>NA</code> for codes not matching a Member State.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/iso3_to_region.html">iso3_to_region</a></span><span class="op">(</span><span class="st">"PHL"</span><span class="op">)</span>                          <span class="co"># "WPR"</span></span>
 <span><span class="fu"><a href="reference/iso3_to_region.html">iso3_to_region</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"FRA"</span>, <span class="st">"ZAF"</span>, <span class="st">"XYZ"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># "WPR" "EUR" "AFR" NA</span></span></code></pre></div>
 <p><strong><code><a href="reference/iso3_to_m49.html">iso3_to_m49()</a></code> / <code><a href="reference/m49_to_iso3.html">m49_to_iso3()</a></code></strong> — convert between ISO3 codes and UN M49 numeric codes in either direction. Useful for moving between GHO (ISO3) and SDG (M49) workflows. Case-insensitive on the ISO3 side; both accept zero-padded or bare M49 input on the M49 side; non-Member areas return <code>NA</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="st">"PHL"</span><span class="op">)</span>                             <span class="co"># "608"</span></span>
 <span><span class="fu"><a href="reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"FRA"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span>            <span class="co"># "608" "250" "392"</span></span>
 <span><span class="fu"><a href="reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PRI"</span>, <span class="st">"PHL"</span><span class="op">)</span><span class="op">)</span>                   <span class="co"># NA "608"</span></span>
@@ -127,7 +118,7 @@
 <h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
 </h3>
 <p><strong><code><a href="reference/theme_dsi.html">theme_dsi()</a></code> and <code><a href="reference/theme_dsi_facet.html">theme_dsi_facet()</a></code></strong> — publication-ready <code>ggplot2</code> themes. Use <code><a href="reference/theme_dsi.html">theme_dsi()</a></code> for single-panel charts and <code><a href="reference/theme_dsi_facet.html">theme_dsi_facet()</a></code> for faceted plots; the facet variant adds panel borders, light strip backgrounds, and panel spacing tuned for multi-panel layouts.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -157,7 +148,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"WHO Member States by region and PIC status"</span>,</span>
 <span>       x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p><strong><code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code></strong> — drop-in replacements for <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous()</a></code> that remove the default lower expansion, so columns in bar charts sit flush with the axis instead of floating above it. Pick the one that matches where you mapped the value: <code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> when <code>value</code> is the <code>y</code> aesthetic (including horizontal bars made with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> — the aesthetic is still <code>y</code>), and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code> when <code>value</code> is the <code>x</code> aesthetic (e.g.  <code>geom_col(aes(value, category))</code>). Both accept any argument that <code>scale_*_continuous()</code> accepts.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Vertical bars</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#0093D5"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -165,10 +156,10 @@
 <span>  <span class="fu"><a href="reference/theme_dsi.html">theme_dsi</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Cars by cylinder count"</span>, x <span class="op">=</span> <span class="st">"Cylinders"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p><strong><code><a href="reference/dsi_flextable_defaults.html">dsi_flextable_defaults()</a></code></strong> — one-line setup for <code>flextable</code> formatting (booktabs style, bold headers, paddings).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/dsi_flextable_defaults.html">dsi_flextable_defaults</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong><code><a href="reference/ggpie.html">ggpie()</a></code></strong> — quick pie charts with automatic percentage labels.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"AMR"</span>, <span class="st">"EUR"</span>, <span class="st">"WPR"</span>, <span class="st">"SEAR"</span>, <span class="st">"EMR"</span><span class="op">)</span>,</span>
 <span>  countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">47</span>, <span class="fl">35</span>, <span class="fl">53</span>, <span class="fl">28</span>, <span class="fl">10</span>, <span class="fl">21</span><span class="op">)</span></span>
@@ -179,7 +170,7 @@
 <h3 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a>
 </h3>
 <p><strong><code><a href="reference/geomean.html">geomean()</a></code></strong> — geometric mean, with optional weights. Useful for aggregating ratio-based health indicators where the composite is multiplicative — e.g. UHC service-coverage tracers.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span>                      <span class="co"># ~0.772</span></span>
 <span><span class="fu"><a href="reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>      <span class="co"># weighted version</span></span></code></pre></div>
 </div>
@@ -187,7 +178,7 @@
 <h3 id="who-gho-api">WHO GHO API<a class="anchor" aria-label="anchor" href="#who-gho-api"></a>
 </h3>
 <p><strong>Check availability before downloading.</strong> GHO has thousands of indicators but any one of them may not cover the countries or years you need. Three lightweight helpers ask the server what is available without transferring observations:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)</span></span>
 <span><span class="fu"><a href="reference/gho_has_data.html">gho_has_data</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span>
 <span></span>
@@ -201,7 +192,7 @@
 <span><span class="co">#&gt; 2 FRA          2000     2021    66</span></span>
 <span><span class="co">#&gt; 3 JPN          2000     2021    66</span></span></code></pre></div>
 <p><strong>Fetch and clean.</strong> The typical workflow is <strong>search → fetch → clean</strong>:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Search indicators by keyword</span></span>
 <span><span class="fu"><a href="reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"mortality"</span><span class="op">)</span></span>
 <span></span>
@@ -228,7 +219,7 @@
 <h3 id="un-sdg-api">UN SDG API<a class="anchor" aria-label="anchor" href="#un-sdg-api"></a>
 </h3>
 <p>Same pattern as GHO: <strong>search → fetch → clean</strong>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Browse goals, targets, indicators, and geographic areas</span></span>
 <span><span class="fu"><a href="reference/sdg_goals.html">sdg_goals</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/sdg_targets.html">sdg_targets</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -259,12 +250,12 @@
 <h3 id="combining-gho-and-sdg-output">Combining GHO and SDG output<a class="anchor" aria-label="anchor" href="#combining-gho-and-sdg-output"></a>
 </h3>
 <p>Because both cleaners produce the same schema, you can stack their output with <code><a href="reference/bind_indicators.html">bind_indicators()</a></code> and use the <code>source</code> column to keep track of where each row came from:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gho</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/bind_indicators.html">bind_indicators</a></span><span class="op">(</span><span class="va">gho</span>, <span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Exploring series.</strong> A single SDG indicator often contains several series — for example different vaccines, sex strata, or causes of death — each with its own country / year coverage. <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> summarises the year range and observation count per <code>(location, series)</code> so you can see what is available before deciding which series to analyse.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3.b.1 (vaccine coverage) is published as four separate series</span></span>
 <span><span class="fu"><a href="reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>

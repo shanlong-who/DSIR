@@ -77,6 +77,18 @@
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
   call indefinitely.
 
+- Network helpers now also fail soft on malformed response bodies.
+  `.gho_get()`, `.sdg_get()`, and the inline call in
+  [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+  wrap
+  [`httr2::resp_body_json()`](https://httr2.r-lib.org/reference/resp_body_raw.html)
+  in [`tryCatch()`](https://rdrr.io/r/base/conditions.html), so a
+  truncated upstream response (premature EOF) surfaces a warning and
+  returns `NULL` / `NA_integer_` instead of propagating a parse error to
+  the caller. Previously such a response could halt an `R CMD check`
+  example run, e.g. `sdg_goals(include_children = TRUE)` against a flaky
+  UN endpoint.
+
 - [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
   and
   [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
