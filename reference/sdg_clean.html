@@ -15,7 +15,7 @@ directly with bind_indicators()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,16 +108,22 @@ output: <code>dim1</code>, <code>dim2</code>, <code>dim3</code> (GHO-only concep
 <span class="r-in"><span>  <span class="fu">sdg_clean</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&amp;pageSize=1000&amp;areaCode=156&amp;page=1&gt;</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>SDG request failed.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&amp;pageSize=1000&amp;areaCode=156&amp;page=1&gt;</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [unstats.un.org]:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Operation timed out after 20003 milliseconds with 0 bytes received</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 variables: source &lt;chr&gt;, id &lt;chr&gt;, indicator &lt;chr&gt;, location &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   iso3 &lt;chr&gt;, location_name &lt;chr&gt;, year &lt;int&gt;, value &lt;chr&gt;, value_num &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;, dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 120 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    source id    indicator     location iso3  location_name  year value value_num</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> sdg    3.2.1 Infant death… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 64505  <span style="text-decoration: underline;">64</span>505   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> sdg    3.2.1 Infant death… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 84118  <span style="text-decoration: underline;">84</span>118   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> sdg    3.2.1 Infant death… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 1486… <span style="text-decoration: underline;">148</span>623   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> sdg    3.2.1 Under-five m… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 10.0…     10.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> sdg    3.2.1 Under-five m… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 11.3…     11.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> sdg    3.2.1 Under-five m… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 10.7…     10.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> sdg    3.2.1 Infant morta… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 7.68…      7.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> sdg    3.2.1 Infant morta… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 8.69…      8.70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> sdg    3.2.1 Infant morta… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 8.20…      8.21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> sdg    3.2.1 Under-five d… 156      CHN   China          <span style="text-decoration: underline;">2</span>015 84820  <span style="text-decoration: underline;">84</span>820   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 110 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -1,5 +1,9 @@
 # Changelog
 
+## DSIR 0.7.1
+
+- Corrected the maintainer’s ORCID identifier in DESCRIPTION.
+
 ## DSIR 0.7.0
 
 CRAN release: 2026-05-21

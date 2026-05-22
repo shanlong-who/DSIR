@@ -83,9 +83,11 @@ internally and aggregates the result client-side.
 sdg_coverage("3.4.1", area = c("156", "076"))
 #> Fetching:
 #> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=156&areaCode=076&page=1>
-#> # A tibble: 0 × 5
-#> # ℹ 5 variables: location <chr>, series <chr>, year_min <int>, year_max <int>,
-#> #   n_obs <int>
+#> # A tibble: 2 × 5
+#>   location series      year_min year_max n_obs
+#>   <chr>    <chr>          <int>    <int> <int>
+#> 1 156      SH_DTH_NCOM     2000     2021    21
+#> 2 76       SH_DTH_NCOM     2000     2021    21
 
 # Filter to a year range
 sdg_coverage("3.4.1", area = "156", year_from = 2015)

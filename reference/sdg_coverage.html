@@ -19,7 +19,7 @@ committing to a downstream analysis.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,9 +123,11 @@ the result client-side.</p>
 <span class="r-in"><span><span class="fu">sdg_coverage</span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"076"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&amp;pageSize=1000&amp;areaCode=156&amp;areaCode=076&amp;page=1&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 variables: location &lt;chr&gt;, series &lt;chr&gt;, year_min &lt;int&gt;, year_max &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_obs &lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   location series      year_min year_max n_obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 156      SH_DTH_NCOM     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>021    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 76       SH_DTH_NCOM     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>021    21</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Filter to a year range</span></span></span>
 <span class="r-in"><span><span class="fu">sdg_coverage</span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="st">"156"</span>, year_from <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span></span>

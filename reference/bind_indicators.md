@@ -58,14 +58,8 @@ gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
 sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
 #> Fetching:
 #> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
-#> Warning: SDG request failed.
-#> ℹ URL:
-#>   <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [unstats.un.org]:
-#>   Operation timed out after 20001 milliseconds with 0 bytes received
 bind_indicators(gho, sdg)
-#> # A tibble: 1,452 × 15
+#> # A tibble: 1,914 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
 #>  1 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 9.8 …       9.8
@@ -78,7 +72,7 @@ bind_indicators(gho, sdg)
 #>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
 #>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
 #> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 9.1 …       9.1
-#> # ℹ 1,442 more rows
+#> # ℹ 1,904 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
 # }
