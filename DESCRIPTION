@@ -5,7 +5,7 @@ Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
                   email = "dings@who.int",
-                  comment = c(ORCID = "0000-0002-8831-1684"))
+                  comment = c(ORCID = "0000-0001-9048-6670"))
 Description: Supports global health data analysis, including a
     publication-ready 'ggplot2' theme, a 'flextable' defaults helper,
     a thin pie chart wrapper, built-in regional country-code datasets
