@@ -533,7 +533,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-ffe4df8a
+UHC SCI in WPR, latest year {.table .cl-0a8733da
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators

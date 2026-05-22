@@ -52,9 +52,9 @@ Useful links:
 ## Author
 
 **Maintainer**: Shanlong Ding <dings@who.int>
-([ORCID](https://orcid.org/0000-0002-8831-1684))
+([ORCID](https://orcid.org/0000-0001-9048-6670))
 
 Authors:
 
 - Shanlong Ding <dings@who.int>
-  ([ORCID](https://orcid.org/0000-0002-8831-1684))
+  ([ORCID](https://orcid.org/0000-0001-9048-6670))
