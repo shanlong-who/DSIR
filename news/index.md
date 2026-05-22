@@ -2,6 +2,8 @@
 
 ## DSIR 0.7.0
 
+CRAN release: 2026-05-21
+
 ### Breaking changes
 
 - [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)

@@ -252,14 +252,14 @@ region can be pulled in one call.</p>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   IndicatorCode      IndicatorName                                      Language</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> HSS_UHCLEGISLATION Countries that have passed legislation on Univers… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> GOE_Q070           Strategy includes objectives as to how telehealth… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> GOE_Q002           strategy refers to the use of ICT to support UHC   EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> GOE_Q004           National eHealth strategy refers to objectives of… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_SCI_INFECT     UHC Service Coverage sub-index on infectious dise… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_INDEX_REPORTED UHC Service Coverage Index (SDG 3.8.1)             EN</span></span></code></pre></div>
+<span><span class="co">#&gt;   IndicatorCode       IndicatorName                                     Language</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> HSS_UHCLEGISLATION  Countries that have passed legislation on Univer… EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> UHC_INDEX_REPORTED  UHC Service Coverage Index (SDG 3.8.1)            EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> UHC_SCI_CAPACITY    UHC Service Coverage sub-index on service capaci… EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_SCI_RMNCH       UHC Service Coverage sub-index on reproductive, … EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN</span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
 </div>
@@ -279,15 +279,15 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 252</span></span>
 <span><span class="co">#&gt; Columns: 25</span></span>
-<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 8863958<span style="color: #949494;">, </span>8931286<span style="color: #949494;">, </span>8931421<span style="color: #949494;">, </span>8936824<span style="color: #949494;">, </span>8953464<span style="color: #949494;">, </span>897568…</span></span>
+<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 5305095<span style="color: #949494;">, </span>5313797<span style="color: #949494;">, </span>5341882<span style="color: #949494;">, </span>5345321<span style="color: #949494;">, </span>5365642<span style="color: #949494;">, </span>540328…</span></span>
 <span><span class="co">#&gt; $ IndicatorCode      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_IN…</span></span>
 <span><span class="co">#&gt; $ SpatialDimType     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTR…</span></span>
-<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "WSM"<span style="color: #949494;">, </span>"LAO"<span style="color: #949494;">, </span>"FJI"<span style="color: #949494;">, </span>"NIU"<span style="color: #949494;">, </span>"COK"<span style="color: #949494;">, </span>"TON"<span style="color: #949494;">, </span>"NZL"<span style="color: #949494;">, </span>"N…</span></span>
+<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NRU"<span style="color: #949494;">, </span>"COK"<span style="color: #949494;">, </span>"WSM"<span style="color: #949494;">, </span>"KHM"<span style="color: #949494;">, </span>"KHM"<span style="color: #949494;">, </span>"PHL"<span style="color: #949494;">, </span>"BRN"<span style="color: #949494;">, </span>"W…</span></span>
 <span><span class="co">#&gt; $ ParentLocationCode <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"W…</span></span>
 <span><span class="co">#&gt; $ TimeDimType        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YE…</span></span>
 <span><span class="co">#&gt; $ ParentLocation     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Western Pacific"<span style="color: #949494;">, </span>"Western Pacific"<span style="color: #949494;">, </span>"Western Paci…</span></span>
 <span><span class="co">#&gt; $ Dim1Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2017<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>2015<span style="color: #949494;">, </span>2017<span style="color: #949494;">, </span>2018<span style="color: #949494;">, </span>2016<span style="color: #949494;">, </span>201…</span></span>
+<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2018<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2021<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>2021<span style="color: #949494;">, </span>2015<span style="color: #949494;">, </span>202…</span></span>
 <span><span class="co">#&gt; $ Dim1               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim2Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim2               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
@@ -295,15 +295,15 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <span><span class="co">#&gt; $ Dim3               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDimType  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDim      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "62"<span style="color: #949494;">, </span>"62"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"74"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"58"<span style="color: #949494;">, </span>"77…</span></span>
-<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 62<span style="color: #949494;">, </span>62<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>74<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>58<span style="color: #949494;">, </span>77<span style="color: #949494;">, </span>28<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>80<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "59"<span style="color: #949494;">, </span>"75"<span style="color: #949494;">, </span>"63"<span style="color: #949494;">, </span>"60"<span style="color: #949494;">, </span>"59"<span style="color: #949494;">, </span>"66"<span style="color: #949494;">, </span>"84"<span style="color: #949494;">, </span>"62"<span style="color: #949494;">, </span>"61…</span></span>
+<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 59<span style="color: #949494;">, </span>75<span style="color: #949494;">, </span>63<span style="color: #949494;">, </span>60<span style="color: #949494;">, </span>59<span style="color: #949494;">, </span>66<span style="color: #949494;">, </span>84<span style="color: #949494;">, </span>62<span style="color: #949494;">, </span>61<span style="color: #949494;">, </span>80<span style="color: #949494;">, </span>56<span style="color: #949494;">, </span>62<span style="color: #949494;">, </span>66<span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Low                <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ High               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Comments           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Date               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2025-12-05T11:39:13.277+01:00"<span style="color: #949494;">, </span>"2025-12-05T11:39:…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2020"<span style="color: #949494;">, </span>"2015"<span style="color: #949494;">, </span>"2017"<span style="color: #949494;">, </span>"20…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-01-01T00:00:00+0…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-12-31T00:00:00+0…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2018"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2020"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2021"<span style="color: #949494;">, </span>"2019"<span style="color: #949494;">, </span>"20…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2018-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-01-01T00:00:00+0…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2018-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-12-31T00:00:00+0…</span></span></code></pre></div>
 <p>Note that <code>area</code> accepts long ISO3 vectors — here we fetch
 all 28 WPR countries in one call.</p>
 </div>
@@ -486,125 +486,125 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-b49323de{table-layout:auto;width:60%;}.cl-b489fb92{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-b489fba6{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-b48e3d4c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-b48e3d56{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-b48e73ac{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b48e73b6{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b48e73b7{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b48e73c0{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b48e73c1{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b48e73ca{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-b49323de">
+<style>.cl-5c4b29c4{table-layout:auto;width:60%;}.cl-5c41a32c{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-5c41a340{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-5c461a9c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-5c461aa6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-5c465700{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c46570a{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c465714{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c465715{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c465716{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c46571e{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-5c4b29c4">
 <caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-b48e73ac"><p class="cl-b48e3d4c"><span class="cl-b489fb92">name_short</span></p></th>
-<th class="cl-b48e73b6"><p class="cl-b48e3d56"><span class="cl-b489fb92">value_num</span></p></th>
+<th class="cl-5c465700"><p class="cl-5c461a9c"><span class="cl-5c41a32c">name_short</span></p></th>
+<th class="cl-5c46570a"><p class="cl-5c461aa6"><span class="cl-5c41a32c">value_num</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Australia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">89</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Australia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">New Zealand</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">89</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">New Zealand</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Republic of Korea</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">88</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Republic of Korea</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Singapore</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">88</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Singapore</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Japan</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">86</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Japan</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">86</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">China</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">85</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">China</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">85</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Brunei Darussalam</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">84</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Brunei Darussalam</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Malaysia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">80</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Malaysia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">80</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Cook Islands</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">75</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Cook Islands</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Palau</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">75</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Palau</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Tonga</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">71</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Tonga</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Viet Nam</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">71</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Viet Nam</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Mongolia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">70</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Mongolia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">70</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Fiji</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">69</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Fiji</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Philippines</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">69</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Philippines</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Indonesia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">67</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Indonesia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Niue</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">67</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Niue</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Marshall Islands</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">66</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Marshall Islands</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">66</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Micronesia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">65</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Micronesia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Tuvalu</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">65</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Tuvalu</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Lao PDR</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">64</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Lao PDR</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">64</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Cambodia</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">62</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Cambodia</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Nauru</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">62</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Nauru</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Samoa</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">62</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Samoa</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Vanuatu</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">52</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Vanuatu</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">52</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Kiribati</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">51</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Kiribati</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">51</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73b7"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Solomon Islands</span></p></td>
-<td class="cl-b48e73c0"><p class="cl-b48e3d56"><span class="cl-b489fba6">47</span></p></td>
+<td class="cl-5c465714"><p class="cl-5c461a9c"><span class="cl-5c41a340">Solomon Islands</span></p></td>
+<td class="cl-5c465715"><p class="cl-5c461aa6"><span class="cl-5c41a340">47</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-b48e73c1"><p class="cl-b48e3d4c"><span class="cl-b489fba6">Papua New Guinea</span></p></td>
-<td class="cl-b48e73ca"><p class="cl-b48e3d56"><span class="cl-b489fba6">32</span></p></td>
+<td class="cl-5c465716"><p class="cl-5c461a9c"><span class="cl-5c41a340">Papua New Guinea</span></p></td>
+<td class="cl-5c46571e"><p class="cl-5c461aa6"><span class="cl-5c41a340">32</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -761,12 +761,12 @@ remembering which frame came from which API.</p>
 <span><span class="co">#&gt; $ iso3          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ location_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Aus…</span></span>
 <span><span class="co">#&gt; $ year          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>20…</span></span>
-<span><span class="co">#&gt; $ value         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "16.0 [14.1-18.0]"<span style="color: #949494;">, </span>"9.8 [8.4-11.2]"<span style="color: #949494;">, </span>"13.0 [11.3-14.7]"…</span></span>
-<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>14.5<span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>12.6<span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>16…</span></span>
+<span><span class="co">#&gt; $ value         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "9.8 [8.4-11.2]"<span style="color: #949494;">, </span>"16.0 [14.1-18.0]"<span style="color: #949494;">, </span>"13.0 [11.3-14.7]"…</span></span>
+<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 9.8<span style="color: #949494;">, </span>16.0<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>9.1<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8.4<span style="color: #949494;">, </span>14.1<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>7.8<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 11.2<span style="color: #949494;">, </span>18.0<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>10…</span></span>
 <span><span class="co">#&gt; $ series        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ dim1          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SEX_MLE"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_BTSX"<span style="color: #949494;">, </span>"SEX_MLE"<span style="color: #949494;">, </span>"SEX_BTSX"…</span></span>
+<span><span class="co">#&gt; $ dim1          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SEX_FMLE"<span style="color: #949494;">, </span>"SEX_MLE"<span style="color: #949494;">, </span>"SEX_BTSX"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_MLE"…</span></span>
 <span><span class="co">#&gt; $ dim2          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_…</span></span>
 <span><span class="co">#&gt; $ dim3          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span></code></pre></div>
 </div>
