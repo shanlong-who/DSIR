@@ -2,6 +2,10 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR 0.7.1
+
+* Corrected the maintainer's ORCID identifier in DESCRIPTION.
+
 # DSIR 0.7.0
 
 ## Breaking changes
