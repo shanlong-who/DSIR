@@ -34,11 +34,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0002-8831-1684}{ORCID})
+\strong{Maintainer}: Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0001-9048-6670}{ORCID})
 
 Authors:
 \itemize{
-  \item Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0002-8831-1684}{ORCID})
+  \item Shanlong Ding \email{dings@who.int} (\href{https://orcid.org/0000-0001-9048-6670}{ORCID})
 }
 
 }
