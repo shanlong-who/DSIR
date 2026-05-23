@@ -75,8 +75,8 @@ gho_data("NCDMORT3070", spatial_type = "country")
 #>  9 5.31e6 NCDMORT3070   COUNTRY        FRA        EUR                YEAR       
 #> 10 5.31e6 NCDMORT3070   COUNTRY        ITA        EUR                YEAR       
 #> # ℹ 12,200 more rows
-#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
 #> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
 #> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
@@ -88,21 +88,21 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
 #> # A tibble: 42 × 25
-#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
-#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 5.48e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  2 5.63e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  3 5.71e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  4 2.05e5 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  5 2.96e5 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  6 8.63e5 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  7 9.58e5 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  8 1.11e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  9 1.21e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#> 10 1.54e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1 5.48e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  2 5.63e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  3 5.71e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  4 2.05e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  5 2.96e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  6 8.63e5 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  7 9.58e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  8 1.11e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  9 1.21e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#> 10 1.54e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
 #> # ℹ 32 more rows
-#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
 #> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
 #> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
