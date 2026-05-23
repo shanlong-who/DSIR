@@ -8,6 +8,7 @@
 ^cran-comments\.md$
 ^\.github$
 ^CLAUDE\.md$
+^AGENTS\.md$
 ^\.positai$
 ^_claude_handoff$
 ^data-raw$
