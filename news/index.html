@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/DSIR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -33,6 +37,24 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.8.0" id="dsir-080">DSIR 0.8.0<a class="anchor" aria-label="anchor" href="#dsir-080"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
+<ul><li><p>New <code><a href="../reference/aarr.html">aarr()</a></code>: the average annual rate of reduction, the standard WHO / UNICEF metric for tracking progress in declining indicators (maternal / child mortality, premature NCD mortality, stunting). The default <code>"regression"</code> method fits an OLS line to <code>log(value)</code> against <code>year</code> and returns <code>1 - exp(slope)</code> (the UNICEF-recommended approach); an <code>"endpoint"</code> method using only the earliest and latest years is also available. Positive values mean the indicator is declining; the result is a fraction (multiply by 100 to compare with published tables). Duplicated years — the signature of data still mixed across strata (<code>dim1</code>, <code>series</code>) — trigger a warning.</p></li>
+<li><p><code><a href="../reference/gho_data.html">gho_data()</a></code>, <code><a href="../reference/gho_has_data.html">gho_has_data()</a></code>, <code><a href="../reference/gho_count.html">gho_count()</a></code>, and <code><a href="../reference/gho_coverage.html">gho_coverage()</a></code> gain <code>dim1</code> / <code>dim2</code> / <code>dim3</code> arguments to filter GHO breakdown dimensions (sex, age group, …) server-side, e.g. <code>gho_data("NCDMORT3070", dim1 = "SEX_BTSX")</code>. Previously the full observation table had to be downloaded and filtered locally. Use <code><a href="../reference/gho_dimensions.html">gho_dimensions()</a></code> to discover the values available for an indicator.</p></li>
+<li><p>New vignette <code><a href="../articles/visualizing-indicators.html">vignette("visualizing-indicators")</a></code>: ggplot2 recipes for the cleaned-indicator schema — confidence-interval ribbons, breakdown facets, forest-style country comparisons, dumbbell progress plots, and progress tracking with <code><a href="../reference/aarr.html">aarr()</a></code>.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-8-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-8-0"></a></h3>
+<ul><li>
+<code><a href="../reference/gho_dimensions.html">gho_dimensions()</a></code> now downloads only the requested column (via the OData <code>$select</code> query option) instead of the full observation table, making it a lightweight metadata query even for indicators with hundreds of thousands of rows. As a side effect, a misspelled <code>dimension</code> name now surfaces a warning (the server rejects the request) instead of silently returning an empty vector after a full download.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-8-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-0"></a></h3>
+<ul><li>A failed GHO indicator-catalog fetch is no longer cached for the session. Previously, if the first <code><a href="../reference/gho_clean.html">gho_clean()</a></code> call happened while offline, the empty catalog was cached and the <code>indicator</code> column stayed <code>NA</code> for the rest of the session even after connectivity returned; the catalog fetch is now retried on the next call.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.1" id="dsir-071">DSIR 0.7.1<a class="anchor" aria-label="anchor" href="#dsir-071"></a></h2><p class="text-muted">CRAN release: 2026-05-23</p>
 <ul><li>Corrected the maintainer’s ORCID identifier in DESCRIPTION.</li>

@@ -53,13 +53,13 @@ gho_indicators("mortality")
 #>    IndicatorCode  IndicatorName                                         Language
 #>    <chr>          <chr>                                                 <chr>   
 #>  1 imr            Infant mortality rate (deaths per 1000 live births)   EN      
-#>  2 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
-#>  3 MDG_0000000001 Infant mortality rate (probability of dying between … EN      
-#>  4 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
-#>  5 MDG_0000000007 Under-five mortality rate (probability of dying by a… EN      
-#>  6 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
-#>  7 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
-#>  8 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
+#>  2 MDG_0000000007 Under-five mortality rate (probability of dying by a… EN      
+#>  3 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
+#>  4 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
+#>  5 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
+#>  6 MDG_0000000001 Infant mortality rate (probability of dying between … EN      
+#>  7 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
+#>  8 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
 #>  9 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
 #> 10 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
 #> # ℹ 22 more rows

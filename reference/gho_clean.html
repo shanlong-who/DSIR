@@ -15,7 +15,7 @@ directly with bind_indicators()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,10 @@ directly with bind_indicators()."></head><body>
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/DSIR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -118,16 +122,16 @@ human-readable indicator name. If the catalog cannot be fetched
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,210 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    source id        indicator location iso3  location_name  year value value_num</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2…      43.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40.0…      40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40.0…      40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2…      43.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 46.7…      46.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8…      46.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5…      40.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5…      40.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8…      46.8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 43.5…      43.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3…      40.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1…      43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46.0…      46  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 40.0…      40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1…      43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46.0…      46  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3…      40.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 42.5…      42.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,200 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>

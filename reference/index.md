@@ -85,3 +85,5 @@ Small mathematical and data helpers.
 
 - [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
   : Geometric Mean
+- [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md) :
+  Average Annual Rate of Reduction (AARR)

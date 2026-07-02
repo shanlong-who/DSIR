@@ -1,5 +1,60 @@
 # Changelog
 
+## DSIR 0.8.0
+
+### New features
+
+- New [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md):
+  the average annual rate of reduction, the standard WHO / UNICEF metric
+  for tracking progress in declining indicators (maternal / child
+  mortality, premature NCD mortality, stunting). The default
+  `"regression"` method fits an OLS line to `log(value)` against `year`
+  and returns `1 - exp(slope)` (the UNICEF-recommended approach); an
+  `"endpoint"` method using only the earliest and latest years is also
+  available. Positive values mean the indicator is declining; the result
+  is a fraction (multiply by 100 to compare with published tables).
+  Duplicated years — the signature of data still mixed across strata
+  (`dim1`, `series`) — trigger a warning.
+
+- [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
+  [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md),
+  [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
+  and
+  [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
+  gain `dim1` / `dim2` / `dim3` arguments to filter GHO breakdown
+  dimensions (sex, age group, …) server-side, e.g.
+  `gho_data("NCDMORT3070", dim1 = "SEX_BTSX")`. Previously the full
+  observation table had to be downloaded and filtered locally. Use
+  [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
+  to discover the values available for an indicator.
+
+- New vignette
+  [`vignette("visualizing-indicators")`](https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.md):
+  ggplot2 recipes for the cleaned-indicator schema — confidence-interval
+  ribbons, breakdown facets, forest-style country comparisons, dumbbell
+  progress plots, and progress tracking with
+  [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md).
+
+### Improvements
+
+- [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
+  now downloads only the requested column (via the OData `$select` query
+  option) instead of the full observation table, making it a lightweight
+  metadata query even for indicators with hundreds of thousands of rows.
+  As a side effect, a misspelled `dimension` name now surfaces a warning
+  (the server rejects the request) instead of silently returning an
+  empty vector after a full download.
+
+### Bug fixes
+
+- A failed GHO indicator-catalog fetch is no longer cached for the
+  session. Previously, if the first
+  [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+  call happened while offline, the empty catalog was cached and the
+  `indicator` column stayed `NA` for the rest of the session even after
+  connectivity returned; the catalog fetch is now retried on the next
+  call.
+
 ## DSIR 0.7.1
 
 CRAN release: 2026-05-23

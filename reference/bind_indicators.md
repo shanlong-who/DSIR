@@ -62,15 +62,15 @@ bind_indicators(gho, sdg)
 #> # A tibble: 1,914 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 9.8 …       9.8
-#>  2 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 16.0…      16  
+#>  1 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 16.0…      16  
+#>  2 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 9.8 …       9.8
 #>  3 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 13.0…      13  
 #>  4 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 9.6 …       9.6
 #>  5 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 15.6…      15.6
 #>  6 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 12.6…      12.6
-#>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
-#>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
-#>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
+#>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
+#>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
+#>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
 #> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 9.1 …       9.1
 #> # ℹ 1,904 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,

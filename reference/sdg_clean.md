@@ -86,11 +86,11 @@ sdg_data("3.2.1", area = "156", year_from = 2015) |>
 #>  1 sdg    3.2.1 Infant death… 156      CHN   China          2015 64505  64505   
 #>  2 sdg    3.2.1 Infant death… 156      CHN   China          2015 84118  84118   
 #>  3 sdg    3.2.1 Infant death… 156      CHN   China          2015 1486… 148623   
-#>  4 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.0…     10.1 
-#>  5 sdg    3.2.1 Under-five m… 156      CHN   China          2015 11.3…     11.3 
+#>  4 sdg    3.2.1 Under-five m… 156      CHN   China          2015 11.3…     11.3 
+#>  5 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.0…     10.1 
 #>  6 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.7…     10.7 
-#>  7 sdg    3.2.1 Infant morta… 156      CHN   China          2015 7.68…      7.69
-#>  8 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.69…      8.70
+#>  7 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.69…      8.70
+#>  8 sdg    3.2.1 Infant morta… 156      CHN   China          2015 7.68…      7.69
 #>  9 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.20…      8.21
 #> 10 sdg    3.2.1 Under-five d… 156      CHN   China          2015 84820  84820   
 #> # ℹ 110 more rows

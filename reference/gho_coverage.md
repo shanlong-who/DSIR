@@ -15,7 +15,10 @@ gho_coverage(
   spatial_type = "country",
   area = NULL,
   year_from = NULL,
-  year_to = NULL
+  year_to = NULL,
+  dim1 = NULL,
+  dim2 = NULL,
+  dim3 = NULL
 )
 ```
 
@@ -43,6 +46,18 @@ gho_coverage(
 - year_to:
 
   Numeric. End year filter (inclusive). Default `NULL`.
+
+- dim1, dim2, dim3:
+
+  Character vector of values to keep for the `Dim1` / `Dim2` / `Dim3`
+  breakdown columns, filtered server-side (e.g. `dim1 = "SEX_BTSX"` for
+  both-sexes rows only, or `dim1 = c("SEX_MLE", "SEX_FMLE")`). The
+  meaning of each dimension varies by indicator (`Dim1` is sex for one
+  indicator, an age group for another); use
+  [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
+  to discover the values available for a given indicator. Rows where the
+  dimension is empty (`null`) are excluded by the filter. Default `NULL`
+  (no filtering).
 
 ## Value
 

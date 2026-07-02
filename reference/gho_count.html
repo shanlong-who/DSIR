@@ -11,7 +11,7 @@ observations. Useful for sizing a download before issuing it."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,10 @@ observations. Useful for sizing a download before issuing it."></head><body>
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/DSIR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -51,7 +55,10 @@ observations. Useful for sizing a download before issuing it.</p>
 <span>  spatial_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  area <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  year_from <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  year_to <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  year_to <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim3 <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,6 +90,18 @@ Default <code>NULL</code>.</p></dd>
 <dt id="arg-year-to">year_to<a class="anchor" aria-label="anchor" href="#arg-year-to"></a></dt>
 <dd><p>Numeric. End year filter (inclusive).
 Default <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-dim-dim-dim-">dim1, dim2, dim3<a class="anchor" aria-label="anchor" href="#arg-dim-dim-dim-"></a></dt>
+<dd><p>Character vector of values to keep for the
+<code>Dim1</code> / <code>Dim2</code> / <code>Dim3</code> breakdown columns, filtered server-side
+(e.g. <code>dim1 = "SEX_BTSX"</code> for both-sexes rows only, or
+<code>dim1 = c("SEX_MLE", "SEX_FMLE")</code>). The meaning of each dimension
+varies by indicator (<code>Dim1</code> is sex for one indicator, an age
+group for another); use <code><a href="gho_dimensions.html">gho_dimensions()</a></code> to discover the values
+available for a given indicator. Rows where the dimension is
+empty (<code>null</code>) are excluded by the filter. Default <code>NULL</code> (no
+filtering).</p></dd>
 
 </dl></div>
     <div class="section level2">

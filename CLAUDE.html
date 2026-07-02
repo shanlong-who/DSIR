@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="articles/DSIR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json"></form></li>
@@ -49,7 +53,33 @@
 </ul><p>The package is CRAN-bound, so conventions below are driven by <code>R CMD check</code> and CRAN policy, not just taste.</p>
 </div>
 <div class="section level2">
-<h2 id="current-development-state--070-ready-to-commit-last-updated-2026-05-21">Current development state — 0.7.0 ready to commit (last updated 2026-05-21)<a class="anchor" aria-label="anchor" href="#current-development-state--070-ready-to-commit-last-updated-2026-05-21"></a></h2>
+<h2 id="current-development-state--080-built-uncommitted-last-updated-2026-07-02">Current development state — 0.8.0 built, uncommitted (last updated 2026-07-02)<a class="anchor" aria-label="anchor" href="#current-development-state--080-built-uncommitted-last-updated-2026-07-02"></a></h2>
+<p>0.7.1 was prepared for CRAN (commits <code>d404a23</code>..<code>a637e3c</code>). This session built <strong>0.8.0</strong> in the working tree (uncommitted). <code>devtools::check()</code>: 0 errors / 0 warnings / 0 notes locally (the earlier “non-standard top-level files” NOTE was fixed by adding <code>conversation-export.md</code> / <code>development_proposals.md</code> to <code>.Rbuildignore</code>). Tests: <strong>534 PASS / 0 FAIL</strong> (UN + GHO endpoints reachable).</p>
+<div class="section level3">
+<h3 id="what-080-adds">What 0.8.0 adds<a class="anchor" aria-label="anchor" href="#what-080-adds"></a></h3>
+<ul><li>
+<strong><code>aarr(year, value, method = c("regression", "endpoint"), na.rm = TRUE)</code></strong> (<code>R/aarr.R</code>) — average annual rate of reduction. Regression method is <code>1 - exp(b)</code> with <code>b</code> the OLS slope of <code>log(value) ~ year</code> (UNICEF standard) — NOT <code>-b</code>. Positive = decline; returns a fraction (×100 for published-table percent). Warn + <code>NA_real_</code> on: &lt;2 distinct years, <code>value &lt;= 0</code>, non-finite input. Warn-and-proceed on duplicated years (signature of unfiltered <code>dim1</code>/<code>series</code> strata). Projection deliberately NOT exported — shown in <code>@examples</code> and the vignette.</li>
+<li>
+<strong><code>dim1</code> / <code>dim2</code> / <code>dim3</code> args</strong> on <code><a href="reference/gho_data.html">gho_data()</a></code>, <code><a href="reference/gho_has_data.html">gho_has_data()</a></code>, <code><a href="reference/gho_count.html">gho_count()</a></code>, <code><a href="reference/gho_coverage.html">gho_coverage()</a></code> — server-side OData <code>Dim1 in (...)</code> filters built in <code>.gho_build_url()</code>; single quotes escaped (<code>'</code> → <code>''</code>). <strong>GHO sex codes are prefixed: <code>SEX_BTSX</code> / <code>SEX_MLE</code> / <code>SEX_FMLE</code></strong> — bare <code>BTSX</code> silently returns 0 rows (HTTP 200, empty value). A live <code>skip_on_cran</code> test in <code>test-gho-availability.R</code> guards this.</li>
+<li>
+<strong><code><a href="reference/gho_dimensions.html">gho_dimensions()</a></code> now sends <code>$select=&lt;dimension&gt;</code></strong> instead of downloading the full observation table. Misspelled dimension → HTTP 400 → fail-soft warning + <code>character(0)</code> (previously silent empty after full download).</li>
+<li>
+<strong>Bug fix:</strong> <code>.gho_indicator_catalog()</code> no longer caches a failed (empty) catalog fetch — one offline first call used to pin <code>gho_clean()$indicator</code> to NA for the whole session. Cache condition is now <code>nrow &gt; 0</code>; regression tests in <code>test-gho-catalog-cache.R</code>.</li>
+<li>
+<strong>New vignette <code>vignettes/visualizing-indicators.Rmd</code></strong> (en-US spelling) — ribbon CI, dim1 facets, forest, dumbbell, and <code><a href="reference/aarr.html">aarr()</a></code> progress recipes on simulated 15-col-schema data (offline, ~23s build). Replaces the idea of exporting <code>ggforest()</code>/<code>ggdumbbell()</code> (consistent with the ggdot decline).</li>
+<li>Housekeeping: <code>dplyr (&gt;= 1.1.0)</code> in Suggests (vignette uses <code>.by</code>/<code>by</code>), <code>aarr</code> added to <code>_pkgdown.yml</code> reference index (pkgdown errors on missing index entries), <code>cran-comments.md</code> rewritten for 0.8.0, WORDLIST gained AARR / NCD / Okabe.</li>
+</ul><p>Feature set was chosen from <code>development_proposals.md</code> via a 3-lens judge panel (CRAN maintainer / WHO analyst / API stability); skipped as settled: <code>aggregate_regions()</code> (population-weight maintenance treadmill, indicator-specific semantics), the name-standardization table (countrycode covers it; deferred condition still not met), a <code>project_indicator()</code> export (one-liner given <code><a href="reference/aarr.html">aarr()</a></code>), and <code>gho_indicators(force_refresh)</code> (the cache fix removes the need).</p>
+</div>
+<div class="section level3">
+<h3 id="toolchain-on-this-machine-user-dings-windows-11-verified-2026-07-02">Toolchain on THIS machine (user <code>dings</code>, Windows 11; verified 2026-07-02)<a class="anchor" aria-label="anchor" href="#toolchain-on-this-machine-user-dings-windows-11-verified-2026-07-02"></a></h3>
+<ul><li>R 4.6.0 at <code>C:/Users/dings/AppData/Local/Programs/R/R-4.6.0/bin/Rscript.exe</code> (the <code>D:/R/R-4.5.3</code> + <code>C:/Users/User/...</code> notes further down are for a DIFFERENT machine).</li>
+<li>Pandoc 3.10 installed via the <code>pandoc</code> R package. Before <code>check()</code>: <code>Sys.setenv(RSTUDIO_PANDOC = dirname(pandoc::pandoc_bin()))</code>.</li>
+<li>
+<code>httptest2</code>, <code>spelling</code>, and <code>pkgdown</code> are installed in the R 4.6.0 library.</li>
+</ul></div>
+</div>
+<div class="section level2">
+<h2 id="previous-development-state--070-last-updated-2026-05-21">Previous development state — 0.7.0 (last updated 2026-05-21)<a class="anchor" aria-label="anchor" href="#previous-development-state--070-last-updated-2026-05-21"></a></h2>
 <p>Version bumped to 0.7.0 in <code>DESCRIPTION</code>. All planned code is written, tested, exported, and described in <code>NEWS.md</code>. README and vignette are updated to reflect the new schema.</p>
 <p><strong><code>devtools::check()</code> status (re-verified 2026-05-21).</strong> All core <code>R CMD check</code> checks, examples, <code>--run-donttest</code> (236s), and the vignette rebuild are clean — 0 errors / 0 warnings / 0 notes. The <strong>test phase</strong> can still report an ERROR, but only because of UN-endpoint flakiness: <code>devtools::check()</code> sets <code>NOT_CRAN=true</code>, so the live network tests in <code>test-sdg-year-filter.R</code> <em>run</em> locally instead of being skipped by their <code>skip_on_cran()</code> guard, and they fail with “Timeout was reached” whenever <code>unstats.un.org</code> is slow (the 20s <code>.sdg_get()</code> timeout is exceeded). This is endpoint flakiness — <strong>not a code defect, and not CRAN-blocking</strong>, since on real CRAN those tests skip. Offline mock coverage is unaffected: <strong>468 PASS / 0 FAIL</strong> with the network tests excluded. The <code>devtools::test()</code> baseline was 483 PASS; the three new regression tests (below) take it to 486 when the UN endpoint is reachable.</p>
 <p>0.6.0 was already shipped to the GitHub <code>main</code> branch (commits <code>1eeee49</code>, <code>15cb85a</code>, <code>4eb5a08</code>, <code>78e79e4</code>, <code>1debc4b</code>) but never reached CRAN — CRAN is still on 0.2.0. Plan is to skip 0.6.x on CRAN and submit 0.7.0 directly.</p>
