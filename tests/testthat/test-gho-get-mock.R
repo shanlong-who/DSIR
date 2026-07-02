@@ -114,6 +114,54 @@ test_that("gho_data() sends area filter using the OData 'in' operator", {
   expect_match(decoded, "SpatialDim in ('FRA','DEU','JPN')", fixed = TRUE)
 })
 
+test_that("gho_data() sends dim1/dim2/dim3 filters server-side", {
+  # NEWS 0.8.0: dimension breakdowns (sex, age group, ...) can be
+  # filtered server-side instead of downloading the full table.
+  captured <- character()
+  mock_fn <- function(req) {
+    captured[[length(captured) + 1L]] <<- req$url
+    httr2::response(
+      status_code = 200L,
+      headers     = list(`content-type` = "application/json"),
+      body        = charToRaw('{"value": []}')
+    )
+  }
+  httr2::with_mocked_responses(mock_fn, {
+    gho_data("X", spatial_type = "country",
+             dim1 = "SEX_BTSX", dim3 = c("A", "B"))
+  })
+  expect_length(captured, 1L)
+  decoded <- utils::URLdecode(captured[1])
+  expect_match(decoded, "Dim1 in ('SEX_BTSX')", fixed = TRUE)
+  expect_match(decoded, "Dim3 in ('A','B')", fixed = TRUE)
+})
+
+test_that("gho_has_data, gho_count, and gho_coverage pass dim filters through", {
+  # All four public wrappers route through .gho_build_url; deleting the
+  # dim passthrough in any one of them must fail a test, not just the
+  # gho_data() one above.
+  captured <- character()
+  mock_fn <- function(req) {
+    captured[[length(captured) + 1L]] <<- req$url
+    httr2::response(
+      status_code = 200L,
+      headers     = list(`content-type` = "application/json"),
+      body        = charToRaw('{"@odata.count": 0, "value": []}')
+    )
+  }
+  httr2::with_mocked_responses(mock_fn, {
+    gho_has_data("X", spatial_type = "country", dim1 = "SEX_FMLE")
+    gho_count("X", spatial_type = "country", dim2 = "AGEGROUP_YEARS15-19")
+    gho_coverage("X", dim3 = c("URB", "RUR"))
+  })
+  expect_length(captured, 3L)
+  decoded <- vapply(captured, utils::URLdecode, character(1),
+                    USE.NAMES = FALSE)
+  expect_match(decoded[1], "Dim1 in ('SEX_FMLE')", fixed = TRUE)
+  expect_match(decoded[2], "Dim2 in ('AGEGROUP_YEARS15-19')", fixed = TRUE)
+  expect_match(decoded[3], "Dim3 in ('URB','RUR')", fixed = TRUE)
+})
+
 test_that(".gho_get returns NULL with a warning on a malformed JSON body", {
   # NEWS 0.7.0: a truncated upstream body (premature EOF) reaches
   # resp_body_json() as unparseable JSON. The body-parse tryCatch must

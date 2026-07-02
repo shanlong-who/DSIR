@@ -96,6 +96,15 @@ gho_indicators <- function(search = NULL) {
 #'   Default `NULL`.
 #' @param year_to Numeric. End year filter (inclusive).
 #'   Default `NULL`.
+#' @param dim1,dim2,dim3 Character vector of values to keep for the
+#'   `Dim1` / `Dim2` / `Dim3` breakdown columns, filtered server-side
+#'   (e.g. `dim1 = "SEX_BTSX"` for both-sexes rows only, or
+#'   `dim1 = c("SEX_MLE", "SEX_FMLE")`). The meaning of each dimension
+#'   varies by indicator (`Dim1` is sex for one indicator, an age
+#'   group for another); use [gho_dimensions()] to discover the values
+#'   available for a given indicator. Rows where the dimension is
+#'   empty (`null`) are excluded by the filter. Default `NULL` (no
+#'   filtering).
 #'
 #' @return A [tibble][tibble::tibble] of indicator observations, or
 #'   an empty tibble when the service is unreachable.
@@ -109,12 +118,17 @@ gho_indicators <- function(search = NULL) {
 #'
 #' # Specific countries and years
 #' gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
+#'
+#' # Keep only the both-sexes breakdown, filtered server-side
+#' gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #' }
 gho_data <- function(indicator, spatial_type = NULL, area = NULL,
-                     year_from = NULL, year_to = NULL) {
+                     year_from = NULL, year_to = NULL,
+                     dim1 = NULL, dim2 = NULL, dim3 = NULL) {
   url <- .gho_build_url(indicator,
                         spatial_type = spatial_type, area = area,
-                        year_from = year_from, year_to = year_to)
+                        year_from = year_from, year_to = year_to,
+                        dim1 = dim1, dim2 = dim2, dim3 = dim3)
   res <- .gho_get(url)
   if (is.null(res)) tibble::tibble() else res
 }
@@ -123,6 +137,7 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' @noRd
 .gho_build_url <- function(indicator, spatial_type = NULL, area = NULL,
                            year_from = NULL, year_to = NULL,
+                           dim1 = NULL, dim2 = NULL, dim3 = NULL,
                            top = NULL, select = NULL, count = FALSE) {
   stopifnot(is.character(indicator), length(indicator) == 1L, nzchar(indicator))
   base_url <- paste0("https://ghoapi.azureedge.net/api/", indicator)
@@ -168,6 +183,24 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
   }
   if (!is.null(year_to)) {
     filters <- c(filters, paste0("TimeDim le ", year_to))
+  }
+
+  dim_args <- list(Dim1 = dim1, Dim2 = dim2, Dim3 = dim3)
+  for (col in names(dim_args)) {
+    values <- dim_args[[col]]
+    if (is.null(values)) next
+    stopifnot(
+      is.character(values),
+      length(values) >= 1L,
+      !anyNA(values),
+      all(nzchar(values))
+    )
+    # Escape single quotes for the OData string literal, as
+    # .gho_indicators_build_url() does for search terms.
+    escaped <- gsub("'", "''", values, fixed = TRUE)
+    filters <- c(filters, paste0(
+      col, " in ('", paste(escaped, collapse = "','"), "')"
+    ))
   }
 
   query_parts <- character(0)
@@ -219,10 +252,12 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' vapply(inds, gho_has_data, logical(1), area = "FRA")
 #' }
 gho_has_data <- function(indicator, spatial_type = NULL, area = NULL,
-                         year_from = NULL, year_to = NULL) {
+                         year_from = NULL, year_to = NULL,
+                         dim1 = NULL, dim2 = NULL, dim3 = NULL) {
   url <- .gho_build_url(indicator,
                         spatial_type = spatial_type, area = area,
                         year_from = year_from, year_to = year_to,
+                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
                         top = 1, select = "Id")
   res <- .gho_get(url)
   if (is.null(res)) return(NA)
@@ -254,10 +289,12 @@ gho_has_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' gho_count("NCDMORT3070", spatial_type = "region")
 #' }
 gho_count <- function(indicator, spatial_type = NULL, area = NULL,
-                      year_from = NULL, year_to = NULL) {
+                      year_from = NULL, year_to = NULL,
+                      dim1 = NULL, dim2 = NULL, dim3 = NULL) {
   url <- .gho_build_url(indicator,
                         spatial_type = spatial_type, area = area,
                         year_from = year_from, year_to = year_to,
+                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
                         top = 0, count = TRUE)
 
   cli::cli_inform("Fetching: {.url {url}}")
@@ -330,6 +367,7 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
 #'   Default `NULL`.
 #' @param year_to Numeric. End year filter (inclusive).
 #'   Default `NULL`.
+#' @inheritParams gho_data
 #'
 #' @return A [tibble][tibble::tibble] with one row per location and
 #'   columns:
@@ -352,7 +390,8 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
 #' gho_coverage("WHOSIS_000001", year_from = 2010)
 #' }
 gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
-                         year_from = NULL, year_to = NULL) {
+                         year_from = NULL, year_to = NULL,
+                         dim1 = NULL, dim2 = NULL, dim3 = NULL) {
   empty <- tibble::tibble(
     location = character(),
     year_min = integer(),
@@ -363,6 +402,7 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
   url <- .gho_build_url(indicator,
                         spatial_type = spatial_type, area = area,
                         year_from = year_from, year_to = year_to,
+                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
                         select = c("SpatialDim", "TimeDim"))
   res <- .gho_get(url)
   if (is.null(res) || nrow(res) == 0L) return(empty)
@@ -400,7 +440,16 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
 #' @param dimension Character. Name of the dimension column in the
 #'   indicator data. Common values include `"SpatialDim"`,
 #'   `"SpatialDimType"`, `"TimeDim"`, `"Dim1"`, `"Dim2"`, and
-#'   `"Dim3"`. Default `"SpatialDimType"`.
+#'   `"Dim3"`. Case-sensitive (it is sent to the server as an OData
+#'   `$select` field name). Default `"SpatialDimType"`.
+#'
+#' @details
+#' Only the requested column is downloaded (via the OData `$select`
+#' query option), so this is a lightweight metadata query even for
+#' indicators with hundreds of thousands of observations. A
+#' `dimension` that is not a column of the GHO data table (e.g. a
+#' misspelling) makes the server reject the request; the failure
+#' surfaces as a warning and an empty character vector.
 #'
 #' @return A character vector of unique, sorted dimension values,
 #'   or an empty character vector when the service is unreachable
@@ -415,9 +464,12 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
 #' }
 gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
   stopifnot(is.character(indicator), length(indicator) == 1L, nzchar(indicator))
-  stopifnot(is.character(dimension), length(dimension) == 1L)
+  stopifnot(is.character(dimension), length(dimension) == 1L, nzchar(dimension))
 
-  res <- .gho_get(paste0("https://ghoapi.azureedge.net/api/", indicator))
+  # $select fetches only the requested column instead of the full
+  # observation table — a large saving for high-volume indicators.
+  url <- .gho_build_url(indicator, select = dimension)
+  res <- .gho_get(url)
   if (is.null(res) || !dimension %in% names(res)) return(character())
   vals <- unique(res[[dimension]])
   sort(vals[!is.na(vals)])
@@ -427,7 +479,13 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' @noRd
 .gho_indicator_catalog <- function() {
   if (is.null(.dsi_cache$gho_indicator_catalog)) {
-    .dsi_cache$gho_indicator_catalog <- gho_indicators()
+    catalog <- gho_indicators()
+    # A failed fetch returns an empty tibble (fail-soft), which must
+    # NOT be cached: caching it would pin `indicator = NA` for the
+    # rest of the session even after connectivity returns. The real
+    # catalog is never empty, so nrow > 0 is a safe cache condition.
+    if (nrow(catalog) == 0L) return(catalog)
+    .dsi_cache$gho_indicator_catalog <- catalog
   }
   .dsi_cache$gho_indicator_catalog
 }

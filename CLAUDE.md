@@ -15,7 +15,66 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The package is CRAN-bound, so conventions below are driven by `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.7.0 ready to commit (last updated 2026-05-21)
+## Current development state — 0.8.0 built, uncommitted (last updated 2026-07-02)
+
+0.7.1 was prepared for CRAN (commits `d404a23`..`a637e3c`). This session built
+**0.8.0** in the working tree (uncommitted). `devtools::check()`: 0 errors /
+0 warnings / 0 notes locally (the earlier "non-standard top-level files" NOTE
+was fixed by adding `conversation-export.md` / `development_proposals.md` to
+`.Rbuildignore`). Tests: **534 PASS / 0 FAIL** (UN + GHO endpoints reachable).
+
+### What 0.8.0 adds
+
+- **`aarr(year, value, method = c("regression", "endpoint"), na.rm = TRUE)`**
+  (`R/aarr.R`) — average annual rate of reduction. Regression method is
+  `1 - exp(b)` with `b` the OLS slope of `log(value) ~ year` (UNICEF
+  standard) — NOT `-b`. Positive = decline; returns a fraction (×100 for
+  published-table percent). Warn + `NA_real_` on: <2 distinct years,
+  `value <= 0`, non-finite input. Warn-and-proceed on duplicated years
+  (signature of unfiltered `dim1`/`series` strata). Projection deliberately
+  NOT exported — shown in `@examples` and the vignette.
+- **`dim1` / `dim2` / `dim3` args** on `gho_data()`, `gho_has_data()`,
+  `gho_count()`, `gho_coverage()` — server-side OData `Dim1 in (...)`
+  filters built in `.gho_build_url()`; single quotes escaped (`'` → `''`).
+  **GHO sex codes are prefixed: `SEX_BTSX` / `SEX_MLE` / `SEX_FMLE`** —
+  bare `BTSX` silently returns 0 rows (HTTP 200, empty value). A live
+  `skip_on_cran` test in `test-gho-availability.R` guards this.
+- **`gho_dimensions()` now sends `$select=<dimension>`** instead of
+  downloading the full observation table. Misspelled dimension → HTTP 400 →
+  fail-soft warning + `character(0)` (previously silent empty after full
+  download).
+- **Bug fix:** `.gho_indicator_catalog()` no longer caches a failed (empty)
+  catalog fetch — one offline first call used to pin `gho_clean()$indicator`
+  to NA for the whole session. Cache condition is now `nrow > 0`; regression
+  tests in `test-gho-catalog-cache.R`.
+- **New vignette `vignettes/visualizing-indicators.Rmd`** (en-US spelling) —
+  ribbon CI, dim1 facets, forest, dumbbell, and `aarr()` progress recipes on
+  simulated 15-col-schema data (offline, ~23s build). Replaces the idea of
+  exporting `ggforest()`/`ggdumbbell()` (consistent with the ggdot decline).
+- Housekeeping: `dplyr (>= 1.1.0)` in Suggests (vignette uses `.by`/`by`),
+  `aarr` added to `_pkgdown.yml` reference index (pkgdown errors on missing
+  index entries), `cran-comments.md` rewritten for 0.8.0, WORDLIST gained
+  AARR / NCD / Okabe.
+
+Feature set was chosen from `development_proposals.md` via a 3-lens judge
+panel (CRAN maintainer / WHO analyst / API stability); skipped as settled:
+`aggregate_regions()` (population-weight maintenance treadmill,
+indicator-specific semantics), the name-standardization table (countrycode
+covers it; deferred condition still not met), a `project_indicator()` export
+(one-liner given `aarr()`), and `gho_indicators(force_refresh)` (the cache
+fix removes the need).
+
+### Toolchain on THIS machine (user `dings`, Windows 11; verified 2026-07-02)
+
+- R 4.6.0 at `C:/Users/dings/AppData/Local/Programs/R/R-4.6.0/bin/Rscript.exe`
+  (the `D:/R/R-4.5.3` + `C:/Users/User/...` notes further down are for a
+  DIFFERENT machine).
+- Pandoc 3.10 installed via the `pandoc` R package. Before `check()`:
+  `Sys.setenv(RSTUDIO_PANDOC = dirname(pandoc::pandoc_bin()))`.
+- `httptest2`, `spelling`, and `pkgdown` are installed in the R 4.6.0
+  library.
+
+## Previous development state — 0.7.0 (last updated 2026-05-21)
 
 Version bumped to 0.7.0 in `DESCRIPTION`. All planned code is written, tested, exported, and described in `NEWS.md`. README and vignette are updated to reflect the new schema.
 

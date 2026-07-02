@@ -1,6 +1,6 @@
 Package: DSIR
 Title: Data Science Infrastructure for Global Health
-Version: 0.7.1
+Version: 0.8.0
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
@@ -10,7 +10,8 @@ Description: Supports global health data analysis, including a
     publication-ready 'ggplot2' theme, a 'flextable' defaults helper,
     a thin pie chart wrapper, built-in regional country-code datasets
     with a WHO region lookup helper, a geometric mean function for
-    indicator aggregation, and convenience clients for the World
+    indicator aggregation, an average annual rate of reduction function
+    for indicator progress tracking, and convenience clients for the World
     Health Organization Global Health Observatory (GHO) OData API
     <https://ghoapi.azureedge.net/api/> and the United Nations
     Sustainable Development Goals (SDG) API
@@ -37,7 +38,7 @@ Suggests:
     httptest2,
     knitr,
     rmarkdown,
-    dplyr
+    dplyr (>= 1.1.0)
 Config/testthat/edition: 3
 LazyData: true
 VignetteBuilder: knitr

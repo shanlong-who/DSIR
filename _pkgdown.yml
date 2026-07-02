@@ -74,6 +74,7 @@ reference:
   desc: Small mathematical and data helpers.
   contents:
   - geomean
+  - aarr
 authors:
   Shanlong Ding:
     href: https://github.com/shanlong-who

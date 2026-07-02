@@ -1,10 +1,18 @@
 ## Submission notes
 
-This is a patch release (0.7.1) submitted shortly after 0.7.0 to
-correct an error in DESCRIPTION: the maintainer's ORCID identifier
-in 0.7.0 belonged to another person and has been corrected to the
-maintainer's own ORCID. No code or functionality has changed since
-0.7.0.
+This is a feature release (0.8.0). It adds one new exported function,
+`aarr()` (average annual rate of reduction, a standard WHO / UNICEF
+progress metric), new optional `dim1` / `dim2` / `dim3` arguments for
+server-side filtering in the GHO client functions, a lighter-weight
+`gho_dimensions()` metadata query, a fix for a session-cache bug in
+`gho_clean()`'s indicator-name resolution, and a new vignette on
+visualizing cleaned indicator data. There are no breaking changes
+since 0.7.1. See NEWS.md for details.
+
+All API-facing functions keep the fail-soft behaviour required by
+CRAN policy: network failures produce a warning and an empty result,
+never an error. The new vignette uses simulated data only and builds
+without network access.
 
 Maintainer: Shanlong Ding <dings@who.int>
 
@@ -17,11 +25,7 @@ Maintainer: Shanlong Ding <dings@who.int>
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-The note "Days since last update: 1" is expected — this patch
-corrects an incorrect ORCID in 0.7.0. No code or functionality
-has changed.
+0 errors | 0 warnings | 0 notes
 
 ## Reverse dependencies
 

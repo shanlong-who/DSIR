@@ -177,6 +177,26 @@ geomean(c(0.6, 0.8, 0.95))                      # ~0.772
 geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
 ```
 
+**`aarr()`** — average annual rate of reduction, the standard 
+WHO / UNICEF metric for tracking progress in declining indicators 
+(maternal / child mortality, premature NCD mortality, stunting). 
+Fits an OLS line to `log(value)` against `year` (the UNICEF-standard 
+method; an endpoint-only method is also available). Positive values 
+mean the indicator is declining; multiply by 100 to compare with 
+published tables.
+
+```r
+years  <- 2000:2015
+values <- 100 * (1 - 0.024) ^ (years - 2000)
+aarr(years, values)                             # 0.024 = 2.4%/yr decline
+aarr(years, values, method = "endpoint")        # first/last years only
+
+# Slots into a grouped summarise() on cleaned indicator data
+gho_data("NCDMORT3070", area = wpro_cty, dim1 = "SEX_BTSX") |>
+  gho_clean() |>
+  dplyr::summarise(aarr = aarr(year, value_num), .by = iso3)
+```
+
 ### WHO GHO API
 
 **Check availability before downloading.** GHO has thousands of 
@@ -218,6 +238,11 @@ gho_data(
   area      = wpro_cty,
   year_from = 2015
 )
+
+# Filter breakdown dimensions server-side — e.g. keep only the
+# both-sexes rows instead of downloading every stratum. Use
+# gho_dimensions() to discover the values available for an indicator.
+gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 
 # Tidy the raw GHO response
 raw <- gho_data("NCDMORT3070", spatial_type = "country", area = wpro_cty)

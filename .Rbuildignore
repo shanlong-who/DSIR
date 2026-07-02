@@ -9,6 +9,8 @@
 ^\.github$
 ^CLAUDE\.md$
 ^AGENTS\.md$
+^conversation-export\.md$
+^development_proposals\.md$
 ^\.positai$
 ^_claude_handoff$
 ^data-raw$

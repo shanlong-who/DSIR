@@ -13,7 +13,8 @@ gho_dimensions(indicator, dimension = "SpatialDimType")
 \item{dimension}{Character. Name of the dimension column in the
 indicator data. Common values include \code{"SpatialDim"},
 \code{"SpatialDimType"}, \code{"TimeDim"}, \code{"Dim1"}, \code{"Dim2"}, and
-\code{"Dim3"}. Default \code{"SpatialDimType"}.}
+\code{"Dim3"}. Case-sensitive (it is sent to the server as an OData
+\verb{$select} field name). Default \code{"SpatialDimType"}.}
 }
 \value{
 A character vector of unique, sorted dimension values,
@@ -25,6 +26,14 @@ Returns the unique values of a given dimension across all
 observations of a GHO indicator. Useful for discovering which
 ages, sexes, regions, or other breakdowns are available before
 calling \code{\link[=gho_data]{gho_data()}}.
+}
+\details{
+Only the requested column is downloaded (via the OData \verb{$select}
+query option), so this is a lightweight metadata query even for
+indicators with hundreds of thousands of observations. A
+\code{dimension} that is not a column of the GHO data table (e.g. a
+misspelling) makes the server reject the request; the failure
+surfaces as a warning and an empty character vector.
 }
 \examples{
 \donttest{

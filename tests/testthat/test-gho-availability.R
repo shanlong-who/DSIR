@@ -51,6 +51,25 @@ test_that("gho_count returns 0L when no rows match", {
   expect_identical(gho_count("WHOSIS_000001", area = "ZZZ"), 0L)
 })
 
+test_that("the GHO server accepts Dim1 'in' filters (dim1 argument)", {
+  skip_on_cran()
+  skip_if_offline()
+
+  # NCDMORT3070 carries a sex breakdown in Dim1 (SEX_BTSX / SEX_MLE /
+  # SEX_FMLE). The offline tests only assert URL construction; this
+  # guards against the server rejecting or ignoring the filter, which
+  # the fail-soft design would otherwise hide as NA / 0.
+  expect_true(gho_has_data("NCDMORT3070", spatial_type = "country",
+                           area = "PHL", dim1 = "SEX_BTSX"))
+
+  n_btsx <- gho_count("NCDMORT3070", spatial_type = "country",
+                      area = "PHL", dim1 = "SEX_BTSX")
+  n_all  <- gho_count("NCDMORT3070", spatial_type = "country",
+                      area = "PHL")
+  expect_gt(n_btsx, 0L)
+  expect_lt(n_btsx, n_all)
+})
+
 test_that("gho_coverage returns the documented 4-column shape", {
   skip_on_cran()
   skip_if_offline()

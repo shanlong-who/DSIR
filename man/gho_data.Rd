@@ -9,7 +9,10 @@ gho_data(
   spatial_type = NULL,
   area = NULL,
   year_from = NULL,
-  year_to = NULL
+  year_to = NULL,
+  dim1 = NULL,
+  dim2 = NULL,
+  dim3 = NULL
 )
 }
 \arguments{
@@ -28,6 +31,16 @@ Default \code{NULL}.}
 
 \item{year_to}{Numeric. End year filter (inclusive).
 Default \code{NULL}.}
+
+\item{dim1, dim2, dim3}{Character vector of values to keep for the
+\code{Dim1} / \code{Dim2} / \code{Dim3} breakdown columns, filtered server-side
+(e.g. \code{dim1 = "SEX_BTSX"} for both-sexes rows only, or
+\code{dim1 = c("SEX_MLE", "SEX_FMLE")}). The meaning of each dimension
+varies by indicator (\code{Dim1} is sex for one indicator, an age
+group for another); use \code{\link[=gho_dimensions]{gho_dimensions()}} to discover the values
+available for a given indicator. Rows where the dimension is
+empty (\code{null}) are excluded by the filter. Default \code{NULL} (no
+filtering).}
 }
 \value{
 A \link[tibble:tibble]{tibble} of indicator observations, or
@@ -45,6 +58,9 @@ gho_data("NCDMORT3070", spatial_type = "country")
 
 # Specific countries and years
 gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
+
+# Keep only the both-sexes breakdown, filtered server-side
+gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 }
 }
 \seealso{

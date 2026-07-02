@@ -71,6 +71,29 @@ test_that("gho_dimensions returns empty character when dimension column is missi
   })
 })
 
+test_that("gho_dimensions requests only the dimension column via $select", {
+  # NEWS 0.8.0: gho_dimensions() no longer downloads the full
+  # observation table; it sends $select=<dimension> so only one column
+  # travels over the wire. Capture the outgoing URL to lock this in.
+  captured <- character()
+  mock_fn <- function(req) {
+    captured[[length(captured) + 1L]] <<- req$url
+    httr2::response(
+      status_code = 200L,
+      headers     = list(`content-type` = "application/json"),
+      body        = charToRaw(
+        '{"value":[{"Dim1":"SEX_BTSX"},{"Dim1":"SEX_MLE"}]}'
+      )
+    )
+  }
+  httr2::with_mocked_responses(mock_fn, {
+    out <- gho_dimensions("X", dimension = "Dim1")
+    expect_equal(out, c("SEX_BTSX", "SEX_MLE"))
+  })
+  expect_length(captured, 1L)
+  expect_match(captured[1], "$select=Dim1", fixed = TRUE)
+})
+
 test_that("gho_dimensions returns empty character on HTTP failure", {
   httr2::with_mocked_responses(
     mock_json('{"error":"not found"}', status = 404L),
