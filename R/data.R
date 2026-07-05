@@ -12,7 +12,7 @@
 #' standard country identifiers and WHO/Pacific groupings used across DSIR
 #' analytical workflows.
 #'
-#' @format A tibble with 194 rows and 7 columns:
+#' @format A tibble with 194 rows and 8 columns:
 #' \describe{
 #'   \item{iso3}{ISO 3166-1 alpha-3 code (3-letter, e.g. `"PHL"`).}
 #'   \item{iso2}{ISO 3166-1 alpha-2 code (2-letter, e.g. `"PH"`).}
@@ -29,6 +29,10 @@
 #'   `"EUR"`, `"EMR"`, `"WPR"`.}
 #'   \item{is_pic}{Logical. `TRUE` for the 14 Pacific Island Country (PIC)
 #'   Member States in WPR, `FALSE` otherwise.}
+#'   \item{wb_income_group}{World Bank income classification: `"High
+#'   income"`, `"Upper middle income"`, `"Lower middle income"`, or `"Low
+#'   income"`. `NA` for Cook Islands and Niue, which are not World Bank
+#'   economies. See Details for the vintage.}
 #' }
 #'
 #' @details
@@ -62,12 +66,23 @@
 #' and Vanuatu. Non-Member Pacific areas (e.g. New Caledonia, French
 #' Polynesia, American Samoa) are not included in this dataset.
 #'
+#' **Income groups.** `wb_income_group` carries the World Bank
+#' classification of fiscal year 2027 (released 1 July 2026; based on
+#' 2025 GNI per capita, Atlas method). The classification is revised
+#' every 1 July, so this column reflects the vintage current at the
+#' package release date — for a historical vintage (e.g. reproducing an
+#' older analysis), join your own copy of the World Bank OGHIST table
+#' instead. Cook Islands and Niue are WHO Member States but not World
+#' Bank economies and are `NA`.
+#'
 #' @source
 #' \itemize{
 #'   \item WHO official region listing:
 #'   \url{https://www.who.int/countries}
 #'   \item ISO 3166-1 codes and UN M49 numeric codes: UN Statistics Division
 #'   \url{https://unstats.un.org/unsd/methodology/m49/}
+#'   \item World Bank income classification (FY2027):
+#'   \url{https://datahelpdesk.worldbank.org/knowledgebase/articles/906519}
 #' }
 #'
 #' @examples
@@ -78,6 +93,9 @@
 #'
 #' # Filter a data frame to PIC member states
 #' # df_pic <- subset(my_data, country_iso3 %in% who_countries$iso3[who_countries$is_pic])
+#'
+#' # Income-group composition of each WHO region
+#' table(who_countries$who_region, who_countries$wb_income_group)
 "who_countries"
 
 
@@ -159,3 +177,58 @@ NULL
 #' length(pic_cty)              # 14
 #' all(pic_cty %in% wpro_cty)   # TRUE
 "pic_cty"
+
+
+#' WHO World Standard Population
+#'
+#' The WHO World Standard Population (world average population
+#' 2000-2025) of Ahmad et al. (2001), used for direct age standardization
+#' of rates so that populations with different age structures can be
+#' compared. This is the standard used for WHO indicators such as
+#' age-standardized NCD mortality.
+#'
+#' @format A tibble with 21 rows (five-year age groups `"0-4"` to
+#' `"100+"`) and 4 columns:
+#' \describe{
+#'   \item{age_group}{Age-group label, e.g. `"0-4"`, `"85-89"`, `"100+"`.}
+#'   \item{age_start}{Integer lower bound of the age group.}
+#'   \item{weight}{The published WHO percentage for the age group. The
+#'   published values sum to 100.035 (not exactly 100); this is carried
+#'   verbatim from the source and is harmless, since weights are
+#'   normalized wherever they are used.}
+#'   \item{std_million}{The SEER "standard million" form: the weight
+#'   scaled to a population of exactly 1,000,000 (the only adjustment is
+#'   the 90-94 group rounded from 1,499.48 up to 1,500 so the total is
+#'   exact).}
+#' }
+#'
+#' @details
+#' To standardize data on coarser age groups (e.g. `0-4, 5-14, ...,
+#' 85+`), aggregate the weights by summing `weight` (or `std_million`)
+#' over the constituent five-year groups, then pass them to
+#' [age_standardize()]. Only relative weights matter, so either column
+#' gives identical results.
+#'
+#' The original publication does not split ages 0 and 1-4; the finest
+#' first group is `0-4`. Splits of the first group circulating in some
+#' registries are downstream constructions, not part of the WHO
+#' standard.
+#'
+#' @source
+#' Ahmad OB, Boschi-Pinto C, Lopez AD, Murray CJL, Lozano R, Inoue M
+#' (2001). *Age standardization of rates: a new WHO standard.* GPE
+#' Discussion Paper Series No. 31. World Health Organization. Cross-checked
+#' against the SEER standard-population tables:
+#' \url{https://seer.cancer.gov/stdpopulations/world.who.html}
+#'
+#' @seealso [age_standardize()], which consumes these weights.
+#'
+#' @examples
+#' who_std_pop
+#'
+#' # Aggregate to broad age groups (0-24, 25-64, 65+) for coarser data
+#' breaks <- c(0, 25, 65, Inf)
+#' grp <- cut(who_std_pop$age_start, breaks, right = FALSE,
+#'            labels = c("0-24", "25-64", "65+"))
+#' tapply(who_std_pop$std_million, grp, sum)
+"who_std_pop"

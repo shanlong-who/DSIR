@@ -2,6 +2,35 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR 0.9.0
+
+## New features
+
+* New `age_standardize()`: the directly age-standardized rate, with an
+  optional Fay-Feuer gamma confidence interval. Standard-population
+  weights may be supplied as counts, a standard million, or percentages
+  — they are normalised internally.
+
+* New dataset `who_std_pop`: the WHO World Standard Population (Ahmad et
+  al. 2001), as both the published percentages and the SEER standard
+  million, in 21 five-year age groups (`0-4` to `100+`). Aggregate it to
+  your own age groups and pass it to `age_standardize()`.
+
+* New `life_table()`: a period life table (qx, lx, dx, Lx, Tx, ex) from
+  age-specific mortality rates. Handles abridged and complete tables and
+  an open final interval, with Coale-Demeny West infant and child `ax`
+  by sex (overridable). Life expectancy at birth is `ex[1]`.
+
+* New `snapshot()`: evaluate an expression (typically a `gho_data()` /
+  `gho_clean()` pull) once, save the result to an `.rds` file, and read
+  it back on later runs so analyses re-run reproducibly and offline. An
+  empty result — the signature of an unreachable API — is never written,
+  so a failed refresh cannot destroy a good snapshot.
+
+* `who_countries` gains a `wb_income_group` column: the World Bank income
+  classification (fiscal year 2027; 2025 GNI per capita, Atlas method).
+  Cook Islands and Niue are `NA` as they are not World Bank economies.
+
 # DSIR 0.8.0
 
 ## New features
