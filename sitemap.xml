@@ -13,6 +13,7 @@
 <url><loc>https://shanlong-who.github.io/DSIR/news/index.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/DSIR-package.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/aarr.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/age_standardize.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/bind_indicators.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/geomean.html</loc></url>
@@ -27,6 +28,7 @@
 <url><loc>https://shanlong-who.github.io/DSIR/reference/index.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/iso3_to_region.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/life_table.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/pic_cty.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.html</loc></url>
@@ -37,9 +39,11 @@
 <url><loc>https://shanlong-who.github.io/DSIR/reference/sdg_goals.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/sdg_indicators.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/sdg_targets.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/snapshot.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/theme_dsi.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/who_countries.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/who_region_vectors.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/who_std_pop.html</loc></url>
 </urlset>
 

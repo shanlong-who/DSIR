@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,17 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.0" id="dsir-090">DSIR 0.9.0<a class="anchor" aria-label="anchor" href="#dsir-090"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-9-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0"></a></h3>
+<ul><li><p>New <code><a href="../reference/age_standardize.html">age_standardize()</a></code>: the directly age-standardized rate, with an optional Fay-Feuer gamma confidence interval. Standard-population weights may be supplied as counts, a standard million, or percentages — they are normalised internally.</p></li>
+<li><p>New dataset <code>who_std_pop</code>: the WHO World Standard Population (Ahmad et al. 2001), as both the published percentages and the SEER standard million, in 21 five-year age groups (<code>0-4</code> to <code>100+</code>). Aggregate it to your own age groups and pass it to <code><a href="../reference/age_standardize.html">age_standardize()</a></code>.</p></li>
+<li><p>New <code><a href="../reference/life_table.html">life_table()</a></code>: a period life table (qx, lx, dx, Lx, Tx, ex) from age-specific mortality rates. Handles abridged and complete tables and an open final interval, with Coale-Demeny West infant and child <code>ax</code> by sex (overridable). Life expectancy at birth is <code>ex[1]</code>.</p></li>
+<li><p>New <code><a href="../reference/snapshot.html">snapshot()</a></code>: evaluate an expression (typically a <code><a href="../reference/gho_data.html">gho_data()</a></code> / <code><a href="../reference/gho_clean.html">gho_clean()</a></code> pull) once, save the result to an <code>.rds</code> file, and read it back on later runs so analyses re-run reproducibly and offline. An empty result — the signature of an unreachable API — is never written, so a failed refresh cannot destroy a good snapshot.</p></li>
+<li><p><code>who_countries</code> gains a <code>wb_income_group</code> column: the World Bank income classification (fiscal year 2027; 2025 GNI per capita, Atlas method). Cook Islands and Niue are <code>NA</code> as they are not World Bank economies.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="dsir-080">DSIR 0.8.0<a class="anchor" aria-label="anchor" href="#dsir-080"></a></h2><p class="text-muted">CRAN release: 2026-07-02</p>
 <div class="section level3">

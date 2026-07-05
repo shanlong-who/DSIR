@@ -12,7 +12,7 @@ who_countries
 
 ## Format
 
-A tibble with 194 rows and 7 columns:
+A tibble with 194 rows and 8 columns:
 
 - iso3:
 
@@ -50,12 +50,22 @@ A tibble with 194 rows and 7 columns:
   Logical. `TRUE` for the 14 Pacific Island Country (PIC) Member States
   in WPR, `FALSE` otherwise.
 
+- wb_income_group:
+
+  World Bank income classification: `"High income"`,
+  `"Upper middle income"`, `"Lower middle income"`, or `"Low income"`.
+  `NA` for Cook Islands and Niue, which are not World Bank economies.
+  See Details for the vintage.
+
 ## Source
 
 - WHO official region listing: <https://www.who.int/countries>
 
 - ISO 3166-1 codes and UN M49 numeric codes: UN Statistics Division
   <https://unstats.un.org/unsd/methodology/m49/>
+
+- World Bank income classification (FY2027):
+  <https://datahelpdesk.worldbank.org/knowledgebase/articles/906519>
 
 ## Details
 
@@ -93,6 +103,15 @@ Papua New Guinea, Samoa, Solomon Islands, Tonga, Tuvalu, and Vanuatu.
 Non-Member Pacific areas (e.g. New Caledonia, French Polynesia, American
 Samoa) are not included in this dataset.
 
+**Income groups.** `wb_income_group` carries the World Bank
+classification of fiscal year 2027 (released 1 July 2026; based on 2025
+GNI per capita, Atlas method). The classification is revised every 1
+July, so this column reflects the vintage current at the package release
+date — for a historical vintage (e.g. reproducing an older analysis),
+join your own copy of the World Bank OGHIST table instead. Cook Islands
+and Niue are WHO Member States but not World Bank economies and are
+`NA`.
+
 ## Examples
 
 ``` r
@@ -112,4 +131,15 @@ head(wpr)
 
 # Filter a data frame to PIC member states
 # df_pic <- subset(my_data, country_iso3 %in% who_countries$iso3[who_countries$is_pic])
+
+# Income-group composition of each WHO region
+table(who_countries$who_region, who_countries$wb_income_group)
+#>       
+#>        High income Low income Lower middle income Upper middle income
+#>   AFR            1         19                  20                   7
+#>   AMR           12          0                   5                  18
+#>   EMR            6          5                   6                   4
+#>   EUR           36          0                   3                  14
+#>   SEAR           0          1                   6                   3
+#>   WPR            8          0                   6                  12
 ```

@@ -37,7 +37,7 @@ For Western Pacific countries, an extra column `is_pic` identifies the
 ``` r
 
 who_countries
-#> # A tibble: 194 × 7
+#> # A tibble: 194 × 8
 #>    iso3  iso2  m49_code name_official       name_short         who_region is_pic
 #>    <chr> <chr> <chr>    <chr>               <chr>              <chr>      <lgl> 
 #>  1 AFG   AF    004      Afghanistan         Afghanistan        EMR        FALSE 
@@ -51,6 +51,7 @@ who_countries
 #>  9 AUS   AU    036      Australia           Australia          WPR        FALSE 
 #> 10 AUT   AT    040      Austria             Austria            EUR        FALSE 
 #> # ℹ 184 more rows
+#> # ℹ 1 more variable: wb_income_group <chr>
 ```
 
 For convenience, DSIR offers pre-defined vectors of ISO3 codes for each
@@ -533,7 +534,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-a27175d4
+UHC SCI in WPR, latest year {.table .cl-cd4b2e2e
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators

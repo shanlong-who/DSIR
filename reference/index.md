@@ -22,6 +22,17 @@ Datasets and helpers for WHO Member States and regional groupings.
 - [`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)
   : Convert UN M49 Numeric Codes to ISO3 Codes
 
+## Demographic methods
+
+Life tables and age standardization for mortality and rate analysis.
+
+- [`life_table()`](https://shanlong-who.github.io/DSIR/reference/life_table.md)
+  : Period Life Table from Age-Specific Mortality Rates
+- [`age_standardize()`](https://shanlong-who.github.io/DSIR/reference/age_standardize.md)
+  : Directly Age-Standardized Rate
+- [`who_std_pop`](https://shanlong-who.github.io/DSIR/reference/who_std_pop.md)
+  : WHO World Standard Population
+
 ## GHO indicator data
 
 Functions for fetching and cleaning data from the WHO Global Health
@@ -87,3 +98,5 @@ Small mathematical and data helpers.
   : Geometric Mean
 - [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md) :
   Average Annual Rate of Reduction (AARR)
+- [`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
+  : Snapshot an Expensive Expression to a Local File

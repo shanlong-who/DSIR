@@ -11,7 +11,7 @@ analytical workflows."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ analytical workflows.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A tibble with 194 rows and 7 columns:</p><dl><dt>iso3</dt>
+    <p>A tibble with 194 rows and 8 columns:</p><dl><dt>iso3</dt>
 <dd><p>ISO 3166-1 alpha-3 code (3-letter, e.g. <code>"PHL"</code>).</p></dd>
 
 <dt>iso2</dt>
@@ -84,6 +84,10 @@ is already concise. See Details.</p></dd>
 <dd><p>Logical. <code>TRUE</code> for the 14 Pacific Island Country (PIC)
 Member States in WPR, <code>FALSE</code> otherwise.</p></dd>
 
+<dt>wb_income_group</dt>
+<dd><p>World Bank income classification: <code>"High income"</code>, <code>"Upper middle income"</code>, <code>"Lower middle income"</code>, or <code>"Low income"</code>. <code>NA</code> for Cook Islands and Niue, which are not World Bank
+economies. See Details for the vintage.</p></dd>
+
 
 </dl></div>
     <div class="section level2">
@@ -93,6 +97,8 @@ Member States in WPR, <code>FALSE</code> otherwise.</p></dd>
 <a href="https://www.who.int/countries" class="external-link">https://www.who.int/countries</a></p></li>
 <li><p>ISO 3166-1 codes and UN M49 numeric codes: UN Statistics Division
 <a href="https://unstats.un.org/unsd/methodology/m49/" class="external-link">https://unstats.un.org/unsd/methodology/m49/</a></p></li>
+<li><p>World Bank income classification (FY2027):
+<a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519" class="external-link">https://datahelpdesk.worldbank.org/knowledgebase/articles/906519</a></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -119,6 +125,14 @@ Kiribati, Marshall Islands, Micronesia (Federated States of), Nauru,
 Niue, Palau, Papua New Guinea, Samoa, Solomon Islands, Tonga, Tuvalu,
 and Vanuatu. Non-Member Pacific areas (e.g. New Caledonia, French
 Polynesia, American Samoa) are not included in this dataset.</p>
+<p><strong>Income groups.</strong> <code>wb_income_group</code> carries the World Bank
+classification of fiscal year 2027 (released 1 July 2026; based on
+2025 GNI per capita, Atlas method). The classification is revised
+every 1 July, so this column reflects the vintage current at the
+package release date — for a historical vintage (e.g. reproducing an
+older analysis), join your own copy of the World Bank OGHIST table
+instead. Cook Islands and Niue are WHO Member States but not World
+Bank economies and are <code>NA</code>.</p>
     </div>
 
     <div class="section level2">
@@ -139,6 +153,17 @@ Polynesia, American Samoa) are not included in this dataset.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Filter a data frame to PIC member states</span></span></span>
 <span class="r-in"><span><span class="co"># df_pic &lt;- subset(my_data, country_iso3 %in% who_countries$iso3[who_countries$is_pic])</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Income-group composition of each WHO region</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">who_countries</span><span class="op">$</span><span class="va">who_region</span>, <span class="va">who_countries</span><span class="op">$</span><span class="va">wb_income_group</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        High income Low income Lower middle income Upper middle income</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AFR            1         19                  20                   7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   AMR           12          0                   5                  18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   EMR            6          5                   6                   4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   EUR           36          0                   3                  14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   SEAR           0          1                   6                   3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   WPR            8          0                   6                  12</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

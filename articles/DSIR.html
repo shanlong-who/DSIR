@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@ WHO region. For Western Pacific countries, an extra column
 <code>is_pic</code> identifies the 14 Pacific Island Countries.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">who_countries</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 194 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 194 × 8</span></span></span>
 <span><span class="co">#&gt;    iso3  iso2  m49_code name_official       name_short         who_region is_pic</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFG   AF    004      Afghanistan         Afghanistan        EMR        FALSE </span></span>
@@ -112,7 +112,8 @@ WHO region. For Western Pacific countries, an extra column
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ARM   AM    051      Armenia             Armenia            EUR        FALSE </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AUS   AU    036      Australia           Australia          WPR        FALSE </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AUT   AT    040      Austria             Austria            EUR        FALSE </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 184 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 184 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: wb_income_group &lt;chr&gt;</span></span></span></code></pre></div>
 <p>For convenience, DSIR offers pre-defined vectors of ISO3 codes for
 each WHO region.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -492,125 +493,125 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-a27175d4{table-layout:auto;width:60%;}.cl-a267fc48{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-a267fc5c{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-a26c8ac4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-a26c8ad8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-a26cbbe8{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a26cbbf2{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a26cbbf3{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a26cbbfc{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a26cbbfd{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a26cbbfe{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-a27175d4">
+<style>.cl-cd4b2e2e{table-layout:auto;width:60%;}.cl-cd426f64{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-cd426faa{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-cd4619ac{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-cd4619b6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-cd4655de{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655e8{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655f2{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655fc{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655fd{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd465606{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-cd4b2e2e">
 <caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-a26cbbe8"><p class="cl-a26c8ac4"><span class="cl-a267fc48">name_short</span></p></th>
-<th class="cl-a26cbbf2"><p class="cl-a26c8ad8"><span class="cl-a267fc48">value_num</span></p></th>
+<th class="cl-cd4655de"><p class="cl-cd4619ac"><span class="cl-cd426f64">name_short</span></p></th>
+<th class="cl-cd4655e8"><p class="cl-cd4619b6"><span class="cl-cd426f64">value_num</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Australia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">89</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Australia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">New Zealand</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">89</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">New Zealand</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Republic of Korea</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">88</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Republic of Korea</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Singapore</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">88</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Singapore</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Japan</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">86</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Japan</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">86</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">China</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">85</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">China</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">85</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Brunei Darussalam</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">84</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Brunei Darussalam</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Malaysia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">80</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Malaysia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">80</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Cook Islands</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">75</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Cook Islands</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Palau</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">75</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Palau</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Tonga</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">71</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Tonga</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Viet Nam</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">71</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Viet Nam</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Mongolia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">70</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Mongolia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">70</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Fiji</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">69</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Fiji</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Philippines</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">69</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Philippines</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Indonesia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">67</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Indonesia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Niue</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">67</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Niue</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Marshall Islands</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">66</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Marshall Islands</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">66</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Micronesia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">65</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Micronesia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Tuvalu</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">65</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Tuvalu</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Lao PDR</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">64</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Lao PDR</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">64</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Cambodia</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">62</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Cambodia</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Nauru</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">62</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Nauru</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Samoa</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">62</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Samoa</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Vanuatu</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">52</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Vanuatu</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">52</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Kiribati</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">51</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Kiribati</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">51</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbf3"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Solomon Islands</span></p></td>
-<td class="cl-a26cbbfc"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">47</span></p></td>
+<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Solomon Islands</span></p></td>
+<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">47</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-a26cbbfd"><p class="cl-a26c8ac4"><span class="cl-a267fc5c">Papua New Guinea</span></p></td>
-<td class="cl-a26cbbfe"><p class="cl-a26c8ad8"><span class="cl-a267fc5c">32</span></p></td>
+<td class="cl-cd4655fd"><p class="cl-cd4619ac"><span class="cl-cd426faa">Papua New Guinea</span></p></td>
+<td class="cl-cd465606"><p class="cl-cd4619b6"><span class="cl-cd426faa">32</span></p></td>
 </tr>
 </tbody>
 </table>
