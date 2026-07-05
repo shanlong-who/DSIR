@@ -4,7 +4,30 @@ test_that("who_countries has the expected shape and columns", {
   expect_named(who_countries,
                c("iso3", "iso2", "m49_code",
                  "name_official", "name_short",
-                 "who_region", "is_pic"))
+                 "who_region", "is_pic", "wb_income_group"))
+})
+
+test_that("who_countries wb_income_group is a valid WB classification", {
+  valid <- c("High income", "Upper middle income",
+             "Lower middle income", "Low income")
+  present <- who_countries$wb_income_group[!is.na(who_countries$wb_income_group)]
+  expect_true(all(present %in% valid))
+  # NA only for the two non-World-Bank economies
+  na_iso3 <- sort(who_countries$iso3[is.na(who_countries$wb_income_group)])
+  expect_equal(na_iso3, c("COK", "NIU"))
+  # Every other Member State is classified
+  expect_equal(sum(!is.na(who_countries$wb_income_group)), 192L)
+})
+
+test_that("who_countries reflects the FY2027 income vintage", {
+  inc <- function(code) {
+    who_countries$wb_income_group[who_countries$iso3 == code]
+  }
+  # Economies that moved up for FY2027
+  expect_equal(inc("VNM"), "Upper middle income")
+  expect_equal(inc("PHL"), "Upper middle income")
+  expect_equal(inc("CRI"), "High income")
+  expect_equal(inc("TGO"), "Lower middle income")
 })
 
 test_that("who_countries identifiers are well-formed", {

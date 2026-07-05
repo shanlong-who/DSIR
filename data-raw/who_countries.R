@@ -289,6 +289,75 @@ pic_iso3 <- c("COK", "FJI", "KIR", "MHL", "FSM", "NRU", "NIU", "PLW",
               "PNG", "WSM", "SLB", "TON", "TUV", "VUT")
 
 # -----------------------------------------------------------------------------
+# World Bank income classification.
+# Vintage: FY2027 (released 1 July 2026; based on 2025 GNI per capita, Atlas
+# method). Fetched from the World Bank API on 2026-07-05:
+#   https://api.worldbank.org/v2/country?format=json&per_page=400
+# (field incomeLevel.id per economy). Update this block once a year after the
+# 1 July release, and update the vintage in R/data.R at the same time.
+#
+# Cook Islands (COK) and Niue (NIU) are not World Bank economies and are
+# never classified: they stay NA by being absent from this vector.
+# -----------------------------------------------------------------------------
+
+wb_income_codes <- c(
+  # AFR
+  DZA = "UMC", AGO = "LMC", BEN = "LMC", BWA = "UMC", BFA = "LIC",
+  BDI = "LIC", CPV = "UMC", CMR = "LMC", CAF = "LIC", TCD = "LIC",
+  COM = "LMC", COG = "LMC", CIV = "LMC", COD = "LIC", GNQ = "UMC",
+  ERI = "LIC", SWZ = "LMC", ETH = "LIC", GAB = "UMC", GMB = "LIC",
+  GHA = "LMC", GIN = "LMC", GNB = "LIC", KEN = "LMC", LSO = "LMC",
+  LBR = "LIC", MDG = "LIC", MWI = "LIC", MLI = "LIC", MRT = "LMC",
+  MUS = "UMC", MOZ = "LIC", NAM = "LMC", NER = "LIC", NGA = "LMC",
+  RWA = "LIC", STP = "LMC", SEN = "LMC", SYC = "HIC", SLE = "LIC",
+  ZAF = "UMC", SSD = "LIC", TGO = "LMC", UGA = "LIC", TZA = "LMC",
+  ZMB = "LMC", ZWE = "LMC",
+  # AMR
+  ATG = "HIC", ARG = "UMC", BHS = "HIC", BRB = "HIC", BLZ = "UMC",
+  BOL = "LMC", BRA = "UMC", CAN = "HIC", CHL = "HIC", COL = "UMC",
+  CRI = "HIC", CUB = "UMC", DMA = "UMC", DOM = "UMC", ECU = "UMC",
+  SLV = "UMC", GRD = "UMC", GTM = "UMC", GUY = "HIC", HTI = "LMC",
+  HND = "LMC", JAM = "UMC", MEX = "UMC", NIC = "LMC", PAN = "HIC",
+  PRY = "UMC", PER = "UMC", KNA = "HIC", LCA = "UMC", VCT = "UMC",
+  SUR = "UMC", TTO = "HIC", USA = "HIC", URY = "HIC", VEN = "LMC",
+  # SEAR
+  BGD = "LMC", BTN = "LMC", PRK = "LIC", IND = "LMC", MDV = "UMC",
+  MMR = "LMC", NPL = "LMC", LKA = "UMC", THA = "UMC", TLS = "LMC",
+  # EUR
+  ALB = "UMC", AND = "HIC", ARM = "UMC", AUT = "HIC", AZE = "UMC",
+  BLR = "UMC", BEL = "HIC", BIH = "UMC", BGR = "HIC", HRV = "HIC",
+  CYP = "HIC", CZE = "HIC", DNK = "HIC", EST = "HIC", FIN = "HIC",
+  FRA = "HIC", GEO = "UMC", DEU = "HIC", GRC = "HIC", HUN = "HIC",
+  ISL = "HIC", IRL = "HIC", ISR = "HIC", ITA = "HIC", KAZ = "UMC",
+  KGZ = "LMC", LVA = "HIC", LTU = "HIC", LUX = "HIC", MLT = "HIC",
+  MCO = "HIC", MNE = "UMC", NLD = "HIC", MKD = "UMC", NOR = "HIC",
+  POL = "HIC", PRT = "HIC", MDA = "UMC", ROU = "HIC", RUS = "HIC",
+  SMR = "HIC", SRB = "UMC", SVK = "HIC", SVN = "HIC", ESP = "HIC",
+  SWE = "HIC", CHE = "HIC", TJK = "LMC", TUR = "UMC", TKM = "UMC",
+  UKR = "UMC", GBR = "HIC", UZB = "LMC",
+  # EMR
+  AFG = "LIC", BHR = "HIC", DJI = "LMC", EGY = "LMC", IRN = "UMC",
+  IRQ = "UMC", JOR = "UMC", KWT = "HIC", LBN = "LMC", LBY = "UMC",
+  MAR = "LMC", OMN = "HIC", PAK = "LMC", QAT = "HIC", SAU = "HIC",
+  SOM = "LIC", SDN = "LIC", SYR = "LIC", TUN = "LMC", ARE = "HIC",
+  YEM = "LIC",
+  # WPR (COK and NIU intentionally absent — not World Bank economies)
+  AUS = "HIC", BRN = "HIC", KHM = "LMC", CHN = "UMC", FJI = "UMC",
+  IDN = "UMC", JPN = "HIC", KIR = "LMC", LAO = "LMC", MYS = "UMC",
+  MHL = "UMC", FSM = "UMC", MNG = "UMC", NRU = "HIC", NZL = "HIC",
+  PLW = "HIC", PNG = "LMC", PHL = "UMC", KOR = "HIC", WSM = "UMC",
+  SGP = "HIC", SLB = "LMC", TON = "UMC", TUV = "UMC", VUT = "LMC",
+  VNM = "UMC"
+)
+
+wb_income_labels <- c(
+  HIC = "High income",
+  UMC = "Upper middle income",
+  LMC = "Lower middle income",
+  LIC = "Low income"
+)
+
+# -----------------------------------------------------------------------------
 # Assemble the master tibble.
 # -----------------------------------------------------------------------------
 
@@ -297,10 +366,12 @@ who_countries <- bind_rows(
   ) %>%
   left_join(short_overrides, by = "name_official") %>%
   mutate(
-    name_short = coalesce(name_short, name_official),
-    is_pic     = iso3 %in% pic_iso3
+    name_short      = coalesce(name_short, name_official),
+    is_pic          = iso3 %in% pic_iso3,
+    wb_income_group = unname(wb_income_labels[wb_income_codes[iso3]])
   ) %>%
-  select(iso3, iso2, m49_code, name_official, name_short, who_region, is_pic) %>%
+  select(iso3, iso2, m49_code, name_official, name_short, who_region, is_pic,
+         wb_income_group) %>%
   arrange(name_official)
 
 # -----------------------------------------------------------------------------
@@ -325,7 +396,14 @@ stopifnot(
   "EMR has 21"                             = sum(who_countries$who_region == "EMR")  == 21,
   "WPR has 28"                             = sum(who_countries$who_region == "WPR")  == 28,
   "14 PICs"                                = sum(who_countries$is_pic) == 14,
-  "all PICs are in WPR"                    = all(who_countries$who_region[who_countries$is_pic] == "WPR")
+  "all PICs are in WPR"                    = all(who_countries$who_region[who_countries$is_pic] == "WPR"),
+  "income codes cover exactly the 192 WB-classified Member States" =
+    setequal(names(wb_income_codes), setdiff(who_countries$iso3, c("COK", "NIU"))),
+  "income group NA only for COK and NIU"   =
+    identical(sort(who_countries$iso3[is.na(who_countries$wb_income_group)]),
+              c("COK", "NIU")),
+  "income labels from the four WB classes" =
+    all(who_countries$wb_income_group %in% c(wb_income_labels, NA))
 )
 
 # -----------------------------------------------------------------------------
