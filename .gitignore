@@ -4,7 +4,13 @@
 .Ruserdata
 *.Rproj
 .DS_Store
-.claude/
+# Ignore local Claude Code state, but track the distributable skill.
+# (A plain ".claude/" would block git from descending into the
+# directory, so the negation pattern below would never apply.)
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/dsir-country-profile/
 .positai
 _claude_handoff
 inst/doc

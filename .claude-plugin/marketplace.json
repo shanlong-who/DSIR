@@ -1,0 +1,17 @@
+{
+  "name": "dsir",
+  "owner": {
+    "name": "Shanlong Ding",
+    "email": "dings@who.int"
+  },
+  "plugins": [
+    {
+      "name": "dsir-country-profile",
+      "source": "./.claude/skills/dsir-country-profile",
+      "description": "Pull WHO GHO / UN SDG indicator data with the DSIR R package, clean to the unified 15-column schema, and generate country profiles (trend charts, AARR progress table, markdown summary).",
+      "version": "0.1.0",
+      "category": "data",
+      "keywords": ["WHO", "GHO", "SDG", "R", "health-indicators"]
+    }
+  ]
+}

@@ -19,3 +19,4 @@
 ^pkgdown$
 ^scratch$
 ^CRAN-SUBMISSION$
+^\.claude-plugin$
