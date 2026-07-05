@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/DSIR)](https://CRAN.R-project.org/package=DSIR)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/DSIR)](https://cran.r-project.org/package=DSIR)
 <!-- badges: end -->
 
