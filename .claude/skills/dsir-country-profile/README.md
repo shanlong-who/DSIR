@@ -29,6 +29,36 @@ Nam"; invoke it explicitly with
 Working inside this repository? Nothing to install — the skill is
 picked up automatically from `.claude/skills/`.
 
+## Install without plugin commands
+
+Any of these works if you prefer not to touch `/plugin`:
+
+- **Just work inside this repo.** Clone (or download the ZIP of) the
+  repository and start Claude Code in the repo folder. The skill loads
+  automatically — nothing to install.
+- **Copy it to your personal skills folder** to use it in *any*
+  project. Copy this whole folder to `~/.claude/skills/`
+  (on Windows: `C:\Users\<you>\.claude\skills\dsir-country-profile\`).
+  PowerShell, from the cloned repo root:
+
+  ```powershell
+  Copy-Item -Recurse .claude/skills/dsir-country-profile $env:USERPROFILE\.claude\skills\
+  ```
+
+- **Claude.ai (web/desktop):** zip this folder (SKILL.md must sit at
+  the zip root) and upload it under Settings > Capabilities > Skills,
+  if your plan supports skills.
+- **No AI agent at all:** the three scripts in `scripts/` are plain
+  `Rscript` command-line tools — the usage header at the top of each
+  file shows the arguments. Example:
+
+  ```
+  Rscript scripts/fetch_indicators.R --gho WHOSIS_000001 --area PHL --out le_phl.csv
+  ```
+
+Whichever route: you also need R with `DSIR` installed
+(`install.packages("DSIR")`).
+
 ## Other agents
 
 - **GitHub Copilot**: the skill is mirrored at
