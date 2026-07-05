@@ -38,7 +38,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.0" id="dsir-080">DSIR 0.8.0<a class="anchor" aria-label="anchor" href="#dsir-080"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.0" id="dsir-080">DSIR 0.8.0<a class="anchor" aria-label="anchor" href="#dsir-080"></a></h2><p class="text-muted">CRAN release: 2026-07-02</p>
 <div class="section level3">
 <h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
 <ul><li><p>New <code><a href="../reference/aarr.html">aarr()</a></code>: the average annual rate of reduction, the standard WHO / UNICEF metric for tracking progress in declining indicators (maternal / child mortality, premature NCD mortality, stunting). The default <code>"regression"</code> method fits an OLS line to <code>log(value)</code> against <code>year</code> and returns <code>1 - exp(slope)</code> (the UNICEF-recommended approach); an <code>"endpoint"</code> method using only the earliest and latest years is also available. Positive values mean the indicator is declining; the result is a fraction (multiply by 100 to compare with published tables). Duplicated years — the signature of data still mixed across strata (<code>dim1</code>, <code>series</code>) — trigger a warning.</p></li>

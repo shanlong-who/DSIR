@@ -2,6 +2,8 @@
 
 ## DSIR 0.8.0
 
+CRAN release: 2026-07-02
+
 ### New features
 
 - New [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md):

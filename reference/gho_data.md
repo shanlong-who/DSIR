@@ -79,16 +79,16 @@ gho_data("NCDMORT3070", spatial_type = "country")
 #> # A tibble: 12,210 × 25
 #>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
 #>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 7.37e6 NCDMORT3070   COUNTRY        ERI        AFR                YEAR       
-#>  2 7.37e6 NCDMORT3070   COUNTRY        WSM        WPR                YEAR       
-#>  3 7.38e6 NCDMORT3070   COUNTRY        MRT        AFR                YEAR       
-#>  4 7.38e6 NCDMORT3070   COUNTRY        PRT        EUR                YEAR       
-#>  5 7.38e6 NCDMORT3070   COUNTRY        URY        AMR                YEAR       
-#>  6 7.38e6 NCDMORT3070   COUNTRY        HRV        EUR                YEAR       
-#>  7 7.38e6 NCDMORT3070   COUNTRY        CHE        EUR                YEAR       
-#>  8 7.38e6 NCDMORT3070   COUNTRY        GMB        AFR                YEAR       
-#>  9 7.38e6 NCDMORT3070   COUNTRY        NIC        AMR                YEAR       
-#> 10 7.38e6 NCDMORT3070   COUNTRY        PER        AMR                YEAR       
+#>  1 5.50e6 NCDMORT3070   COUNTRY        PAK        EMR                YEAR       
+#>  2 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
+#>  3 5.50e6 NCDMORT3070   COUNTRY        LCA        AMR                YEAR       
+#>  4 5.50e6 NCDMORT3070   COUNTRY        TGO        AFR                YEAR       
+#>  5 5.50e6 NCDMORT3070   COUNTRY        COD        AFR                YEAR       
+#>  6 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
+#>  7 5.50e6 NCDMORT3070   COUNTRY        COL        AMR                YEAR       
+#>  8 5.50e6 NCDMORT3070   COUNTRY        MUS        AFR                YEAR       
+#>  9 5.50e6 NCDMORT3070   COUNTRY        NLD        EUR                YEAR       
+#> 10 5.50e6 NCDMORT3070   COUNTRY        MWI        AFR                YEAR       
 #> # ℹ 12,200 more rows
 #> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
 #> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
@@ -105,16 +105,16 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> # A tibble: 42 × 25
 #>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
 #>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 7.57e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  2 7.58e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  3 7.88e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  4 7.91e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  5 6.15e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  6 7.01e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  7 1.24e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  8 1.33e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  9 1.47e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#> 10 1.57e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  1 5.60e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  2 5.75e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  3 5.82e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  4 6.15e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  5 7.01e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  6 1.24e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  7 1.33e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  8 1.47e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  9 1.57e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#> 10 1.88e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
 #> # ℹ 32 more rows
 #> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
 #> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
@@ -129,16 +129,16 @@ gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #> # A tibble: 4,070 × 25
 #>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
 #>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 7.37e6 NCDMORT3070   COUNTRY        WSM        WPR                YEAR       
-#>  2 7.38e6 NCDMORT3070   COUNTRY        PRT        EUR                YEAR       
-#>  3 7.38e6 NCDMORT3070   COUNTRY        NIC        AMR                YEAR       
-#>  4 7.38e6 NCDMORT3070   COUNTRY        JPN        WPR                YEAR       
-#>  5 7.38e6 NCDMORT3070   COUNTRY        IRL        EUR                YEAR       
-#>  6 7.38e6 NCDMORT3070   COUNTRY        GRD        AMR                YEAR       
-#>  7 7.38e6 NCDMORT3070   COUNTRY        LBR        AFR                YEAR       
-#>  8 7.39e6 NCDMORT3070   COUNTRY        SWE        EUR                YEAR       
-#>  9 7.39e6 NCDMORT3070   COUNTRY        PRT        EUR                YEAR       
-#> 10 7.39e6 NCDMORT3070   COUNTRY        ATG        AMR                YEAR       
+#>  1 5.50e6 NCDMORT3070   COUNTRY        PAK        EMR                YEAR       
+#>  2 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
+#>  3 5.50e6 NCDMORT3070   COUNTRY        COD        AFR                YEAR       
+#>  4 5.50e6 NCDMORT3070   COUNTRY        COL        AMR                YEAR       
+#>  5 5.50e6 NCDMORT3070   COUNTRY        MUS        AFR                YEAR       
+#>  6 5.51e6 NCDMORT3070   COUNTRY        SOM        EMR                YEAR       
+#>  7 5.52e6 NCDMORT3070   COUNTRY        NPL        SEAR               YEAR       
+#>  8 5.52e6 NCDMORT3070   COUNTRY        TCD        AFR                YEAR       
+#>  9 5.52e6 NCDMORT3070   COUNTRY        ZMB        AFR                YEAR       
+#> 10 5.52e6 NCDMORT3070   COUNTRY        ECU        AMR                YEAR       
 #> # ℹ 4,060 more rows
 #> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
 #> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
