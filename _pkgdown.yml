@@ -40,6 +40,12 @@ reference:
   - iso3_to_region
   - iso3_to_m49
   - m49_to_iso3
+- title: Demographic methods
+  desc: Life tables and age standardization for mortality and rate analysis.
+  contents:
+  - life_table
+  - age_standardize
+  - who_std_pop
 - title: GHO indicator data
   desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
   contents:
@@ -75,6 +81,7 @@ reference:
   contents:
   - geomean
   - aarr
+  - snapshot
 authors:
   Shanlong Ding:
     href: https://github.com/shanlong-who
