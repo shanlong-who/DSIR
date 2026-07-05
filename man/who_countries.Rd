@@ -5,7 +5,7 @@
 \alias{who_countries}
 \title{WHO Member States with regional and Pacific classifications}
 \format{
-A tibble with 194 rows and 7 columns:
+A tibble with 194 rows and 8 columns:
 \describe{
 \item{iso3}{ISO 3166-1 alpha-3 code (3-letter, e.g. \code{"PHL"}).}
 \item{iso2}{ISO 3166-1 alpha-2 code (2-letter, e.g. \code{"PH"}).}
@@ -22,6 +22,8 @@ is already concise. See Details.}
 \code{"EUR"}, \code{"EMR"}, \code{"WPR"}.}
 \item{is_pic}{Logical. \code{TRUE} for the 14 Pacific Island Country (PIC)
 Member States in WPR, \code{FALSE} otherwise.}
+\item{wb_income_group}{World Bank income classification: \code{"High income"}, \code{"Upper middle income"}, \code{"Lower middle income"}, or \code{"Low income"}. \code{NA} for Cook Islands and Niue, which are not World Bank
+economies. See Details for the vintage.}
 }
 }
 \source{
@@ -30,6 +32,8 @@ Member States in WPR, \code{FALSE} otherwise.}
 \url{https://www.who.int/countries}
 \item ISO 3166-1 codes and UN M49 numeric codes: UN Statistics Division
 \url{https://unstats.un.org/unsd/methodology/m49/}
+\item World Bank income classification (FY2027):
+\url{https://datahelpdesk.worldbank.org/knowledgebase/articles/906519}
 }
 }
 \usage{
@@ -70,6 +74,15 @@ Kiribati, Marshall Islands, Micronesia (Federated States of), Nauru,
 Niue, Palau, Papua New Guinea, Samoa, Solomon Islands, Tonga, Tuvalu,
 and Vanuatu. Non-Member Pacific areas (e.g. New Caledonia, French
 Polynesia, American Samoa) are not included in this dataset.
+
+\strong{Income groups.} \code{wb_income_group} carries the World Bank
+classification of fiscal year 2027 (released 1 July 2026; based on
+2025 GNI per capita, Atlas method). The classification is revised
+every 1 July, so this column reflects the vintage current at the
+package release date — for a historical vintage (e.g. reproducing an
+older analysis), join your own copy of the World Bank OGHIST table
+instead. Cook Islands and Niue are WHO Member States but not World
+Bank economies and are \code{NA}.
 }
 \examples{
 # All WPR Member States, sorted alphabetically by short name
@@ -79,5 +92,8 @@ head(wpr)
 
 # Filter a data frame to PIC member states
 # df_pic <- subset(my_data, country_iso3 \%in\% who_countries$iso3[who_countries$is_pic])
+
+# Income-group composition of each WHO region
+table(who_countries$who_region, who_countries$wb_income_group)
 }
 \keyword{datasets}
