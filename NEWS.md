@@ -31,6 +31,16 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   classification (fiscal year 2027; 2025 GNI per capita, Atlas method).
   Cook Islands and Niue are `NA` as they are not World Bank economies.
 
+## Bug fixes
+
+* GHO and SDG requests now retry on connection-level failures (timeouts,
+  connection resets) and on transient server errors (HTTP 500 / 502 /
+  504, alongside the 429 / 503 `httr2` defaults). Previously only 429
+  and 503 were retried, so a single network hiccup — the typical symptom
+  of GHO API instability — failed the whole download despite the
+  configured `max_tries = 3`. The per-request timeout is also raised
+  from 20 to 30 seconds. Requires `httr2 (>= 1.0.0)`.
+
 # DSIR 0.8.0
 
 ## New features

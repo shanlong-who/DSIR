@@ -446,13 +446,7 @@ sdg_clean <- function(df) {
   cli::cli_inform("Fetching: {.url {url}}")
 
   resp <- tryCatch(
-    httr2::request(url) |>
-      httr2::req_headers(Accept = "application/json") |>
-      httr2::req_timeout(20) |>
-      httr2::req_retry(
-        max_tries = 3,
-        backoff   = ~ min(2 ^ .x, 30)
-      ) |>
+    .dsi_request(url) |>
       httr2::req_perform(),
     error = function(e) {
       # Reference the message via a variable so cli does not glue-interpret

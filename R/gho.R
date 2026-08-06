@@ -299,13 +299,7 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
 
   cli::cli_inform("Fetching: {.url {url}}")
   resp <- tryCatch(
-    httr2::request(url) |>
-      httr2::req_headers(Accept = "application/json") |>
-      httr2::req_timeout(20) |>
-      httr2::req_retry(
-        max_tries = 3,
-        backoff   = ~ min(2 ^ .x, 30)
-      ) |>
+    .dsi_request(url) |>
       httr2::req_perform(),
     error = function(e) {
       # Reference the message via a variable so cli does not glue-interpret
@@ -651,13 +645,7 @@ gho_clean <- function(df) {
     cli::cli_inform("Fetching: {.url {next_url}}")
 
     resp <- tryCatch(
-      httr2::request(next_url) |>
-        httr2::req_headers(Accept = "application/json") |>
-        httr2::req_timeout(20) |>
-        httr2::req_retry(
-          max_tries = 3,
-          backoff   = ~ min(2 ^ .x, 30)
-        ) |>
+      .dsi_request(next_url) |>
         httr2::req_perform(),
       error = function(e) {
         # Reference the message via a variable so cli does not glue-interpret

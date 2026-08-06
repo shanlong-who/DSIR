@@ -162,6 +162,26 @@ test_that("gho_has_data, gho_count, and gho_coverage pass dim filters through", 
   expect_match(decoded[3], "Dim3 in ('URB','RUR')", fixed = TRUE)
 })
 
+test_that("the shared request config retries transient errors and low-level failures", {
+  # NEWS 0.9.0: GHO/SDG instability surfaces as 500/502/504 responses
+  # and dropped connections, which httr2 does not retry by default
+  # (429/503 only, and no connection-level retries at all). All three
+  # network call sites build their request via .dsi_request(), so
+  # asserting its policies covers every download path. The policies are
+  # inspected directly rather than mocking a 500 because httr2's mocked
+  # responses bypass the retry machinery (verified on httr2 1.2.3).
+  req <- DSIR:::.dsi_request("https://example.test/api/X")
+  expect_equal(req$policies$retry_max_tries, 3)
+  expect_true(req$policies$retry_on_failure)
+  expect_equal(req$options$timeout_ms, 30000)
+  is_transient <- req$policies$retry_is_transient
+  for (status in c(429L, 500L, 502L, 503L, 504L)) {
+    expect_true(is_transient(httr2::response(status_code = status)))
+  }
+  expect_false(is_transient(httr2::response(status_code = 400L)))
+  expect_false(is_transient(httr2::response(status_code = 404L)))
+})
+
 test_that(".gho_get returns NULL with a warning on a malformed JSON body", {
   # NEWS 0.7.0: a truncated upstream body (premature EOF) reaches
   # resp_body_json() as unparseable JSON. The body-parse tryCatch must
