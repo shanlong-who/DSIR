@@ -89,13 +89,19 @@ sdg_coverage <- function(indicator, area = NULL,
     if (length(x) == 0L) NA_integer_ else as.integer(fn(x))
   }
 
-  parts <- strsplit(names(idx), "\x1f", fixed = TRUE)
+  # Read location/series back from the first row of each group rather
+  # than strsplit()-ing the key: a missing series code (NA or "") would
+  # leave the split without a second field and error, and this also
+  # preserves a genuine NA series as NA instead of the string "NA".
+  # unname() strips the grouping keys that vapply() over `idx` would
+  # otherwise leave as a names attribute on the output columns.
+  first <- unname(vapply(idx, `[[`, integer(1), 1L))
   out <- tibble::tibble(
-    location = vapply(parts, `[[`, character(1), 1L),
-    series   = vapply(parts, `[[`, character(1), 2L),
-    year_min = vapply(idx, function(i) yr_range(yr[i], min), integer(1)),
-    year_max = vapply(idx, function(i) yr_range(yr[i], max), integer(1)),
-    n_obs    = vapply(idx, length, integer(1))
+    location = loc[first],
+    series   = ser[first],
+    year_min = unname(vapply(idx, function(i) yr_range(yr[i], min), integer(1))),
+    year_max = unname(vapply(idx, function(i) yr_range(yr[i], max), integer(1))),
+    n_obs    = unname(vapply(idx, length, integer(1)))
   )
 
   out[order(out$location, out$series), , drop = FALSE]

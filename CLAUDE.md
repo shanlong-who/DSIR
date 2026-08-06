@@ -15,7 +15,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The package is CRAN-bound, so conventions below are driven by `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.8.0 built, uncommitted (last updated 2026-07-02)
+## Current development state — 0.9.0 bug fixes, uncommitted (last updated 2026-08-06)
+
+The repo is at 0.9.0 (commit `29c98b2` "Release plumbing for 0.9.0", not yet
+tagged — latest tag is `v0.8.0`). This session added two bug fixes to the
+working tree, recorded under 0.9.0's new "Bug fixes" NEWS section:
+
+- **Multi-series SDG pagination**: `sdg_data()` pages are now combined with
+  `vctrs::vec_rbind()` instead of base `rbind()` — multi-series indicators
+  produce nested `dimensions`/`attributes` df-columns whose inner columns
+  differ across pages, which base `rbind()` cannot combine (this is what made
+  `sdg_coverage()` "error when there is more than one series"). `vctrs` added
+  to Imports (already in the tree via tibble). `sdg_coverage()` also hardened:
+  per-group location/series read back from the data via a first-row index
+  (strsplit-free; NA series stays NA) and `unname()`d aggregate columns.
+- **Retry hardening**: new shared `.dsi_request(url)` constructor in
+  `R/http.R` (timeout 30s, retries 429/500/502/503/504 + connection-level
+  failures via `retry_on_failure = TRUE`); used by `.gho_get()`,
+  `gho_count()`, `.sdg_get()`. `httr2 (>= 1.0.0)` floor in DESCRIPTION.
+  httr2's mocked responses BYPASS retry — the offline regression test asserts
+  `.dsi_request()$policies` instead of mocking a 500.
+
+Verified 2026-08-06: mock/offline files 81 PASS / 0 FAIL; full suite 674 PASS
+with the only failures being live UN-endpoint tests while `unstats.un.org`
+was hard-down (timeouts after 30s × 3 tries — environmental, skip on CRAN).
+Live GHO smoke pull through `.dsi_request()` OK. `devtools::check()` not yet
+re-run this session.
+
+## Previous development state — 0.8.0 built, uncommitted (last updated 2026-07-02)
 
 0.7.1 was prepared for CRAN (commits `d404a23`..`a637e3c`). This session built
 **0.8.0** in the working tree (uncommitted). `devtools::check()`: 0 errors /
@@ -132,7 +159,7 @@ For GHO specifically: `series` is always NA (SDG-only concept). `location_name` 
 - **`sdg_coverage()` calls `.resolve_area()` upfront** so the legitimate "dropped unknown ISO3" warning surfaces from `sdg_coverage()` rather than being swallowed by the `suppressWarnings(sdg_data(...))` wrapper. `sdg_data()` re-runs `.resolve_area()` on the already-resolved vector — that's a no-op (M49 passes through), so the duplication is safe. The grouping key is `paste(location, series, sep = "\x1f")`; `\x1f` (US, unit separator) cannot appear in either an M49 numeric code or an SDG series code.
 - **httr2 1.x mocking gotcha.** `httr2::with_mocked_responses(mock, code)` requires `mock` to be a **function, list, or NULL** — passing a bare `httr2::response()` object errors with `mock must be function, list, or NULL`. The `mock_json()` helper in the test files wraps its single response in `list(...)`; when chaining two pages, the tests use `c(mock_json(p1), mock_json(p2))` to concatenate the two length-1 lists into a length-2 list. URL-capturing tests pass a `function(req)` mock so they can inspect the outgoing URL before returning the canned response.
 - **`gho_count()` uses its own HTTP call site,** not `.gho_get()`, because it needs `@odata.count` from the response envelope, not `value`. If you touch retry/timeout config for one, mirror the change in the other (currently they are in sync).
-- **The 20-second timeout on `.sdg_get()` / `.gho_get()`** is fine for typical 2–6s responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious "Timeout was reached" failures, bumping the constant to 30–60s is the right move. `req_retry()` runs three attempts, so the worst-case wall time is bounded around 66s × 1 retry cycle ≈ several minutes.
+- **The per-request timeout on `.sdg_get()` / `.gho_get()` is 30s** (raised from 20s in 0.9.0), and since 0.9.0 timeouts/resets and HTTP 500/502/504 are retried (`retry_on_failure = TRUE`, custom `is_transient`). Worst case per request is therefore ~3 × 30s + backoff ≈ 100s when an endpoint is hard-down — live tests that hit an unresponsive endpoint now take visibly longer to fail than pre-0.9.0.
 - **`devtools::document()` may need two passes** when a new function adds a roxygen cross-reference (`@seealso [new_fn()]`). First pass writes the new Rd; second pass resolves the cross-reference.
 - **`cli::cli_warn()` and untrusted error text.** Never pass `conditionMessage(e)` — or any string that may contain `{` / `}` — as a bare element of the `cli_warn()` message vector; `cli` glue-interpolates every element. Assign it to a variable first and interpolate the variable: `msg <- conditionMessage(e); cli::cli_warn(c(..., "x" = "{msg}"))`. glue inserts the variable's value literally and does not re-interpolate it. All six `tryCatch` warning handlers in `R/gho.R` / `R/sdg.R` follow this pattern — keep any new handler consistent.
 
@@ -252,11 +279,11 @@ Spell-checked words live in `inst/WORDLIST`; add new technical terms there if `d
 
 `gho_*()` and `sdg_*()` hit live APIs. Per CRAN policy, they must not error when the remote is unreachable. The pattern (see `.gho_get` in `R/gho.R` and `.sdg_get` in `R/sdg.R`):
 
-1. `httr2::request() |> req_timeout(20) |> req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30)) |> req_perform()`, wrapped in `tryCatch`
+1. `.dsi_request(url) |> req_perform()`, wrapped in `tryCatch` — `.dsi_request()` (in `R/http.R`, added 0.9.0) is the single shared request constructor: `req_timeout(30)` + `req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30), is_transient = ~ resp_status %in% c(429, 500, 502, 503, 504), retry_on_failure = TRUE)`
 2. On failure, `cli::cli_warn()` and return `NULL`
 3. Public wrappers turn `NULL` into an empty `data.frame()` (or `NULL` for list endpoints) so downstream code doesn't crash
 
-`.gho_get()` currently uses `req_retry(max_tries = 3)` without `req_timeout` or an explicit backoff; `.sdg_get()` has both. If you touch the GHO helper, consider aligning it with the SDG pattern. When adding a new network call, follow this pattern — do not `stop()` on HTTP failure.
+The custom `is_transient` / `retry_on_failure` (needs `httr2 (>= 1.0.0)`) matter: httr2's defaults only retry 429/503 and never retry connection-level failures (timeouts, resets), which is exactly how GHO/UN instability presents. All three call sites — `.gho_get()`, the inline call in `gho_count()`, and `.sdg_get()` — go through `.dsi_request()`; route any new network call through it too, and do not `stop()` on HTTP failure. Two gotchas learned the hard way: httr2's mocked responses **bypass the retry machinery** (a mocked 500 is never retried — test retry via the request's `$policies`, not behaviorally), and the retry config is asserted offline in `test-gho-get-mock.R`.
 
 ### GHO uses OData; SDG uses query params
 

@@ -33,6 +33,16 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
 
 ## Bug fixes
 
+* `sdg_data()` — and therefore `sdg_coverage()` — no longer errors when a
+  pull spans multiple pages whose nested `dimensions` / `attributes`
+  columns differ, which is the signature of a multi-series indicator
+  (each series is stratified by its own dimension set). Pages are now
+  combined with `vctrs::vec_rbind()`, which takes the union of the
+  nested columns and fills the cells missing from a page with `NA`,
+  where base `rbind()` failed with `duplicate 'row.names' are not
+  allowed` after a `provided k variables to replace 1 variables`
+  warning.
+
 * GHO and SDG requests now retry on connection-level failures (timeouts,
   connection resets) and on transient server errors (HTTP 500 / 502 /
   504, alongside the 429 / 503 `httr2` defaults). Previously only 429
@@ -40,6 +50,11 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   of GHO API instability — failed the whole download despite the
   configured `max_tries = 3`. The per-request timeout is also raised
   from 20 to 30 seconds. Requires `httr2 (>= 1.0.0)`.
+
+* `sdg_coverage()` no longer errors on rows with a missing series code:
+  the per-group location/series values are read back from the data
+  instead of re-parsed out of the internal grouping key, and a genuine
+  `NA` series stays `NA` rather than becoming the string `"NA"`.
 
 # DSIR 0.8.0
 

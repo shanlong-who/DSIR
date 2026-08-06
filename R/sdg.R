@@ -280,11 +280,14 @@ sdg_data <- function(indicator, area = NULL,
     return(tibble::tibble())
   }
 
-  # `make.row.names = FALSE` is essential: with the default TRUE, rbind
-  # tries to combine each tibble's "1".."pageSize" row names, which
-  # collide across pages and trip `duplicate 'row.names' are not allowed`
-  # for indicators that span more than one full page.
-  out <- do.call(rbind, c(all_data, list(make.row.names = FALSE)))
+  # Pages must be combined with vctrs::vec_rbind(), not base rbind():
+  # multi-series indicators carry nested `dimensions` / `attributes`
+  # data-frame columns whose inner columns differ across pages (one
+  # series is stratified by Sex, another by Sex and Age), and base
+  # rbind() errors on that mismatch. vec_rbind() takes the union of
+  # the inner columns, fills missing cells with NA, and assigns fresh
+  # row names (so per-page row-name collisions cannot occur either).
+  out <- do.call(vctrs::vec_rbind, all_data)
   out <- tibble::as_tibble(out)
 
   # Client-side year filter — workaround for UN SDG API bug where

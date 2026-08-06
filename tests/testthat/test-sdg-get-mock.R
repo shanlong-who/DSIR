@@ -64,6 +64,40 @@ test_that("sdg_data assembles rows across multiple pages without errors", {
   )
 })
 
+test_that("sdg_data binds pages whose nested dimension columns differ", {
+  # NEWS 0.9.0: a multi-series indicator carries per-series `dimensions`
+  # objects with different keys, so consecutive pages can simplify to
+  # nested data-frame columns of different shapes. Base rbind() errored
+  # on the mismatch ("duplicate 'row.names' are not allowed" after a
+  # "provided k variables to replace 1 variables" warning); vec_rbind()
+  # must take the union and NA-fill.
+  page1 <- paste0(
+    '{"data":[',
+    '{"indicator":["3.b.1"],"series":"SH_ACS_DTP3","geoAreaCode":"156",',
+    '"timePeriodStart":2015,"value":"99","dimensions":{"Sex":"BOTHSEX"}}',
+    '],"totalPages":2}'
+  )
+  page2 <- paste0(
+    '{"data":[',
+    '{"indicator":["3.b.1"],"series":"SH_ACS_HPV","geoAreaCode":"156",',
+    '"timePeriodStart":2016,"value":"45",',
+    '"dimensions":{"Sex":"FEMALE","Age":"15Y"}}',
+    '],"totalPages":2}'
+  )
+  httr2::with_mocked_responses(
+    c(mock_json(page1), mock_json(page2)),
+    {
+      out <- sdg_data("3.b.1", area = "156")
+      expect_s3_class(out, "tbl_df")
+      expect_equal(nrow(out), 2L)
+      expect_setequal(out$series, c("SH_ACS_DTP3", "SH_ACS_HPV"))
+      # The dimension absent from page 1 is NA-filled, not an error.
+      expect_true(is.na(out$dimensions$Age[out$series == "SH_ACS_DTP3"]))
+      expect_equal(out$dimensions$Age[out$series == "SH_ACS_HPV"], "15Y")
+    }
+  )
+})
+
 # Helper for the URL-capturing tests below. `mock` is a function rather
 # than a list because we need to inspect each outgoing request before
 # returning the canned response.
