@@ -76,22 +76,24 @@ unreachable.
 gho_data("NCDMORT3070", spatial_type = "country")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> # A tibble: 12,210 × 25
-#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
-#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 5.50e6 NCDMORT3070   COUNTRY        PAK        EMR                YEAR       
-#>  2 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
-#>  3 5.50e6 NCDMORT3070   COUNTRY        LCA        AMR                YEAR       
-#>  4 5.50e6 NCDMORT3070   COUNTRY        TGO        AFR                YEAR       
-#>  5 5.50e6 NCDMORT3070   COUNTRY        COD        AFR                YEAR       
-#>  6 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
-#>  7 5.50e6 NCDMORT3070   COUNTRY        COL        AMR                YEAR       
-#>  8 5.50e6 NCDMORT3070   COUNTRY        MUS        AFR                YEAR       
-#>  9 5.50e6 NCDMORT3070   COUNTRY        NLD        EUR                YEAR       
-#> 10 5.50e6 NCDMORT3070   COUNTRY        MWI        AFR                YEAR       
+#>       Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>    <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1  3710 NCDMORT3070   COUNTRY        AGO        YEAR        AFR               
+#>  2  4415 NCDMORT3070   COUNTRY        GMB        YEAR        AFR               
+#>  3  4932 NCDMORT3070   COUNTRY        LKA        YEAR        SEAR              
+#>  4  5503 NCDMORT3070   COUNTRY        KHM        YEAR        WPR               
+#>  5  7878 NCDMORT3070   COUNTRY        ZWE        YEAR        AFR               
+#>  6  7882 NCDMORT3070   COUNTRY        GMB        YEAR        AFR               
+#>  7  7921 NCDMORT3070   COUNTRY        BRA        YEAR        AMR               
+#>  8  9385 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
+#>  9  9395 NCDMORT3070   COUNTRY        MUS        YEAR        AFR               
+#> 10  9562 NCDMORT3070   COUNTRY        KWT        YEAR        EMR               
 #> # ℹ 12,200 more rows
-#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
 #> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
 #> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
@@ -105,19 +107,19 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> # A tibble: 42 × 25
 #>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
 #>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 5.60e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  2 5.75e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  3 5.82e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  4 6.15e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  5 7.01e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  6 1.24e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  7 1.33e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  8 1.47e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  9 1.57e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#> 10 1.88e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  1 8.84e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  2 9.64e5 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  3 1.77e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  4 2.06e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  5 2.33e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  6 3.15e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  7 3.28e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  8 3.39e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  9 3.64e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#> 10 4.21e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
 #> # ℹ 32 more rows
-#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
-#> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
+#> #   Dim1 <chr>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
 #> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
 #> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
@@ -126,22 +128,27 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> # A tibble: 4,070 × 25
-#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
-#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 5.50e6 NCDMORT3070   COUNTRY        PAK        EMR                YEAR       
-#>  2 5.50e6 NCDMORT3070   COUNTRY        VNM        WPR                YEAR       
-#>  3 5.50e6 NCDMORT3070   COUNTRY        COD        AFR                YEAR       
-#>  4 5.50e6 NCDMORT3070   COUNTRY        COL        AMR                YEAR       
-#>  5 5.50e6 NCDMORT3070   COUNTRY        MUS        AFR                YEAR       
-#>  6 5.51e6 NCDMORT3070   COUNTRY        SOM        EMR                YEAR       
-#>  7 5.52e6 NCDMORT3070   COUNTRY        NPL        SEAR               YEAR       
-#>  8 5.52e6 NCDMORT3070   COUNTRY        TCD        AFR                YEAR       
-#>  9 5.52e6 NCDMORT3070   COUNTRY        ZMB        AFR                YEAR       
-#> 10 5.52e6 NCDMORT3070   COUNTRY        ECU        AMR                YEAR       
+#>       Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>    <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1  4932 NCDMORT3070   COUNTRY        LKA        YEAR        SEAR              
+#>  2  7878 NCDMORT3070   COUNTRY        ZWE        YEAR        AFR               
+#>  3  7921 NCDMORT3070   COUNTRY        BRA        YEAR        AMR               
+#>  4  9385 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
+#>  5  9562 NCDMORT3070   COUNTRY        KWT        YEAR        EMR               
+#>  6 12240 NCDMORT3070   COUNTRY        BGR        YEAR        EUR               
+#>  7 12244 NCDMORT3070   COUNTRY        SOM        YEAR        EMR               
+#>  8 13635 NCDMORT3070   COUNTRY        TZA        YEAR        AFR               
+#>  9 14676 NCDMORT3070   COUNTRY        MDA        YEAR        EUR               
+#> 10 15905 NCDMORT3070   COUNTRY        ITA        YEAR        EUR               
 #> # ℹ 4,060 more rows
-#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
 #> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
 #> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>

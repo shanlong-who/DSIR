@@ -47,6 +47,12 @@
 <li><p>New <code><a href="../reference/snapshot.html">snapshot()</a></code>: evaluate an expression (typically a <code><a href="../reference/gho_data.html">gho_data()</a></code> / <code><a href="../reference/gho_clean.html">gho_clean()</a></code> pull) once, save the result to an <code>.rds</code> file, and read it back on later runs so analyses re-run reproducibly and offline. An empty result — the signature of an unreachable API — is never written, so a failed refresh cannot destroy a good snapshot.</p></li>
 <li><p><code>who_countries</code> gains a <code>wb_income_group</code> column: the World Bank income classification (fiscal year 2027; 2025 GNI per capita, Atlas method). Cook Islands and Niue are <code>NA</code> as they are not World Bank economies.</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-9-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-0"></a></h3>
+<ul><li><p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> — and therefore <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> — no longer errors when a pull spans multiple pages whose nested <code>dimensions</code> / <code>attributes</code> columns differ, which is the signature of a multi-series indicator (each series is stratified by its own dimension set). Pages are now combined with <code><a href="https://vctrs.r-lib.org/reference/vec_bind.html" class="external-link">vctrs::vec_rbind()</a></code>, which takes the union of the nested columns and fills the cells missing from a page with <code>NA</code>, where base <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> failed with <code>duplicate 'row.names' are not allowed</code> after a <code>provided k variables to replace 1 variables</code> warning.</p></li>
+<li><p>GHO and SDG requests now retry on connection-level failures (timeouts, connection resets) and on transient server errors (HTTP 500 / 502 / 504, alongside the 429 / 503 <code>httr2</code> defaults). Previously only 429 and 503 were retried, so a single network hiccup — the typical symptom of GHO API instability — failed the whole download despite the configured <code>max_tries = 3</code>. The per-request timeout is also raised from 20 to 30 seconds. Requires <code>httr2 (&gt;= 1.0.0)</code>.</p></li>
+<li><p><code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> no longer errors on rows with a missing series code: the per-group location/series values are read back from the data instead of re-parsed out of the internal grouping key, and a genuine <code>NA</code> series stays <code>NA</code> rather than becoming the string <code>"NA"</code>.</p></li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="dsir-080">DSIR 0.8.0<a class="anchor" aria-label="anchor" href="#dsir-080"></a></h2><p class="text-muted">CRAN release: 2026-07-02</p>
@@ -232,7 +238,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

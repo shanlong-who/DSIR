@@ -28,7 +28,45 @@ Health in R”), targeted at CRAN. It provides:
 The package is CRAN-bound, so conventions below are driven by
 `R CMD check` and CRAN policy, not just taste.
 
-## Current development state — 0.8.0 built, uncommitted (last updated 2026-07-02)
+## Current development state — 0.9.0 bug fixes, uncommitted (last updated 2026-08-06)
+
+The repo is at 0.9.0 (commit `29c98b2` “Release plumbing for 0.9.0”, not
+yet tagged — latest tag is `v0.8.0`). This session added two bug fixes
+to the working tree, recorded under 0.9.0’s new “Bug fixes” NEWS
+section:
+
+- **Multi-series SDG pagination**:
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  pages are now combined with
+  [`vctrs::vec_rbind()`](https://vctrs.r-lib.org/reference/vec_bind.html)
+  instead of base [`rbind()`](https://rdrr.io/r/base/cbind.html) —
+  multi-series indicators produce nested `dimensions`/`attributes`
+  df-columns whose inner columns differ across pages, which base
+  [`rbind()`](https://rdrr.io/r/base/cbind.html) cannot combine (this is
+  what made
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  “error when there is more than one series”). `vctrs` added to Imports
+  (already in the tree via tibble).
+  [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  also hardened: per-group location/series read back from the data via a
+  first-row index (strsplit-free; NA series stays NA) and
+  [`unname()`](https://rdrr.io/r/base/unname.html)d aggregate columns.
+- **Retry hardening**: new shared `.dsi_request(url)` constructor in
+  `R/http.R` (timeout 30s, retries 429/500/502/503/504 +
+  connection-level failures via `retry_on_failure = TRUE`); used by
+  `.gho_get()`,
+  [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
+  `.sdg_get()`. `httr2 (>= 1.0.0)` floor in DESCRIPTION. httr2’s mocked
+  responses BYPASS retry — the offline regression test asserts
+  `.dsi_request()$policies` instead of mocking a 500.
+
+Verified 2026-08-06: mock/offline files 81 PASS / 0 FAIL; full suite 674
+PASS with the only failures being live UN-endpoint tests while
+`unstats.un.org` was hard-down (timeouts after 30s × 3 tries —
+environmental, skip on CRAN). Live GHO smoke pull through
+`.dsi_request()` OK. `devtools::check()` not yet re-run this session.
+
+## Previous development state — 0.8.0 built, uncommitted (last updated 2026-07-02)
 
 0.7.1 was prepared for CRAN (commits `d404a23`..`a637e3c`). This session
 built **0.8.0** in the working tree (uncommitted). `devtools::check()`:
@@ -366,12 +404,12 @@ test, so the bug in the fix went unnoticed until the test was written.
   `@odata.count` from the response envelope, not `value`. If you touch
   retry/timeout config for one, mirror the change in the other
   (currently they are in sync).
-- **The 20-second timeout on `.sdg_get()` / `.gho_get()`** is fine for
-  typical 2–6s responses, but the un.org endpoint occasionally spikes
-  well past 20s. If users start reporting spurious “Timeout was reached”
-  failures, bumping the constant to 30–60s is the right move.
-  `req_retry()` runs three attempts, so the worst-case wall time is
-  bounded around 66s × 1 retry cycle ≈ several minutes.
+- **The per-request timeout on `.sdg_get()` / `.gho_get()` is 30s**
+  (raised from 20s in 0.9.0), and since 0.9.0 timeouts/resets and HTTP
+  500/502/504 are retried (`retry_on_failure = TRUE`, custom
+  `is_transient`). Worst case per request is therefore ~3 × 30s +
+  backoff ≈ 100s when an endpoint is hard-down — live tests that hit an
+  unresponsive endpoint now take visibly longer to fail than pre-0.9.0.
 - **`devtools::document()` may need two passes** when a new function
   adds a roxygen cross-reference (`@seealso [new_fn()]`). First pass
   writes the new Rd; second pass resolves the cross-reference.
@@ -577,8 +615,10 @@ directives in `R/DSIR-package.R`. If a function disappears from
 error when the remote is unreachable. The pattern (see `.gho_get` in
 `R/gho.R` and `.sdg_get` in `R/sdg.R`):
 
-1.  `httr2::request() |> req_timeout(20) |> req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30)) |> req_perform()`,
-    wrapped in `tryCatch`
+1.  `.dsi_request(url) |> req_perform()`, wrapped in `tryCatch` —
+    `.dsi_request()` (in `R/http.R`, added 0.9.0) is the single shared
+    request constructor: `req_timeout(30)` +
+    `req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30), is_transient = ~ resp_status %in% c(429, 500, 502, 503, 504), retry_on_failure = TRUE)`
 2.  On failure,
     [`cli::cli_warn()`](https://cli.r-lib.org/reference/cli_abort.html)
     and return `NULL`
@@ -586,11 +626,19 @@ error when the remote is unreachable. The pattern (see `.gho_get` in
     [`data.frame()`](https://rdrr.io/r/base/data.frame.html) (or `NULL`
     for list endpoints) so downstream code doesn’t crash
 
-`.gho_get()` currently uses `req_retry(max_tries = 3)` without
-`req_timeout` or an explicit backoff; `.sdg_get()` has both. If you
-touch the GHO helper, consider aligning it with the SDG pattern. When
-adding a new network call, follow this pattern — do not
-[`stop()`](https://rdrr.io/r/base/stop.html) on HTTP failure.
+The custom `is_transient` / `retry_on_failure` (needs
+`httr2 (>= 1.0.0)`) matter: httr2’s defaults only retry 429/503 and
+never retry connection-level failures (timeouts, resets), which is
+exactly how GHO/UN instability presents. All three call sites —
+`.gho_get()`, the inline call in
+[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
+and `.sdg_get()` — go through `.dsi_request()`; route any new network
+call through it too, and do not
+[`stop()`](https://rdrr.io/r/base/stop.html) on HTTP failure. Two
+gotchas learned the hard way: httr2’s mocked responses **bypass the
+retry machinery** (a mocked 500 is never retried — test retry via the
+request’s `$policies`, not behaviorally), and the retry config is
+asserted offline in `test-gho-get-mock.R`.
 
 ### GHO uses OData; SDG uses query params
 

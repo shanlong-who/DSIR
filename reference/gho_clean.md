@@ -89,21 +89,20 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> # A tibble: 12,210 × 15
-#>    source id        indicator location iso3  location_name  year value value_num
-#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
-#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
-#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.5…      42.5
-#> # ℹ 12,200 more rows
-#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30001 milliseconds with 1650371 bytes received
+#> # A tibble: 0 × 15
+#> # ℹ 15 variables: source <chr>, id <chr>, indicator <chr>, location <chr>,
+#> #   iso3 <chr>, location_name <chr>, year <int>, value <chr>, value_num <dbl>,
+#> #   low <dbl>, high <dbl>, series <chr>, dim1 <chr>, dim2 <chr>, dim3 <chr>
 # }
 ```

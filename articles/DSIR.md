@@ -167,16 +167,61 @@ vapply(inds, gho_has_data, logical(1), area = "PHL")
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■                
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #> Assuming `spatial_type` = "country" since `area` was given.
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #> Assuming `spatial_type` = "country" since `area` was given.
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #>  WHOSIS_000001    NCDMORT3070 MDG_0000000026 
-#>           TRUE           TRUE           TRUE
+#>             NA             NA             NA
 ```
 
 It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a
@@ -193,7 +238,22 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&$top=0&$count=true>
-#> [1] 1452
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■                  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&$top=0&$count=true>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
+#> [1] NA
 ```
 
 [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
@@ -232,15 +292,23 @@ pulled in one call.
 gho_indicators("UHC") |> head()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
-#> # A tibble: 6 × 3
-#>   IndicatorCode          IndicatorName                                  Language
-#>   <chr>                  <chr>                                          <chr>   
-#> 1 HSS_UHCLEGISLATION     Countries that have passed legislation on Uni… EN      
-#> 2 UHC_INDEX_REPORTED     UHC Service Coverage Index (SDG 3.8.1)         EN      
-#> 3 UHC_AVAILABILITY_SCORE Primary data availability for UHC Service Cov… EN      
-#> 4 UHC_SCI_NCD            UHC Service Coverage sub-index on noncommunic… EN      
-#> 5 UHC_SCI_INFECT         UHC Service Coverage sub-index on infectious … EN      
-#> 6 UHC_DATA_AVAIL_CODE    Data availability for UHC index of essential … EN
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
+#> # A tibble: 0 × 3
+#> # ℹ 3 variables: IndicatorCode <chr>, IndicatorName <chr>, Language <chr>
 ```
 
 Pick an `IndicatorCode` from the result — this is the value you pass to
@@ -259,35 +327,44 @@ uhc <- gho_data(
 )
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29%20and%20TimeDim%20ge%202015>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
+#> 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 
 uhc |> glimpse()
 #> Rows: 252
 #> Columns: 25
-#> $ Id                 <int> 3089492, 9150593, 2145416, 5991781, 7252147, 465999…
+#> $ Id                 <int> 46871, 798980, 825128, 837761, 889367, 889651, 9900…
 #> $ IndicatorCode      <chr> "UHC_INDEX_REPORTED", "UHC_INDEX_REPORTED", "UHC_IN…
 #> $ SpatialDimType     <chr> "COUNTRY", "COUNTRY", "COUNTRY", "COUNTRY", "COUNTR…
-#> $ SpatialDim         <chr> "BRN", "FSM", "FSM", "NRU", "TUV", "KOR", "MHL", "M…
+#> $ SpatialDim         <chr> "BRN", "PLW", "BRN", "SGP", "COK", "AUS", "MNG", "S…
 #> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
 #> $ ParentLocationCode <chr> "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "W…
 #> $ ParentLocation     <chr> "Western Pacific", "Western Pacific", "Western Paci…
 #> $ Dim1Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ TimeDim            <int> 2016, 2022, 2016, 2019, 2017, 2019, 2017, 2019, 202…
 #> $ Dim1               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+#> $ TimeDim            <int> 2017, 2023, 2019, 2019, 2018, 2020, 2022, 2020, 201…
 #> $ Dim2Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim2               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDimType  <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDim      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Value              <chr> "83", "65", "66", "59", "63", "87", "67", "71", "85…
-#> $ NumericValue       <dbl> 83, 65, 66, 59, 63, 87, 67, 71, 85, 69, 66, 69, 64,…
+#> $ Value              <chr> "83", "75", "83", "88", "74", "89", "71", "88", "70…
+#> $ NumericValue       <dbl> 83, 75, 83, 88, 74, 89, 71, 88, 70, 69, 72, 63, 26,…
 #> $ Low                <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ High               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Comments           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Date               <chr> "2025-12-05T11:39:13.277+01:00", "2025-12-05T11:39:…
-#> $ TimeDimensionValue <chr> "2016", "2022", "2016", "2019", "2017", "2019", "20…
-#> $ TimeDimensionBegin <chr> "2016-01-01T00:00:00+01:00", "2022-01-01T00:00:00+0…
-#> $ TimeDimensionEnd   <chr> "2016-12-31T00:00:00+01:00", "2022-12-31T00:00:00+0…
+#> $ TimeDimensionValue <chr> "2017", "2023", "2019", "2019", "2018", "2020", "20…
+#> $ TimeDimensionBegin <chr> "2017-01-01T00:00:00+01:00", "2023-01-01T00:00:00+0…
+#> $ TimeDimensionEnd   <chr> "2017-12-31T00:00:00+01:00", "2023-12-31T00:00:00+0…
 ```
 
 Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
@@ -534,7 +611,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-cd4b2e2e
+UHC SCI in WPR, latest year {.table .cl-07fd09e2
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators
@@ -620,8 +697,8 @@ sdg |> glimpse()
 #> $ source            <chr> "Global Health Estimates 2021: Deaths by Cause, Age,…
 #> $ geoInfoUrl        <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 #> $ footnotes         <list> "Data was previously disseminated with a different …
-#> $ attributes        <df[,1]> <data.frame[26 x 1]>
-#> $ dimensions        <df[,1]> <data.frame[26 x 1]>
+#> $ attributes        <df[,2]> <data.frame[26 x 2]>
+#> $ dimensions        <df[,3]> <data.frame[26 x 3]>
 
 # M49 also works (e.g. when copy-pasting codes from sdg_areas())
 sdg_data("3.4.1", area = c("608", "250"))
@@ -644,7 +721,7 @@ sdg_data("3.4.1", area = c("608", "250"))
 #> # ℹ 14 more variables: geoAreaName <chr>, timePeriodStart <int>, value <chr>,
 #> #   valueType <chr>, time_detail <lgl>, timeCoverage <lgl>, upperBound <chr>,
 #> #   lowerBound <chr>, basePeriod <lgl>, source <chr>, geoInfoUrl <lgl>,
-#> #   footnotes <list>, attributes <df[,1]>, dimensions <df[,1]>
+#> #   footnotes <list>, attributes <df[,2]>, dimensions <df[,3]>
 ```
 
 ``` r
@@ -656,13 +733,13 @@ sdg_clean(sdg)
 #>  1 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 28.1       28.1
 #>  2 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 25.4       25.4
 #>  3 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 31.8       31.8
-#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
-#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
-#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
-#>  7 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 29.1       29.1
-#>  8 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 20.9       20.9
-#>  9 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 24.4       24.4
-#> 10 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2015 23.6       23.6
+#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
+#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
+#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
+#>  7 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 24.4       24.4
+#>  8 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 29.1       29.1
+#>  9 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 20.9       20.9
+#> 10 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2015 28.3       28.3
 #> # ℹ 452 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
@@ -710,9 +787,9 @@ bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
 #> $ location_name <chr> "Australia", "Australia", "Australia", "Australia", "Aus…
 #> $ year          <int> 2000, 2000, 2000, 2001, 2001, 2001, 2002, 2002, 2002, 20…
 #> $ value         <chr> "16.0 [14.1-18.0]", "9.8 [8.4-11.2]", "13.0 [11.3-14.7]"…
-#> $ value_num     <dbl> 16.0, 9.8, 13.0, 9.6, 15.6, 12.6, 12.3, 15.0, 9.6, 9.1, …
-#> $ low           <dbl> 14.1, 8.4, 11.3, 8.2, 13.7, 11.0, 10.7, 13.1, 8.2, 7.8, …
-#> $ high          <dbl> 18.0, 11.2, 14.7, 11.0, 17.5, 14.3, 13.9, 16.8, 10.9, 10…
+#> $ value_num     <dbl> 16.0, 9.8, 13.0, 9.6, 15.6, 12.6, 15.0, 12.3, 9.6, 9.1, …
+#> $ low           <dbl> 14.1, 8.4, 11.3, 8.2, 13.7, 11.0, 13.1, 10.7, 8.2, 7.8, …
+#> $ high          <dbl> 18.0, 11.2, 14.7, 11.0, 17.5, 14.3, 16.8, 13.9, 10.9, 10…
 #> $ series        <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 #> $ dim1          <chr> "SEX_MLE", "SEX_FMLE", "SEX_BTSX", "SEX_FMLE", "SEX_MLE"…
 #> $ dim2          <chr> "AGEGROUP_YEARS30-69", "AGEGROUP_YEARS30-69", "AGEGROUP_…

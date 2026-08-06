@@ -53,7 +53,16 @@
 </ul><p>The package is CRAN-bound, so conventions below are driven by <code>R CMD check</code> and CRAN policy, not just taste.</p>
 </div>
 <div class="section level2">
-<h2 id="current-development-state--080-built-uncommitted-last-updated-2026-07-02">Current development state — 0.8.0 built, uncommitted (last updated 2026-07-02)<a class="anchor" aria-label="anchor" href="#current-development-state--080-built-uncommitted-last-updated-2026-07-02"></a></h2>
+<h2 id="current-development-state--090-bug-fixes-uncommitted-last-updated-2026-08-06">Current development state — 0.9.0 bug fixes, uncommitted (last updated 2026-08-06)<a class="anchor" aria-label="anchor" href="#current-development-state--090-bug-fixes-uncommitted-last-updated-2026-08-06"></a></h2>
+<p>The repo is at 0.9.0 (commit <code>29c98b2</code> “Release plumbing for 0.9.0”, not yet tagged — latest tag is <code>v0.8.0</code>). This session added two bug fixes to the working tree, recorded under 0.9.0’s new “Bug fixes” NEWS section:</p>
+<ul><li>
+<strong>Multi-series SDG pagination</strong>: <code><a href="reference/sdg_data.html">sdg_data()</a></code> pages are now combined with <code><a href="https://vctrs.r-lib.org/reference/vec_bind.html" class="external-link">vctrs::vec_rbind()</a></code> instead of base <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> — multi-series indicators produce nested <code>dimensions</code>/<code>attributes</code> df-columns whose inner columns differ across pages, which base <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> cannot combine (this is what made <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> “error when there is more than one series”). <code>vctrs</code> added to Imports (already in the tree via tibble). <code><a href="reference/sdg_coverage.html">sdg_coverage()</a></code> also hardened: per-group location/series read back from the data via a first-row index (strsplit-free; NA series stays NA) and <code><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname()</a></code>d aggregate columns.</li>
+<li>
+<strong>Retry hardening</strong>: new shared <code>.dsi_request(url)</code> constructor in <code>R/http.R</code> (timeout 30s, retries 429/500/502/503/504 + connection-level failures via <code>retry_on_failure = TRUE</code>); used by <code>.gho_get()</code>, <code><a href="reference/gho_count.html">gho_count()</a></code>, <code>.sdg_get()</code>. <code>httr2 (&gt;= 1.0.0)</code> floor in DESCRIPTION. httr2’s mocked responses BYPASS retry — the offline regression test asserts <code>.dsi_request()$policies</code> instead of mocking a 500.</li>
+</ul><p>Verified 2026-08-06: mock/offline files 81 PASS / 0 FAIL; full suite 674 PASS with the only failures being live UN-endpoint tests while <code>unstats.un.org</code> was hard-down (timeouts after 30s × 3 tries — environmental, skip on CRAN). Live GHO smoke pull through <code>.dsi_request()</code> OK. <code>devtools::check()</code> not yet re-run this session.</p>
+</div>
+<div class="section level2">
+<h2 id="previous-development-state--080-built-uncommitted-last-updated-2026-07-02">Previous development state — 0.8.0 built, uncommitted (last updated 2026-07-02)<a class="anchor" aria-label="anchor" href="#previous-development-state--080-built-uncommitted-last-updated-2026-07-02"></a></h2>
 <p>0.7.1 was prepared for CRAN (commits <code>d404a23</code>..<code>a637e3c</code>). This session built <strong>0.8.0</strong> in the working tree (uncommitted). <code>devtools::check()</code>: 0 errors / 0 warnings / 0 notes locally (the earlier “non-standard top-level files” NOTE was fixed by adding <code>conversation-export.md</code> / <code>development_proposals.md</code> to <code>.Rbuildignore</code>). Tests: <strong>534 PASS / 0 FAIL</strong> (UN + GHO endpoints reachable).</p>
 <div class="section level3">
 <h3 id="what-080-adds">What 0.8.0 adds<a class="anchor" aria-label="anchor" href="#what-080-adds"></a></h3>
@@ -118,7 +127,7 @@
 <li>
 <strong><code><a href="reference/gho_count.html">gho_count()</a></code> uses its own HTTP call site,</strong> not <code>.gho_get()</code>, because it needs <code>@odata.count</code> from the response envelope, not <code>value</code>. If you touch retry/timeout config for one, mirror the change in the other (currently they are in sync).</li>
 <li>
-<strong>The 20-second timeout on <code>.sdg_get()</code> / <code>.gho_get()</code></strong> is fine for typical 2–6s responses, but the un.org endpoint occasionally spikes well past 20s. If users start reporting spurious “Timeout was reached” failures, bumping the constant to 30–60s is the right move. <code>req_retry()</code> runs three attempts, so the worst-case wall time is bounded around 66s × 1 retry cycle ≈ several minutes.</li>
+<strong>The per-request timeout on <code>.sdg_get()</code> / <code>.gho_get()</code> is 30s</strong> (raised from 20s in 0.9.0), and since 0.9.0 timeouts/resets and HTTP 500/502/504 are retried (<code>retry_on_failure = TRUE</code>, custom <code>is_transient</code>). Worst case per request is therefore ~3 × 30s + backoff ≈ 100s when an endpoint is hard-down — live tests that hit an unresponsive endpoint now take visibly longer to fail than pre-0.9.0.</li>
 <li>
 <strong><code>devtools::document()</code> may need two passes</strong> when a new function adds a roxygen cross-reference (<code>@seealso [new_fn()]</code>). First pass writes the new Rd; second pass resolves the cross-reference.</li>
 <li>
@@ -233,12 +242,12 @@
 <h3 id="network-functions-must-fail-soft">Network functions must fail soft<a class="anchor" aria-label="anchor" href="#network-functions-must-fail-soft"></a></h3>
 <p><code>gho_*()</code> and <code>sdg_*()</code> hit live APIs. Per CRAN policy, they must not error when the remote is unreachable. The pattern (see <code>.gho_get</code> in <code>R/gho.R</code> and <code>.sdg_get</code> in <code>R/sdg.R</code>):</p>
 <ol style="list-style-type: decimal"><li>
-<code>httr2::request() |&gt; req_timeout(20) |&gt; req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30)) |&gt; req_perform()</code>, wrapped in <code>tryCatch</code>
+<code>.dsi_request(url) |&gt; req_perform()</code>, wrapped in <code>tryCatch</code> — <code>.dsi_request()</code> (in <code>R/http.R</code>, added 0.9.0) is the single shared request constructor: <code>req_timeout(30)</code> + <code>req_retry(max_tries = 3, backoff = ~ min(2 ^ .x, 30), is_transient = ~ resp_status %in% c(429, 500, 502, 503, 504), retry_on_failure = TRUE)</code>
 </li>
 <li>On failure, <code><a href="https://cli.r-lib.org/reference/cli_abort.html" class="external-link">cli::cli_warn()</a></code> and return <code>NULL</code>
 </li>
 <li>Public wrappers turn <code>NULL</code> into an empty <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> (or <code>NULL</code> for list endpoints) so downstream code doesn’t crash</li>
-</ol><p><code>.gho_get()</code> currently uses <code>req_retry(max_tries = 3)</code> without <code>req_timeout</code> or an explicit backoff; <code>.sdg_get()</code> has both. If you touch the GHO helper, consider aligning it with the SDG pattern. When adding a new network call, follow this pattern — do not <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> on HTTP failure.</p>
+</ol><p>The custom <code>is_transient</code> / <code>retry_on_failure</code> (needs <code>httr2 (&gt;= 1.0.0)</code>) matter: httr2’s defaults only retry 429/503 and never retry connection-level failures (timeouts, resets), which is exactly how GHO/UN instability presents. All three call sites — <code>.gho_get()</code>, the inline call in <code><a href="reference/gho_count.html">gho_count()</a></code>, and <code>.sdg_get()</code> — go through <code>.dsi_request()</code>; route any new network call through it too, and do not <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> on HTTP failure. Two gotchas learned the hard way: httr2’s mocked responses <strong>bypass the retry machinery</strong> (a mocked 500 is never retried — test retry via the request’s <code>$policies</code>, not behaviorally), and the retry config is asserted offline in <code>test-gho-get-mock.R</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="gho-uses-odata-sdg-uses-query-params">GHO uses OData; SDG uses query params<a class="anchor" aria-label="anchor" href="#gho-uses-odata-sdg-uses-query-params"></a></h3>
@@ -273,7 +282,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

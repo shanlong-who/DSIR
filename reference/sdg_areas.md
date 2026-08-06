@@ -23,19 +23,16 @@ codes and names, or `NULL` when the service is unreachable.
 # \donttest{
 sdg_areas()
 #> Fetching: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/GeoArea/List>
-#> # A tibble: 460 × 2
-#>    geoAreaCode geoAreaName        
-#>    <chr>       <chr>              
-#>  1 4           Afghanistan        
-#>  2 248         Åland Islands      
-#>  3 8           Albania            
-#>  4 12          Algeria            
-#>  5 16          American Samoa     
-#>  6 20          Andorra            
-#>  7 24          Angola             
-#>  8 660         Anguilla           
-#>  9 10          Antarctica         
-#> 10 28          Antigua and Barbuda
-#> # ℹ 450 more rows
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■             
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: SDG request failed.
+#> ℹ URL: <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/GeoArea/List>
+#> ✖ Failed to perform HTTP request. Caused by error in
+#>   `curl::curl_fetch_memory()`: ! Timeout was reached [unstats.un.org]:
+#>   Operation timed out after 30001 milliseconds with 0 bytes received
+#> NULL
 # }
 ```

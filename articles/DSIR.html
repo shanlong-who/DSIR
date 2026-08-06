@@ -203,16 +203,61 @@ and filter — useful when screening a list of candidate indicators.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span></span></span>
+<span><span class="co">#&gt; Warning: GHO request failed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> URL:</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span></span>
+<span><span class="co">#&gt;   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [ghoapi.azureedge.net]:</span></span>
+<span><span class="co">#&gt;   Operation timed out after 30002 milliseconds with 0 bytes received</span></span>
 <span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; Warning: GHO request failed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> URL:</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span></span>
+<span><span class="co">#&gt;   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [ghoapi.azureedge.net]:</span></span>
+<span><span class="co">#&gt;   Operation timed out after 30002 milliseconds with 0 bytes received</span></span>
 <span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; Warning: GHO request failed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> URL:</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span></span>
+<span><span class="co">#&gt;   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [ghoapi.azureedge.net]:</span></span>
+<span><span class="co">#&gt;   Operation timed out after 30002 milliseconds with 0 bytes received</span></span>
 <span><span class="co">#&gt;  WHOSIS_000001    NCDMORT3070 MDG_0000000026 </span></span>
-<span><span class="co">#&gt;           TRUE           TRUE           TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt;             NA             NA             NA</span></span></code></pre></div>
 <p>It returns <code>TRUE</code>, <code>FALSE</code>, or <code>NA</code>
 (for request failures, including a non-existent indicator code — GHO
 returns HTTP 404 in that case).</p>
@@ -224,7 +269,22 @@ would produce, which is useful for sizing a download.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&amp;$top=0&amp;$count=true&gt;</span></span></span>
-<span><span class="co">#&gt; [1] 1452</span></span></code></pre></div>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; Warning: GHO request failed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> URL:</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&amp;$top=0&amp;$count=true&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span></span>
+<span><span class="co">#&gt;   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [ghoapi.azureedge.net]:</span></span>
+<span><span class="co">#&gt;   Operation timed out after 30002 milliseconds with 0 bytes received</span></span>
+<span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p><code><a href="../reference/gho_coverage.html">gho_coverage()</a></code> summarises year coverage and observation
 counts per country. The payload is small because only
 <code>SpatialDim</code> and <code>TimeDim</code> are requested from the
@@ -258,15 +318,23 @@ region can be pulled in one call.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   IndicatorCode          IndicatorName                                  Language</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> HSS_UHCLEGISLATION     Countries that have passed legislation on Uni… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> UHC_INDEX_REPORTED     UHC Service Coverage Index (SDG 3.8.1)         EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> UHC_AVAILABILITY_SCORE Primary data availability for UHC Service Cov… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> UHC_SCI_NCD            UHC Service Coverage sub-index on noncommunic… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_SCI_INFECT         UHC Service Coverage sub-index on infectious … EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_DATA_AVAIL_CODE    Data availability for UHC index of essential … EN</span></span></code></pre></div>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■                    </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; Warning: GHO request failed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> URL:</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Failed to perform HTTP request. <span style="font-weight: bold;">Caused by error in</span></span></span>
+<span><span class="co">#&gt;   <span style="font-weight: bold;">`curl::curl_fetch_memory()`:</span> <span style="color: #BBBB00;">!</span> Timeout was reached [ghoapi.azureedge.net]:</span></span>
+<span><span class="co">#&gt;   Operation timed out after 30002 milliseconds with 0 bytes received</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 variables: IndicatorCode &lt;chr&gt;, IndicatorName &lt;chr&gt;, Language &lt;chr&gt;</span></span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
 </div>
@@ -282,35 +350,44 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29%20and%20TimeDim%20ge%202015&gt;</span></span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■                    </span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span></span>
 <span></span>
 <span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 252</span></span>
 <span><span class="co">#&gt; Columns: 25</span></span>
-<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 3089492<span style="color: #949494;">, </span>9150593<span style="color: #949494;">, </span>2145416<span style="color: #949494;">, </span>5991781<span style="color: #949494;">, </span>7252147<span style="color: #949494;">, </span>465999…</span></span>
+<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 46871<span style="color: #949494;">, </span>798980<span style="color: #949494;">, </span>825128<span style="color: #949494;">, </span>837761<span style="color: #949494;">, </span>889367<span style="color: #949494;">, </span>889651<span style="color: #949494;">, </span>9900…</span></span>
 <span><span class="co">#&gt; $ IndicatorCode      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_IN…</span></span>
 <span><span class="co">#&gt; $ SpatialDimType     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTR…</span></span>
-<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "BRN"<span style="color: #949494;">, </span>"FSM"<span style="color: #949494;">, </span>"FSM"<span style="color: #949494;">, </span>"NRU"<span style="color: #949494;">, </span>"TUV"<span style="color: #949494;">, </span>"KOR"<span style="color: #949494;">, </span>"MHL"<span style="color: #949494;">, </span>"M…</span></span>
+<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "BRN"<span style="color: #949494;">, </span>"PLW"<span style="color: #949494;">, </span>"BRN"<span style="color: #949494;">, </span>"SGP"<span style="color: #949494;">, </span>"COK"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"MNG"<span style="color: #949494;">, </span>"S…</span></span>
 <span><span class="co">#&gt; $ TimeDimType        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YE…</span></span>
 <span><span class="co">#&gt; $ ParentLocationCode <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"W…</span></span>
 <span><span class="co">#&gt; $ ParentLocation     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Western Pacific"<span style="color: #949494;">, </span>"Western Pacific"<span style="color: #949494;">, </span>"Western Paci…</span></span>
 <span><span class="co">#&gt; $ Dim1Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2016<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2016<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>2017<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>2017<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>202…</span></span>
 <span><span class="co">#&gt; $ Dim1               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2017<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>2019<span style="color: #949494;">, </span>2018<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>201…</span></span>
 <span><span class="co">#&gt; $ Dim2Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim2               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim3Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim3               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDimType  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDim      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "83"<span style="color: #949494;">, </span>"65"<span style="color: #949494;">, </span>"66"<span style="color: #949494;">, </span>"59"<span style="color: #949494;">, </span>"63"<span style="color: #949494;">, </span>"87"<span style="color: #949494;">, </span>"67"<span style="color: #949494;">, </span>"71"<span style="color: #949494;">, </span>"85…</span></span>
-<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 83<span style="color: #949494;">, </span>65<span style="color: #949494;">, </span>66<span style="color: #949494;">, </span>59<span style="color: #949494;">, </span>63<span style="color: #949494;">, </span>87<span style="color: #949494;">, </span>67<span style="color: #949494;">, </span>71<span style="color: #949494;">, </span>85<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>66<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>64<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "83"<span style="color: #949494;">, </span>"75"<span style="color: #949494;">, </span>"83"<span style="color: #949494;">, </span>"88"<span style="color: #949494;">, </span>"74"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"71"<span style="color: #949494;">, </span>"88"<span style="color: #949494;">, </span>"70…</span></span>
+<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 83<span style="color: #949494;">, </span>75<span style="color: #949494;">, </span>83<span style="color: #949494;">, </span>88<span style="color: #949494;">, </span>74<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>71<span style="color: #949494;">, </span>88<span style="color: #949494;">, </span>70<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>72<span style="color: #949494;">, </span>63<span style="color: #949494;">, </span>26<span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Low                <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ High               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Comments           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Date               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2025-12-05T11:39:13.277+01:00"<span style="color: #949494;">, </span>"2025-12-05T11:39:…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2016"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2016"<span style="color: #949494;">, </span>"2019"<span style="color: #949494;">, </span>"2017"<span style="color: #949494;">, </span>"2019"<span style="color: #949494;">, </span>"20…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2016-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-01-01T00:00:00+0…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2016-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-12-31T00:00:00+0…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2019"<span style="color: #949494;">, </span>"2019"<span style="color: #949494;">, </span>"2018"<span style="color: #949494;">, </span>"2020"<span style="color: #949494;">, </span>"20…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-01-01T00:00:00+0…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-12-31T00:00:00+0…</span></span></code></pre></div>
 <p>Note that <code>area</code> accepts long ISO3 vectors — here we fetch
 all 28 WPR countries in one call.</p>
 </div>
@@ -493,125 +570,125 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-cd4b2e2e{table-layout:auto;width:60%;}.cl-cd426f64{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-cd426faa{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-cd4619ac{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-cd4619b6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-cd4655de{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655e8{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655f2{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655fc{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd4655fd{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd465606{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-cd4b2e2e">
+<style>.cl-07fd09e2{table-layout:auto;width:60%;}.cl-07f2f434{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-07f2f448{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-07f67c6c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-07f67c80{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-07f6b83a{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07f6b844{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07f6b845{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07f6b84e{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07f6b84f{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07f6b850{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-07fd09e2">
 <caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-cd4655de"><p class="cl-cd4619ac"><span class="cl-cd426f64">name_short</span></p></th>
-<th class="cl-cd4655e8"><p class="cl-cd4619b6"><span class="cl-cd426f64">value_num</span></p></th>
+<th class="cl-07f6b83a"><p class="cl-07f67c6c"><span class="cl-07f2f434">name_short</span></p></th>
+<th class="cl-07f6b844"><p class="cl-07f67c80"><span class="cl-07f2f434">value_num</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Australia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">89</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Australia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">New Zealand</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">89</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">New Zealand</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Republic of Korea</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">88</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Republic of Korea</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Singapore</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">88</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Singapore</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Japan</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">86</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Japan</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">86</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">China</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">85</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">China</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">85</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Brunei Darussalam</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">84</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Brunei Darussalam</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Malaysia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">80</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Malaysia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">80</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Cook Islands</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">75</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Cook Islands</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Palau</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">75</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Palau</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Tonga</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">71</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Tonga</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Viet Nam</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">71</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Viet Nam</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Mongolia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">70</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Mongolia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">70</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Fiji</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">69</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Fiji</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Philippines</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">69</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Philippines</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Indonesia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">67</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Indonesia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Niue</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">67</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Niue</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Marshall Islands</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">66</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Marshall Islands</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">66</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Micronesia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">65</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Micronesia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Tuvalu</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">65</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Tuvalu</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Lao PDR</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">64</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Lao PDR</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">64</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Cambodia</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Cambodia</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Nauru</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Nauru</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Samoa</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">62</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Samoa</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Vanuatu</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">52</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Vanuatu</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">52</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Kiribati</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">51</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Kiribati</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">51</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655f2"><p class="cl-cd4619ac"><span class="cl-cd426faa">Solomon Islands</span></p></td>
-<td class="cl-cd4655fc"><p class="cl-cd4619b6"><span class="cl-cd426faa">47</span></p></td>
+<td class="cl-07f6b845"><p class="cl-07f67c6c"><span class="cl-07f2f448">Solomon Islands</span></p></td>
+<td class="cl-07f6b84e"><p class="cl-07f67c80"><span class="cl-07f2f448">47</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-cd4655fd"><p class="cl-cd4619ac"><span class="cl-cd426faa">Papua New Guinea</span></p></td>
-<td class="cl-cd465606"><p class="cl-cd4619b6"><span class="cl-cd426faa">32</span></p></td>
+<td class="cl-07f6b84f"><p class="cl-07f67c6c"><span class="cl-07f2f448">Papua New Guinea</span></p></td>
+<td class="cl-07f6b850"><p class="cl-07f67c80"><span class="cl-07f2f448">32</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -688,8 +765,8 @@ mix the two formats in a single call.</p>
 <span><span class="co">#&gt; $ source            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Global Health Estimates 2021: Deaths by Cause, Age,…</span></span>
 <span><span class="co">#&gt; $ geoInfoUrl        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ footnotes         <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> "Data was previously disseminated with a different …</span></span>
-<span><span class="co">#&gt; $ attributes        <span style="color: #949494; font-style: italic;">&lt;df[,1]&gt;</span> &lt;data.frame[26 x 1]&gt;</span></span>
-<span><span class="co">#&gt; $ dimensions        <span style="color: #949494; font-style: italic;">&lt;df[,1]&gt;</span> &lt;data.frame[26 x 1]&gt;</span></span>
+<span><span class="co">#&gt; $ attributes        <span style="color: #949494; font-style: italic;">&lt;df[,2]&gt;</span> &lt;data.frame[26 x 2]&gt;</span></span>
+<span><span class="co">#&gt; $ dimensions        <span style="color: #949494; font-style: italic;">&lt;df[,3]&gt;</span> &lt;data.frame[26 x 3]&gt;</span></span>
 <span></span>
 <span><span class="co"># M49 also works (e.g. when copy-pasting codes from sdg_areas())</span></span>
 <span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"608"</span>, <span class="st">"250"</span><span class="op">)</span><span class="op">)</span></span>
@@ -712,7 +789,7 @@ mix the two formats in a single call.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more variables: geoAreaName &lt;chr&gt;, timePeriodStart &lt;int&gt;, value &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   valueType &lt;chr&gt;, time_detail &lt;lgl&gt;, timeCoverage &lt;lgl&gt;, upperBound &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   lowerBound &lt;chr&gt;, basePeriod &lt;lgl&gt;, source &lt;chr&gt;, geoInfoUrl &lt;lgl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   footnotes &lt;list&gt;, attributes &lt;df[,1]&gt;, dimensions &lt;df[,1]&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   footnotes &lt;list&gt;, attributes &lt;df[,2]&gt;, dimensions &lt;df[,3]&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 462 × 15</span></span></span>
@@ -721,13 +798,13 @@ mix the two formats in a single call.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 28.1       28.1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 25.4       25.4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 31.8       31.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 22.5       22.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 25.6       25.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 29.7       29.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 29.1       29.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 20.9       20.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 24.4       24.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>015 23.6       23.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 29.7       29.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 22.5       22.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 25.6       25.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 24.4       24.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 29.1       29.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 20.9       20.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>015 28.3       28.3</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 452 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
@@ -769,9 +846,9 @@ remembering which frame came from which API.</p>
 <span><span class="co">#&gt; $ location_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Aus…</span></span>
 <span><span class="co">#&gt; $ year          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>20…</span></span>
 <span><span class="co">#&gt; $ value         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "16.0 [14.1-18.0]"<span style="color: #949494;">, </span>"9.8 [8.4-11.2]"<span style="color: #949494;">, </span>"13.0 [11.3-14.7]"…</span></span>
-<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>9.1<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>7.8<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>10…</span></span>
+<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>9.1<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>7.8<span style="color: #949494;">, </span>…</span></span>
+<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>10…</span></span>
 <span><span class="co">#&gt; $ series        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ dim1          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SEX_MLE"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_BTSX"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_MLE"…</span></span>
 <span><span class="co">#&gt; $ dim2          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_…</span></span>
@@ -841,7 +918,7 @@ please file them on the GitHub issue tracker.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
