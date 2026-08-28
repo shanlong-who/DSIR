@@ -92,14 +92,14 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
 #> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
 #> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   
 #> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> Warning: GHO request failed.
 #> ℹ URL:
 #>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
 #> ✖ Failed to perform HTTP request. Caused by error in
 #>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30001 milliseconds with 1650371 bytes received
+#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #> # A tibble: 0 × 15
 #> # ℹ 15 variables: source <chr>, id <chr>, indicator <chr>, location <chr>,
 #> #   iso3 <chr>, location_name <chr>, year <int>, value <chr>, value_num <dbl>,

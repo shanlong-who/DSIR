@@ -52,12 +52,12 @@ gho_indicators("mortality")
 #> # A tibble: 31 × 3
 #>    IndicatorCode  IndicatorName                                         Language
 #>    <chr>          <chr>                                                 <chr>   
-#>  1 imr            Infant mortality rate (deaths per 1000 live births)   EN      
-#>  2 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
+#>  1 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
+#>  2 imr            Infant mortality rate (deaths per 1000 live births)   EN      
 #>  3 MDG_0000000001 Infant mortality rate (probability of dying between … EN      
 #>  4 MDG_0000000007 Under-five mortality rate (probability of dying by a… EN      
-#>  5 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
-#>  6 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
+#>  5 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
+#>  6 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
 #>  7 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
 #>  8 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
 #>  9 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      

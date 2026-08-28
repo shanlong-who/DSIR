@@ -100,6 +100,11 @@ gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 gho_coverage("WHOSIS_000001", year_from = 2010)
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&$select=SpatialDim,TimeDim>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> # A tibble: 185 × 4
 #>    location year_min year_max n_obs
 #>    <chr>       <int>    <int> <int>

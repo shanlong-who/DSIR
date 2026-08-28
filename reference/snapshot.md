@@ -84,18 +84,18 @@ path <- tempfile(fileext = ".rds")
 
 # First call evaluates the expression and writes the snapshot
 x <- snapshot(data.frame(a = 1:3), path)
-#> Snapshot written to /tmp/RtmpxzNx0e/file1b7672682d23.rds.
+#> Snapshot written to /tmp/RtmpkkpGmM/file1b667533b548.rds.
 
 # Second call reads the snapshot; the expression is not evaluated
 y <- snapshot(stop("not evaluated"), path)
-#> Using snapshot /tmp/RtmpxzNx0e/file1b7672682d23.rds (saved 2026-08-06
-#> 03:33:34).
+#> Using snapshot /tmp/RtmpkkpGmM/file1b667533b548.rds (saved 2026-08-28
+#> 04:36:49).
 identical(x, y)
 #> [1] TRUE
 
 # Force a refresh
 z <- snapshot(data.frame(a = 1:5), path, refresh = TRUE)
-#> Snapshot written to /tmp/RtmpxzNx0e/file1b7672682d23.rds.
+#> Snapshot written to /tmp/RtmpkkpGmM/file1b667533b548.rds.
 nrow(z)
 #> [1] 5
 
@@ -108,8 +108,6 @@ ncd <- snapshot(
 )
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Snapshot written to /tmp/RtmpxzNx0e/ncdmort3070.rds.
+#> Snapshot written to /tmp/RtmpkkpGmM/ncdmort3070.rds.
 # }
 ```

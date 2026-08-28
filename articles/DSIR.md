@@ -167,61 +167,16 @@ vapply(inds, gho_has_data, logical(1), area = "PHL")
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■                
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #> Assuming `spatial_type` = "country" since `area` was given.
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #> Assuming `spatial_type` = "country" since `area` was given.
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
 #>  WHOSIS_000001    NCDMORT3070 MDG_0000000026 
-#>             NA             NA             NA
+#>           TRUE           TRUE           TRUE
 ```
 
 It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a
@@ -238,22 +193,7 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&$top=0&$count=true>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■                  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&$top=0&$count=true>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
-#> [1] NA
+#> [1] 1452
 ```
 
 [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
@@ -292,23 +232,15 @@ pulled in one call.
 gho_indicators("UHC") |> head()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
-#> # A tibble: 0 × 3
-#> # ℹ 3 variables: IndicatorCode <chr>, IndicatorName <chr>, Language <chr>
+#> # A tibble: 6 × 3
+#>   IndicatorCode       IndicatorName                                     Language
+#>   <chr>               <chr>                                             <chr>   
+#> 1 HSS_UHCLEGISLATION  Countries that have passed legislation on Univer… EN      
+#> 2 GOE_Q002            strategy refers to the use of ICT to support UHC  EN      
+#> 3 GOE_Q004            National eHealth strategy refers to objectives o… EN      
+#> 4 GOE_Q070            Strategy includes objectives as to how telehealt… EN      
+#> 5 UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN      
+#> 6 UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN
 ```
 
 Pick an `IndicatorCode` from the result — this is the value you pass to
@@ -327,42 +259,33 @@ uhc <- gho_data(
 )
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29%20and%20TimeDim%20ge%202015>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■                    
-#> 
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 
 uhc |> glimpse()
 #> Rows: 252
 #> Columns: 25
-#> $ Id                 <int> 46871, 798980, 825128, 837761, 889367, 889651, 9900…
+#> $ Id                 <int> 44942, 1203763, 1290427, 1290697, 1487217, 1691418,…
 #> $ IndicatorCode      <chr> "UHC_INDEX_REPORTED", "UHC_INDEX_REPORTED", "UHC_IN…
 #> $ SpatialDimType     <chr> "COUNTRY", "COUNTRY", "COUNTRY", "COUNTRY", "COUNTR…
-#> $ SpatialDim         <chr> "BRN", "PLW", "BRN", "SGP", "COK", "AUS", "MNG", "S…
-#> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
+#> $ SpatialDim         <chr> "BRN", "PLW", "COK", "AUS", "NZL", "MYS", "TON", "F…
 #> $ ParentLocationCode <chr> "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "W…
+#> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
 #> $ ParentLocation     <chr> "Western Pacific", "Western Pacific", "Western Paci…
 #> $ Dim1Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim1               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ TimeDim            <int> 2017, 2023, 2019, 2019, 2018, 2020, 2022, 2020, 201…
+#> $ TimeDim            <int> 2017, 2023, 2018, 2020, 2022, 2021, 2015, 2021, 202…
 #> $ Dim2Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim2               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDimType  <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDim      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Value              <chr> "83", "75", "83", "88", "74", "89", "71", "88", "70…
-#> $ NumericValue       <dbl> 83, 75, 83, 88, 74, 89, 71, 88, 70, 69, 72, 63, 26,…
+#> $ Value              <chr> "83", "75", "74", "89", "89", "79", "69", "69", "89…
+#> $ NumericValue       <dbl> 83, 75, 74, 89, 89, 79, 69, 69, 89, 85, 69, 87, 70,…
 #> $ Low                <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ High               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Comments           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Date               <chr> "2025-12-05T11:39:13.277+01:00", "2025-12-05T11:39:…
-#> $ TimeDimensionValue <chr> "2017", "2023", "2019", "2019", "2018", "2020", "20…
+#> $ TimeDimensionValue <chr> "2017", "2023", "2018", "2020", "2022", "2021", "20…
 #> $ TimeDimensionBegin <chr> "2017-01-01T00:00:00+01:00", "2023-01-01T00:00:00+0…
 #> $ TimeDimensionEnd   <chr> "2017-12-31T00:00:00+01:00", "2023-12-31T00:00:00+0…
 ```
@@ -611,7 +534,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-07fd09e2
+UHC SCI in WPR, latest year {.table .cl-295306a2
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators
@@ -733,9 +656,9 @@ sdg_clean(sdg)
 #>  1 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 28.1       28.1
 #>  2 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 25.4       25.4
 #>  3 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 31.8       31.8
-#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
-#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
-#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
+#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
+#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
+#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
 #>  7 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 24.4       24.4
 #>  8 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 29.1       29.1
 #>  9 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 20.9       20.9

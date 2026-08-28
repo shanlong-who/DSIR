@@ -80,20 +80,21 @@ sdg_data("3.2.1", area = "156", year_from = 2015) |>
   sdg_clean()
 #> Fetching:
 #> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&pageSize=1000&areaCode=156&page=1>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■              
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: SDG request failed.
-#> ℹ URL:
-#>   <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&pageSize=1000&areaCode=156&page=1>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [unstats.un.org]:
-#>   Operation timed out after 30000 milliseconds with 0 bytes received
-#> # A tibble: 0 × 15
-#> # ℹ 15 variables: source <chr>, id <chr>, indicator <chr>, location <chr>,
-#> #   iso3 <chr>, location_name <chr>, year <int>, value <chr>, value_num <dbl>,
-#> #   low <dbl>, high <dbl>, series <chr>, dim1 <chr>, dim2 <chr>, dim3 <chr>
+#> # A tibble: 120 × 15
+#>    source id    indicator     location iso3  location_name  year value value_num
+#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 sdg    3.2.1 Infant death… 156      CHN   China          2015 84118  84118   
+#>  2 sdg    3.2.1 Infant death… 156      CHN   China          2015 64505  64505   
+#>  3 sdg    3.2.1 Infant death… 156      CHN   China          2015 1486… 148623   
+#>  4 sdg    3.2.1 Under-five m… 156      CHN   China          2015 11.3…     11.3 
+#>  5 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.7…     10.7 
+#>  6 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.0…     10.1 
+#>  7 sdg    3.2.1 Infant morta… 156      CHN   China          2015 7.68…      7.69
+#>  8 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.69…      8.70
+#>  9 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.20…      8.21
+#> 10 sdg    3.2.1 Under-five d… 156      CHN   China          2015 84820  84820   
+#> # ℹ 110 more rows
+#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>
 # }
 ```

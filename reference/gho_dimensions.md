@@ -54,8 +54,6 @@ gho_dimensions("NCDMORT3070")
 #> [4] "WORLDBANKINCOMEGROUP"
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> [1] "SEX_BTSX" "SEX_FMLE" "SEX_MLE" 
 # }
 ```
