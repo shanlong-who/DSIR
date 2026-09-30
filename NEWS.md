@@ -2,6 +2,53 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR (development version)
+
+* `sdg_data()` now checks declared page numbers, page counts, and total
+  row counts before applying local filters. An unexpected empty page,
+  changing counts, or an incompatible page schema warns and returns no
+  rows rather than exposing a partial download as complete.
+
+* `sdg_coverage()` no longer suppresses request, parsing, or incomplete-
+  download warnings. It accepts `series` and `dimensions` filters and
+  warns when required coverage fields are missing.
+
+* New `sdg_dimensions()` retrieves official series-specific dimension
+  codes and labels without downloading observations. Optional attribute
+  code lists include units and data nature. JSON API codes and SDMX codes
+  are reported separately.
+
+* `gho_clean()` gains `keep_dimensions = TRUE`, retaining `dim1_type`,
+  `dim2_type`, and `dim3_type` from each observation's source fields.
+  Types are not inferred from codes or assumed constant across rows.
+
+* Both cleaners gain `keep_metadata = TRUE`. SDG output retains all
+  observation attributes (as `attr_*` columns), source and time context,
+  plus all footnotes and linked indicator/goal/target codes. GHO output
+  retains observation identifiers, source codes, location/time context,
+  update timestamps, and comments. Notes and multiple codes use list-
+  columns. The 15-column default remains unchanged.
+
+* `sdg_clean()` gains `keep_dimensions = TRUE` to retain named SDG
+  breakdowns as additional character columns (`dim_age`, `dim_sex`,
+  `dim_quantile`, etc.). Previously the cleaner discarded all SDG
+  dimensions. The default remains the 15-column schema, and `dim1`
+  through `dim3` remain GHO-only positions. No cross-source mapping
+  or missing category is inferred.
+
+* `sdg_data()` gains `series` and `dimensions` filters, applied
+  client-side after all pages have been retrieved. Dimension filters
+  use exact UN field names and codes. Missing requested dimensions
+  warn and return no rows rather than ignoring the restriction.
+
+* `bind_indicators()` preserves additional columns and fills missing
+  fields when binding inputs with different named dimensions.
+  Previously every column outside the 15-column core was dropped.
+
+* Document the difference between GHO financial-hardship components
+  and the current UN SDG 3.8.2 series, with examples of inspecting,
+  preserving, and filtering population breakdowns.
+
 # DSIR 0.9.0
 
 ## New features

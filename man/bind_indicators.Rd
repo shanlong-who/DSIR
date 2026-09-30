@@ -8,18 +8,20 @@ bind_indicators(...)
 }
 \arguments{
 \item{...}{Two or more tibbles returned by \code{\link[=gho_clean]{gho_clean()}} or
-\code{\link[=sdg_clean]{sdg_clean()}} (or any data frame with the same column set). \code{NULL}
+\code{\link[=sdg_clean]{sdg_clean()}} (or any data frame containing the core columns). \code{NULL}
 arguments are dropped. Calling with no inputs — or only \code{NULL}
 inputs — returns the empty 15-column tibble.}
 }
 \value{
 A single \link[tibble:tibble]{tibble} with the unified cleaned-
-indicator schema (15 columns). Row order is \code{c(input_1, input_2, ...)}, preserving within-input order.
+indicator schema (15 core columns), followed by any additional
+columns in first-seen order. Row order is \code{c(input_1, input_2, ...)},
+preserving within-input order.
 }
 \description{
 Combines two or more tibbles produced by \code{\link[=gho_clean]{gho_clean()}} or
 \code{\link[=sdg_clean]{sdg_clean()}} into a single tibble. Because both cleaners output the
-same 15-column schema, the result is a uniform table that can be
+same 15-column core schema, the result is a uniform table that can be
 filtered, joined, or visualised without source-specific code paths;
 use the \code{source} column to tell GHO rows apart from SDG rows.
 }
@@ -28,6 +30,12 @@ Inputs do not need to be in any particular order. \code{NULL} inputs are
 silently dropped, which makes it ergonomic to write code like
 \code{bind_indicators(maybe_gho, maybe_sdg)} where some sources may not
 have been fetched.
+
+Additional columns, including named dimensions from
+\code{sdg_clean(keep_dimensions = TRUE)}, are preserved. Columns absent
+from an input are filled with typed missing values. Binding rows
+does not harmonise dimension codes or indicator definitions across
+sources.
 }
 \examples{
 \donttest{

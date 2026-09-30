@@ -29,6 +29,10 @@
 #'   Default `NULL`.
 #' @param year_to Numeric. End year filter (inclusive).
 #'   Default `NULL`.
+#' @param series,dimensions Optional series codes and named dimension
+#'   filters, passed to [sdg_data()]. Coverage is calculated after filtering.
+#'   Without these filters, `n_obs` counts all strata together, not distinct
+#'   years or a single population group.
 #'
 #' @return A [tibble][tibble::tibble] with one row per
 #'   `(location, series)` and columns:
@@ -39,7 +43,8 @@
 #' * `n_obs` (int) — number of observations.
 #'
 #'   Sorted by `location` then `series`. Empty input or service
-#'   failure returns an empty tibble with the same five columns.
+#'   failure returns an empty tibble with the same five columns. Request,
+#'   parsing, and incomplete-download warnings from [sdg_data()] are retained.
 #' @seealso [sdg_data()], [sdg_indicators()], [gho_coverage()].
 #' @export
 #'
@@ -52,12 +57,8 @@
 #' sdg_coverage("3.4.1", area = "156", year_from = 2015)
 #' }
 sdg_coverage <- function(indicator, area = NULL,
-                         year_from = NULL, year_to = NULL) {
-  # Resolve up-front so the "unknown ISO3" warning surfaces from
-  # sdg_coverage() rather than being swallowed by the
-  # suppressWarnings() wrapper around sdg_data() below.
-  area <- .resolve_area(area)
-
+                         year_from = NULL, year_to = NULL,
+                         series = NULL, dimensions = NULL) {
   empty <- tibble::tibble(
     location = character(),
     series   = character(),
@@ -66,12 +67,14 @@ sdg_coverage <- function(indicator, area = NULL,
     n_obs    = integer()
   )
 
-  df <- suppressWarnings(
-    sdg_data(indicator, area = area,
-             year_from = year_from, year_to = year_to)
+  df <- sdg_data(
+    indicator, area = area, year_from = year_from, year_to = year_to,
+    series = series, dimensions = dimensions
   )
   if (!is.data.frame(df) || nrow(df) == 0L) return(empty)
-  if (!all(c("geoAreaCode", "series", "timePeriodStart") %in% names(df))) {
+  missing_cols <- setdiff(c("geoAreaCode", "series", "timePeriodStart"), names(df))
+  if (length(missing_cols) > 0L) {
+    cli::cli_warn("Cannot summarise SDG coverage: missing column{?s} {.val {missing_cols}}.")
     return(empty)
   }
 

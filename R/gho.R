@@ -557,7 +557,7 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'
 #' Source columns absent from `df` (e.g. `Low` / `High` for indicators
 #' without confidence intervals) are filled with typed `NA`, so the
-#' output always has the same 15 columns with the same column types.
+#' default output always has the same 15 columns with the same column types.
 #'
 #' The GHO data endpoint (`/api/{IndicatorCode}`) does not return
 #' `IndicatorName`; that field lives on the catalog endpoint queried by
@@ -569,13 +569,28 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' `indicator` column falls back to `NA`.
 #'
 #' @param df A data frame returned by [gho_data()].
+#' @param keep_dimensions Logical. Append `dim1_type`, `dim2_type`, and
+#'   `dim3_type` from the source's `Dim1Type`, `Dim2Type`, and `Dim3Type`?
+#'   Default `FALSE`. Types are kept per row: one indicator can use the
+#'   same position for different dimensions. No type is guessed from a
+#'   code's spelling, and missing types remain `NA`.
+#' @param keep_metadata Logical. Retain source context? Default `FALSE`.
+#'   With `TRUE`, appends character columns `observation_id`, `spatial_type`,
+#'   `time_type`, `data_source_type`, `data_source`, `updated`,
+#'   `parent_location`, `parent_location_name`, `time_detail`, `time_start`,
+#'   and `time_end`, copied from the raw API fields. Raw `Comments` are kept
+#'   as `footnotes`, a list-column of character vectors. Missing scalar
+#'   fields are `NA`; missing list fields are empty character vectors.
+#'   This option is independent of `keep_dimensions`. Unit and dimension
+#'   labels are not inferred. Retaining these fields makes no extra
+#'   network requests beyond the usual indicator-name lookup.
 #'
-#' @return A [tibble][tibble::tibble] with 15 columns: `source` (always
+#' @return A [tibble][tibble::tibble] with 15 core columns: `source` (always
 #'   `"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
 #'   `year`, `value`, `value_num`, `low`, `high`, `series` (`NA`),
 #'   `dim1`, `dim2`, `dim3`. Sorted by `location` then `year`.
 #'   Empty input returns an empty tibble with the same columns and
-#'   types.
+#'   types. Optional dimension types and metadata follow the core columns.
 #' @seealso [gho_data()], [sdg_clean()], [bind_indicators()].
 #' @export
 #'
@@ -584,13 +599,20 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' gho_data("NCDMORT3070", spatial_type = "country") |>
 #'   gho_clean()
 #' }
-gho_clean <- function(df) {
+gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   if (!is.data.frame(df)) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
+  .dsi_check_flag(keep_dimensions, "keep_dimensions")
+  .dsi_check_flag(keep_metadata, "keep_metadata")
 
   n <- nrow(df)
-  if (n == 0L) return(.dsi_empty_clean())
+  if (n == 0L) {
+    out <- .dsi_empty_clean()
+    if (keep_dimensions) out <- .gho_append_dimensions(out, df)
+    if (keep_metadata) out <- .gho_append_metadata(out, df)
+    return(out)
+  }
 
   pick_chr <- function(src) {
     if (src %in% names(df)) as.character(df[[src]]) else .fill_na(n, "chr")
@@ -631,6 +653,8 @@ gho_clean <- function(df) {
     dim2          = pick_chr("Dim2"),
     dim3          = pick_chr("Dim3")
   )
+  if (keep_dimensions) out <- .gho_append_dimensions(out, df)
+  if (keep_metadata) out <- .gho_append_metadata(out, df)
 
   out[order(out$location, out$year), , drop = FALSE]
 }

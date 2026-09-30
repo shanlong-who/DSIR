@@ -202,7 +202,7 @@ sdg_areas <- function() {
 #' Fetch SDG Data
 #'
 #' Retrieves data for one or more SDG indicators from the UN SDG
-#' API, with optional filters by area and year.
+#' API, with optional filters by area, year, series, and named dimensions.
 #'
 #' @param indicator Character vector of indicator codes
 #'   (e.g. `"1.1.1"`). Use [sdg_indicators()] to find codes.
@@ -217,11 +217,30 @@ sdg_areas <- function() {
 #'   Default `NULL`.
 #' @param page_size Integer. Number of records per page.
 #'   Default `1000`, maximum `10000`.
+#' @param series Optional character vector of series codes to keep.
+#'   Default `NULL` keeps all series. Applied client-side after all pages
+#'   have been retrieved.
+#' @param dimensions Optional named list of character vectors, using the
+#'   exact names and codes in the returned `dimensions` column, for example
+#'   `list(Sex = "BOTHSEX", Quantile = "_T")`. Values within a dimension
+#'   are OR-ed; different dimensions are AND-ed. Matching is case-sensitive.
+#'   Missing dimension values do not match. An absent requested dimension
+#'   warns and returns no rows. Default `NULL` keeps all strata. Like year
+#'   and series filters, these filters run client-side and do not reduce
+#'   the number of downloaded pages.
 #'
 #' @return A [tibble][tibble::tibble] of indicator observations, or
 #'   an empty tibble when the service is unreachable or there are no
-#'   matching rows.
-#' @seealso [sdg_indicators()], [sdg_areas()], [iso3_to_m49()].
+#'   matching rows. The raw `dimensions` and `attributes` columns retain
+#'   the API's named breakdowns and attributes (usually packed data-frame
+#'   columns). Inspect `unique(df$dimensions)` to discover observed strata.
+#'   Use `sdg_clean(df, keep_dimensions = TRUE)` to retain named dimensions
+#'   as flat columns when cleaning. If reported page numbers, page counts,
+#'   or total row counts are inconsistent, warns and returns no rows. Counts
+#'   are checked before local filters. Counts omitted by the API cannot be
+#'   verified; a response without `totalPages` is treated as one page.
+#' @seealso [sdg_indicators()], [sdg_areas()], [sdg_clean()],
+#'   [sdg_dimensions()], [iso3_to_m49()].
 #' @export
 #'
 #' @examples
@@ -237,8 +256,9 @@ sdg_areas <- function() {
 #' }
 sdg_data <- function(indicator, area = NULL,
                      year_from = NULL, year_to = NULL,
-                     page_size = 1000L) {
+                     page_size = 1000L, series = NULL, dimensions = NULL) {
   stopifnot(is.character(indicator), length(indicator) >= 1L)
+  .sdg_validate_filters(series, dimensions)
   area <- .resolve_area(area)
 
   # The SDG API expects multi-value parameters as repeated keys
@@ -259,36 +279,8 @@ sdg_data <- function(indicator, area = NULL,
   base_url <- "https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data"
   url <- paste0(base_url, "?", paste(parts, collapse = "&"))
 
-  all_data <- list()
-  page <- 1
-
-  repeat {
-    page_url <- paste0(url, "&page=", page)
-    body <- .sdg_get(page_url)
-    if (is.null(body)) return(tibble::tibble())
-    if (is.null(body$data) || length(body$data) == 0) break
-
-    all_data <- c(all_data, list(tibble::as_tibble(body$data)))
-
-    total_pages <- body$totalPages %||% 1
-    if (page >= total_pages) break
-    page <- page + 1
-  }
-
-  if (length(all_data) == 0) {
-    cli::cli_warn("No data returned for indicator {.val {indicator}}.")
-    return(tibble::tibble())
-  }
-
-  # Pages must be combined with vctrs::vec_rbind(), not base rbind():
-  # multi-series indicators carry nested `dimensions` / `attributes`
-  # data-frame columns whose inner columns differ across pages (one
-  # series is stratified by Sex, another by Sex and Age), and base
-  # rbind() errors on that mismatch. vec_rbind() takes the union of
-  # the inner columns, fills missing cells with NA, and assigns fresh
-  # row names (so per-page row-name collisions cannot occur either).
-  out <- do.call(vctrs::vec_rbind, all_data)
-  out <- tibble::as_tibble(out)
+  out <- .sdg_collect_pages(url, indicator)
+  if (nrow(out) == 0L) return(out)
 
   # Client-side year filter — workaround for UN SDG API bug where
   # timePeriodStart / timePeriodEnd cause HTTP 500 server-side.
@@ -307,7 +299,7 @@ sdg_data <- function(indicator, area = NULL,
     }
   }
 
-  out
+  .sdg_filter_observations(out, series, dimensions)
 }
 
 
@@ -359,32 +351,64 @@ sdg_data <- function(indicator, area = NULL,
 #' * `series`                             → `series`
 #'
 #' Three columns are always present but never populated for SDG
-#' output: `dim1`, `dim2`, `dim3` (GHO-only concepts).
+#' output: `dim1`, `dim2`, `dim3` (GHO-only positions). SDG uses named
+#' dimensions, potentially more than three, with no general mapping to
+#' those positions. Set `keep_dimensions = TRUE` to retain all observed
+#' SDG dimensions as additional columns. The default compact output omits
+#' them, so filter to the required strata before using it for analysis.
 #'
 #' @param df A data frame returned by [sdg_data()].
+#' @param keep_dimensions Logical. Append the named SDG dimensions as
+#'   character columns? Default `FALSE` preserves the 15-column format.
+#'   With `TRUE`, names are converted to snake_case and prefixed with
+#'   `dim_`, e.g. `Age` becomes `dim_age`, `Reporting Type` becomes
+#'   `dim_reporting_type`, and `Type_of_household` becomes
+#'   `dim_type_of_household`. Codes are kept unchanged; absent values
+#'   remain `NA`. Conflicting names after conversion cause an error.
+#'   No dimensions, total-population codes, or GHO component codes are
+#'   inferred. Use [sdg_dimensions()] to look up official codes and labels.
+#' @param keep_metadata Logical. Retain observation attributes and source
+#'   context? Default `FALSE`. With `TRUE`, all returned attributes become
+#'   character columns prefixed with `attr_` (e.g. `attr_units`,
+#'   `attr_nature`). Also appends `data_source`, `time_detail`,
+#'   `time_coverage`, `base_period`, `value_type`, and `geo_info_url` as
+#'   character columns. `footnotes`, `indicator_codes`, `goal_codes`, and
+#'   `target_codes` are list-columns of character vectors, preserving all
+#'   entries rather than just the first. Missing scalar fields are `NA`;
+#'   missing list fields are empty character vectors. This option is
+#'   independent of `keep_dimensions` and makes no extra network requests.
 #'
-#' @return A [tibble][tibble::tibble] with 15 columns: `source` (always
+#' @return A [tibble][tibble::tibble] with 15 core columns: `source` (always
 #'   `"sdg"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
 #'   `year`, `value`, `value_num`, `low`, `high`, `series`, `dim1`
 #'   (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by `location` then
 #'   `year`. Empty input returns an empty tibble with the same columns
-#'   and types.
+#'   and types. With `keep_dimensions = TRUE`, available named dimensions
+#'   follow the core columns, including on zero-row subsets of raw data.
+#'   With `keep_metadata = TRUE`, source context follows those columns.
 #' @seealso [sdg_data()], [gho_clean()], [bind_indicators()],
-#'   [m49_to_iso3()].
+#'   [sdg_dimensions()], [m49_to_iso3()].
 #' @export
 #'
 #' @examples
 #' \donttest{
 #' sdg_data("3.2.1", area = "156", year_from = 2015) |>
-#'   sdg_clean()
+#'   sdg_clean(keep_dimensions = TRUE)
 #' }
-sdg_clean <- function(df) {
+sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   if (!is.data.frame(df)) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
+  .dsi_check_flag(keep_dimensions, "keep_dimensions")
+  .dsi_check_flag(keep_metadata, "keep_metadata")
 
   n <- nrow(df)
-  if (n == 0L) return(.dsi_empty_clean())
+  if (n == 0L) {
+    out <- .dsi_empty_clean()
+    if (keep_dimensions) out <- .sdg_append_dimensions(out, df)
+    if (keep_metadata) out <- .sdg_append_metadata(out, df)
+    return(out)
+  }
 
   flatten_chr <- function(src) {
     if (!src %in% names(df)) return(.fill_na(n, "chr"))
@@ -439,6 +463,8 @@ sdg_clean <- function(df) {
     dim2          = .fill_na(n, "chr"),
     dim3          = .fill_na(n, "chr")
   )
+  if (keep_dimensions) out <- .sdg_append_dimensions(out, df)
+  if (keep_metadata) out <- .sdg_append_metadata(out, df)
 
   out[order(out$location, out$year), , drop = FALSE]
 }

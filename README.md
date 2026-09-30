@@ -249,7 +249,7 @@ raw <- gho_data("NCDMORT3070", spatial_type = "country", area = wpro_cty)
 gho_clean(raw)
 ```
 
-`gho_clean()` produces the **unified DSIR cleaned-indicator schema** —
+By default, `gho_clean()` produces the **unified DSIR cleaned-indicator schema** —
 the same 15-column shape produced by `sdg_clean()`, so GHO and SDG
 output can be combined directly with `bind_indicators()` (see below).
 Output columns: `source`, `id`, `indicator`, `location`, `iso3`,
@@ -257,6 +257,25 @@ Output columns: `source`, `id`, `indicator`, `location`, `iso3`,
 `dim1`–`dim3`. Source columns missing from the raw response (e.g.
 `Low` / `High` for indicators without confidence intervals) are filled
 with typed `NA`.
+
+To show what each GHO dimension means, set `keep_dimensions = TRUE`.
+The additional `dim1_type`, `dim2_type`, and `dim3_type` columns come
+directly from each observation. Their meaning can vary between rows:
+for financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
+`FINANCIALHARDSHIPCOMPONENT`, or `DEMOGRAPHIC`, among others.
+
+```r
+raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL")
+gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+gho_detailed |>
+  dplyr::select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
+```
+
+`keep_metadata = TRUE` also preserves the observation identifier,
+source code and type, spatial/time types, parent location, update
+timestamp, time interval, and comments. Comments are stored in the
+`footnotes` list-column. No dimension type or unit is inferred from
+an indicator name or code prefix. Both options default to `FALSE`.
 
 ### UN SDG API
 
@@ -289,7 +308,7 @@ raw <- sdg_data("3.2.1", area = "PHL")
 sdg_clean(raw)
 ```
 
-`sdg_clean()` produces the same **unified 15-column schema** as
+By default, `sdg_clean()` produces the same **unified 15-column schema** as
 `gho_clean()`: `source`, `id`, `indicator`, `location`, `iso3`,
 `location_name`, `year`, `value`, `value_num`, `low`, `high`, `series`,
 `dim1`–`dim3`. SDG-side fields populate `id` (the indicator code, e.g.
@@ -300,6 +319,86 @@ and `series`. The GHO-only `dim1`–`dim3` columns are `NA` for SDG
 rows. `value` is kept as character to preserve non-numeric entries
 (`"<0.1"`, aggregate notes); `value_num` is the numeric coercion
 (`NA` where coercion fails).
+
+**Preserving SDG dimensions.** `sdg_data()` retains named breakdowns
+inside `raw$dimensions`. They do not map to GHO's three dimension
+positions. Use `keep_dimensions = TRUE` to append all observed SDG
+dimensions as character columns such as `dim_age`, `dim_sex`, and
+`dim_quantile`. Missing values remain `NA`. The default 15-column
+output omits these breakdowns, so select the required strata first
+when using the compact format. Use `keep_metadata = TRUE` to also
+retain units, nature, and other attributes as `attr_*` columns.
+
+```r
+raw <- sdg_data("3.8.2", area = "PHL")
+unique(raw$dimensions) # Inspect actual dimension names and codes
+financial_hardship <- sdg_clean(
+  raw, keep_dimensions = TRUE, keep_metadata = TRUE
+)
+
+# National total: use the exact UN names and codes, not GHO codes.
+# Series and dimension filters run locally after all pages are fetched.
+national <- sdg_data(
+  "3.8.2", area = "PHL",
+  series = "SH_OOP_XPD_EARNNET40",
+  dimensions = list(
+    Age = "ALLAGE", Location = "ALLAREA", Sex = "BOTHSEX",
+    Quantile = "_T", Type_of_household = "_T"
+  )
+) |>
+  sdg_clean(keep_dimensions = TRUE)
+```
+
+**Discovering dimension codes and labels.** This reads official
+series metadata without downloading the observation table:
+
+```r
+codebook <- sdg_dimensions("3.8.2", include_attributes = TRUE)
+codebook |>
+  dplyr::select(series, kind, dimension, code, label, sdmx)
+```
+
+The codebook keeps series separate and distinguishes dimensions from
+attributes such as units. Use `code`, not the alternative `sdmx` code,
+in `dimensions` filters. A listed category does not guarantee that it
+occurs in every country's observations.
+
+**Keeping source context.** With `keep_metadata = TRUE`, the SDG
+cleaner appends attributes (e.g. `attr_units`, `attr_nature`),
+`data_source`, time detail/coverage, base period, value type, and the
+geographic information URL. All footnotes and linked indicator,
+goal, and target codes are preserved in list-columns. This makes no
+additional network requests. For example:
+
+```r
+financial_hardship |>
+  dplyr::select(dplyr::any_of(c(
+    "iso3", "year", "value_num", "attr_units", "attr_nature", "data_source"
+  )))
+head(financial_hardship$footnotes, 1L) # Every note for the first observation
+```
+
+Use `saveRDS()` (or `snapshot()`) to preserve these list-columns when
+saving results. CSV requires an explicit choice of how to represent
+multiple notes or links in one cell.
+
+**Complete downloads.** `sdg_data()` checks declared page numbers,
+page counts, and total row counts before applying local filters.
+Inconsistent counts, an unexpected empty page, or a later request
+failure produce a warning and no rows; partial observations are not
+returned. Counts not supplied by the API cannot be checked.
+`sdg_coverage()` retains these warnings and accepts the same `series`
+and `dimensions` filters. Without filters, its counts include all
+population strata within each location and series.
+
+For SDG 3.8.2, the UN catalogue checked on 2026-09-30 publishes the
+2025-definition series `SH_OOP_XPD_EARNNET40`. GHO's
+`FINANCIALHARDSHIP_PROPORTIONOFPOP` also contains total, large, and
+impoverishing expenditure components in `Dim1`; these components
+are not separate series in that UN catalogue. Do not treat every GHO
+row as the SDG national total or infer missing UN component rows.
+See the [WHO definition and components](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/376)
+and the [UN series catalogue](https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List).
 
 ### Combining GHO and SDG output
 
@@ -312,6 +411,12 @@ gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
 sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
 bind_indicators(gho, sdg)
 ```
+
+Additional columns, including the named dimensions retained by
+`keep_dimensions = TRUE`, are preserved by `bind_indicators()`.
+Inputs without a given column receive typed missing values. Binding
+does not harmonise dimension codes or indicator definitions across
+the two sources.
 
 **Exploring series.** A single SDG indicator often contains 
 several series — for example different vaccines, sex strata, 

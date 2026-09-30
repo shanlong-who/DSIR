@@ -64,6 +64,7 @@ reference:
   - sdg_targets
   - sdg_areas
   - sdg_indicators
+  - sdg_dimensions
   - sdg_data
   - sdg_clean
   - sdg_coverage

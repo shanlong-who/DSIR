@@ -4,7 +4,14 @@
 \alias{sdg_coverage}
 \title{Explore Series Coverage of an SDG Indicator}
 \usage{
-sdg_coverage(indicator, area = NULL, year_from = NULL, year_to = NULL)
+sdg_coverage(
+  indicator,
+  area = NULL,
+  year_from = NULL,
+  year_to = NULL,
+  series = NULL,
+  dimensions = NULL
+)
 }
 \arguments{
 \item{indicator}{Character vector of SDG indicator codes
@@ -22,6 +29,11 @@ Default \code{NULL}.}
 
 \item{year_to}{Numeric. End year filter (inclusive).
 Default \code{NULL}.}
+
+\item{series, dimensions}{Optional series codes and named dimension
+filters, passed to \code{\link[=sdg_data]{sdg_data()}}. Coverage is calculated after filtering.
+Without these filters, \code{n_obs} counts all strata together, not distinct
+years or a single population group.}
 }
 \value{
 A \link[tibble:tibble]{tibble} with one row per
@@ -34,7 +46,8 @@ A \link[tibble:tibble]{tibble} with one row per
 \item \code{n_obs} (int) — number of observations.
 
 Sorted by \code{location} then \code{series}. Empty input or service
-failure returns an empty tibble with the same five columns.
+failure returns an empty tibble with the same five columns. Request,
+parsing, and incomplete-download warnings from \code{\link[=sdg_data]{sdg_data()}} are retained.
 }
 }
 \description{

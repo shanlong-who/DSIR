@@ -9,7 +9,9 @@ sdg_data(
   area = NULL,
   year_from = NULL,
   year_to = NULL,
-  page_size = 1000L
+  page_size = 1000L,
+  series = NULL,
+  dimensions = NULL
 )
 }
 \arguments{
@@ -30,15 +32,35 @@ Default \code{NULL}.}
 
 \item{page_size}{Integer. Number of records per page.
 Default \code{1000}, maximum \code{10000}.}
+
+\item{series}{Optional character vector of series codes to keep.
+Default \code{NULL} keeps all series. Applied client-side after all pages
+have been retrieved.}
+
+\item{dimensions}{Optional named list of character vectors, using the
+exact names and codes in the returned \code{dimensions} column, for example
+\code{list(Sex = "BOTHSEX", Quantile = "_T")}. Values within a dimension
+are OR-ed; different dimensions are AND-ed. Matching is case-sensitive.
+Missing dimension values do not match. An absent requested dimension
+warns and returns no rows. Default \code{NULL} keeps all strata. Like year
+and series filters, these filters run client-side and do not reduce
+the number of downloaded pages.}
 }
 \value{
 A \link[tibble:tibble]{tibble} of indicator observations, or
 an empty tibble when the service is unreachable or there are no
-matching rows.
+matching rows. The raw \code{dimensions} and \code{attributes} columns retain
+the API's named breakdowns and attributes (usually packed data-frame
+columns). Inspect \code{unique(df$dimensions)} to discover observed strata.
+Use \code{sdg_clean(df, keep_dimensions = TRUE)} to retain named dimensions
+as flat columns when cleaning. If reported page numbers, page counts,
+or total row counts are inconsistent, warns and returns no rows. Counts
+are checked before local filters. Counts omitted by the API cannot be
+verified; a response without \code{totalPages} is treated as one page.
 }
 \description{
 Retrieves data for one or more SDG indicators from the UN SDG
-API, with optional filters by area and year.
+API, with optional filters by area, year, series, and named dimensions.
 }
 \examples{
 \donttest{
@@ -53,5 +75,6 @@ sdg_data("3.4.1", area = c("PHL", "FRA", "JPN"))
 }
 }
 \seealso{
-\code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}.
+\code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}, \code{\link[=sdg_clean]{sdg_clean()}},
+\code{\link[=sdg_dimensions]{sdg_dimensions()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}.
 }

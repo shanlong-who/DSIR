@@ -4,18 +4,35 @@
 \alias{gho_clean}
 \title{Tidy a GHO Data Frame}
 \usage{
-gho_clean(df)
+gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 }
 \arguments{
 \item{df}{A data frame returned by \code{\link[=gho_data]{gho_data()}}.}
+
+\item{keep_dimensions}{Logical. Append \code{dim1_type}, \code{dim2_type}, and
+\code{dim3_type} from the source's \code{Dim1Type}, \code{Dim2Type}, and \code{Dim3Type}?
+Default \code{FALSE}. Types are kept per row: one indicator can use the
+same position for different dimensions. No type is guessed from a
+code's spelling, and missing types remain \code{NA}.}
+
+\item{keep_metadata}{Logical. Retain source context? Default \code{FALSE}.
+With \code{TRUE}, appends character columns \code{observation_id}, \code{spatial_type},
+\code{time_type}, \code{data_source_type}, \code{data_source}, \code{updated},
+\code{parent_location}, \code{parent_location_name}, \code{time_detail}, \code{time_start},
+and \code{time_end}, copied from the raw API fields. Raw \code{Comments} are kept
+as \code{footnotes}, a list-column of character vectors. Missing scalar
+fields are \code{NA}; missing list fields are empty character vectors.
+This option is independent of \code{keep_dimensions}. Unit and dimension
+labels are not inferred. Retaining these fields makes no extra
+network requests beyond the usual indicator-name lookup.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with 15 columns: \code{source} (always
+A \link[tibble:tibble]{tibble} with 15 core columns: \code{source} (always
 \code{"gho"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name},
 \code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series} (\code{NA}),
 \code{dim1}, \code{dim2}, \code{dim3}. Sorted by \code{location} then \code{year}.
 Empty input returns an empty tibble with the same columns and
-types.
+types. Optional dimension types and metadata follow the core columns.
 }
 \description{
 Selects, renames, and type-casts the most useful columns from a GHO
@@ -49,7 +66,7 @@ as \code{NA}.
 
 Source columns absent from \code{df} (e.g. \code{Low} / \code{High} for indicators
 without confidence intervals) are filled with typed \code{NA}, so the
-output always has the same 15 columns with the same column types.
+default output always has the same 15 columns with the same column types.
 
 The GHO data endpoint (\verb{/api/\{IndicatorCode\}}) does not return
 \code{IndicatorName}; that field lives on the catalog endpoint queried by

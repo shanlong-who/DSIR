@@ -2,7 +2,7 @@
 #'
 #' Combines two or more tibbles produced by [gho_clean()] or
 #' [sdg_clean()] into a single tibble. Because both cleaners output the
-#' same 15-column schema, the result is a uniform table that can be
+#' same 15-column core schema, the result is a uniform table that can be
 #' filtered, joined, or visualised without source-specific code paths;
 #' use the `source` column to tell GHO rows apart from SDG rows.
 #'
@@ -11,14 +11,21 @@
 #' `bind_indicators(maybe_gho, maybe_sdg)` where some sources may not
 #' have been fetched.
 #'
+#' Additional columns, including named dimensions from
+#' `sdg_clean(keep_dimensions = TRUE)`, are preserved. Columns absent
+#' from an input are filled with typed missing values. Binding rows
+#' does not harmonise dimension codes or indicator definitions across
+#' sources.
+#'
 #' @param ... Two or more tibbles returned by [gho_clean()] or
-#'   [sdg_clean()] (or any data frame with the same column set). `NULL`
+#'   [sdg_clean()] (or any data frame containing the core columns). `NULL`
 #'   arguments are dropped. Calling with no inputs — or only `NULL`
 #'   inputs — returns the empty 15-column tibble.
 #'
 #' @return A single [tibble][tibble::tibble] with the unified cleaned-
-#'   indicator schema (15 columns). Row order is `c(input_1, input_2,
-#'   ...)`, preserving within-input order.
+#'   indicator schema (15 core columns), followed by any additional
+#'   columns in first-seen order. Row order is `c(input_1, input_2, ...)`,
+#'   preserving within-input order.
 #' @seealso [gho_clean()], [sdg_clean()].
 #' @export
 #'
@@ -51,10 +58,11 @@ bind_indicators <- function(...) {
         "i" = "Did you forget to call {.fn gho_clean} or {.fn sdg_clean} first?"
       ))
     }
-    # Re-order columns so rbind aligns by position without surprises.
-    dfs[[i]] <- dfs[[i]][, schema_cols, drop = FALSE]
+    # Keep the core first without discarding optional dimension columns.
+    extra_cols <- setdiff(names(dfs[[i]]), schema_cols)
+    dfs[[i]] <- dfs[[i]][, c(schema_cols, extra_cols), drop = FALSE]
   }
 
-  out <- do.call(rbind, c(dfs, list(make.row.names = FALSE)))
+  out <- do.call(vctrs::vec_rbind, unname(dfs))
   tibble::as_tibble(out)
 }

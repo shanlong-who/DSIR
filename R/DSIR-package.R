@@ -13,10 +13,12 @@
 #' ([gho_indicators()], [gho_data()], [gho_dimensions()],
 #' [gho_has_data()], [gho_count()], [gho_coverage()]) and the UN
 #' Sustainable Development Goals API ([sdg_goals()], [sdg_targets()],
-#' [sdg_indicators()], [sdg_areas()], [sdg_data()], [sdg_coverage()]),
+#' [sdg_indicators()], [sdg_areas()], [sdg_dimensions()], [sdg_data()],
+#' [sdg_coverage()]),
 #' plus a unified cleaning / binding pipeline ([gho_clean()],
 #' [sdg_clean()], [bind_indicators()]) that puts GHO and SDG output
-#' into the same 15-column schema.
+#' into the same 15-column core schema, with optional dimension types,
+#' named dimensions, and source metadata.
 #'
 #' @keywords internal
 "_PACKAGE"

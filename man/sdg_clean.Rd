@@ -4,18 +4,41 @@
 \alias{sdg_clean}
 \title{Tidy an SDG Data Frame}
 \usage{
-sdg_clean(df)
+sdg_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 }
 \arguments{
 \item{df}{A data frame returned by \code{\link[=sdg_data]{sdg_data()}}.}
+
+\item{keep_dimensions}{Logical. Append the named SDG dimensions as
+character columns? Default \code{FALSE} preserves the 15-column format.
+With \code{TRUE}, names are converted to snake_case and prefixed with
+\code{dim_}, e.g. \code{Age} becomes \code{dim_age}, \verb{Reporting Type} becomes
+\code{dim_reporting_type}, and \code{Type_of_household} becomes
+\code{dim_type_of_household}. Codes are kept unchanged; absent values
+remain \code{NA}. Conflicting names after conversion cause an error.
+No dimensions, total-population codes, or GHO component codes are
+inferred. Use \code{\link[=sdg_dimensions]{sdg_dimensions()}} to look up official codes and labels.}
+
+\item{keep_metadata}{Logical. Retain observation attributes and source
+context? Default \code{FALSE}. With \code{TRUE}, all returned attributes become
+character columns prefixed with \code{attr_} (e.g. \code{attr_units},
+\code{attr_nature}). Also appends \code{data_source}, \code{time_detail},
+\code{time_coverage}, \code{base_period}, \code{value_type}, and \code{geo_info_url} as
+character columns. \code{footnotes}, \code{indicator_codes}, \code{goal_codes}, and
+\code{target_codes} are list-columns of character vectors, preserving all
+entries rather than just the first. Missing scalar fields are \code{NA};
+missing list fields are empty character vectors. This option is
+independent of \code{keep_dimensions} and makes no extra network requests.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with 15 columns: \code{source} (always
+A \link[tibble:tibble]{tibble} with 15 core columns: \code{source} (always
 \code{"sdg"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name},
 \code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series}, \code{dim1}
 (\code{NA}), \code{dim2} (\code{NA}), \code{dim3} (\code{NA}). Sorted by \code{location} then
 \code{year}. Empty input returns an empty tibble with the same columns
-and types.
+and types. With \code{keep_dimensions = TRUE}, available named dimensions
+follow the core columns, including on zero-row subsets of raw data.
+With \code{keep_metadata = TRUE}, source context follows those columns.
 }
 \description{
 Selects, renames, and type-casts the most useful columns from an
@@ -48,15 +71,19 @@ and \code{value_num} (numeric; \code{NA} for non-numeric entries like
 }
 
 Three columns are always present but never populated for SDG
-output: \code{dim1}, \code{dim2}, \code{dim3} (GHO-only concepts).
+output: \code{dim1}, \code{dim2}, \code{dim3} (GHO-only positions). SDG uses named
+dimensions, potentially more than three, with no general mapping to
+those positions. Set \code{keep_dimensions = TRUE} to retain all observed
+SDG dimensions as additional columns. The default compact output omits
+them, so filter to the required strata before using it for analysis.
 }
 \examples{
 \donttest{
 sdg_data("3.2.1", area = "156", year_from = 2015) |>
-  sdg_clean()
+  sdg_clean(keep_dimensions = TRUE)
 }
 }
 \seealso{
 \code{\link[=sdg_data]{sdg_data()}}, \code{\link[=gho_clean]{gho_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}},
-\code{\link[=m49_to_iso3]{m49_to_iso3()}}.
+\code{\link[=sdg_dimensions]{sdg_dimensions()}}, \code{\link[=m49_to_iso3]{m49_to_iso3()}}.
 }
