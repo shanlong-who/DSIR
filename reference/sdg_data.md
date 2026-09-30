@@ -1,7 +1,7 @@
 # Fetch SDG Data
 
 Retrieves data for one or more SDG indicators from the UN SDG API, with
-optional filters by area and year.
+optional filters by area, year, series, and named dimensions.
 
 ## Usage
 
@@ -11,7 +11,9 @@ sdg_data(
   area = NULL,
   year_from = NULL,
   year_to = NULL,
-  page_size = 1000L
+  page_size = 1000L,
+  series = NULL,
+  dimensions = NULL
 )
 ```
 
@@ -45,16 +47,43 @@ sdg_data(
 
   Integer. Number of records per page. Default `1000`, maximum `10000`.
 
+- series:
+
+  Optional character vector of series codes to keep. Default `NULL`
+  keeps all series. Applied client-side after all pages have been
+  retrieved.
+
+- dimensions:
+
+  Optional named list of character vectors, using the exact names and
+  codes in the returned `dimensions` column, for example
+  `list(Sex = "BOTHSEX", Quantile = "_T")`. Values within a dimension
+  are OR-ed; different dimensions are AND-ed. Matching is
+  case-sensitive. Missing dimension values do not match. An absent
+  requested dimension warns and returns no rows. Default `NULL` keeps
+  all strata. Like year and series filters, these filters run
+  client-side and do not reduce the number of downloaded pages.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) of
 indicator observations, or an empty tibble when the service is
-unreachable or there are no matching rows.
+unreachable or there are no matching rows. The raw `dimensions` and
+`attributes` columns retain the API's named breakdowns and attributes
+(usually packed data-frame columns). Inspect `unique(df$dimensions)` to
+discover observed strata. Use `sdg_clean(df, keep_dimensions = TRUE)` to
+retain named dimensions as flat columns when cleaning. If reported page
+numbers, page counts, or total row counts are inconsistent, warns and
+returns no rows. Counts are checked before local filters. Counts omitted
+by the API cannot be verified; a response without `totalPages` is
+treated as one page.
 
 ## See also
 
 [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md),
 [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md),
+[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
+[`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md),
 [`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md).
 
 ## Examples

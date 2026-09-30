@@ -38,7 +38,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.0" id="dsir-090">DSIR 0.9.0<a class="anchor" aria-label="anchor" href="#dsir-090"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="dsir-development-version">DSIR (development version)<a class="anchor" aria-label="anchor" href="#dsir-development-version"></a></h2>
+<ul><li><p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> now checks declared page numbers, page counts, and total row counts before applying local filters. An unexpected empty page, changing counts, or an incompatible page schema warns and returns no rows rather than exposing a partial download as complete.</p></li>
+<li><p><code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> no longer suppresses request, parsing, or incomplete- download warnings. It accepts <code>series</code> and <code>dimensions</code> filters and warns when required coverage fields are missing.</p></li>
+<li><p>New <code><a href="../reference/sdg_dimensions.html">sdg_dimensions()</a></code> retrieves official series-specific dimension codes and labels without downloading observations. Optional attribute code lists include units and data nature. JSON API codes and SDMX codes are reported separately.</p></li>
+<li><p><code><a href="../reference/gho_clean.html">gho_clean()</a></code> gains <code>keep_dimensions = TRUE</code>, retaining <code>dim1_type</code>, <code>dim2_type</code>, and <code>dim3_type</code> from each observation’s source fields. Types are not inferred from codes or assumed constant across rows.</p></li>
+<li><p>Both cleaners gain <code>keep_metadata = TRUE</code>. SDG output retains all observation attributes (as <code>attr_*</code> columns), source and time context, plus all footnotes and linked indicator/goal/target codes. GHO output retains observation identifiers, source codes, location/time context, update timestamps, and comments. Notes and multiple codes use list- columns. The 15-column default remains unchanged.</p></li>
+<li><p><code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> gains <code>keep_dimensions = TRUE</code> to retain named SDG breakdowns as additional character columns (<code>dim_age</code>, <code>dim_sex</code>, <code>dim_quantile</code>, etc.). Previously the cleaner discarded all SDG dimensions. The default remains the 15-column schema, and <code>dim1</code> through <code>dim3</code> remain GHO-only positions. No cross-source mapping or missing category is inferred.</p></li>
+<li><p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> gains <code>series</code> and <code>dimensions</code> filters, applied client-side after all pages have been retrieved. Dimension filters use exact UN field names and codes. Missing requested dimensions warn and return no rows rather than ignoring the restriction.</p></li>
+<li><p><code><a href="../reference/bind_indicators.html">bind_indicators()</a></code> preserves additional columns and fills missing fields when binding inputs with different named dimensions. Previously every column outside the 15-column core was dropped.</p></li>
+<li><p>Document the difference between GHO financial-hardship components and the current UN SDG 3.8.2 series, with examples of inspecting, preserving, and filtering population breakdowns.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.0" id="dsir-090">DSIR 0.9.0<a class="anchor" aria-label="anchor" href="#dsir-090"></a></h2><p class="text-muted">CRAN release: 2026-08-28</p>
 <div class="section level3">
 <h3 id="new-features-0-9-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0"></a></h3>
 <ul><li><p>New <code><a href="../reference/age_standardize.html">age_standardize()</a></code>: the directly age-standardized rate, with an optional Fay-Feuer gamma confidence interval. Standard-population weights may be supplied as counts, a standard million, or percentages — they are normalised internally.</p></li>

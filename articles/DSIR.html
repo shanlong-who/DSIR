@@ -265,8 +265,8 @@ region can be pulled in one call.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> GOE_Q002            strategy refers to the use of ICT to support UHC  EN      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> GOE_Q004            National eHealth strategy refers to objectives o… EN      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> GOE_Q070            Strategy includes objectives as to how telehealt… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_SCI_CAPACITY    UHC Service Coverage sub-index on service capaci… EN</span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
 </div>
@@ -286,31 +286,31 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 252</span></span>
 <span><span class="co">#&gt; Columns: 25</span></span>
-<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 44942<span style="color: #949494;">, </span>1203763<span style="color: #949494;">, </span>1290427<span style="color: #949494;">, </span>1290697<span style="color: #949494;">, </span>1487217<span style="color: #949494;">, </span>1691418<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2337433<span style="color: #949494;">, </span>2429792<span style="color: #949494;">, </span>2662076<span style="color: #949494;">, </span>2681803<span style="color: #949494;">, </span>2747849<span style="color: #949494;">, </span>276034…</span></span>
 <span><span class="co">#&gt; $ IndicatorCode      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_IN…</span></span>
 <span><span class="co">#&gt; $ SpatialDimType     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTR…</span></span>
-<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "BRN"<span style="color: #949494;">, </span>"PLW"<span style="color: #949494;">, </span>"COK"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"NZL"<span style="color: #949494;">, </span>"MYS"<span style="color: #949494;">, </span>"TON"<span style="color: #949494;">, </span>"F…</span></span>
+<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "JPN"<span style="color: #949494;">, </span>"NZL"<span style="color: #949494;">, </span>"MNG"<span style="color: #949494;">, </span>"NIU"<span style="color: #949494;">, </span>"BRN"<span style="color: #949494;">, </span>"VNM"<span style="color: #949494;">, </span>"IDN"<span style="color: #949494;">, </span>"B…</span></span>
 <span><span class="co">#&gt; $ ParentLocationCode <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"W…</span></span>
 <span><span class="co">#&gt; $ TimeDimType        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YE…</span></span>
 <span><span class="co">#&gt; $ ParentLocation     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Western Pacific"<span style="color: #949494;">, </span>"Western Pacific"<span style="color: #949494;">, </span>"Western Paci…</span></span>
 <span><span class="co">#&gt; $ Dim1Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim1               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2017<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2018<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2021<span style="color: #949494;">, </span>2015<span style="color: #949494;">, </span>2021<span style="color: #949494;">, </span>202…</span></span>
+<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2015<span style="color: #949494;">, </span>2015<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2016<span style="color: #949494;">, </span>202…</span></span>
 <span><span class="co">#&gt; $ Dim2Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim2               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim3Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Dim3               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDimType  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ DataSourceDim      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "83"<span style="color: #949494;">, </span>"75"<span style="color: #949494;">, </span>"74"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"79"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"89…</span></span>
-<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 83<span style="color: #949494;">, </span>75<span style="color: #949494;">, </span>74<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>79<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>85<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>87<span style="color: #949494;">, </span>70<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "82"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"70"<span style="color: #949494;">, </span>"67"<span style="color: #949494;">, </span>"84"<span style="color: #949494;">, </span>"71"<span style="color: #949494;">, </span>"67"<span style="color: #949494;">, </span>"83"<span style="color: #949494;">, </span>"88…</span></span>
+<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 82<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>70<span style="color: #949494;">, </span>67<span style="color: #949494;">, </span>84<span style="color: #949494;">, </span>71<span style="color: #949494;">, </span>67<span style="color: #949494;">, </span>83<span style="color: #949494;">, </span>88<span style="color: #949494;">, </span>75<span style="color: #949494;">, </span>71<span style="color: #949494;">, </span>58<span style="color: #949494;">, </span>83<span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Low                <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ High               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Comments           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
 <span><span class="co">#&gt; $ Date               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2025-12-05T11:39:13.277+01:00"<span style="color: #949494;">, </span>"2025-12-05T11:39:…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2018"<span style="color: #949494;">, </span>"2020"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2021"<span style="color: #949494;">, </span>"20…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-01-01T00:00:00+0…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2017-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2023-12-31T00:00:00+0…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2015"<span style="color: #949494;">, </span>"2015"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"20…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2015-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2015-01-01T00:00:00+0…</span></span>
+<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2015-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2015-12-31T00:00:00+0…</span></span></code></pre></div>
 <p>Note that <code>area</code> accepts long ISO3 vectors — here we fetch
 all 28 WPR countries in one call.</p>
 </div>
@@ -493,125 +493,125 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-295306a2{table-layout:auto;width:60%;}.cl-29496b88{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-29496b9c{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-294df914{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-294df928{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-294e3d02{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-294e3d0c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-294e3d0d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-294e3d16{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-294e3d20{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-294e3d21{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-295306a2">
+<style>.cl-bbc8988d{table-layout:auto;width:60%;}.cl-7b4e1ea0{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-48b07d57{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-294be4d9{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-ffe176e3{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-5e1fbc18{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-be70edf7{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5f23df5d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-212ffd11{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-be8a8642{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2d2c7664{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-bbc8988d">
 <caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-294e3d02"><p class="cl-294df914"><span class="cl-29496b88">name_short</span></p></th>
-<th class="cl-294e3d0c"><p class="cl-294df928"><span class="cl-29496b88">value_num</span></p></th>
+<th class="cl-5e1fbc18"><p class="cl-294be4d9"><span class="cl-7b4e1ea0">name_short</span></p></th>
+<th class="cl-be70edf7"><p class="cl-ffe176e3"><span class="cl-7b4e1ea0">value_num</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Australia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">89</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Australia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">New Zealand</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">89</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">New Zealand</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">89</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Republic of Korea</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">88</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Republic of Korea</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Singapore</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">88</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Singapore</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Japan</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">86</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Japan</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">86</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">China</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">85</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">China</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">85</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Brunei Darussalam</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">84</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Brunei Darussalam</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Malaysia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">80</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Malaysia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">80</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Cook Islands</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">75</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Cook Islands</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Palau</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">75</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Palau</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">75</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Tonga</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">71</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Tonga</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Viet Nam</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">71</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Viet Nam</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">71</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Mongolia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">70</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Mongolia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">70</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Fiji</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">69</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Fiji</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Philippines</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">69</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Philippines</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">69</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Indonesia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">67</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Indonesia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Niue</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">67</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Niue</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">67</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Marshall Islands</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">66</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Marshall Islands</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">66</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Micronesia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">65</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Micronesia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Tuvalu</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">65</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Tuvalu</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">65</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Lao PDR</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">64</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Lao PDR</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">64</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Cambodia</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">62</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Cambodia</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Nauru</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">62</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Nauru</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Samoa</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">62</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Samoa</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Vanuatu</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">52</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Vanuatu</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">52</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Kiribati</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">51</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Kiribati</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">51</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d0d"><p class="cl-294df914"><span class="cl-29496b9c">Solomon Islands</span></p></td>
-<td class="cl-294e3d16"><p class="cl-294df928"><span class="cl-29496b9c">47</span></p></td>
+<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Solomon Islands</span></p></td>
+<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">47</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-294e3d20"><p class="cl-294df914"><span class="cl-29496b9c">Papua New Guinea</span></p></td>
-<td class="cl-294e3d21"><p class="cl-294df928"><span class="cl-29496b9c">32</span></p></td>
+<td class="cl-be8a8642"><p class="cl-294be4d9"><span class="cl-48b07d57">Papua New Guinea</span></p></td>
+<td class="cl-2d2c7664"><p class="cl-ffe176e3"><span class="cl-48b07d57">32</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -623,11 +623,11 @@ padding. Call it once near the top of your report and every subsequent
 <p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> and <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> follow the same
 fetch-then-tidy pattern as their GHO counterparts. The main differences
 are that indicator codes use the dotted SDG format
-(e.g. <code>"3.4.1"</code>) and that <code>value</code>,
-<code>low</code>, and <code>high</code> are kept as character — the SDG
-API returns non-numeric entries (<code>"&lt;0.1"</code>, aggregate
-notes) for some rows, so coerce with <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> only when
-you are ready to drop them.</p>
+(e.g. <code>"3.4.1"</code>) and that raw <code>value</code> is kept as
+character — the SDG API returns non-numeric entries
+(<code>"&lt;0.1"</code>, aggregate notes) for some rows. The cleaned
+<code>value_num</code>, <code>low</code>, and <code>high</code> columns
+are numeric, with <code>NA</code> where conversion is not possible.</p>
 <p><code><a href="../reference/sdg_indicators.html">sdg_indicators()</a></code> accepts an optional <code>search</code>
 argument with the same behaviour as <code><a href="../reference/gho_indicators.html">gho_indicators()</a></code> —
 multiple keywords are AND-ed together and matched case-insensitively
@@ -731,13 +731,206 @@ mix the two formats in a single call.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 452 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
-<p><code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> produces the same 15-column schema as
-<code><a href="../reference/gho_clean.html">gho_clean()</a></code>, so the two outputs can be combined directly
-with <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code>. SDG rows populate the
+<p>By default, <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> produces the same 15-column
+schema as <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, so the two outputs can be combined
+directly with <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code>. SDG rows populate the
 <code>series</code> column (and the <code>iso3</code> column via
 [<code><a href="../reference/m49_to_iso3.html">m49_to_iso3()</a></code>] for Member States), while leaving the
 GHO-only <code>dim1</code>–<code>dim3</code> columns as
 <code>NA</code>.</p>
+<div class="section level3">
+<h3 id="keeping-named-sdg-dimensions">Keeping named SDG dimensions<a class="anchor" aria-label="anchor" href="#keeping-named-sdg-dimensions"></a>
+</h3>
+<p>SDG dimensions are named fields in <code>sdg$dimensions</code>, not
+positional GHO dimensions. The compact 15-column output omits them. For
+disaggregated analysis, retain them explicitly:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&amp;pageSize=1000&amp;areaCode=608&amp;page=1&gt;</span></span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       Age Location     Sex Reporting Type Quantile Type_of_household</span></span>
+<span><span class="co">#&gt; 1  ALLAGE  ALLAREA BOTHSEX              G       Q1                _T</span></span>
+<span><span class="co">#&gt; 2  ALLAGE  ALLAREA BOTHSEX              G       _T                _T</span></span>
+<span><span class="co">#&gt; 3  ALLAGE  ALLAREA BOTHSEX              G       Q3                _T</span></span>
+<span><span class="co">#&gt; 4  ALLAGE  ALLAREA BOTHSEX              G       Q5                _T</span></span>
+<span><span class="co">#&gt; 5  ALLAGE  ALLAREA BOTHSEX              G       Q4                _T</span></span>
+<span><span class="co">#&gt; 6  ALLAGE  ALLAREA BOTHSEX              G       Q2                _T</span></span>
+<span><span class="co">#&gt; 13    60+  ALLAREA BOTHSEX              G       _T                _T</span></span>
+<span><span class="co">#&gt; 14 ALLAGE  ALLAREA    MALE              G       _T                _T</span></span>
+<span><span class="co">#&gt; 15 ALLAGE  ALLAREA  FEMALE              G       _T                _T</span></span>
+<span><span class="co">#&gt; 16 ALLAGE  ALLAREA BOTHSEX              G       _T       HH_MULTIGEN</span></span>
+<span><span class="co">#&gt; 17 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ADTWOLDER</span></span>
+<span><span class="co">#&gt; 18 ALLAGE  ALLAREA BOTHSEX              G       _T    HH_ADTWCHLDADO</span></span>
+<span><span class="co">#&gt; 19 ALLAGE  ALLAREA BOTHSEX              G       _T        HH_ADTONLY</span></span>
+<span><span class="co">#&gt; 20   0-59  ALLAREA BOTHSEX              G       _T                _T</span></span>
+<span><span class="co">#&gt; 22 ALLAGE    URBAN BOTHSEX              G       _T                _T</span></span>
+<span><span class="co">#&gt; 24 ALLAGE    RURAL BOTHSEX              G       _T                _T</span></span>
+<span><span class="co">#&gt; 29 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ONLYOLDER</span></span>
+<span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 108 × 21</span></span></span>
+<span><span class="co">#&gt;    source id    indicator     location iso3  location_name  year value value_num</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 81.47     81.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 33.47     33.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 4.24       4.24</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 1.10       1.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 1.26       1.26</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 79.29     79.3 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 35.61     35.6 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 79.51     79.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 92.47     92.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 3.81       3.81</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 98 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;, dim_age &lt;chr&gt;, dim_location &lt;chr&gt;, dim_sex &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   dim_reporting_type &lt;chr&gt;, dim_quantile &lt;chr&gt;, dim_type_of_household &lt;chr&gt;</span></span></span></code></pre></div>
+<p>This appends character columns such as <code>dim_age</code>,
+<code>dim_location</code>, <code>dim_sex</code>,
+<code>dim_reporting_type</code>, <code>dim_quantile</code>, and
+<code>dim_type_of_household</code>. Names depend on the dimensions
+actually returned by the API. Codes are unchanged; absent categories are
+not assigned total-population codes. Use
+<code>keep_metadata = TRUE</code> to also retain units and other
+attributes in the cleaned table.</p>
+<p>Select a series and strata with the exact source names and codes:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span></span>
+<span>  <span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
+<span>  series <span class="op">=</span> <span class="st">"SH_OOP_XPD_EARNNET40"</span>,</span>
+<span>  dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    Age <span class="op">=</span> <span class="st">"ALLAGE"</span>, Location <span class="op">=</span> <span class="st">"ALLAREA"</span>, Sex <span class="op">=</span> <span class="st">"BOTHSEX"</span>,</span>
+<span>    Quantile <span class="op">=</span> <span class="st">"_T"</span>, Type_of_household <span class="op">=</span> <span class="st">"_T"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&amp;pageSize=1000&amp;areaCode=608&amp;page=1&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 21</span></span></span>
+<span><span class="co">#&gt;   source id    indicator      location iso3  location_name  year value value_num</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 33.47      33.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 35.61      35.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>006 37.42      37.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>009 36.15      36.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>012 36.85      36.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>015 35.21      35.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>018 31.60      31.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>021 33.85      33.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>023 30.99      31.0</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;, dim_age &lt;chr&gt;, dim_location &lt;chr&gt;, dim_sex &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   dim_reporting_type &lt;chr&gt;, dim_quantile &lt;chr&gt;, dim_type_of_household &lt;chr&gt;</span></span></span></code></pre></div>
+<p>These filters run locally after pagination. Values within one
+dimension are OR-ed; different dimensions are AND-ed. An absent
+requested dimension warns and returns no rows instead of silently
+ignoring a population restriction.</p>
+<p>The UN 3.8.2 catalogue checked on 2026-09-30 lists the revised
+2025-definition series <code>SH_OOP_XPD_EARNNET40</code>. GHO’s
+<code>FINANCIALHARDSHIP_PROPORTIONOFPOP</code> additionally includes
+large and impoverishing expenditure components in <code>Dim1</code>.
+Those are not separate series in that UN catalogue and cannot be
+reconstructed by retaining SDG dimensions. See the <a href="https://www.who.int/data/gho/indicator-metadata-registry/imr-details/376" class="external-link">WHO
+definition and components</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="showing-dimension-meaning-and-source-context">Showing dimension meaning and source context<a class="anchor" aria-label="anchor" href="#showing-dimension-meaning-and-source-context"></a>
+</h3>
+<p>Use <code><a href="../reference/sdg_dimensions.html">sdg_dimensions()</a></code> to see the official categories and
+labels for each series. This does not download observations, and the
+listed categories need not occur in every country:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_dimensions.html">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List&gt;</span></span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Dimensions&gt;</span></span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Attributes&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 7</span></span></span>
+<span><span class="co">#&gt;    indicator series               kind      dimension code    label        sdmx </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    C       Country data C    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    CA      Country adj… CA   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    E       Estimated d… E    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    G       Global moni… G    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    M       Modeled data M    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    N       Non-relevant N    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    NA      Data nature… _X   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Units     PERCENT Percentage   PT   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       0-59    under 59 ye… Y0T59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       60+     60 years ol… Y_GE…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more rows</span></span></span></code></pre></div>
+<p>The <code>code</code> column contains the JSON API codes used for
+filtering; the <code>sdmx</code> column is an alternative
+representation. <code>kind</code> distinguishes dimensions from
+attributes such as units and nature.</p>
+<p>To preserve source context as well as population dimensions:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">detailed</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"year"</span>, <span class="st">"value_num"</span>, <span class="st">"attr_units"</span>, <span class="st">"attr_nature"</span>, <span class="st">"data_source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 108 × 6</span></span></span>
+<span><span class="co">#&gt;    iso3   year value_num attr_units attr_nature data_source                     </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PHL    <span style="text-decoration: underline;">2</span>000     81.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PHL    <span style="text-decoration: underline;">2</span>000     33.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PHL    <span style="text-decoration: underline;">2</span>000      4.24 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PHL    <span style="text-decoration: underline;">2</span>000      1.1  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PHL    <span style="text-decoration: underline;">2</span>000      1.26 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PHL    <span style="text-decoration: underline;">2</span>000     79.3  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PHL    <span style="text-decoration: underline;">2</span>003     35.6  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PHL    <span style="text-decoration: underline;">2</span>003     79.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PHL    <span style="text-decoration: underline;">2</span>003     92.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PHL    <span style="text-decoration: underline;">2</span>003      3.81 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 98 more rows</span></span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">detailed</span><span class="op">$</span><span class="va">footnotes</span>, <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] "Survey-based estimate, using household total consumption expenditure in the denominator"</span></span></code></pre></div>
+<p><code>keep_metadata</code> retains all returned attributes as
+<code>attr_*</code> columns, plus source, time detail/coverage, base
+period, value type, and geographic information URL. Footnotes and all
+linked indicator, goal, and target codes are list-columns, so multiple
+entries are preserved. Use RDS for storage when retaining this
+structure.</p>
+<p>For GHO, show each positional dimension’s type directly:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
+<span><span class="co">#&gt; Fetching:</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/FINANCIALHARDSHIP_PROPORTIONOFPOP?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&gt;</span></span></span>
+<span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 144 × 7</span></span></span>
+<span><span class="co">#&gt;    iso3   year value_num dim1_type                  dim1         dim2_type dim2 </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PHL    <span style="text-decoration: underline;">1</span>997     1.42  WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PHL    <span style="text-decoration: underline;">1</span>997    89.0   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PHL    <span style="text-decoration: underline;">1</span>997    32.6   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PHL    <span style="text-decoration: underline;">1</span>997     0.901 WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PHL    <span style="text-decoration: underline;">1</span>997     2.88  WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PHL    <span style="text-decoration: underline;">1</span>997    32.6   RESIDENCEAREATYPE          RESIDENCEAR… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PHL    <span style="text-decoration: underline;">1</span>997    68.8   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PHL    <span style="text-decoration: underline;">1</span>997     1.61  FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PHL    <span style="text-decoration: underline;">1</span>997    31.0   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PHL    <span style="text-decoration: underline;">2</span>000    81.5   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 134 more rows</span></span></span></code></pre></div>
+<p>Types are taken from each observation’s
+<code>Dim1Type</code>–<code>Dim3Type</code>. They are never guessed from
+a code prefix or assumed constant for the whole indicator. GHO metadata
+includes original source codes, observation identifiers, comments (in
+<code>footnotes</code>), location/time types, parent locations, update
+timestamps, and time intervals. Neither optional flag changes the
+default 15-column output.</p>
+<p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> validates declared pagination and total row
+counts before local filtering. An incomplete download returns no rows
+with a warning. <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> retains such warnings and
+accepts <code>series</code> and <code>dimensions</code> filters; without
+filters, its observation counts combine all strata in each location and
+series.</p>
+</div>
 <div class="section level3">
 <h3 id="combining-gho-and-sdg-with-bind_indicators">Combining GHO and SDG with bind_indicators()<a class="anchor" aria-label="anchor" href="#combining-gho-and-sdg-with-bind_indicators"></a>
 </h3>
@@ -746,7 +939,10 @@ GHO-only <code>dim1</code>–<code>dim3</code> columns as
 one. The <code>source</code> column (<code>"gho"</code> /
 <code>"sdg"</code>) lets you filter or facet by origin without
 remembering which frame came from which API.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p>Additional columns, including named SDG dimensions, are retained;
+inputs without those columns receive typed missing values. Binding rows
+does not harmonise codes or definitions across the sources.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two indicators on the same topic from different APIs:</span></span>
 <span><span class="co">#   GHO NCDMORT3070 (probability of premature NCD mortality)</span></span>
 <span><span class="co">#   SDG 3.4.1       (mortality rate from NCDs)</span></span>
@@ -769,9 +965,9 @@ remembering which frame came from which API.</p>
 <span><span class="co">#&gt; $ location_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Aus…</span></span>
 <span><span class="co">#&gt; $ year          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>20…</span></span>
 <span><span class="co">#&gt; $ value         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "16.0 [14.1-18.0]"<span style="color: #949494;">, </span>"9.8 [8.4-11.2]"<span style="color: #949494;">, </span>"13.0 [11.3-14.7]"…</span></span>
-<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>9.1<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>7.8<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>10…</span></span>
+<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>11.8<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>10.2<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>13…</span></span>
 <span><span class="co">#&gt; $ series        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
 <span><span class="co">#&gt; $ dim1          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SEX_MLE"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_BTSX"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_MLE"…</span></span>
 <span><span class="co">#&gt; $ dim2          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_…</span></span>
@@ -790,7 +986,7 @@ vaccines is much shorter than that of DTP3.</p>
 count per <code>(location, series)</code>, so you can inspect what
 series exist and how each is covered before deciding which one to
 analyse.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fetching:</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.b.1&amp;pageSize=1000&amp;areaCode=156&amp;areaCode=608&amp;page=1&gt;</span></span></span>

@@ -12,7 +12,7 @@ so the two outputs can be combined directly with
 ## Usage
 
 ``` r
-gho_clean(df)
+gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 ```
 
 ## Arguments
@@ -22,14 +22,35 @@ gho_clean(df)
   A data frame returned by
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md).
 
+- keep_dimensions:
+
+  Logical. Append `dim1_type`, `dim2_type`, and `dim3_type` from the
+  source's `Dim1Type`, `Dim2Type`, and `Dim3Type`? Default `FALSE`.
+  Types are kept per row: one indicator can use the same position for
+  different dimensions. No type is guessed from a code's spelling, and
+  missing types remain `NA`.
+
+- keep_metadata:
+
+  Logical. Retain source context? Default `FALSE`. With `TRUE`, appends
+  character columns `observation_id`, `spatial_type`, `time_type`,
+  `data_source_type`, `data_source`, `updated`, `parent_location`,
+  `parent_location_name`, `time_detail`, `time_start`, and `time_end`,
+  copied from the raw API fields. Raw `Comments` are kept as
+  `footnotes`, a list-column of character vectors. Missing scalar fields
+  are `NA`; missing list fields are empty character vectors. This option
+  is independent of `keep_dimensions`. Unit and dimension labels are not
+  inferred. Retaining these fields makes no extra network requests
+  beyond the usual indicator-name lookup.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with 15
-columns: `source` (always `"gho"`), `id`, `indicator`, `location`,
+core columns: `source` (always `"gho"`), `id`, `indicator`, `location`,
 `iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
 `series` (`NA`), `dim1`, `dim2`, `dim3`. Sorted by `location` then
 `year`. Empty input returns an empty tibble with the same columns and
-types.
+types. Optional dimension types and metadata follow the core columns.
 
 ## Details
 
@@ -62,8 +83,8 @@ dataset and a hardcoded set of WHO regional names; locations that match
 neither (e.g. non-Member State areas) are left as `NA`.
 
 Source columns absent from `df` (e.g. `Low` / `High` for indicators
-without confidence intervals) are filled with typed `NA`, so the output
-always has the same 15 columns with the same column types.
+without confidence intervals) are filled with typed `NA`, so the default
+output always has the same 15 columns with the same column types.
 
 The GHO data endpoint (`/api/{IndicatorCode}`) does not return
 `IndicatorName`; that field lives on the catalog endpoint queried by
@@ -89,20 +110,21 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30002 milliseconds with 0 bytes received
-#> # A tibble: 0 × 15
-#> # ℹ 15 variables: source <chr>, id <chr>, indicator <chr>, location <chr>,
-#> #   iso3 <chr>, location_name <chr>, year <int>, value <chr>, value_num <dbl>,
-#> #   low <dbl>, high <dbl>, series <chr>, dim1 <chr>, dim2 <chr>, dim3 <chr>
+#> # A tibble: 12,210 × 15
+#>    source id        indicator location iso3  location_name  year value value_num
+#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
+#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
+#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.5…      42.5
+#> # ℹ 12,200 more rows
+#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>
 # }
 ```

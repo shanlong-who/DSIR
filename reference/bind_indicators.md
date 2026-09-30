@@ -5,9 +5,9 @@ Combines two or more tibbles produced by
 or
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
 into a single tibble. Because both cleaners output the same 15-column
-schema, the result is a uniform table that can be filtered, joined, or
-visualised without source-specific code paths; use the `source` column
-to tell GHO rows apart from SDG rows.
+core schema, the result is a uniform table that can be filtered, joined,
+or visualised without source-specific code paths; use the `source`
+column to tell GHO rows apart from SDG rows.
 
 ## Usage
 
@@ -23,14 +23,15 @@ bind_indicators(...)
   [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
   or
   [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-  (or any data frame with the same column set). `NULL` arguments are
+  (or any data frame containing the core columns). `NULL` arguments are
   dropped. Calling with no inputs — or only `NULL` inputs — returns the
   empty 15-column tibble.
 
 ## Value
 
 A single [tibble](https://tibble.tidyverse.org/reference/tibble.html)
-with the unified cleaned- indicator schema (15 columns). Row order is
+with the unified cleaned- indicator schema (15 core columns), followed
+by any additional columns in first-seen order. Row order is
 `c(input_1, input_2, ...)`, preserving within-input order.
 
 ## Details
@@ -39,6 +40,11 @@ Inputs do not need to be in any particular order. `NULL` inputs are
 silently dropped, which makes it ergonomic to write code like
 `bind_indicators(maybe_gho, maybe_sdg)` where some sources may not have
 been fetched.
+
+Additional columns, including named dimensions from
+`sdg_clean(keep_dimensions = TRUE)`, are preserved. Columns absent from
+an input are filled with typed missing values. Binding rows does not
+harmonise dimension codes or indicator definitions across sources.
 
 ## See also
 
@@ -54,8 +60,6 @@ gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
 #> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
 #> Fetching:
@@ -73,7 +77,7 @@ bind_indicators(gho, sdg)
 #>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
 #>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
 #>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
-#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 9.1 …       9.1
+#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 11.8…      11.8
 #> # ℹ 1,904 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>

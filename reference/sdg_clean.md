@@ -12,7 +12,7 @@ so the two outputs can be combined directly with
 ## Usage
 
 ``` r
-sdg_clean(df)
+sdg_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 ```
 
 ## Arguments
@@ -22,14 +22,42 @@ sdg_clean(df)
   A data frame returned by
   [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md).
 
+- keep_dimensions:
+
+  Logical. Append the named SDG dimensions as character columns? Default
+  `FALSE` preserves the 15-column format. With `TRUE`, names are
+  converted to snake_case and prefixed with `dim_`, e.g. `Age` becomes
+  `dim_age`, `Reporting Type` becomes `dim_reporting_type`, and
+  `Type_of_household` becomes `dim_type_of_household`. Codes are kept
+  unchanged; absent values remain `NA`. Conflicting names after
+  conversion cause an error. No dimensions, total-population codes, or
+  GHO component codes are inferred. Use
+  [`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md)
+  to look up official codes and labels.
+
+- keep_metadata:
+
+  Logical. Retain observation attributes and source context? Default
+  `FALSE`. With `TRUE`, all returned attributes become character columns
+  prefixed with `attr_` (e.g. `attr_units`, `attr_nature`). Also appends
+  `data_source`, `time_detail`, `time_coverage`, `base_period`,
+  `value_type`, and `geo_info_url` as character columns. `footnotes`,
+  `indicator_codes`, `goal_codes`, and `target_codes` are list-columns
+  of character vectors, preserving all entries rather than just the
+  first. Missing scalar fields are `NA`; missing list fields are empty
+  character vectors. This option is independent of `keep_dimensions` and
+  makes no extra network requests.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with 15
-columns: `source` (always `"sdg"`), `id`, `indicator`, `location`,
+core columns: `source` (always `"sdg"`), `id`, `indicator`, `location`,
 `iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
 `series`, `dim1` (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by
 `location` then `year`. Empty input returns an empty tibble with the
-same columns and types.
+same columns and types. With `keep_dimensions = TRUE`, available named
+dimensions follow the core columns, including on zero-row subsets of raw
+data. With `keep_metadata = TRUE`, source context follows those columns.
 
 ## Details
 
@@ -63,13 +91,18 @@ The mapping (SDG source → unified column) is:
 - `series` → `series`
 
 Three columns are always present but never populated for SDG output:
-`dim1`, `dim2`, `dim3` (GHO-only concepts).
+`dim1`, `dim2`, `dim3` (GHO-only positions). SDG uses named dimensions,
+potentially more than three, with no general mapping to those positions.
+Set `keep_dimensions = TRUE` to retain all observed SDG dimensions as
+additional columns. The default compact output omits them, so filter to
+the required strata before using it for analysis.
 
 ## See also
 
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md),
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md),
+[`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md),
 [`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md).
 
 ## Examples
@@ -77,10 +110,10 @@ Three columns are always present but never populated for SDG output:
 ``` r
 # \donttest{
 sdg_data("3.2.1", area = "156", year_from = 2015) |>
-  sdg_clean()
+  sdg_clean(keep_dimensions = TRUE)
 #> Fetching:
 #> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&pageSize=1000&areaCode=156&page=1>
-#> # A tibble: 120 × 15
+#> # A tibble: 120 × 18
 #>    source id    indicator     location iso3  location_name  year value value_num
 #>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
 #>  1 sdg    3.2.1 Infant death… 156      CHN   China          2015 84118  84118   
@@ -94,7 +127,8 @@ sdg_data("3.2.1", area = "156", year_from = 2015) |>
 #>  9 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.20…      8.21
 #> 10 sdg    3.2.1 Under-five d… 156      CHN   China          2015 84820  84820   
 #> # ℹ 110 more rows
-#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>
+#> # ℹ 9 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_sex <chr>,
+#> #   dim_reporting_type <chr>
 # }
 ```

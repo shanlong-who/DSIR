@@ -67,6 +67,8 @@ Functions for fetching and cleaning data from the UN SDG API.
   : List SDG Geographic Areas
 - [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md)
   : List SDG Indicators
+- [`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md)
+  : List SDG Dimension Codes and Labels
 - [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
   : Fetch SDG Data
 - [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)

@@ -11,7 +11,14 @@ downstream analysis.
 ## Usage
 
 ``` r
-sdg_coverage(indicator, area = NULL, year_from = NULL, year_to = NULL)
+sdg_coverage(
+  indicator,
+  area = NULL,
+  year_from = NULL,
+  year_to = NULL,
+  series = NULL,
+  dimensions = NULL
+)
 ```
 
 ## Arguments
@@ -39,6 +46,14 @@ sdg_coverage(indicator, area = NULL, year_from = NULL, year_to = NULL)
 
   Numeric. End year filter (inclusive). Default `NULL`.
 
+- series, dimensions:
+
+  Optional series codes and named dimension filters, passed to
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md).
+  Coverage is calculated after filtering. Without these filters, `n_obs`
+  counts all strata together, not distinct years or a single population
+  group.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with one
@@ -55,7 +70,10 @@ row per `(location, series)` and columns:
 - `n_obs` (int) — number of observations.
 
   Sorted by `location` then `series`. Empty input or service failure
-  returns an empty tibble with the same five columns.
+  returns an empty tibble with the same five columns. Request, parsing,
+  and incomplete-download warnings from
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  are retained.
 
 ## Details
 

@@ -239,8 +239,8 @@ gho_indicators("UHC") |> head()
 #> 2 GOE_Q002            strategy refers to the use of ICT to support UHC  EN      
 #> 3 GOE_Q004            National eHealth strategy refers to objectives o… EN      
 #> 4 GOE_Q070            Strategy includes objectives as to how telehealt… EN      
-#> 5 UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN      
-#> 6 UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN
+#> 5 UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN      
+#> 6 UHC_SCI_CAPACITY    UHC Service Coverage sub-index on service capaci… EN
 ```
 
 Pick an `IndicatorCode` from the result — this is the value you pass to
@@ -263,31 +263,31 @@ uhc <- gho_data(
 uhc |> glimpse()
 #> Rows: 252
 #> Columns: 25
-#> $ Id                 <int> 44942, 1203763, 1290427, 1290697, 1487217, 1691418,…
+#> $ Id                 <int> 2337433, 2429792, 2662076, 2681803, 2747849, 276034…
 #> $ IndicatorCode      <chr> "UHC_INDEX_REPORTED", "UHC_INDEX_REPORTED", "UHC_IN…
 #> $ SpatialDimType     <chr> "COUNTRY", "COUNTRY", "COUNTRY", "COUNTRY", "COUNTR…
-#> $ SpatialDim         <chr> "BRN", "PLW", "COK", "AUS", "NZL", "MYS", "TON", "F…
+#> $ SpatialDim         <chr> "JPN", "NZL", "MNG", "NIU", "BRN", "VNM", "IDN", "B…
 #> $ ParentLocationCode <chr> "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "W…
 #> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
 #> $ ParentLocation     <chr> "Western Pacific", "Western Pacific", "Western Paci…
 #> $ Dim1Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim1               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ TimeDim            <int> 2017, 2023, 2018, 2020, 2022, 2021, 2015, 2021, 202…
+#> $ TimeDim            <int> 2015, 2015, 2023, 2023, 2022, 2023, 2023, 2016, 202…
 #> $ Dim2Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim2               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Dim3               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDimType  <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ DataSourceDim      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Value              <chr> "83", "75", "74", "89", "89", "79", "69", "69", "89…
-#> $ NumericValue       <dbl> 83, 75, 74, 89, 89, 79, 69, 69, 89, 85, 69, 87, 70,…
+#> $ Value              <chr> "82", "89", "70", "67", "84", "71", "67", "83", "88…
+#> $ NumericValue       <dbl> 82, 89, 70, 67, 84, 71, 67, 83, 88, 75, 71, 58, 83,…
 #> $ Low                <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ High               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Comments           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 #> $ Date               <chr> "2025-12-05T11:39:13.277+01:00", "2025-12-05T11:39:…
-#> $ TimeDimensionValue <chr> "2017", "2023", "2018", "2020", "2022", "2021", "20…
-#> $ TimeDimensionBegin <chr> "2017-01-01T00:00:00+01:00", "2023-01-01T00:00:00+0…
-#> $ TimeDimensionEnd   <chr> "2017-12-31T00:00:00+01:00", "2023-12-31T00:00:00+0…
+#> $ TimeDimensionValue <chr> "2015", "2015", "2023", "2023", "2022", "2023", "20…
+#> $ TimeDimensionBegin <chr> "2015-01-01T00:00:00+01:00", "2015-01-01T00:00:00+0…
+#> $ TimeDimensionEnd   <chr> "2015-12-31T00:00:00+01:00", "2015-12-31T00:00:00+0…
 ```
 
 Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
@@ -534,7 +534,7 @@ uhc_clean |>
 | Solomon Islands   | 47        |
 | Papua New Guinea  | 32        |
 
-UHC SCI in WPR, latest year {.table .cl-295306a2
+UHC SCI in WPR, latest year {.table .cl-bbc8988d
 quarto-disable-processing="true"}
 
 ## Working with SDG indicators
@@ -544,11 +544,10 @@ and
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
 follow the same fetch-then-tidy pattern as their GHO counterparts. The
 main differences are that indicator codes use the dotted SDG format
-(e.g. `"3.4.1"`) and that `value`, `low`, and `high` are kept as
-character — the SDG API returns non-numeric entries (`"<0.1"`, aggregate
-notes) for some rows, so coerce with
-[`as.numeric()`](https://rdrr.io/r/base/numeric.html) only when you are
-ready to drop them.
+(e.g. `"3.4.1"`) and that raw `value` is kept as character — the SDG API
+returns non-numeric entries (`"<0.1"`, aggregate notes) for some rows.
+The cleaned `value_num`, `low`, and `high` columns are numeric, with
+`NA` where conversion is not possible.
 
 [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md)
 accepts an optional `search` argument with the same behaviour as
@@ -668,6 +667,7 @@ sdg_clean(sdg)
 #> #   dim2 <chr>, dim3 <chr>
 ```
 
+By default,
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
 produces the same 15-column schema as
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
@@ -678,6 +678,220 @@ SDG rows populate the `series` column (and the `iso3` column via
 for Member States), while leaving the GHO-only `dim1`–`dim3` columns as
 `NA`.
 
+### Keeping named SDG dimensions
+
+SDG dimensions are named fields in `sdg$dimensions`, not positional GHO
+dimensions. The compact 15-column output omits them. For disaggregated
+analysis, retain them explicitly:
+
+``` r
+
+raw <- sdg_data("3.8.2", area = "PHL")
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&pageSize=1000&areaCode=608&page=1>
+unique(raw$dimensions)
+#>       Age Location     Sex Reporting Type Quantile Type_of_household
+#> 1  ALLAGE  ALLAREA BOTHSEX              G       Q1                _T
+#> 2  ALLAGE  ALLAREA BOTHSEX              G       _T                _T
+#> 3  ALLAGE  ALLAREA BOTHSEX              G       Q3                _T
+#> 4  ALLAGE  ALLAREA BOTHSEX              G       Q5                _T
+#> 5  ALLAGE  ALLAREA BOTHSEX              G       Q4                _T
+#> 6  ALLAGE  ALLAREA BOTHSEX              G       Q2                _T
+#> 13    60+  ALLAREA BOTHSEX              G       _T                _T
+#> 14 ALLAGE  ALLAREA    MALE              G       _T                _T
+#> 15 ALLAGE  ALLAREA  FEMALE              G       _T                _T
+#> 16 ALLAGE  ALLAREA BOTHSEX              G       _T       HH_MULTIGEN
+#> 17 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ADTWOLDER
+#> 18 ALLAGE  ALLAREA BOTHSEX              G       _T    HH_ADTWCHLDADO
+#> 19 ALLAGE  ALLAREA BOTHSEX              G       _T        HH_ADTONLY
+#> 20   0-59  ALLAREA BOTHSEX              G       _T                _T
+#> 22 ALLAGE    URBAN BOTHSEX              G       _T                _T
+#> 24 ALLAGE    RURAL BOTHSEX              G       _T                _T
+#> 29 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ONLYOLDER
+sdg_clean(raw, keep_dimensions = TRUE)
+#> # A tibble: 108 × 21
+#>    source id    indicator     location iso3  location_name  year value value_num
+#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#>  1 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 81.47     81.5 
+#>  2 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 33.47     33.5 
+#>  3 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 4.24       4.24
+#>  4 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 1.10       1.1 
+#>  5 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 1.26       1.26
+#>  6 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 79.29     79.3 
+#>  7 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 35.61     35.6 
+#>  8 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 79.51     79.5 
+#>  9 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 92.47     92.5 
+#> 10 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 3.81       3.81
+#> # ℹ 98 more rows
+#> # ℹ 12 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_location <chr>, dim_sex <chr>,
+#> #   dim_reporting_type <chr>, dim_quantile <chr>, dim_type_of_household <chr>
+```
+
+This appends character columns such as `dim_age`, `dim_location`,
+`dim_sex`, `dim_reporting_type`, `dim_quantile`, and
+`dim_type_of_household`. Names depend on the dimensions actually
+returned by the API. Codes are unchanged; absent categories are not
+assigned total-population codes. Use `keep_metadata = TRUE` to also
+retain units and other attributes in the cleaned table.
+
+Select a series and strata with the exact source names and codes:
+
+``` r
+
+sdg_data(
+  "3.8.2", area = "PHL",
+  series = "SH_OOP_XPD_EARNNET40",
+  dimensions = list(
+    Age = "ALLAGE", Location = "ALLAREA", Sex = "BOTHSEX",
+    Quantile = "_T", Type_of_household = "_T"
+  )
+) |>
+  sdg_clean(keep_dimensions = TRUE)
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&pageSize=1000&areaCode=608&page=1>
+#> # A tibble: 9 × 21
+#>   source id    indicator      location iso3  location_name  year value value_num
+#>   <chr>  <chr> <chr>          <chr>    <chr> <chr>         <int> <chr>     <dbl>
+#> 1 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2000 33.47      33.5
+#> 2 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2003 35.61      35.6
+#> 3 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2006 37.42      37.4
+#> 4 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2009 36.15      36.2
+#> 5 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2012 36.85      36.8
+#> 6 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2015 35.21      35.2
+#> 7 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2018 31.60      31.6
+#> 8 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2021 33.85      33.8
+#> 9 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2023 30.99      31.0
+#> # ℹ 12 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
+#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_location <chr>, dim_sex <chr>,
+#> #   dim_reporting_type <chr>, dim_quantile <chr>, dim_type_of_household <chr>
+```
+
+These filters run locally after pagination. Values within one dimension
+are OR-ed; different dimensions are AND-ed. An absent requested
+dimension warns and returns no rows instead of silently ignoring a
+population restriction.
+
+The UN 3.8.2 catalogue checked on 2026-09-30 lists the revised
+2025-definition series `SH_OOP_XPD_EARNNET40`. GHO’s
+`FINANCIALHARDSHIP_PROPORTIONOFPOP` additionally includes large and
+impoverishing expenditure components in `Dim1`. Those are not separate
+series in that UN catalogue and cannot be reconstructed by retaining SDG
+dimensions. See the [WHO definition and
+components](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/376).
+
+### Showing dimension meaning and source context
+
+Use
+[`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md)
+to see the official categories and labels for each series. This does not
+download observations, and the listed categories need not occur in every
+country:
+
+``` r
+
+sdg_dimensions("3.8.2", include_attributes = TRUE)
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List>
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Dimensions>
+#> Fetching:
+#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Attributes>
+#> # A tibble: 32 × 7
+#>    indicator series               kind      dimension code    label        sdmx 
+#>    <chr>     <chr>                <chr>     <chr>     <chr>   <chr>        <chr>
+#>  1 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    C       Country data C    
+#>  2 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    CA      Country adj… CA   
+#>  3 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    E       Estimated d… E    
+#>  4 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    G       Global moni… G    
+#>  5 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    M       Modeled data M    
+#>  6 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    N       Non-relevant N    
+#>  7 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    NA      Data nature… _X   
+#>  8 3.8.2     SH_OOP_XPD_EARNNET40 attribute Units     PERCENT Percentage   PT   
+#>  9 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       0-59    under 59 ye… Y0T59
+#> 10 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       60+     60 years ol… Y_GE…
+#> # ℹ 22 more rows
+```
+
+The `code` column contains the JSON API codes used for filtering; the
+`sdmx` column is an alternative representation. `kind` distinguishes
+dimensions from attributes such as units and nature.
+
+To preserve source context as well as population dimensions:
+
+``` r
+
+detailed <- sdg_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+detailed |>
+  select(any_of(c("iso3", "year", "value_num", "attr_units", "attr_nature", "data_source")))
+#> # A tibble: 108 × 6
+#>    iso3   year value_num attr_units attr_nature data_source                     
+#>    <chr> <int>     <dbl> <chr>      <chr>       <chr>                           
+#>  1 PHL    2000     81.5  PERCENT    G           "Philippines - Family Income an…
+#>  2 PHL    2000     33.5  PERCENT    G           "Philippines - Family Income an…
+#>  3 PHL    2000      4.24 PERCENT    G           "Philippines - Family Income an…
+#>  4 PHL    2000      1.1  PERCENT    G           "Philippines - Family Income an…
+#>  5 PHL    2000      1.26 PERCENT    G           "Philippines - Family Income an…
+#>  6 PHL    2000     79.3  PERCENT    G           "Philippines - Family Income an…
+#>  7 PHL    2003     35.6  PERCENT    G           "Philippines - Family Income an…
+#>  8 PHL    2003     79.5  PERCENT    G           "Philippines - Family Income an…
+#>  9 PHL    2003     92.5  PERCENT    G           "Philippines - Family Income an…
+#> 10 PHL    2003      3.81 PERCENT    G           "Philippines - Family Income an…
+#> # ℹ 98 more rows
+head(detailed$footnotes, 1L)
+#> [[1]]
+#> [1] "Survey-based estimate, using household total consumption expenditure in the denominator"
+```
+
+`keep_metadata` retains all returned attributes as `attr_*` columns,
+plus source, time detail/coverage, base period, value type, and
+geographic information URL. Footnotes and all linked indicator, goal,
+and target codes are list-columns, so multiple entries are preserved.
+Use RDS for storage when retaining this structure.
+
+For GHO, show each positional dimension’s type directly:
+
+``` r
+
+gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL") |>
+  gho_clean(keep_dimensions = TRUE, keep_metadata = TRUE)
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/FINANCIALHARDSHIP_PROPORTIONOFPOP?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29>
+gho_detailed |>
+  select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
+#> # A tibble: 144 × 7
+#>    iso3   year value_num dim1_type                  dim1         dim2_type dim2 
+#>    <chr> <int>     <dbl> <chr>                      <chr>        <chr>     <chr>
+#>  1 PHL    1997     1.42  WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#>  2 PHL    1997    89.0   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#>  3 PHL    1997    32.6   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
+#>  4 PHL    1997     0.901 WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#>  5 PHL    1997     2.88  WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#>  6 PHL    1997    32.6   RESIDENCEAREATYPE          RESIDENCEAR… NA        NA   
+#>  7 PHL    1997    68.8   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#>  8 PHL    1997     1.61  FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
+#>  9 PHL    1997    31.0   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
+#> 10 PHL    2000    81.5   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
+#> # ℹ 134 more rows
+```
+
+Types are taken from each observation’s `Dim1Type`–`Dim3Type`. They are
+never guessed from a code prefix or assumed constant for the whole
+indicator. GHO metadata includes original source codes, observation
+identifiers, comments (in `footnotes`), location/time types, parent
+locations, update timestamps, and time intervals. Neither optional flag
+changes the default 15-column output.
+
+[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+validates declared pagination and total row counts before local
+filtering. An incomplete download returns no rows with a warning.
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+retains such warnings and accepts `series` and `dimensions` filters;
+without filters, its observation counts combine all strata in each
+location and series.
+
 ### Combining GHO and SDG with bind_indicators()
 
 When an analysis pulls indicators from both sources,
@@ -685,6 +899,10 @@ When an analysis pulls indicators from both sources,
 stacks any number of cleaned tibbles into one. The `source` column
 (`"gho"` / `"sdg"`) lets you filter or facet by origin without
 remembering which frame came from which API.
+
+Additional columns, including named SDG dimensions, are retained; inputs
+without those columns receive typed missing values. Binding rows does
+not harmonise codes or definitions across the sources.
 
 ``` r
 
@@ -710,9 +928,9 @@ bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
 #> $ location_name <chr> "Australia", "Australia", "Australia", "Australia", "Aus…
 #> $ year          <int> 2000, 2000, 2000, 2001, 2001, 2001, 2002, 2002, 2002, 20…
 #> $ value         <chr> "16.0 [14.1-18.0]", "9.8 [8.4-11.2]", "13.0 [11.3-14.7]"…
-#> $ value_num     <dbl> 16.0, 9.8, 13.0, 9.6, 15.6, 12.6, 15.0, 12.3, 9.6, 9.1, …
-#> $ low           <dbl> 14.1, 8.4, 11.3, 8.2, 13.7, 11.0, 13.1, 10.7, 8.2, 7.8, …
-#> $ high          <dbl> 18.0, 11.2, 14.7, 11.0, 17.5, 14.3, 16.8, 13.9, 10.9, 10…
+#> $ value_num     <dbl> 16.0, 9.8, 13.0, 9.6, 15.6, 12.6, 15.0, 12.3, 9.6, 11.8,…
+#> $ low           <dbl> 14.1, 8.4, 11.3, 8.2, 13.7, 11.0, 13.1, 10.7, 8.2, 10.2,…
+#> $ high          <dbl> 18.0, 11.2, 14.7, 11.0, 17.5, 14.3, 16.8, 13.9, 10.9, 13…
 #> $ series        <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 #> $ dim1          <chr> "SEX_MLE", "SEX_FMLE", "SEX_BTSX", "SEX_FMLE", "SEX_MLE"…
 #> $ dim2          <chr> "AGEGROUP_YEARS30-69", "AGEGROUP_YEARS30-69", "AGEGROUP_…

@@ -62,7 +62,14 @@ committing to a downstream analysis.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sdg_coverage</span><span class="op">(</span><span class="va">indicator</span>, area <span class="op">=</span> <span class="cn">NULL</span>, year_from <span class="op">=</span> <span class="cn">NULL</span>, year_to <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sdg_coverage</span><span class="op">(</span></span>
+<span>  <span class="va">indicator</span>,</span>
+<span>  area <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  year_from <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  year_to <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +99,13 @@ Default <code>NULL</code>.</p></dd>
 <dd><p>Numeric. End year filter (inclusive).
 Default <code>NULL</code>.</p></dd>
 
+
+<dt id="arg-series-dimensions">series, dimensions<a class="anchor" aria-label="anchor" href="#arg-series-dimensions"></a></dt>
+<dd><p>Optional series codes and named dimension
+filters, passed to <code><a href="sdg_data.html">sdg_data()</a></code>. Coverage is calculated after filtering.
+Without these filters, <code>n_obs</code> counts all strata together, not distinct
+years or a single population group.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -102,7 +116,8 @@ Default <code>NULL</code>.</p></dd>
 <li><p><code>year_max</code> (int) — latest year with data.</p></li>
 <li><p><code>n_obs</code> (int) — number of observations.</p>
 <p>Sorted by <code>location</code> then <code>series</code>. Empty input or service
-failure returns an empty tibble with the same five columns.</p></li>
+failure returns an empty tibble with the same five columns. Request,
+parsing, and incomplete-download warnings from <code><a href="sdg_data.html">sdg_data()</a></code> are retained.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

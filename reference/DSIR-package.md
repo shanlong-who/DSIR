@@ -31,13 +31,15 @@ and the UN Sustainable Development Goals API
 [`sdg_targets()`](https://shanlong-who.github.io/DSIR/reference/sdg_targets.md),
 [`sdg_indicators()`](https://shanlong-who.github.io/DSIR/reference/sdg_indicators.md),
 [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md),
+[`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md),
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md),
 [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)),
 plus a unified cleaning / binding pipeline
 ([`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
 [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md))
-that puts GHO and SDG output into the same 15-column schema.
+that puts GHO and SDG output into the same 15-column core schema, with
+optional dimension types, named dimensions, and source metadata.
 
 ## See also
 

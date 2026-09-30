@@ -76,18 +76,25 @@ unreachable.
 gho_data("NCDMORT3070", spatial_type = "country")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■                  
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Timeout was reached [ghoapi.azureedge.net]:
-#>   Operation timed out after 30001 milliseconds with 145559 bytes received
-#> # A tibble: 0 × 0
+#> # A tibble: 12,210 × 25
+#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1 2.34e6 NCDMORT3070   COUNTRY        MWI        YEAR        AFR               
+#>  2 2.34e6 NCDMORT3070   COUNTRY        ZAF        YEAR        AFR               
+#>  3 2.34e6 NCDMORT3070   COUNTRY        KGZ        YEAR        EUR               
+#>  4 2.34e6 NCDMORT3070   COUNTRY        OMN        YEAR        EMR               
+#>  5 2.34e6 NCDMORT3070   COUNTRY        PRY        YEAR        AMR               
+#>  6 2.34e6 NCDMORT3070   COUNTRY        JAM        YEAR        AMR               
+#>  7 2.34e6 NCDMORT3070   COUNTRY        CZE        YEAR        EUR               
+#>  8 2.34e6 NCDMORT3070   COUNTRY        VEN        YEAR        AMR               
+#>  9 2.35e6 NCDMORT3070   COUNTRY        ISR        YEAR        EUR               
+#> 10 2.35e6 NCDMORT3070   COUNTRY        ARG        YEAR        AMR               
+#> # ℹ 12,200 more rows
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
+#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
+#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
+#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
 
 # Specific countries and years
 gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
@@ -96,18 +103,18 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
 #> # A tibble: 42 × 25
-#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
-#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 1.29e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  2 1.36e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  3 2.13e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  4 2.41e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  5 2.67e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  6 2.93e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  7 3.46e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  8 3.69e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  9 3.77e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#> 10 4.48e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
+#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
+#>  1 2.44e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  2 2.70e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  3 3.44e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  4 3.45e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  5 1.31e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  6 1.39e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  7 1.87e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  8 1.95e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  9 2.08e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#> 10 2.16e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
 #> # ℹ 32 more rows
 #> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
 #> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
@@ -119,18 +126,24 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■          
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
-#> ✖ Failed to perform HTTP request. Caused by error in
-#>   `curl::curl_fetch_memory()`: ! Stream error in the HTTP/2 framing layer
-#>   [ghoapi.azureedge.net]: HTTP/2 stream 9 was not closed cleanly:
-#>   INTERNAL_ERROR (err 2)
-#> # A tibble: 0 × 0
+#> # A tibble: 4,070 × 25
+#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1 2.34e6 NCDMORT3070   COUNTRY        MWI        YEAR        AFR               
+#>  2 2.34e6 NCDMORT3070   COUNTRY        CZE        YEAR        EUR               
+#>  3 2.35e6 NCDMORT3070   COUNTRY        ARG        YEAR        AMR               
+#>  4 2.35e6 NCDMORT3070   COUNTRY        AUS        YEAR        WPR               
+#>  5 2.35e6 NCDMORT3070   COUNTRY        URY        YEAR        AMR               
+#>  6 2.35e6 NCDMORT3070   COUNTRY        TKM        YEAR        EUR               
+#>  7 2.35e6 NCDMORT3070   COUNTRY        SRB        YEAR        EUR               
+#>  8 2.35e6 NCDMORT3070   COUNTRY        KAZ        YEAR        EUR               
+#>  9 2.35e6 NCDMORT3070   COUNTRY        GAB        YEAR        AFR               
+#> 10 2.36e6 NCDMORT3070   COUNTRY        TKM        YEAR        EUR               
+#> # ℹ 4,060 more rows
+#> # ℹ 19 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
+#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
+#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
+#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>
 # }
 ```
