@@ -77,7 +77,7 @@ bind_indicators(gho, sdg)
 #>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
 #>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
 #>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
-#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 11.8…      11.8
+#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 9.1 …       9.1
 #> # ℹ 1,904 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>

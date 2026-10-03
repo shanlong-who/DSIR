@@ -53,15 +53,15 @@ gho_indicators("mortality")
 #>    IndicatorCode  IndicatorName                                         Language
 #>    <chr>          <chr>                                                 <chr>   
 #>  1 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
-#>  2 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
-#>  3 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
-#>  4 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
-#>  5 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      
-#>  6 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
-#>  7 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
+#>  2 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
+#>  3 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
+#>  4 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      
+#>  5 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
+#>  6 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
+#>  7 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
 #>  8 WHS10_4        Number of national population surveys - child mortal… EN      
-#>  9 WHS10_5        Number of national population surveys - maternal mor… EN      
-#> 10 WHS2_161       Age-standardized mortality rate by cause (per 100 00… EN      
+#>  9 SDGPOISON      Mortality rate attributed to unintentional poisoning… EN      
+#> 10 SDGROADAGE     Age-standardized road traffic  mortality (per 100 00… EN      
 #> # ℹ 21 more rows
 
 # Multiple keywords from one string (AND): both terms must appear

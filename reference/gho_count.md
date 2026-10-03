@@ -80,7 +80,7 @@ gho_count("WHOSIS_000001", area = "FRA")
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=0&$count=true>
-#> [1] 66
+#> [1] 72
 
 # Compare coverage across regions
 gho_count("NCDMORT3070", spatial_type = "country")
