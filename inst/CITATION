@@ -2,7 +2,7 @@ citHeader("To cite the DSIR package in publications, use:")
 
 ## `meta` is DSIR's DESCRIPTION as a named list. Version is always present;
 ## fall back gracefully so citation() never errors on an older field set.
-version <- if (!is.null(meta$Version)) meta$Version else "0.9.0"
+version <- if (!is.null(meta$Version)) meta$Version else "0.10.0"
 
 bibentry(
   bibtype  = "Manual",
