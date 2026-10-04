@@ -6,6 +6,7 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/DSIR)](https://CRAN.R-project.org/package=DSIR)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/DSIR)](https://cran.r-project.org/package=DSIR)
+[![R-CMD-check](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 An R package for global-health data work. Bundles country metadata 
