@@ -1,17 +1,10 @@
 # Changelog
 
-## DSIR (development version)
+## DSIR 0.10.0
 
-- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
-  now checks declared page numbers, page counts, and total row counts
-  before applying local filters. An unexpected empty page, changing
-  counts, or an incompatible page schema warns and returns no rows
-  rather than exposing a partial download as complete.
+CRAN release: 2026-10-01
 
-- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-  no longer suppresses request, parsing, or incomplete- download
-  warnings. It accepts `series` and `dimensions` filters and warns when
-  required coverage fields are missing.
+### New features
 
 - New
   [`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md)
@@ -46,10 +39,28 @@
   and codes. Missing requested dimensions warn and return no rows rather
   than ignoring the restriction.
 
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  accepts `series` and `dimensions` filters, calculating coverage for
+  the selected observations.
+
+### Bug fixes
+
+- [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  now checks declared page numbers, page counts, and total row counts
+  before applying local filters. An unexpected empty page, changing
+  counts, or an incompatible page schema warns and returns no rows
+  rather than exposing a partial download as complete.
+
+- [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
+  no longer suppresses request, parsing, or incomplete- download
+  warnings, and warns when required coverage fields are missing.
+
 - [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
   preserves additional columns and fills missing fields when binding
   inputs with different named dimensions. Previously every column
   outside the 15-column core was dropped.
+
+### Documentation
 
 - Document the difference between GHO financial-hardship components and
   the current UN SDG 3.8.2 series, with examples of inspecting,
