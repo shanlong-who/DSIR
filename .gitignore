@@ -15,3 +15,7 @@
 _claude_handoff
 inst/doc
 docs
+# Local development artifacts are not public documentation.
+/scratch/
+/conversation-export.md
+/development_proposals.md
