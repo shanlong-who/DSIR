@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/shanlong-who/DSIR/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/shanlong-who/DSIR/blob/v0.10.0/inst/CITATION)
 
 Ding S (2026). *DSIR: Data Science Infrastructure for Global Health*. R
 package version 0.10.0, <https://CRAN.R-project.org/package=DSIR>.
