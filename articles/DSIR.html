@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+<li><a class="dropdown-item" href="../articles/ghe-xmart.html">WHO xMart and Global Health Estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -55,14 +56,14 @@
 
 
 
-<link href="DSIR_files/tabwid-1.1.3/tabwid.css" rel="stylesheet">
-<script src="DSIR_files/tabwid-1.1.3/tabwid.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>DSIR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.10.0/vignettes/DSIR.Rmd" class="external-link"><code>vignettes/DSIR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/vignettes/DSIR.Rmd" class="external-link"><code>vignettes/DSIR.Rmd</code></a></small>
       <div class="d-none name"><code>DSIR.Rmd</code></div>
     </div>
 
@@ -176,73 +177,42 @@ zero-padded strings, exactly as stored in
 <code><a href="../reference/sdg_data.html">sdg_data()</a></code> and <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> accept ISO3
 codes for their <code>area</code> argument and do the lookup internally
 (see the SDG section below).</p>
+<p>Network examples and the charts using their results are displayed
+without execution during package builds. To run them when rendering this
+vignette, set <code>DSIR_BUILD_LIVE_VIGNETTE=true</code> in the
+rendering session.</p>
 </div>
 <div class="section level2">
 <h2 id="checking-availability-before-fetching">Checking availability before fetching<a class="anchor" aria-label="anchor" href="#checking-availability-before-fetching"></a>
 </h2>
-<p>GHO has thousands of indicators, but any single indicator may not
-cover the countries or years you need. Before issuing a full download
-with <code><a href="../reference/gho_data.html">gho_data()</a></code>, three lightweight helpers let you ask the
-server what is available without transferring any observations.</p>
+<p>The public GHO directory contains many indicators, but any single
+indicator may not cover the countries or years you need. Before issuing
+a full download with <code><a href="../reference/gho_data.html">gho_data()</a></code>, three lightweight helpers
+let you ask the server what is available without transferring any
+observations.</p>
 <p><code><a href="../reference/gho_has_data.html">gho_has_data()</a></code> is a quick yes / no for a given indicator
 and filter — useful when screening a list of candidate indicators.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Does WHO have life-expectancy data for France?</span></span>
 <span><span class="fu"><a href="../reference/gho_has_data.html">gho_has_data</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="co"># TRUE</span></span>
 <span></span>
 <span><span class="co"># Bulk-screen several indicators at once</span></span>
 <span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, <span class="st">"NCDMORT3070"</span>, <span class="st">"MDG_0000000026"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">inds</span>, <span class="va">gho_has_data</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&amp;$top=1&amp;$select=Id&gt;</span></span></span>
-<span><span class="co">#&gt;  WHOSIS_000001    NCDMORT3070 MDG_0000000026 </span></span>
-<span><span class="co">#&gt;           TRUE           TRUE           TRUE</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">inds</span>, <span class="va">gho_has_data</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span></code></pre></div>
 <p>It returns <code>TRUE</code>, <code>FALSE</code>, or <code>NA</code>
-(for request failures, including a non-existent indicator code — GHO
-returns HTTP 404 in that case).</p>
+(for request failures, including a a code absent from the current public
+directory).</p>
 <p><code><a href="../reference/gho_count.html">gho_count()</a></code> returns the number of rows the same filter
 would produce, which is useful for sizing a download.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_count.html">gho_count</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&amp;$top=0&amp;$count=true&gt;</span></span></span>
-<span><span class="co">#&gt; [1] 1584</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_count.html">gho_count</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/gho_coverage.html">gho_coverage()</a></code> summarises year coverage and observation
 counts per country. The payload is small because only
 <code>SpatialDim</code> and <code>TimeDim</code> are requested from the
 server.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&amp;$select=SpatialDim,TimeDim&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
-<span><span class="co">#&gt;   location year_min year_max n_obs</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DEU          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>023    72</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> FRA          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>023    72</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> JPN          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>023    72</span></span>
-<span><span class="co">#&gt;   location year_min year_max n_obs</span></span>
-<span><span class="co">#&gt; 1 DEU          2000     2021    66</span></span>
-<span><span class="co">#&gt; 2 FRA          2000     2021    66</span></span>
-<span><span class="co">#&gt; 3 JPN          2000     2021    66</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fetching-indicator-data-from-gho">Fetching indicator data from GHO<a class="anchor" aria-label="anchor" href="#fetching-indicator-data-from-gho"></a>
@@ -255,18 +225,7 @@ region can be pulled in one call.</p>
 <h3 id="step-1-search-for-an-indicator">Step 1: Search for an indicator<a class="anchor" aria-label="anchor" href="#step-1-search-for-an-indicator"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   IndicatorCode       IndicatorName                                     Language</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> GOE_Q070            Strategy includes objectives as to how telehealt… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> GOE_Q002            strategy refers to the use of ICT to support UHC  EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> GOE_Q004            National eHealth strategy refers to objectives o… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> UHC_INDEX_REPORTED  UHC Service Coverage Index (SDG 3.8.1)            EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
 </div>
@@ -280,37 +239,8 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <span>  area         <span class="op">=</span> <span class="va">wpro_cty</span>,</span>
 <span>  year_from    <span class="op">=</span> <span class="fl">2015</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29%20and%20TimeDim%20ge%202015&gt;</span></span></span>
 <span></span>
-<span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 252</span></span>
-<span><span class="co">#&gt; Columns: 25</span></span>
-<span><span class="co">#&gt; $ Id                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1371840<span style="color: #949494;">, </span>1655293<span style="color: #949494;">, </span>1859492<span style="color: #949494;">, </span>1885883<span style="color: #949494;">, </span>1971606<span style="color: #949494;">, </span>197810…</span></span>
-<span><span class="co">#&gt; $ IndicatorCode      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_INDEX_REPORTED"<span style="color: #949494;">, </span>"UHC_IN…</span></span>
-<span><span class="co">#&gt; $ SpatialDimType     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTRY"<span style="color: #949494;">, </span>"COUNTR…</span></span>
-<span><span class="co">#&gt; $ SpatialDim         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "PLW"<span style="color: #949494;">, </span>"NZL"<span style="color: #949494;">, </span>"MYS"<span style="color: #949494;">, </span>"TON"<span style="color: #949494;">, </span>"NZL"<span style="color: #949494;">, </span>"JPN"<span style="color: #949494;">, </span>"MNG"<span style="color: #949494;">, </span>"K…</span></span>
-<span><span class="co">#&gt; $ ParentLocationCode <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"WPR"<span style="color: #949494;">, </span>"W…</span></span>
-<span><span class="co">#&gt; $ TimeDimType        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YEAR"<span style="color: #949494;">, </span>"YE…</span></span>
-<span><span class="co">#&gt; $ ParentLocation     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Western Pacific"<span style="color: #949494;">, </span>"Western Pacific"<span style="color: #949494;">, </span>"Western Paci…</span></span>
-<span><span class="co">#&gt; $ Dim1Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Dim1               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ TimeDim            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2023<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2021<span style="color: #949494;">, </span>2015<span style="color: #949494;">, </span>2023<span style="color: #949494;">, </span>2022<span style="color: #949494;">, </span>2016<span style="color: #949494;">, </span>2020<span style="color: #949494;">, </span>201…</span></span>
-<span><span class="co">#&gt; $ Dim2Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Dim2               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Dim3Type           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Dim3               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ DataSourceDimType  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ DataSourceDim      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Value              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "75"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"79"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"89"<span style="color: #949494;">, </span>"85"<span style="color: #949494;">, </span>"69"<span style="color: #949494;">, </span>"87"<span style="color: #949494;">, </span>"70…</span></span>
-<span><span class="co">#&gt; $ NumericValue       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 75<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>79<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>89<span style="color: #949494;">, </span>85<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>87<span style="color: #949494;">, </span>70<span style="color: #949494;">, </span>69<span style="color: #949494;">, </span>52<span style="color: #949494;">, </span>63<span style="color: #949494;">, </span>68<span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Low                <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ High               <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Comments           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ Date               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2025-12-05T11:39:13.277+01:00"<span style="color: #949494;">, </span>"2025-12-05T11:39:…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionValue <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2023"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"2021"<span style="color: #949494;">, </span>"2015"<span style="color: #949494;">, </span>"2023"<span style="color: #949494;">, </span>"2022"<span style="color: #949494;">, </span>"20…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionBegin <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2023-01-01T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-01-01T00:00:00+0…</span></span>
-<span><span class="co">#&gt; $ TimeDimensionEnd   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "2023-12-31T00:00:00+01:00"<span style="color: #949494;">, </span>"2022-12-31T00:00:00+0…</span></span></code></pre></div>
+<span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Note that <code>area</code> accepts long ISO3 vectors — here we fetch
 all 28 WPR countries in one call.</p>
 </div>
@@ -322,31 +252,14 @@ cleaned-indicator schema</strong> — the same 15-column shape as
 <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code>. Columns include <code>source</code>
 (<code>"gho"</code>), <code>id</code>, <code>indicator</code>,
 <code>location</code>, <code>iso3</code>, <code>location_name</code>
-(empty for GHO), <code>year</code>, <code>value</code>,
+(resolved for known locations), <code>year</code>, <code>value</code>,
 <code>value_num</code>, <code>low</code>, <code>high</code>,
-<code>series</code> (empty for GHO), and the three optional GHO
-dimensions <code>dim1</code>–<code>dim3</code>. Columns absent from the
-raw response are filled with typed <code>NA</code>.</p>
+<code>series</code> (resolved for known locations), and the three
+optional GHO dimensions <code>dim1</code>–<code>dim3</code>. Columns
+absent from the raw response are filled with typed <code>NA</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">uhc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching: <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator&gt;</span></span></span>
-<span><span class="va">uhc_clean</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 252 × 15</span></span></span>
-<span><span class="co">#&gt;    source id        indicator location iso3  location_name  year value value_num</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>015 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>016 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>017 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>018 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>019 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>020 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>021 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>022 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>023 89           89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> gho    UHC_INDE… UHC Serv… BRN      BRN   Brunei Darus…  <span style="text-decoration: underline;">2</span>015 84           84</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 242 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="va">uhc_clean</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -407,7 +320,6 @@ line. By default the grid runs in both directions; pass
 <span>    subtitle <span class="op">=</span> <span class="st">"2015 onwards"</span>,</span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"SCI"</span>, color <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="DSIR_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="672"></p>
 <p>For bar charts, pair <code><a href="../reference/theme_dsi.html">theme_dsi()</a></code> with
 <code><a href="../reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> (or <code><a href="../reference/scale_dsi_col.html">scale_x_dsi_col()</a></code> when
 <code>value</code> is mapped to <code>x</code>) — these are thin
@@ -430,7 +342,6 @@ above it.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Latest available year"</span>,</span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"SCI"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="DSIR_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="faceted-theme_dsi_facet">Faceted: <code>theme_dsi_facet()</code><a class="anchor" aria-label="anchor" href="#faceted-theme_dsi_facet"></a>
@@ -455,7 +366,6 @@ together.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each panel shows one country's trajectory"</span>,</span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"SCI"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="DSIR_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="768"></p>
 <p>The <code>strip_fill</code> argument lets you change the strip
 background colour for emphasis — for example, a light-blue tone derived
 from the WHO accent for a deliverable where the strips themselves carry
@@ -470,7 +380,6 @@ meaning:</p>
 <span>  <span class="fu"><a href="../reference/theme_dsi_facet.html">theme_dsi_facet</a></span><span class="op">(</span>strip_fill <span class="op">=</span> <span class="st">"#E5F4FB"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"UHC SCI, PIC — with custom strip colour"</span>,</span>
 <span>       x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"SCI"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="DSIR_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -492,130 +401,6 @@ padding. Call it once near the top of your report and every subsequent
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_table_properties.html" class="external-link">set_table_properties</a></span><span class="op">(</span><span class="st">"autofit"</span>, width <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_caption.html" class="external-link">set_caption</a></span><span class="op">(</span><span class="st">"UHC SCI in WPR, latest year"</span><span class="op">)</span></span></code></pre></div>
-<div class="tabwid">
-<style>.cl-bbc8988d{table-layout:auto;width:60%;}.cl-7b4e1ea0{font-family:'Geogria';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-48b07d57{font-family:'Geogria';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(51, 51, 51, 1.00);background-color:transparent;}.cl-294be4d9{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-ffe176e3{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:4pt;padding-right:4pt;line-height: 1;background-color:transparent;}.cl-5e1fbc18{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-be70edf7{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5f23df5d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-212ffd11{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-be8a8642{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2d2c7664{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-bbc8988d">
-<caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>UHC SCI in WPR, latest year</span></caption>
-<thead><tr style="overflow-wrap:break-word;">
-<th class="cl-5e1fbc18"><p class="cl-294be4d9"><span class="cl-7b4e1ea0">name_short</span></p></th>
-<th class="cl-be70edf7"><p class="cl-ffe176e3"><span class="cl-7b4e1ea0">value_num</span></p></th>
-</tr></thead>
-<tbody>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Australia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">89</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">New Zealand</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">89</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Republic of Korea</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">88</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Singapore</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">88</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Japan</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">86</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">China</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">85</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Brunei Darussalam</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">84</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Malaysia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">80</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Cook Islands</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">75</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Palau</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">75</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Tonga</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">71</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Viet Nam</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">71</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Mongolia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">70</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Fiji</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">69</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Philippines</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">69</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Indonesia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">67</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Niue</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">67</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Marshall Islands</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">66</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Micronesia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">65</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Tuvalu</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">65</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Lao PDR</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">64</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Cambodia</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Nauru</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Samoa</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">62</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Vanuatu</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">52</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Kiribati</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">51</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-5f23df5d"><p class="cl-294be4d9"><span class="cl-48b07d57">Solomon Islands</span></p></td>
-<td class="cl-212ffd11"><p class="cl-ffe176e3"><span class="cl-48b07d57">47</span></p></td>
-</tr>
-<tr style="overflow-wrap:break-word;">
-<td class="cl-be8a8642"><p class="cl-294be4d9"><span class="cl-48b07d57">Papua New Guinea</span></p></td>
-<td class="cl-2d2c7664"><p class="cl-ffe176e3"><span class="cl-48b07d57">32</span></p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 <div class="section level2">
 <h2 id="working-with-sdg-indicators">Working with SDG indicators<a class="anchor" aria-label="anchor" href="#working-with-sdg-indicators"></a>
@@ -637,21 +422,9 @@ OData.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All indicators that mention both mortality and cancer</span></span>
 <span><span class="fu"><a href="../reference/sdg_indicators.html">sdg_indicators</a></span><span class="op">(</span><span class="st">"mortality cancer"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
-<span><span class="co">#&gt;   goal  target code  description                              tier  uri   series</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 3     3.4    3.4.1 Mortality rate attributed to cardiovasc… 1     /v1/… <span style="color: #949494;">&lt;df&gt;</span></span></span>
 <span></span>
 <span><span class="co"># Same as above, but with explicit terms (allows whitespace inside a term)</span></span>
-<span><span class="fu"><a href="../reference/sdg_indicators.html">sdg_indicators</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"maternal"</span>, <span class="st">"mortality"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
-<span><span class="co">#&gt;   goal  target code  description              tier  uri                   series</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 3     3.1    3.1.1 Maternal mortality ratio 1     /v1/sdg/Indicator/3.… <span style="color: #949494;">&lt;df&gt;</span></span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/sdg_indicators.html">sdg_indicators</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"maternal"</span>, <span class="st">"mortality"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>area</code> argument of <code><a href="../reference/sdg_data.html">sdg_data()</a></code> and
 <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> accepts either ISO3 codes (converted
 internally via <code><a href="../reference/iso3_to_m49.html">iso3_to_m49()</a></code>) or UN M49 numeric codes — so
@@ -664,73 +437,12 @@ mix the two formats in a single call.</p>
 <span>  indicator <span class="op">=</span> <span class="st">"3.4.1"</span>,</span>
 <span>  area      <span class="op">=</span> <span class="va">wpro_cty</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&amp;pageSize=1000&amp;areaCode=036&amp;areaCode=096&amp;areaCode=156&amp;areaCode=184&amp;areaCode=242&amp;areaCode=583&amp;areaCode=360&amp;areaCode=392&amp;areaCode=116&amp;areaCode=296&amp;areaCode=410&amp;areaCode=418&amp;areaCode=584&amp;areaCode=496&amp;areaCode=458&amp;areaCode=570&amp;areaCode=520&amp;areaCode=554&amp;areaCode=608&amp;areaCode=585&amp;areaCode=598&amp;areaCode=702&amp;areaCode=090&amp;areaCode=776&amp;areaCode=798&amp;areaCode=704&amp;areaCode=548&amp;areaCode=882&amp;page=1&gt;</span></span></span>
 <span><span class="va">sdg</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 462</span></span>
-<span><span class="co">#&gt; Columns: 21</span></span>
-<span><span class="co">#&gt; $ goal              <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> "3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"3"<span style="color: #949494;">, </span>"…</span></span>
-<span><span class="co">#&gt; $ target            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> "3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3.4"<span style="color: #949494;">, </span>"3…</span></span>
-<span><span class="co">#&gt; $ indicator         <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> "3.4.1"<span style="color: #949494;">, </span>"3.4.1"<span style="color: #949494;">, </span>"3.4.1"<span style="color: #949494;">, </span>"3.4.1"<span style="color: #949494;">, </span>"3.4.1"<span style="color: #949494;">, </span>"3.4.1…</span></span>
-<span><span class="co">#&gt; $ series            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SH_DTH_NCOM"<span style="color: #949494;">, </span>"SH_DTH_NCOM"<span style="color: #949494;">, </span>"SH_DTH_NCOM"<span style="color: #949494;">, </span>"SH_DTH…</span></span>
-<span><span class="co">#&gt; $ seriesDescription <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Mortality rate attributed to cardiovascular disease…</span></span>
-<span><span class="co">#&gt; $ seriesCount       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "4326"<span style="color: #949494;">, </span>"4326"<span style="color: #949494;">, </span>"4326"<span style="color: #949494;">, </span>"4326"<span style="color: #949494;">, </span>"4326"<span style="color: #949494;">, </span>"4326"<span style="color: #949494;">, </span>"432…</span></span>
-<span><span class="co">#&gt; $ geoAreaCode       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"<span style="color: #949494;">, </span>"36"…</span></span>
-<span><span class="co">#&gt; $ geoAreaName       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ timePeriodStart   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2005<span style="color: #949494;">, </span>2005<span style="color: #949494;">, </span>2005<span style="color: #949494;">, </span>2010<span style="color: #949494;">, </span>2010<span style="color: #949494;">, </span>2010…</span></span>
-<span><span class="co">#&gt; $ value             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "9.8"<span style="color: #949494;">, </span>"13"<span style="color: #949494;">, </span>"16"<span style="color: #949494;">, </span>"11.4"<span style="color: #949494;">, </span>"8.7"<span style="color: #949494;">, </span>"14"<span style="color: #949494;">, </span>"12.1"<span style="color: #949494;">, </span>"9.9…</span></span>
-<span><span class="co">#&gt; $ valueType         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Float"<span style="color: #949494;">, </span>"Float"<span style="color: #949494;">, </span>"Float"<span style="color: #949494;">, </span>"Float"<span style="color: #949494;">, </span>"Float"<span style="color: #949494;">, </span>"Float"…</span></span>
-<span><span class="co">#&gt; $ time_detail       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ timeCoverage      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ upperBound        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "11.2"<span style="color: #949494;">, </span>"14.7"<span style="color: #949494;">, </span>"18"<span style="color: #949494;">, </span>"12.9"<span style="color: #949494;">, </span>"10"<span style="color: #949494;">, </span>"15.8"<span style="color: #949494;">, </span>"13.8"<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ lowerBound        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "8.4"<span style="color: #949494;">, </span>"11.3"<span style="color: #949494;">, </span>"14.1"<span style="color: #949494;">, </span>"9.8"<span style="color: #949494;">, </span>"7.5"<span style="color: #949494;">, </span>"12.2"<span style="color: #949494;">, </span>"10.4"<span style="color: #949494;">,</span>…</span></span>
-<span><span class="co">#&gt; $ basePeriod        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ source            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Global Health Estimates 2021: Deaths by Cause, Age,…</span></span>
-<span><span class="co">#&gt; $ geoInfoUrl        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ footnotes         <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> "Data was previously disseminated with a different …</span></span>
-<span><span class="co">#&gt; $ attributes        <span style="color: #949494; font-style: italic;">&lt;df[,2]&gt;</span> &lt;data.frame[26 x 2]&gt;</span></span>
-<span><span class="co">#&gt; $ dimensions        <span style="color: #949494; font-style: italic;">&lt;df[,3]&gt;</span> &lt;data.frame[26 x 3]&gt;</span></span>
 <span></span>
 <span><span class="co"># M49 also works (e.g. when copy-pasting codes from sdg_areas())</span></span>
-<span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"608"</span>, <span class="st">"250"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&amp;pageSize=1000&amp;areaCode=608&amp;areaCode=250&amp;page=1&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 42 × 21</span></span></span>
-<span><span class="co">#&gt;    goal      target indicator series   seriesDescription seriesCount geoAreaCode</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">&lt;chr [1]&gt;</span> <span style="color: #949494;">&lt;chr&gt;</span>  <span style="color: #949494;">&lt;chr [1]&gt;</span> SH_DTH_… Mortality rate a… 4326        250        </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 32 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more variables: geoAreaName &lt;chr&gt;, timePeriodStart &lt;int&gt;, value &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   valueType &lt;chr&gt;, time_detail &lt;lgl&gt;, timeCoverage &lt;lgl&gt;, upperBound &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lowerBound &lt;chr&gt;, basePeriod &lt;lgl&gt;, source &lt;chr&gt;, geoInfoUrl &lt;lgl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   footnotes &lt;list&gt;, attributes &lt;df[,2]&gt;, dimensions &lt;df[,3]&gt;</span></span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"608"</span>, <span class="st">"250"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 462 × 15</span></span></span>
-<span><span class="co">#&gt;    source id    indicator     location iso3  location_name  year value value_num</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 28.1       28.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 25.4       25.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 31.8       31.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 22.5       22.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 25.6       25.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 29.7       29.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 24.4       24.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 20.9       20.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 29.1       29.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>015 28.3       28.3</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 452 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> produces the same 15-column
 schema as <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, so the two outputs can be combined
 directly with <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code>. SDG rows populate the
@@ -746,45 +458,8 @@ positional GHO dimensions. The compact 15-column output omits them. For
 disaggregated analysis, retain them explicitly:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&amp;pageSize=1000&amp;areaCode=608&amp;page=1&gt;</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       Age Location     Sex Reporting Type Quantile Type_of_household</span></span>
-<span><span class="co">#&gt; 1  ALLAGE  ALLAREA BOTHSEX              G       Q2                _T</span></span>
-<span><span class="co">#&gt; 2  ALLAGE  ALLAREA BOTHSEX              G       Q5                _T</span></span>
-<span><span class="co">#&gt; 3  ALLAGE  ALLAREA BOTHSEX              G       Q4                _T</span></span>
-<span><span class="co">#&gt; 4  ALLAGE  ALLAREA BOTHSEX              G       Q3                _T</span></span>
-<span><span class="co">#&gt; 5  ALLAGE  ALLAREA BOTHSEX              G       Q1                _T</span></span>
-<span><span class="co">#&gt; 6  ALLAGE  ALLAREA BOTHSEX              G       _T                _T</span></span>
-<span><span class="co">#&gt; 13    60+  ALLAREA BOTHSEX              G       _T                _T</span></span>
-<span><span class="co">#&gt; 14 ALLAGE  ALLAREA BOTHSEX              G       _T        HH_ADTONLY</span></span>
-<span><span class="co">#&gt; 15   0-59  ALLAREA BOTHSEX              G       _T                _T</span></span>
-<span><span class="co">#&gt; 16 ALLAGE  ALLAREA    MALE              G       _T                _T</span></span>
-<span><span class="co">#&gt; 17 ALLAGE  ALLAREA  FEMALE              G       _T                _T</span></span>
-<span><span class="co">#&gt; 18 ALLAGE  ALLAREA BOTHSEX              G       _T       HH_MULTIGEN</span></span>
-<span><span class="co">#&gt; 19 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ADTWOLDER</span></span>
-<span><span class="co">#&gt; 20 ALLAGE  ALLAREA BOTHSEX              G       _T    HH_ADTWCHLDADO</span></span>
-<span><span class="co">#&gt; 22 ALLAGE    URBAN BOTHSEX              G       _T                _T</span></span>
-<span><span class="co">#&gt; 26 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ONLYOLDER</span></span>
-<span><span class="co">#&gt; 27 ALLAGE    RURAL BOTHSEX              G       _T                _T</span></span>
-<span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 108 × 21</span></span></span>
-<span><span class="co">#&gt;    source id    indicator     location iso3  location_name  year value value_num</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 79.29     79.3 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 1.10       1.1 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 1.26       1.26</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 4.24       4.24</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 81.47     81.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 33.47     33.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 79.51     79.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 92.47     92.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 3.81       3.81</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sdg    3.8.2 Proportion o… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 1.16       1.16</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 98 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;, dim_age &lt;chr&gt;, dim_location &lt;chr&gt;, dim_sex &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim_reporting_type &lt;chr&gt;, dim_quantile &lt;chr&gt;, dim_type_of_household &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>This appends character columns such as <code>dim_age</code>,
 <code>dim_location</code>, <code>dim_sex</code>,
 <code>dim_reporting_type</code>, <code>dim_quantile</code>, and
@@ -803,24 +478,7 @@ attributes in the cleaned table.</p>
 <span>    Quantile <span class="op">=</span> <span class="st">"_T"</span>, Type_of_household <span class="op">=</span> <span class="st">"_T"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&amp;pageSize=1000&amp;areaCode=608&amp;page=1&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 21</span></span></span>
-<span><span class="co">#&gt;   source id    indicator      location iso3  location_name  year value value_num</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>000 33.47      33.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>003 35.61      35.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>006 37.42      37.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>009 36.15      36.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>012 36.85      36.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>015 35.21      35.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>018 31.60      31.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>021 33.85      33.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> sdg    3.8.2 Proportion of… 608      PHL   Philippines    <span style="text-decoration: underline;">2</span>023 30.99      31.0</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;, dim_age &lt;chr&gt;, dim_location &lt;chr&gt;, dim_sex &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dim_reporting_type &lt;chr&gt;, dim_quantile &lt;chr&gt;, dim_type_of_household &lt;chr&gt;</span></span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>These filters run locally after pagination. Values within one
 dimension are OR-ed; different dimensions are AND-ed. An absent
 requested dimension warns and returns no rows instead of silently
@@ -840,27 +498,7 @@ definition and components</a>.</p>
 labels for each series. This does not download observations, and the
 listed categories need not occur in every country:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_dimensions.html">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List&gt;</span></span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Dimensions&gt;</span></span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Attributes&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 7</span></span></span>
-<span><span class="co">#&gt;    indicator series               kind      dimension code    label        sdmx </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    C       Country data C    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    CA      Country adj… CA   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    E       Estimated d… E    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    G       Global moni… G    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    M       Modeled data M    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    N       Non-relevant N    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    NA      Data nature… _X   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 3.8.2     SH_OOP_XPD_EARNNET40 attribute Units     PERCENT Percentage   PT   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       0-59    under 59 ye… Y0T59</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       60+     60 years ol… Y_GE…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more rows</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_dimensions.html">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>code</code> column contains the JSON API codes used for
 filtering; the <code>sdmx</code> column is an alternative
 representation. <code>kind</code> distinguishes dimensions from
@@ -870,23 +508,7 @@ attributes such as units and nature.</p>
 <code class="sourceCode R"><span><span class="va">detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"year"</span>, <span class="st">"value_num"</span>, <span class="st">"attr_units"</span>, <span class="st">"attr_nature"</span>, <span class="st">"data_source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 108 × 6</span></span></span>
-<span><span class="co">#&gt;    iso3   year value_num attr_units attr_nature data_source                     </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PHL    <span style="text-decoration: underline;">2</span>000     79.3  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PHL    <span style="text-decoration: underline;">2</span>000      1.1  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PHL    <span style="text-decoration: underline;">2</span>000      1.26 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PHL    <span style="text-decoration: underline;">2</span>000      4.24 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PHL    <span style="text-decoration: underline;">2</span>000     81.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PHL    <span style="text-decoration: underline;">2</span>000     33.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PHL    <span style="text-decoration: underline;">2</span>003     79.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PHL    <span style="text-decoration: underline;">2</span>003     92.5  PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PHL    <span style="text-decoration: underline;">2</span>003      3.81 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PHL    <span style="text-decoration: underline;">2</span>003      1.16 PERCENT    G           <span style="color: #949494;">"</span>Philippines - Family Income an…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 98 more rows</span></span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">detailed</span><span class="op">$</span><span class="va">footnotes</span>, <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] "Survey-based estimate, using household total consumption expenditure in the denominator"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">detailed</span><span class="op">$</span><span class="va">footnotes</span>, <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
 <p><code>keep_metadata</code> retains all returned attributes as
 <code>attr_*</code> columns, plus source, time detail/coverage, base
 period, value type, and geographic information URL. Footnotes and all
@@ -894,29 +516,16 @@ linked indicator, goal, and target codes are list-columns, so multiple
 entries are preserved. Use RDS for storage when retaining this
 structure.</p>
 <p>For GHO, show each positional dimension’s type directly:</p>
+<p>This financial-hardship code is not in the public xMart directory as
+of 2026-10-06. Select the legacy provider explicitly for this
+example.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">previous_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>DSIR.who_backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
+<span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/FINANCIALHARDSHIP_PROPORTIONOFPOP?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&gt;</span></span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">previous_options</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 144 × 7</span></span></span>
-<span><span class="co">#&gt;    iso3   year value_num dim1_type                  dim1         dim2_type dim2 </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PHL    <span style="text-decoration: underline;">1</span>997    89.0   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PHL    <span style="text-decoration: underline;">1</span>997    32.6   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PHL    <span style="text-decoration: underline;">1</span>997     1.42  WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PHL    <span style="text-decoration: underline;">1</span>997     0.901 WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PHL    <span style="text-decoration: underline;">1</span>997     2.88  WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PHL    <span style="text-decoration: underline;">1</span>997    32.6   RESIDENCEAREATYPE          RESIDENCEAR… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PHL    <span style="text-decoration: underline;">1</span>997    68.8   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PHL    <span style="text-decoration: underline;">1</span>997     1.61  FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PHL    <span style="text-decoration: underline;">1</span>997    31.0   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PHL    <span style="text-decoration: underline;">2</span>000    81.5   WEALTHQUINTILE             WEALTHQUINT… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 134 more rows</span></span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
 <p>Types are taken from each observation’s
 <code>Dim1Type</code>–<code>Dim3Type</code>. They are never guessed from
 a code prefix or assumed constant for the whole indicator. GHO metadata
@@ -947,31 +556,8 @@ does not harmonise codes or definitions across the sources.</p>
 <span><span class="co">#   GHO NCDMORT3070 (probability of premature NCD mortality)</span></span>
 <span><span class="co">#   SDG 3.4.1       (mortality rate from NCDs)</span></span>
 <span><span class="va">gho_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&gt;</span></span></span>
 <span><span class="va">sdg_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&amp;pageSize=1000&amp;areaCode=036&amp;areaCode=096&amp;areaCode=156&amp;areaCode=184&amp;areaCode=242&amp;areaCode=583&amp;areaCode=360&amp;areaCode=392&amp;areaCode=116&amp;areaCode=296&amp;areaCode=410&amp;areaCode=418&amp;areaCode=584&amp;areaCode=496&amp;areaCode=458&amp;areaCode=570&amp;areaCode=520&amp;areaCode=554&amp;areaCode=608&amp;areaCode=585&amp;areaCode=598&amp;areaCode=702&amp;areaCode=090&amp;areaCode=776&amp;areaCode=798&amp;areaCode=704&amp;areaCode=548&amp;areaCode=882&amp;page=1&gt;</span></span></span>
-<span><span class="fu"><a href="../reference/bind_indicators.html">bind_indicators</a></span><span class="op">(</span><span class="va">gho_ncd</span>, <span class="va">sdg_ncd</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 1,914</span></span>
-<span><span class="co">#&gt; Columns: 15</span></span>
-<span><span class="co">#&gt; $ source        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>"gho"<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ id            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT3070"<span style="color: #949494;">, </span>"NCDMORT307…</span></span>
-<span><span class="co">#&gt; $ indicator     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Probability (%) of dying between age 30 and exact age 7…</span></span>
-<span><span class="co">#&gt; $ location      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ iso3          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>"AUS"<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ location_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Australia"<span style="color: #949494;">, </span>"Aus…</span></span>
-<span><span class="co">#&gt; $ year          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2000<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2001<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>2002<span style="color: #949494;">, </span>20…</span></span>
-<span><span class="co">#&gt; $ value         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "16.0 [14.1-18.0]"<span style="color: #949494;">, </span>"9.8 [8.4-11.2]"<span style="color: #949494;">, </span>"13.0 [11.3-14.7]"…</span></span>
-<span><span class="co">#&gt; $ value_num     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 16.0<span style="color: #949494;">, </span>9.8<span style="color: #949494;">, </span>13.0<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>15.6<span style="color: #949494;">, </span>12.6<span style="color: #949494;">, </span>15.0<span style="color: #949494;">, </span>12.3<span style="color: #949494;">, </span>9.6<span style="color: #949494;">, </span>9.1<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ low           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.1<span style="color: #949494;">, </span>8.4<span style="color: #949494;">, </span>11.3<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>13.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>13.1<span style="color: #949494;">, </span>10.7<span style="color: #949494;">, </span>8.2<span style="color: #949494;">, </span>7.8<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ high          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 18.0<span style="color: #949494;">, </span>11.2<span style="color: #949494;">, </span>14.7<span style="color: #949494;">, </span>11.0<span style="color: #949494;">, </span>17.5<span style="color: #949494;">, </span>14.3<span style="color: #949494;">, </span>16.8<span style="color: #949494;">, </span>13.9<span style="color: #949494;">, </span>10.9<span style="color: #949494;">, </span>10…</span></span>
-<span><span class="co">#&gt; $ series        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ dim1          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SEX_MLE"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_BTSX"<span style="color: #949494;">, </span>"SEX_FMLE"<span style="color: #949494;">, </span>"SEX_MLE"…</span></span>
-<span><span class="co">#&gt; $ dim2          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_YEARS30-69"<span style="color: #949494;">, </span>"AGEGROUP_…</span></span>
-<span><span class="co">#&gt; $ dim3          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span><span style="color: #BB0000;">NA</span><span style="color: #949494;">, </span>…</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/bind_indicators.html">bind_indicators</a></span><span class="op">(</span><span class="va">gho_ncd</span>, <span class="va">sdg_ncd</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="exploring-series-with-sdg_coverage">Exploring series with sdg_coverage()<a class="anchor" aria-label="anchor" href="#exploring-series-with-sdg_coverage"></a>
@@ -988,19 +574,6 @@ series exist and how each is covered before deciding which one to
 analyse.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching:</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.b.1&amp;pageSize=1000&amp;areaCode=156&amp;areaCode=608&amp;page=1&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 5</span></span></span>
-<span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 156      SH_ACS_DTP3     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>024    25</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 156      SH_ACS_HPV      <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>024    15</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 156      SH_ACS_MCV2     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>024    25</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 156      SH_ACS_PCV3     <span style="text-decoration: underline;">2</span>008     <span style="text-decoration: underline;">2</span>024    17</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 608      SH_ACS_DTP3     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>024    25</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 608      SH_ACS_HPV      <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>024    15</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> 608      SH_ACS_MCV2     <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>024    25</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> 608      SH_ACS_PCV3     <span style="text-decoration: underline;">2</span>008     <span style="text-decoration: underline;">2</span>024    17</span></span>
 <span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
 <span><span class="co">#&gt; 1 156      SH_ACS_DTP3     2000     2023    24</span></span>
 <span><span class="co">#&gt; 2 156      SH_ACS_HPV      2018     2023     6</span></span>

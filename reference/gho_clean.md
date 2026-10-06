@@ -28,7 +28,8 @@ gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
   source's `Dim1Type`, `Dim2Type`, and `Dim3Type`? Default `FALSE`.
   Types are kept per row: one indicator can use the same position for
   different dimensions. No type is guessed from a code's spelling, and
-  missing types remain `NA`.
+  missing types remain `NA`. xMart output also retains all named source
+  dimensions as `dim_*` character columns.
 
 - keep_metadata:
 
@@ -40,8 +41,10 @@ gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
   `footnotes`, a list-column of character vectors. Missing scalar fields
   are `NA`; missing list fields are empty character vectors. This option
   is independent of `keep_dimensions`. Unit and dimension labels are not
-  inferred. Retaining these fields makes no extra network requests
-  beyond the usual indicator-name lookup.
+  inferred. xMart output also retains `unit`, `measure_field`,
+  `spatial_type_source`, and a `who_provenance` attribute. Retaining
+  these fields makes no extra network requests beyond the usual
+  indicator-name lookup.
 
 ## Value
 
@@ -76,23 +79,24 @@ The mapping (GHO source → unified column) is:
 - `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 
 The `series` column is always `NA` for GHO output (it is an SDG-only
-concept). The `location_name` column is populated by looking up
-`location` (an ISO3 code or a WHO region code) against the
+concept; GHE uses it for measure codes). The `location_name` column is
+populated by looking up `location` (an ISO3 code or a WHO region code)
+against the
 [`who_countries`](https://shanlong-who.github.io/DSIR/reference/who_countries.md)
-dataset and a hardcoded set of WHO regional names; locations that match
-neither (e.g. non-Member State areas) are left as `NA`.
+dataset and a hardcoded set of WHO regional names; other locations use a
+published `SpatialName` when available, otherwise they remain `NA`.
 
 Source columns absent from `df` (e.g. `Low` / `High` for indicators
 without confidence intervals) are filled with typed `NA`, so the default
 output always has the same 15 columns with the same column types.
 
-The GHO data endpoint (`/api/{IndicatorCode}`) does not return
-`IndicatorName`; that field lives on the catalog endpoint queried by
+xMart supplies indicator labels through its official directory. Legacy
+observations without an `IndicatorName` use
 [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md).
-On the first call within an R session, `gho_clean()` fetches the catalog
-once and caches it for the rest of the session, so the `indicator`
-column carries the full human-readable indicator name. If the catalog
-cannot be fetched (e.g. no network),
+For such input, on the first call within an R session, `gho_clean()`
+fetches the catalog once and caches it for the rest of the session, so
+the `indicator` column carries the full human-readable indicator name.
+If the catalog cannot be fetched (e.g. no network),
 [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
 emits a warning and the `indicator` column falls back to `NA`.
 
@@ -108,22 +112,23 @@ emits a warning and the `indicator` column falls back to `NA`.
 # \donttest{
 gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> # A tibble: 12,210 × 15
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> # A tibble: 12,208 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
-#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
-#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.5…      42.5
-#> # ℹ 12,200 more rows
+#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40         40  
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7       46.7
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2       43.2
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5       40.5
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8       46.8
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5       43.5
+#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3       40.3
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46         46  
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1       43.1
+#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 40         40  
+#> # ℹ 12,198 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
 # }

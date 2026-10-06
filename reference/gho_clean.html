@@ -15,7 +15,7 @@ directly with bind_indicators()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,8 @@ directly with bind_indicators()."></head><body>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ghe-xmart.html">WHO xMart and Global Health Estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -42,7 +43,7 @@ directly with bind_indicators()."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Tidy a GHO Data Frame</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.10.0/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
       <div class="d-none name"><code>gho_clean.Rd</code></div>
     </div>
 
@@ -72,7 +73,8 @@ directly with <code><a href="bind_indicators.html">bind_indicators()</a></code>.
 <code>dim3_type</code> from the source's <code>Dim1Type</code>, <code>Dim2Type</code>, and <code>Dim3Type</code>?
 Default <code>FALSE</code>. Types are kept per row: one indicator can use the
 same position for different dimensions. No type is guessed from a
-code's spelling, and missing types remain <code>NA</code>.</p></dd>
+code's spelling, and missing types remain <code>NA</code>. xMart output also
+retains all named source dimensions as <code>dim_*</code> character columns.</p></dd>
 
 
 <dt id="arg-keep-metadata">keep_metadata<a class="anchor" aria-label="anchor" href="#arg-keep-metadata"></a></dt>
@@ -84,7 +86,9 @@ and <code>time_end</code>, copied from the raw API fields. Raw <code>Comments</c
 as <code>footnotes</code>, a list-column of character vectors. Missing scalar
 fields are <code>NA</code>; missing list fields are empty character vectors.
 This option is independent of <code>keep_dimensions</code>. Unit and dimension
-labels are not inferred. Retaining these fields makes no extra
+labels are not inferred. xMart output also retains <code>unit</code>,
+<code>measure_field</code>, <code>spatial_type_source</code>, and a <code>who_provenance</code> attribute.
+Retaining these fields makes no extra
 network requests beyond the usual indicator-name lookup.</p></dd>
 
 </dl></div>
@@ -111,17 +115,17 @@ Member State, otherwise <code>iso3 = NA</code></p></li>
 <li><p><code>Low</code>, <code>High</code>   → <code>low</code>, <code>high</code> (numeric)</p></li>
 <li><p><code>Dim1</code>, <code>Dim2</code>, <code>Dim3</code> → <code>dim1</code>, <code>dim2</code>, <code>dim3</code> (character)</p></li>
 </ul><p>The <code>series</code> column is always <code>NA</code> for GHO output (it is an SDG-only
-concept). The <code>location_name</code> column is populated by looking up
+concept; GHE uses it for measure codes). The <code>location_name</code> column is populated by looking up
 <code>location</code> (an ISO3 code or a WHO region code) against the
 <code><a href="who_countries.html">who_countries</a></code> dataset and a hardcoded set of WHO regional names;
-locations that match neither (e.g. non-Member State areas) are left
-as <code>NA</code>.</p>
+other locations use a published <code>SpatialName</code> when available, otherwise
+they remain <code>NA</code>.</p>
 <p>Source columns absent from <code>df</code> (e.g. <code>Low</code> / <code>High</code> for indicators
 without confidence intervals) are filled with typed <code>NA</code>, so the
 default output always has the same 15 columns with the same column types.</p>
-<p>The GHO data endpoint (<code>/api/{IndicatorCode}</code>) does not return
-<code>IndicatorName</code>; that field lives on the catalog endpoint queried by
-<code><a href="gho_indicators.html">gho_indicators()</a></code>. On the first call within an R session,
+<p>xMart supplies indicator labels through its official directory. Legacy
+observations without an <code>IndicatorName</code> use <code><a href="gho_indicators.html">gho_indicators()</a></code>.
+For such input, on the first call within an R session,
 <code>gho_clean()</code> fetches the catalog once and caches it for the rest of
 the session, so the <code>indicator</code> column carries the full
 human-readable indicator name. If the catalog cannot be fetched
@@ -138,22 +142,23 @@ human-readable indicator name. If the catalog cannot be fetched
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">gho_clean</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,210 × 15</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,208 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    source id        indicator location iso3  location_name  year value value_num</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2…      43.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40.0…      40  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 46.7…      46.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8…      46.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5…      40.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 43.5…      43.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1…      43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46.0…      46  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3…      40.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 42.5…      42.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,200 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40         40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 46.7       46.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2       43.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5       40.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8       46.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 43.5       43.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3       40.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46         46  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1       43.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 40         40  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,198 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>

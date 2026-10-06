@@ -18,7 +18,8 @@ gho_coverage(
   year_to = NULL,
   dim1 = NULL,
   dim2 = NULL,
-  dim3 = NULL
+  dim3 = NULL,
+  dimensions = NULL
 )
 ```
 
@@ -57,7 +58,17 @@ gho_coverage(
   [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
   to discover the values available for a given indicator. Rows where the
   dimension is empty (`null`) are excluded by the filter. Default `NULL`
-  (no filtering).
+  (no filtering). On xMart wide tables, positions follow named
+  dimensions in the source table schema (sex, age, then alphabetical).
+  These positions can differ from the legacy API. Prefer `dimensions`.
+  Canonical sex codes and the `AGEGROUP_` namespace remain supported in
+  positional filters. Named filters use the provider's exact native
+  codes.
+
+- dimensions:
+
+  Optional named list of exact xMart dimension fields and values, e.g.
+  `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
 
 ## Value
 
@@ -87,32 +98,31 @@ row per location and columns:
 # \donttest{
 # Year coverage of life expectancy for three countries
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&$select=SpatialDim,TimeDim>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> # A tibble: 3 × 4
 #>   location year_min year_max n_obs
 #>   <chr>       <int>    <int> <int>
-#> 1 DEU          2000     2023    72
-#> 2 FRA          2000     2023    72
-#> 3 JPN          2000     2023    72
+#> 1 DEU          2000     2021    66
+#> 2 FRA          2000     2021    66
+#> 3 JPN          2000     2021    66
 
 # All countries with any life-expectancy data, since 2010
 gho_coverage("WHOSIS_000001", year_from = 2010)
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&$select=SpatialDim,TimeDim>
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> # A tibble: 185 × 4
 #>    location year_min year_max n_obs
 #>    <chr>       <int>    <int> <int>
-#>  1 AFG          2010     2023    42
-#>  2 AGO          2010     2023    42
-#>  3 ALB          2010     2023    42
-#>  4 ARE          2010     2023    42
-#>  5 ARG          2010     2023    42
-#>  6 ARM          2010     2023    42
-#>  7 ATG          2010     2023    42
-#>  8 AUS          2010     2023    42
-#>  9 AUT          2010     2023    42
-#> 10 AZE          2010     2023    42
+#>  1 AFG          2010     2021    36
+#>  2 AGO          2010     2021    36
+#>  3 ALB          2010     2021    36
+#>  4 ARE          2010     2021    36
+#>  5 ARG          2010     2021    36
+#>  6 ARM          2010     2021    36
+#>  7 ATG          2010     2021    36
+#>  8 AUS          2010     2021    36
+#>  9 AUT          2010     2021    36
+#> 10 AZE          2010     2021    36
 #> # ℹ 175 more rows
 # }
 ```

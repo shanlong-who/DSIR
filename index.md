@@ -13,12 +13,15 @@ Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
+Version 0.11.0 is available from GitHub. This update has not been
+submitted to CRAN.
+
 ``` r
 
 # from CRAN
 install.packages("DSIR")
 
-# or the development version from GitHub  
+# or the development version from GitHub
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```
@@ -157,7 +160,7 @@ when `value` is the `y` aesthetic (including horizontal bars made with
 [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
 — the aesthetic is still `y`), and
 [`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
-when `value` is the `x` aesthetic (e.g. 
+when `value` is the `x` aesthetic (e.g.
 `geom_col(aes(value, category))`). Both accept any argument that
 `scale_*_continuous()` accepts.
 
@@ -228,10 +231,10 @@ gho_data("NCDMORT3070", area = wpro_cty, dim1 = "SEX_BTSX") |>
 
 ### WHO GHO API
 
-**Check availability before downloading.** GHO has thousands of
-indicators but any one of them may not cover the countries or years you
-need. Three lightweight helpers ask the server what is available without
-transferring observations:
+**Check availability before downloading.** The public GHO directory
+contains many indicators but any one of them may not cover the countries
+or years you need. Three lightweight helpers ask the server what is
+available without transferring observations:
 
 ``` r
 
@@ -243,10 +246,6 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 
 # Per-country year coverage and observation counts
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-#>   location year_min year_max n_obs
-#> 1 DEU          2000     2021    66
-#> 2 FRA          2000     2021    66
-#> 3 JPN          2000     2021    66
 ```
 
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
@@ -265,7 +264,7 @@ gho_data("NCDMORT3070", spatial_type = "country")
 
 # Fetch with area and year filters
 gho_data(
-  indicator = "WHOSIS_000001", 
+  indicator = "WHOSIS_000001",
   area      = wpro_cty,
   year_from = 2015
 )
@@ -301,11 +300,18 @@ financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
 
 ``` r
 
+previous_options <- options(DSIR.who_backend = 'legacy')
 raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL")
+options(previous_options)
 gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 gho_detailed |>
   dplyr::select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
+
+As verified on 2026-10-06, this financial-hardship code is absent from
+the public xMart directory. The example explicitly selects the legacy
+provider; there is no automatic fallback. The UN SDG workflow below
+remains separate.
 
 `keep_metadata = TRUE` also preserves the observation identifier, source
 code and type, spatial/time types, parent location, update timestamp,
@@ -503,3 +509,106 @@ complete enough that pre-flight checks add little value.
 ## License
 
 MIT — © 2026 Shanlong Ding
+
+### WHO xMart migration (0.11.0)
+
+GHO uses `https://xmart-api-public.who.int` by default. The official
+directory supplies public download routes; DSIR maps them into its
+familiar observation fields. The 15-column default of
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
+remains unchanged. Public codes and published vintages can differ from
+the legacy service. Search the current directory rather than assuming
+every former code exists.
+
+``` r
+
+gho_indicators('mortality')
+gho_dimensions('NCDMORT3070', 'DIM_SEX')
+ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
+                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'))
+gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
+```
+
+Named dimensions carry their meaning directly (`dim_sex`, `dim_age`,
+etc.). For wide xMart tables, `Dim1`-`Dim3` follow the source table
+dimension schema, ordered by sex, age, then other names. This may differ
+from old positional breakdowns. The legacy sex codes and `AGEGROUP_` age
+namespace remain supported in positional filters. Named filters retain
+exact native source codes. Prefer named filters when updating analyses.
+
+Migration checks on 2026-10-06 matched 18 observations per indicator
+across France, Japan and the Philippines in 2020-2021. `NCDMORT3070`
+values and bounds agreed exactly. `WHOSIS_000001` and `MDG_0000000001`
+values and bounds differed after matching dimension codes; rounding
+alone did not explain all differences. DSIR preserves each provider’s
+published estimates. Record the provider and retrieval date when
+comparing historical analyses.
+
+Failures warn and return empty results without switching providers.
+Reference lookups use a ten-minute memory cache. No keys, startup
+requests or disk cache are required. Advanced settings are
+`DSIR.who_backend` (`"xmart"` or explicit `"legacy"` for comparisons),
+`DSIR.who_base_url`, `DSIR.who_page_size` and `DSIR.who_max_rows`. Use
+[`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
+to save a reproducible pull explicitly.
+
+### Global Health Estimates
+
+Explore exact codes, then select a country, year, sex, age, cause and
+measure. GHE is a separate module backed by `DEX_CMS/GHE_FULL`. It
+returns long data with one row per measure. A download needs at least
+one filter and is limited to one million source rows by default.
+
+``` r
+
+ghe_dimensions('sex')
+ghe_dimensions('age')
+ghe_dimensions('measure')
+ghe_causes('diabetes')
+ghe_causes('stroke')
+
+# All published ages, sexes and causes for one country/year
+phl_all_causes <- ghe_data(area = 'PHL', year = 2023, measure = 'deaths')
+
+# Philippine all-age, both-sex deaths, all causes, 2023
+phl_deaths <- ghe_data(area = 'PHL', year = 2023, sex = 'TOTAL',
+                       age = 'TOTAL', cause = 0, measure = 'deaths')
+
+# Age-specific death rates by sex
+phl_rates <- ghe_data(area = 'PHL', year = 2023,
+                      sex = c('FEMALE', 'MALE'), age = 'Y40T44',
+                      cause = 0, measure = 'death_rate')
+ghe_coverage(area = 'PHL', sex = 'TOTAL', age = 'TOTAL', cause = 0)
+ghe_clean(phl_rates, keep_dimensions = TRUE)
+```
+
+Counts are persons or years; rates are per 100,000; shares are
+percentages. Count uncertainty bounds are retained. Bounds for rates and
+shares are absent in the provider and remain missing. All-age rates are
+crude rates. Do not sum overlapping ages or cause-hierarchy totals.
+`cause_group` is a published group, not an invented parent code.
+Discovery lists describe the latest release; verify a selection with
+[`ghe_coverage()`](https://shanlong-who.github.io/DSIR/reference/ghe_coverage.md).
+New releases can revise earlier years.
+
+### WHO 2026 standard population
+
+Beginning with DSIR 0.11.0, `who_std_pop` uses the WHO 2026 Standard
+Population. Its 18 groups end at `85+`. WHO’s rounded Table 1
+percentages sum to 100.02; DSIR normalizes them to 100 and derives a
+numeric standard million summing to 1,000,000. No finer split of `0-4`
+or `85+` is fabricated.
+
+``` r
+
+who_std_pop
+count <- seq_len(nrow(who_std_pop))
+population <- rep(10000, nrow(who_std_pop))
+age_standardize(count, population, who_std_pop$weight)
+```
+
+See the [WHO technical
+report](https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf),
+Table 1, page 6 (September 2026). The former 21-row object is replaced;
+align observed age groups explicitly before computing a standardized
+rate.

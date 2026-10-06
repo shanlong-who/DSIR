@@ -9,7 +9,7 @@ Observatory (GHO) OData API."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,8 @@ Observatory (GHO) OData API."></head><body>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ghe-xmart.html">WHO xMart and Global Health Estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -36,7 +37,7 @@ Observatory (GHO) OData API."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>List GHO Indicators</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.10.0/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
       <div class="d-none name"><code>gho_indicators.Rd</code></div>
     </div>
 
@@ -62,14 +63,14 @@ Observatory (GHO) OData API.</p>
 "child" and "mortality"), or</p></li>
 <li><p>a character vector, whose elements are used as terms verbatim
 (whitespace inside an element is treated as part of the term).</p></li>
-</ul><p>Single quotes in any term are escaped for the OData filter.</p></dd>
+</ul><p>Search terms are matched literally; they are not download identifiers.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> with columns <code>IndicatorCode</code>,
 <code>IndicatorName</code> and <code>Language</code>. Returns an empty tibble (with
-a message) when the service is unreachable.</p>
+a warning) when the service is unreachable.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -81,50 +82,39 @@ a message) when the service is unreachable.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># All indicators</span></span></span>
 <span class="r-in"><span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu">gho_indicators</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching: <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Single keyword</span></span></span>
 <span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="st">"mortality"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27mortality%27%29&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 31 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    IndicatorCode  IndicatorName                                         Language</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> nmr            Neonatal mortality rate (deaths per 1000 live births) EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> WHS10_4        Number of national population surveys - child mortal… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> SDGPOISON      Mortality rate attributed to unintentional poisoning… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> SDGROADAGE     Age-standardized road traffic  mortality (per 100 00… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 21 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 25 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    IndicatorCode         IndicatorName                                  Language</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SDGSUICIDE            Suicide mortality rate (per 100 000 populatio… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> NCDMORT3070           Probability of premature mortality from NCDs   EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> MDG_0000000007        Under-five mortality rate (per 1000 live birt… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> VIOLENCE_HOMICIDERATE Mortality rate due to homicide (per 100 000 p… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> TB_e_mort_100k        HIV-negative TB mortality                      EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> TB_e_mort_agesex_100k TB mortality rate by age and sex per 100 000 … EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> SDGPOISON             Mortality rate from unintentional poisoning (… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> WHOSIS_000003         Neonatal mortality rate (per 1000 live births) EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> MDG_0000000026        Maternal mortality ratio (per 100 000 live bi… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> MALARIA_EST_MORTALITY Estimated malaria mortality rate (per 100 000… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Multiple keywords from one string (AND): both terms must appear</span></span></span>
 <span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="st">"child mortality"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorCode              IndicatorName                              Language</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> WHS10_4                    Number of national population surveys - c… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorCode  IndicatorName                                          Language</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Or pass terms as a vector</span></span></span>
 <span class="r-in"><span><span class="fu">gho_indicators</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"child"</span>, <span class="st">"mortality"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorCode              IndicatorName                              Language</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> WHS10_4                    Number of national population surveys - c… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   IndicatorCode  IndicatorName                                          Language</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

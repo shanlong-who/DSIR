@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/visualizing-indicators.html">Visualizing indicators</a></li>
+<li><a class="dropdown-item" href="articles/ghe-xmart.html">WHO xMart and Global Health Estimates</a></li>
+    <li><a class="dropdown-item" href="articles/visualizing-indicators.html">Visualizing indicators</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -71,11 +72,12 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p>Version 0.11.0 is available from GitHub. This update has not been submitted to CRAN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># from CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># or the development version from GitHub  </span></span>
+<span><span class="co"># or the development version from GitHub</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -153,7 +155,7 @@
 <span>  <span class="fu"><a href="reference/theme_dsi_facet.html">theme_dsi_facet</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"WHO Member States by region and PIC status"</span>,</span>
 <span>       x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p><strong><code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code></strong> — drop-in replacements for <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous()</a></code> that remove the default lower expansion, so columns in bar charts sit flush with the axis instead of floating above it. Pick the one that matches where you mapped the value: <code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> when <code>value</code> is the <code>y</code> aesthetic (including horizontal bars made with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> — the aesthetic is still <code>y</code>), and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code> when <code>value</code> is the <code>x</code> aesthetic (e.g.  <code>geom_col(aes(value, category))</code>). Both accept any argument that <code>scale_*_continuous()</code> accepts.</p>
+<p><strong><code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code></strong> — drop-in replacements for <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous()</a></code> that remove the default lower expansion, so columns in bar charts sit flush with the axis instead of floating above it. Pick the one that matches where you mapped the value: <code><a href="reference/scale_dsi_col.html">scale_y_dsi_col()</a></code> when <code>value</code> is the <code>y</code> aesthetic (including horizontal bars made with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip()</a></code> — the aesthetic is still <code>y</code>), and <code><a href="reference/scale_dsi_col.html">scale_x_dsi_col()</a></code> when <code>value</code> is the <code>x</code> aesthetic (e.g. <code>geom_col(aes(value, category))</code>). Both accept any argument that <code>scale_*_continuous()</code> accepts.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Vertical bars</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -194,7 +196,7 @@
 <div class="section level3">
 <h3 id="who-gho-api">WHO GHO API<a class="anchor" aria-label="anchor" href="#who-gho-api"></a>
 </h3>
-<p><strong>Check availability before downloading.</strong> GHO has thousands of indicators but any one of them may not cover the countries or years you need. Three lightweight helpers ask the server what is available without transferring observations:</p>
+<p><strong>Check availability before downloading.</strong> The public GHO directory contains many indicators but any one of them may not cover the countries or years you need. Three lightweight helpers ask the server what is available without transferring observations:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)</span></span>
 <span><span class="fu"><a href="reference/gho_has_data.html">gho_has_data</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span>
@@ -203,11 +205,7 @@
 <span><span class="fu"><a href="reference/gho_count.html">gho_count</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Per-country year coverage and observation counts</span></span>
-<span><span class="fu"><a href="reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   location year_min year_max n_obs</span></span>
-<span><span class="co">#&gt; 1 DEU          2000     2021    66</span></span>
-<span><span class="co">#&gt; 2 FRA          2000     2021    66</span></span>
-<span><span class="co">#&gt; 3 JPN          2000     2021    66</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Fetch and clean.</strong> The typical workflow is <strong>search → fetch → clean</strong>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Search indicators by keyword</span></span>
@@ -222,7 +220,7 @@
 <span></span>
 <span><span class="co"># Fetch with area and year filters</span></span>
 <span><span class="fu"><a href="reference/gho_data.html">gho_data</a></span><span class="op">(</span></span>
-<span>  indicator <span class="op">=</span> <span class="st">"WHOSIS_000001"</span>, </span>
+<span>  indicator <span class="op">=</span> <span class="st">"WHOSIS_000001"</span>,</span>
 <span>  area      <span class="op">=</span> <span class="va">wpro_cty</span>,</span>
 <span>  year_from <span class="op">=</span> <span class="fl">2015</span></span>
 <span><span class="op">)</span></span>
@@ -238,10 +236,13 @@
 <p>By default, <code><a href="reference/gho_clean.html">gho_clean()</a></code> produces the <strong>unified DSIR cleaned-indicator schema</strong> — the same 15-column shape produced by <code><a href="reference/sdg_clean.html">sdg_clean()</a></code>, so GHO and SDG output can be combined directly with <code><a href="reference/bind_indicators.html">bind_indicators()</a></code> (see below). Output columns: <code>source</code>, <code>id</code>, <code>indicator</code>, <code>location</code>, <code>iso3</code>, <code>location_name</code>, <code>year</code>, <code>value</code>, <code>value_num</code>, <code>low</code>, <code>high</code>, <code>series</code>, <code>dim1</code>–<code>dim3</code>. Source columns missing from the raw response (e.g. <code>Low</code> / <code>High</code> for indicators without confidence intervals) are filled with typed <code>NA</code>.</p>
 <p>To show what each GHO dimension means, set <code>keep_dimensions = TRUE</code>. The additional <code>dim1_type</code>, <code>dim2_type</code>, and <code>dim3_type</code> columns come directly from each observation. Their meaning can vary between rows: for financial hardship, <code>dim1_type</code> can be <code>WEALTHQUINTILE</code>, <code>FINANCIALHARDSHIPCOMPONENT</code>, or <code>DEMOGRAPHIC</code>, among others.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">previous_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>DSIR.who_backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
+<span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">previous_options</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
+<p>As verified on 2026-10-06, this financial-hardship code is absent from the public xMart directory. The example explicitly selects the legacy provider; there is no automatic fallback. The UN SDG workflow below remains separate.</p>
 <p><code>keep_metadata = TRUE</code> also preserves the observation identifier, source code and type, spatial/time types, parent location, update timestamp, time interval, and comments. Comments are stored in the <code>footnotes</code> list-column. No dimension type or unit is inferred from an indicator name or code prefix. Both options default to <code>FALSE</code>.</p>
 </div>
 <div class="section level3">
@@ -339,6 +340,57 @@
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
 <p>MIT — © 2026 Shanlong Ding</p>
+<div class="section level3">
+<h3 id="who-xmart-migration-0110">WHO xMart migration (0.11.0)<a class="anchor" aria-label="anchor" href="#who-xmart-migration-0110"></a>
+</h3>
+<p>GHO uses <code>https://xmart-api-public.who.int</code> by default. The official directory supplies public download routes; DSIR maps them into its familiar observation fields. The 15-column default of <code><a href="reference/gho_clean.html">gho_clean()</a></code> remains unchanged. Public codes and published vintages can differ from the legacy service. Search the current directory rather than assuming every former code exists.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gho_dimensions.html">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span><span class="op">)</span></span>
+<span><span class="va">ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>, year_from <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                year_to <span class="op">=</span> <span class="fl">2021</span>, dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIM_SEX <span class="op">=</span> <span class="st">'TOTAL'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">ncd</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Named dimensions carry their meaning directly (<code>dim_sex</code>, <code>dim_age</code>, etc.). For wide xMart tables, <code>Dim1</code>-<code>Dim3</code> follow the source table dimension schema, ordered by sex, age, then other names. This may differ from old positional breakdowns. The legacy sex codes and <code>AGEGROUP_</code> age namespace remain supported in positional filters. Named filters retain exact native source codes. Prefer named filters when updating analyses.</p>
+<p>Migration checks on 2026-10-06 matched 18 observations per indicator across France, Japan and the Philippines in 2020-2021. <code>NCDMORT3070</code> values and bounds agreed exactly. <code>WHOSIS_000001</code> and <code>MDG_0000000001</code> values and bounds differed after matching dimension codes; rounding alone did not explain all differences. DSIR preserves each provider’s published estimates. Record the provider and retrieval date when comparing historical analyses.</p>
+<p>Failures warn and return empty results without switching providers. Reference lookups use a ten-minute memory cache. No keys, startup requests or disk cache are required. Advanced settings are <code>DSIR.who_backend</code> (<code>"xmart"</code> or explicit <code>"legacy"</code> for comparisons), <code>DSIR.who_base_url</code>, <code>DSIR.who_page_size</code> and <code>DSIR.who_max_rows</code>. Use <code><a href="reference/snapshot.html">snapshot()</a></code> to save a reproducible pull explicitly.</p>
+</div>
+<div class="section level3">
+<h3 id="global-health-estimates">Global Health Estimates<a class="anchor" aria-label="anchor" href="#global-health-estimates"></a>
+</h3>
+<p>Explore exact codes, then select a country, year, sex, age, cause and measure. GHE is a separate module backed by <code>DEX_CMS/GHE_FULL</code>. It returns long data with one row per measure. A download needs at least one filter and is limited to one million source rows by default.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'sex'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'age'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'measure'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_causes.html">ghe_causes</a></span><span class="op">(</span><span class="st">'diabetes'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_causes.html">ghe_causes</a></span><span class="op">(</span><span class="st">'stroke'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># All published ages, sexes and causes for one country/year</span></span>
+<span><span class="va">phl_all_causes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ghe_data.html">ghe_data</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>, measure <span class="op">=</span> <span class="st">'deaths'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Philippine all-age, both-sex deaths, all causes, 2023</span></span>
+<span><span class="va">phl_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ghe_data.html">ghe_data</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>, sex <span class="op">=</span> <span class="st">'TOTAL'</span>,</span>
+<span>                       age <span class="op">=</span> <span class="st">'TOTAL'</span>, cause <span class="op">=</span> <span class="fl">0</span>, measure <span class="op">=</span> <span class="st">'deaths'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Age-specific death rates by sex</span></span>
+<span><span class="va">phl_rates</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ghe_data.html">ghe_data</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>,</span>
+<span>                      sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'FEMALE'</span>, <span class="st">'MALE'</span><span class="op">)</span>, age <span class="op">=</span> <span class="st">'Y40T44'</span>,</span>
+<span>                      cause <span class="op">=</span> <span class="fl">0</span>, measure <span class="op">=</span> <span class="st">'death_rate'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_coverage.html">ghe_coverage</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">'PHL'</span>, sex <span class="op">=</span> <span class="st">'TOTAL'</span>, age <span class="op">=</span> <span class="st">'TOTAL'</span>, cause <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ghe_clean.html">ghe_clean</a></span><span class="op">(</span><span class="va">phl_rates</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Counts are persons or years; rates are per 100,000; shares are percentages. Count uncertainty bounds are retained. Bounds for rates and shares are absent in the provider and remain missing. All-age rates are crude rates. Do not sum overlapping ages or cause-hierarchy totals. <code>cause_group</code> is a published group, not an invented parent code. Discovery lists describe the latest release; verify a selection with <code><a href="reference/ghe_coverage.html">ghe_coverage()</a></code>. New releases can revise earlier years.</p>
+</div>
+<div class="section level3">
+<h3 id="who-2026-standard-population">WHO 2026 standard population<a class="anchor" aria-label="anchor" href="#who-2026-standard-population"></a>
+</h3>
+<p>Beginning with DSIR 0.11.0, <code>who_std_pop</code> uses the WHO 2026 Standard Population. Its 18 groups end at <code>85+</code>. WHO’s rounded Table 1 percentages sum to 100.02; DSIR normalizes them to 100 and derives a numeric standard million summing to 1,000,000. No finer split of <code>0-4</code> or <code>85+</code> is fabricated.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">who_std_pop</span></span>
+<span><span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/age_standardize.html">age_standardize</a></span><span class="op">(</span><span class="va">count</span>, <span class="va">population</span>, <span class="va">who_std_pop</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf" class="external-link">WHO technical report</a>, Table 1, page 6 (September 2026). The former 21-row object is replaced; align observed age groups explicitly before computing a standardized rate.</p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -381,6 +433,7 @@
 <li><a href="https://CRAN.R-project.org/package=DSIR" class="external-link"><img src="https://www.r-pkg.org/badges/version/DSIR" alt="CRAN status"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
 <li><a href="https://cran.r-project.org/package=DSIR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/DSIR" alt="CRAN downloads"></a></li>
+<li><a href="https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 

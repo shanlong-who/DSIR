@@ -15,7 +15,8 @@ gho_count(
   year_to = NULL,
   dim1 = NULL,
   dim2 = NULL,
-  dim3 = NULL
+  dim3 = NULL,
+  dimensions = NULL
 )
 ```
 
@@ -55,7 +56,17 @@ gho_count(
   [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
   to discover the values available for a given indicator. Rows where the
   dimension is empty (`null`) are excluded by the filter. Default `NULL`
-  (no filtering).
+  (no filtering). On xMart wide tables, positions follow named
+  dimensions in the source table schema (sex, age, then alphabetical).
+  These positions can differ from the legacy API. Prefer `dimensions`.
+  Canonical sex codes and the `AGEGROUP_` namespace remain supported in
+  positional filters. Named filters use the provider's exact native
+  codes.
+
+- dimensions:
+
+  Optional named list of exact xMart dimension fields and values, e.g.
+  `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
 
 ## Value
 
@@ -77,19 +88,15 @@ Returns `NA_integer_` (with a warning) if the request fails.
 # How many rows would gho_data() pull for France?
 gho_count("WHOSIS_000001", area = "FRA")
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=0&$count=true>
-#> [1] 72
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> [1] 66
 
 # Compare coverage across regions
 gho_count("NCDMORT3070", spatial_type = "country")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&$top=0&$count=true>
-#> [1] 12210
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> [1] 12208
 gho_count("NCDMORT3070", spatial_type = "region")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&$top=0&$count=true>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> [1] 396
 # }
 ```

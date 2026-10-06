@@ -4,11 +4,10 @@
 <url><loc>https://shanlong-who.github.io/DSIR/CLAUDE.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/LICENSE-text.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/articles/DSIR.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/articles/ghe-xmart.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/articles/index.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/authors.html</loc></url>
-<url><loc>https://shanlong-who.github.io/DSIR/conversation-export.html</loc></url>
-<url><loc>https://shanlong-who.github.io/DSIR/development_proposals.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/index.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/news/index.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/DSIR-package.html</loc></url>
@@ -18,6 +17,11 @@
 <url><loc>https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/geomean.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/ggpie.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/ghe_causes.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/ghe_clean.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/ghe_coverage.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/ghe_data.html</loc></url>
+<url><loc>https://shanlong-who.github.io/DSIR/reference/ghe_dimensions.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/gho_clean.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/gho_count.html</loc></url>
 <url><loc>https://shanlong-who.github.io/DSIR/reference/gho_coverage.html</loc></url>

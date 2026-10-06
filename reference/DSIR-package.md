@@ -19,13 +19,18 @@ with WHO region and UN M49 lookups
 [`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)),
 a geometric mean helper for indicator aggregation
 ([`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)),
-thin clients for the WHO Global Health Observatory API
+clients for the WHO public xMart Global Health Observatory API
 ([`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md),
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
 [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md),
 [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md),
 [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
-[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md))
+[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)),
+Global Health Estimates
+([`ghe_data()`](https://shanlong-who.github.io/DSIR/reference/ghe_data.md),
+[`ghe_causes()`](https://shanlong-who.github.io/DSIR/reference/ghe_causes.md),
+[`ghe_dimensions()`](https://shanlong-who.github.io/DSIR/reference/ghe_dimensions.md),
+[`ghe_coverage()`](https://shanlong-who.github.io/DSIR/reference/ghe_coverage.md))
 and the UN Sustainable Development Goals API
 ([`sdg_goals()`](https://shanlong-who.github.io/DSIR/reference/sdg_goals.md),
 [`sdg_targets()`](https://shanlong-who.github.io/DSIR/reference/sdg_targets.md),
@@ -37,9 +42,10 @@ and the UN Sustainable Development Goals API
 plus a unified cleaning / binding pipeline
 ([`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
+[`ghe_clean()`](https://shanlong-who.github.io/DSIR/reference/ghe_clean.md),
 [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md))
-that puts GHO and SDG output into the same 15-column core schema, with
-optional dimension types, named dimensions, and source metadata.
+that puts GHO, SDG and GHE output into the same 15-column core schema,
+with optional dimension types, named dimensions, and source metadata.
 
 ## See also
 

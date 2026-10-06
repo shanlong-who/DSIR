@@ -24,13 +24,13 @@ gho_indicators(search = NULL)
   - a character vector, whose elements are used as terms verbatim
     (whitespace inside an element is treated as part of the term).
 
-  Single quotes in any term are escaped for the OData filter.
+  Search terms are matched literally; they are not download identifiers.
 
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with
 columns `IndicatorCode`, `IndicatorName` and `Language`. Returns an
-empty tibble (with a message) when the service is unreachable.
+empty tibble (with a warning) when the service is unreachable.
 
 ## See also
 
@@ -43,49 +43,38 @@ empty tibble (with a message) when the service is unreachable.
 # \donttest{
 # All indicators
 inds <- gho_indicators()
-#> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 
 # Single keyword
 gho_indicators("mortality")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
-#> # A tibble: 31 × 3
-#>    IndicatorCode  IndicatorName                                         Language
-#>    <chr>          <chr>                                                 <chr>   
-#>  1 MORTADO        Adolescent mortality rate (per 1 000 age specific co… EN      
-#>  2 CHILDMORT5TO14 Mortality rate for 5-14 year-olds (probability of dy… EN      
-#>  3 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
-#>  4 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      
-#>  5 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
-#>  6 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
-#>  7 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
-#>  8 WHS10_4        Number of national population surveys - child mortal… EN      
-#>  9 SDGPOISON      Mortality rate attributed to unintentional poisoning… EN      
-#> 10 SDGROADAGE     Age-standardized road traffic  mortality (per 100 00… EN      
-#> # ℹ 21 more rows
+#> # A tibble: 25 × 3
+#>    IndicatorCode         IndicatorName                                  Language
+#>    <chr>                 <chr>                                          <chr>   
+#>  1 SDGSUICIDE            Suicide mortality rate (per 100 000 populatio… EN      
+#>  2 NCDMORT3070           Probability of premature mortality from NCDs   EN      
+#>  3 MDG_0000000007        Under-five mortality rate (per 1000 live birt… EN      
+#>  4 VIOLENCE_HOMICIDERATE Mortality rate due to homicide (per 100 000 p… EN      
+#>  5 TB_e_mort_100k        HIV-negative TB mortality                      EN      
+#>  6 TB_e_mort_agesex_100k TB mortality rate by age and sex per 100 000 … EN      
+#>  7 SDGPOISON             Mortality rate from unintentional poisoning (… EN      
+#>  8 WHOSIS_000003         Neonatal mortality rate (per 1000 live births) EN      
+#>  9 MDG_0000000026        Maternal mortality ratio (per 100 000 live bi… EN      
+#> 10 MALARIA_EST_MORTALITY Estimated malaria mortality rate (per 100 000… EN      
+#> # ℹ 15 more rows
 
 # Multiple keywords from one string (AND): both terms must appear
 gho_indicators("child mortality")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
-#> # A tibble: 4 × 3
-#>   IndicatorCode              IndicatorName                              Language
-#>   <chr>                      <chr>                                      <chr>   
-#> 1 CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      
-#> 2 WHS10_4                    Number of national population surveys - c… EN      
-#> 3 WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      
-#> 4 CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      
+#> # A tibble: 2 × 3
+#>   IndicatorCode  IndicatorName                                          Language
+#>   <chr>          <chr>                                                  <chr>   
+#> 1 CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      
+#> 2 WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      
 
 # Or pass terms as a vector
 gho_indicators(c("child", "mortality"))
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
-#> # A tibble: 4 × 3
-#>   IndicatorCode              IndicatorName                              Language
-#>   <chr>                      <chr>                                      <chr>   
-#> 1 CHILDMORT5TO14             Mortality rate for 5-14 year-olds (probab… EN      
-#> 2 WHS10_4                    Number of national population surveys - c… EN      
-#> 3 WHOSIS_000016              Mortality rate among children ages 5 to 9… EN      
-#> 4 CHILDMORT_MORTALITY_10TO14 Mortality rate among children ages 10 to … EN      
+#> # A tibble: 2 × 3
+#>   IndicatorCode  IndicatorName                                          Language
+#>   <chr>          <chr>                                                  <chr>   
+#> 1 CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      
+#> 2 WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      
 # }
 ```

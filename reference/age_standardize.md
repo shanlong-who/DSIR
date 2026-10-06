@@ -35,7 +35,7 @@ age_standardize(
 
   Numeric vector of standard-population weights per age group, the same
   length as `count`. Relative values only; normalized internally. Pass
-  `who_std_pop$std_million` (or `$weight`) for the WHO World Standard,
+  `who_std_pop$std_million` (or `$weight`) for the WHO 2026 Standard,
   aggregated to your age groups.
 
 - per:
@@ -76,7 +76,7 @@ same age group, in the same order. `stdpop` may be supplied as counts, a
 standard million, or percentages — only its relative values matter,
 because it is normalized internally. The built-in
 [who_std_pop](https://shanlong-who.github.io/DSIR/reference/who_std_pop.md)
-dataset supplies the WHO World Standard.
+dataset supplies the WHO 2026 Standard.
 
 **Confidence interval.** With `ci = TRUE`, a confidence interval is
 returned using the gamma-distribution method of Fay and Feuer (1997),
@@ -87,9 +87,8 @@ when `count` and `pop` are supplied (not a pre-computed rate).
 
 ## References
 
-Ahmad OB, Boschi-Pinto C, Lopez AD, Murray CJL, Lozano R, Inoue M
-(2001). *Age standardization of rates: a new WHO standard.* GPE
-Discussion Paper Series No. 31. World Health Organization.
+World Health Organization (2026). *Revised WHO standard population for
+calculating age-standardized rates*. WHO/HSA/DDA/GHE/2026.4.
 
 Fay MP, Feuer EJ (1997). Confidence intervals for directly standardized
 rates: a method based on the gamma distribution. *Statistics in
@@ -98,15 +97,14 @@ Medicine* 16(7):791-801.
 ## See also
 
 [who_std_pop](https://shanlong-who.github.io/DSIR/reference/who_std_pop.md)
-for the WHO World Standard Population;
+for the WHO 2026 Standard Population;
 [`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)
 for ratio-based aggregation.
 
 ## Examples
 
 ``` r
-# Deaths and population in five age groups, standardized to the WHO
-# World Standard collapsed to the same five groups.
+# Five aligned age groups with illustrative standard weights.
 deaths <- c(20, 15, 40, 90, 220)
 pop    <- c(12000, 11000, 9000, 7000, 3000)
 w      <- c(0.35, 0.25, 0.20, 0.12, 0.08)   # standard weights
@@ -121,10 +119,9 @@ age_standardize(deaths, pop, w, ci = TRUE)
 #>      rate     lower     upper 
 #>  922.2655  831.1569 1021.1368 
 
-# Using the bundled WHO World Standard for standard five-year groups.
-# Aggregate who_std_pop to whatever age groups your data use, keeping
-# the same order, then pass the weights:
-std5 <- who_std_pop$std_million[1:5]
-age_standardize(deaths, pop, std5)
-#> [1] 1812.645
+# Using all 18 WHO 2026 groups, aligned with the observed data.
+deaths18 <- seq_len(nrow(who_std_pop))
+pop18 <- rep(10000, nrow(who_std_pop))
+age_standardize(deaths18, pop18, who_std_pop$std_million)
+#> [1] 79.68206
 ```

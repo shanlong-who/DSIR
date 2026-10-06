@@ -1,9 +1,9 @@
 # Check Whether a GHO Indicator Has Data for a Filter
 
-Sends a minimal request (`$top=1&$select=Id`) to the WHO GHO OData API
-to find out whether any observations exist for the given indicator and
-filter combination, without downloading the full result set. Useful as a
-quick precheck before
+Sends a minimal request (`$top=1` with a row count) to the WHO GHO OData
+API to find out whether any observations exist for the given indicator
+and filter combination, without downloading the full result set. Useful
+as a quick precheck before
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md).
 
 ## Usage
@@ -17,7 +17,8 @@ gho_has_data(
   year_to = NULL,
   dim1 = NULL,
   dim2 = NULL,
-  dim3 = NULL
+  dim3 = NULL,
+  dimensions = NULL
 )
 ```
 
@@ -57,7 +58,17 @@ gho_has_data(
   [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md)
   to discover the values available for a given indicator. Rows where the
   dimension is empty (`null`) are excluded by the filter. Default `NULL`
-  (no filtering).
+  (no filtering). On xMart wide tables, positions follow named
+  dimensions in the source table schema (sex, age, then alphabetical).
+  These positions can differ from the legacy API. Prefer `dimensions`.
+  Canonical sex codes and the `AGEGROUP_` namespace remain supported in
+  positional filters. Named filters use the provider's exact native
+  codes.
+
+- dimensions:
+
+  Optional named list of exact xMart dimension fields and values, e.g.
+  `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
 
 ## Value
 
@@ -84,22 +95,16 @@ A logical scalar:
 # Does WHO have life-expectancy data for France?
 gho_has_data("WHOSIS_000001", area = "FRA")
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> [1] TRUE
 
 # Quickly screen a list of indicators before downloading any data
 inds <- c("WHOSIS_000001", "NCDMORT3070")
 vapply(inds, gho_has_data, logical(1), area = "FRA")
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> WHOSIS_000001   NCDMORT3070 
 #>          TRUE          TRUE 
 # }

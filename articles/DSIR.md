@@ -137,10 +137,15 @@ and
 accept ISO3 codes for their `area` argument and do the lookup internally
 (see the SDG section below).
 
+Network examples and the charts using their results are displayed
+without execution during package builds. To run them when rendering this
+vignette, set `DSIR_BUILD_LIVE_VIGNETTE=true` in the rendering session.
+
 ## Checking availability before fetching
 
-GHO has thousands of indicators, but any single indicator may not cover
-the countries or years you need. Before issuing a full download with
+The public GHO directory contains many indicators, but any single
+indicator may not cover the countries or years you need. Before issuing
+a full download with
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
 three lightweight helpers let you ask the server what is available
 without transferring any observations.
@@ -153,34 +158,15 @@ screening a list of candidate indicators.
 
 # Does WHO have life-expectancy data for France?
 gho_has_data("WHOSIS_000001", area = "FRA")
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=1&$select=Id>
-#> [1] TRUE
 # TRUE
 
 # Bulk-screen several indicators at once
 inds <- c("WHOSIS_000001", "NCDMORT3070", "MDG_0000000026")
 vapply(inds, gho_has_data, logical(1), area = "PHL")
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/MDG_0000000026?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29&$top=1&$select=Id>
-#>  WHOSIS_000001    NCDMORT3070 MDG_0000000026 
-#>           TRUE           TRUE           TRUE
 ```
 
-It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a
-non-existent indicator code — GHO returns HTTP 404 in that case).
+It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a a
+code absent from the current public directory).
 
 [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
 returns the number of rows the same filter would produce, which is
@@ -189,11 +175,6 @@ useful for sizing a download.
 ``` r
 
 gho_count("WHOSIS_000001", area = wpro_cty)
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&$top=0&$count=true>
-#> [1] 1584
 ```
 
 [`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)
@@ -204,18 +185,6 @@ server.
 ``` r
 
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&$select=SpatialDim,TimeDim>
-#> # A tibble: 3 × 4
-#>   location year_min year_max n_obs
-#>   <chr>       <int>    <int> <int>
-#> 1 DEU          2000     2023    72
-#> 2 FRA          2000     2023    72
-#> 3 JPN          2000     2023    72
-#>   location year_min year_max n_obs
-#> 1 DEU          2000     2021    66
-#> 2 FRA          2000     2021    66
-#> 3 JPN          2000     2021    66
 ```
 
 ## Fetching indicator data from GHO
@@ -230,17 +199,6 @@ pulled in one call.
 ``` r
 
 gho_indicators("UHC") |> head()
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27uhc%27%29>
-#> # A tibble: 6 × 3
-#>   IndicatorCode       IndicatorName                                     Language
-#>   <chr>               <chr>                                             <chr>   
-#> 1 GOE_Q070            Strategy includes objectives as to how telehealt… EN      
-#> 2 GOE_Q002            strategy refers to the use of ICT to support UHC  EN      
-#> 3 GOE_Q004            National eHealth strategy refers to objectives o… EN      
-#> 4 UHC_INDEX_REPORTED  UHC Service Coverage Index (SDG 3.8.1)            EN      
-#> 5 UHC_SCI_INFECT      UHC Service Coverage sub-index on infectious dis… EN      
-#> 6 UHC_DATA_AVAIL_CODE Data availability for UHC index of essential ser… EN
 ```
 
 Pick an `IndicatorCode` from the result — this is the value you pass to
@@ -257,37 +215,8 @@ uhc <- gho_data(
   area         = wpro_cty,
   year_from    = 2015
 )
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29%20and%20TimeDim%20ge%202015>
 
 uhc |> glimpse()
-#> Rows: 252
-#> Columns: 25
-#> $ Id                 <int> 1371840, 1655293, 1859492, 1885883, 1971606, 197810…
-#> $ IndicatorCode      <chr> "UHC_INDEX_REPORTED", "UHC_INDEX_REPORTED", "UHC_IN…
-#> $ SpatialDimType     <chr> "COUNTRY", "COUNTRY", "COUNTRY", "COUNTRY", "COUNTR…
-#> $ SpatialDim         <chr> "PLW", "NZL", "MYS", "TON", "NZL", "JPN", "MNG", "K…
-#> $ ParentLocationCode <chr> "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "WPR", "W…
-#> $ TimeDimType        <chr> "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YEAR", "YE…
-#> $ ParentLocation     <chr> "Western Pacific", "Western Pacific", "Western Paci…
-#> $ Dim1Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Dim1               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ TimeDim            <int> 2023, 2022, 2021, 2015, 2023, 2022, 2016, 2020, 201…
-#> $ Dim2Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Dim2               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Dim3Type           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Dim3               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ DataSourceDimType  <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ DataSourceDim      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Value              <chr> "75", "89", "79", "69", "89", "85", "69", "87", "70…
-#> $ NumericValue       <dbl> 75, 89, 79, 69, 89, 85, 69, 87, 70, 69, 52, 63, 68,…
-#> $ Low                <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ High               <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Comments           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-#> $ Date               <chr> "2025-12-05T11:39:13.277+01:00", "2025-12-05T11:39:…
-#> $ TimeDimensionValue <chr> "2023", "2022", "2021", "2015", "2023", "2022", "20…
-#> $ TimeDimensionBegin <chr> "2023-01-01T00:00:00+01:00", "2022-01-01T00:00:00+0…
-#> $ TimeDimensionEnd   <chr> "2023-12-31T00:00:00+01:00", "2022-12-31T00:00:00+0…
 ```
 
 Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
@@ -300,32 +229,15 @@ produces the **unified DSIR cleaned-indicator schema** — the same
 15-column shape as
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md).
 Columns include `source` (`"gho"`), `id`, `indicator`, `location`,
-`iso3`, `location_name` (empty for GHO), `year`, `value`, `value_num`,
-`low`, `high`, `series` (empty for GHO), and the three optional GHO
-dimensions `dim1`–`dim3`. Columns absent from the raw response are
-filled with typed `NA`.
+`iso3`, `location_name` (resolved for known locations), `year`, `value`,
+`value_num`, `low`, `high`, `series` (resolved for known locations), and
+the three optional GHO dimensions `dim1`–`dim3`. Columns absent from the
+raw response are filled with typed `NA`.
 
 ``` r
 
 uhc_clean <- gho_clean(uhc)
-#> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 uhc_clean
-#> # A tibble: 252 × 15
-#>    source id        indicator location iso3  location_name  year value value_num
-#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2015 89           89
-#>  2 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2016 89           89
-#>  3 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2017 89           89
-#>  4 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2018 89           89
-#>  5 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2019 89           89
-#>  6 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2020 89           89
-#>  7 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2021 89           89
-#>  8 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2022 89           89
-#>  9 gho    UHC_INDE… UHC Serv… AUS      AUS   Australia      2023 89           89
-#> 10 gho    UHC_INDE… UHC Serv… BRN      BRN   Brunei Darus…  2015 84           84
-#> # ℹ 242 more rows
-#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>
 ```
 
 ## Aggregating indicators with geomean()
@@ -398,8 +310,6 @@ uhc_clean |>
   )
 ```
 
-![](DSIR_files/figure-html/unnamed-chunk-14-1.png)
-
 For bar charts, pair
 [`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
 with
@@ -429,8 +339,6 @@ uhc_clean |>
   )
 ```
 
-![](DSIR_files/figure-html/unnamed-chunk-15-1.png)
-
 ### Faceted: `theme_dsi_facet()`
 
 When the same chart is split across many small panels, the half-frame
@@ -458,8 +366,6 @@ uhc_clean |>
   )
 ```
 
-![](DSIR_files/figure-html/unnamed-chunk-16-1.png)
-
 The `strip_fill` argument lets you change the strip background colour
 for emphasis — for example, a light-blue tone derived from the WHO
 accent for a deliverable where the strips themselves carry meaning:
@@ -476,8 +382,6 @@ uhc_clean |>
   labs(title = "UHC SCI, PIC — with custom strip colour",
        x = NULL, y = "SCI")
 ```
-
-![](DSIR_files/figure-html/unnamed-chunk-17-1.png)
 
 ## Tables with dsi_flextable_defaults()
 
@@ -503,40 +407,6 @@ uhc_clean |>
   set_caption("UHC SCI in WPR, latest year")
 ```
 
-| name_short        | value_num |
-|-------------------|-----------|
-| Australia         | 89        |
-| New Zealand       | 89        |
-| Republic of Korea | 88        |
-| Singapore         | 88        |
-| Japan             | 86        |
-| China             | 85        |
-| Brunei Darussalam | 84        |
-| Malaysia          | 80        |
-| Cook Islands      | 75        |
-| Palau             | 75        |
-| Tonga             | 71        |
-| Viet Nam          | 71        |
-| Mongolia          | 70        |
-| Fiji              | 69        |
-| Philippines       | 69        |
-| Indonesia         | 67        |
-| Niue              | 67        |
-| Marshall Islands  | 66        |
-| Micronesia        | 65        |
-| Tuvalu            | 65        |
-| Lao PDR           | 64        |
-| Cambodia          | 62        |
-| Nauru             | 62        |
-| Samoa             | 62        |
-| Vanuatu           | 52        |
-| Kiribati          | 51        |
-| Solomon Islands   | 47        |
-| Papua New Guinea  | 32        |
-
-UHC SCI in WPR, latest year {.table .cl-bbc8988d
-quarto-disable-processing="true"}
-
 ## Working with SDG indicators
 
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
@@ -561,21 +431,9 @@ OData.
 
 # All indicators that mention both mortality and cancer
 sdg_indicators("mortality cancer")
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
-#> # A tibble: 1 × 7
-#>   goal  target code  description                              tier  uri   series
-#>   <chr> <chr>  <chr> <chr>                                    <chr> <chr> <list>
-#> 1 3     3.4    3.4.1 Mortality rate attributed to cardiovasc… 1     /v1/… <df>
 
 # Same as above, but with explicit terms (allows whitespace inside a term)
 sdg_indicators(c("maternal", "mortality"))
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/List>
-#> # A tibble: 1 × 7
-#>   goal  target code  description              tier  uri                   series
-#>   <chr> <chr>  <chr> <chr>                    <chr> <chr>                 <list>
-#> 1 3     3.1    3.1.1 Maternal mortality ratio 1     /v1/sdg/Indicator/3.… <df>
 ```
 
 The `area` argument of
@@ -595,76 +453,15 @@ sdg <- sdg_data(
   indicator = "3.4.1",
   area      = wpro_cty
 )
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
 sdg |> glimpse()
-#> Rows: 462
-#> Columns: 21
-#> $ goal              <list> "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "…
-#> $ target            <list> "3.4", "3.4", "3.4", "3.4", "3.4", "3.4", "3.4", "3…
-#> $ indicator         <list> "3.4.1", "3.4.1", "3.4.1", "3.4.1", "3.4.1", "3.4.1…
-#> $ series            <chr> "SH_DTH_NCOM", "SH_DTH_NCOM", "SH_DTH_NCOM", "SH_DTH…
-#> $ seriesDescription <chr> "Mortality rate attributed to cardiovascular disease…
-#> $ seriesCount       <chr> "4326", "4326", "4326", "4326", "4326", "4326", "432…
-#> $ geoAreaCode       <chr> "36", "36", "36", "36", "36", "36", "36", "36", "36"…
-#> $ geoAreaName       <chr> "Australia", "Australia", "Australia", "Australia", …
-#> $ timePeriodStart   <int> 2000, 2000, 2000, 2005, 2005, 2005, 2010, 2010, 2010…
-#> $ value             <chr> "9.8", "13", "16", "11.4", "8.7", "14", "12.1", "9.9…
-#> $ valueType         <chr> "Float", "Float", "Float", "Float", "Float", "Float"…
-#> $ time_detail       <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ timeCoverage      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ upperBound        <chr> "11.2", "14.7", "18", "12.9", "10", "15.8", "13.8", …
-#> $ lowerBound        <chr> "8.4", "11.3", "14.1", "9.8", "7.5", "12.2", "10.4",…
-#> $ basePeriod        <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ source            <chr> "Global Health Estimates 2021: Deaths by Cause, Age,…
-#> $ geoInfoUrl        <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ footnotes         <list> "Data was previously disseminated with a different …
-#> $ attributes        <df[,2]> <data.frame[26 x 2]>
-#> $ dimensions        <df[,3]> <data.frame[26 x 3]>
 
 # M49 also works (e.g. when copy-pasting codes from sdg_areas())
 sdg_data("3.4.1", area = c("608", "250"))
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=608&areaCode=250&page=1>
-#> # A tibble: 42 × 21
-#>    goal      target indicator series   seriesDescription seriesCount geoAreaCode
-#>    <list>    <list> <list>    <chr>    <chr>             <chr>       <chr>      
-#>  1 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  2 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  3 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  4 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  5 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  6 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  7 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  8 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#>  9 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#> 10 <chr [1]> <chr>  <chr [1]> SH_DTH_… Mortality rate a… 4326        250        
-#> # ℹ 32 more rows
-#> # ℹ 14 more variables: geoAreaName <chr>, timePeriodStart <int>, value <chr>,
-#> #   valueType <chr>, time_detail <lgl>, timeCoverage <lgl>, upperBound <chr>,
-#> #   lowerBound <chr>, basePeriod <lgl>, source <chr>, geoInfoUrl <lgl>,
-#> #   footnotes <list>, attributes <df[,2]>, dimensions <df[,3]>
 ```
 
 ``` r
 
 sdg_clean(sdg)
-#> # A tibble: 462 × 15
-#>    source id    indicator     location iso3  location_name  year value value_num
-#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 28.1       28.1
-#>  2 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 25.4       25.4
-#>  3 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2000 31.8       31.8
-#>  4 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 22.5       22.5
-#>  5 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 25.6       25.6
-#>  6 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2005 29.7       29.7
-#>  7 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 24.4       24.4
-#>  8 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 20.9       20.9
-#>  9 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2010 29.1       29.1
-#> 10 sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       2015 28.3       28.3
-#> # ℹ 452 more rows
-#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>
 ```
 
 By default,
@@ -687,45 +484,8 @@ analysis, retain them explicitly:
 ``` r
 
 raw <- sdg_data("3.8.2", area = "PHL")
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&pageSize=1000&areaCode=608&page=1>
 unique(raw$dimensions)
-#>       Age Location     Sex Reporting Type Quantile Type_of_household
-#> 1  ALLAGE  ALLAREA BOTHSEX              G       Q2                _T
-#> 2  ALLAGE  ALLAREA BOTHSEX              G       Q5                _T
-#> 3  ALLAGE  ALLAREA BOTHSEX              G       Q4                _T
-#> 4  ALLAGE  ALLAREA BOTHSEX              G       Q3                _T
-#> 5  ALLAGE  ALLAREA BOTHSEX              G       Q1                _T
-#> 6  ALLAGE  ALLAREA BOTHSEX              G       _T                _T
-#> 13    60+  ALLAREA BOTHSEX              G       _T                _T
-#> 14 ALLAGE  ALLAREA BOTHSEX              G       _T        HH_ADTONLY
-#> 15   0-59  ALLAREA BOTHSEX              G       _T                _T
-#> 16 ALLAGE  ALLAREA    MALE              G       _T                _T
-#> 17 ALLAGE  ALLAREA  FEMALE              G       _T                _T
-#> 18 ALLAGE  ALLAREA BOTHSEX              G       _T       HH_MULTIGEN
-#> 19 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ADTWOLDER
-#> 20 ALLAGE  ALLAREA BOTHSEX              G       _T    HH_ADTWCHLDADO
-#> 22 ALLAGE    URBAN BOTHSEX              G       _T                _T
-#> 26 ALLAGE  ALLAREA BOTHSEX              G       _T      HH_ONLYOLDER
-#> 27 ALLAGE    RURAL BOTHSEX              G       _T                _T
 sdg_clean(raw, keep_dimensions = TRUE)
-#> # A tibble: 108 × 21
-#>    source id    indicator     location iso3  location_name  year value value_num
-#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 79.29     79.3 
-#>  2 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 1.10       1.1 
-#>  3 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 1.26       1.26
-#>  4 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 4.24       4.24
-#>  5 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 81.47     81.5 
-#>  6 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2000 33.47     33.5 
-#>  7 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 79.51     79.5 
-#>  8 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 92.47     92.5 
-#>  9 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 3.81       3.81
-#> 10 sdg    3.8.2 Proportion o… 608      PHL   Philippines    2003 1.16       1.16
-#> # ℹ 98 more rows
-#> # ℹ 12 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_location <chr>, dim_sex <chr>,
-#> #   dim_reporting_type <chr>, dim_quantile <chr>, dim_type_of_household <chr>
 ```
 
 This appends character columns such as `dim_age`, `dim_location`,
@@ -748,23 +508,6 @@ sdg_data(
   )
 ) |>
   sdg_clean(keep_dimensions = TRUE)
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.8.2&pageSize=1000&areaCode=608&page=1>
-#> # A tibble: 9 × 21
-#>   source id    indicator      location iso3  location_name  year value value_num
-#>   <chr>  <chr> <chr>          <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#> 1 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2000 33.47      33.5
-#> 2 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2003 35.61      35.6
-#> 3 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2006 37.42      37.4
-#> 4 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2009 36.15      36.2
-#> 5 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2012 36.85      36.8
-#> 6 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2015 35.21      35.2
-#> 7 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2018 31.60      31.6
-#> 8 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2021 33.85      33.8
-#> 9 sdg    3.8.2 Proportion of… 608      PHL   Philippines    2023 30.99      31.0
-#> # ℹ 12 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_location <chr>, dim_sex <chr>,
-#> #   dim_reporting_type <chr>, dim_quantile <chr>, dim_type_of_household <chr>
 ```
 
 These filters run locally after pagination. Values within one dimension
@@ -791,26 +534,6 @@ country:
 ``` r
 
 sdg_dimensions("3.8.2", include_attributes = TRUE)
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List>
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Dimensions>
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Series/SH_OOP_XPD_EARNNET40/Attributes>
-#> # A tibble: 32 × 7
-#>    indicator series               kind      dimension code    label        sdmx 
-#>    <chr>     <chr>                <chr>     <chr>     <chr>   <chr>        <chr>
-#>  1 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    C       Country data C    
-#>  2 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    CA      Country adj… CA   
-#>  3 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    E       Estimated d… E    
-#>  4 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    G       Global moni… G    
-#>  5 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    M       Modeled data M    
-#>  6 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    N       Non-relevant N    
-#>  7 3.8.2     SH_OOP_XPD_EARNNET40 attribute Nature    NA      Data nature… _X   
-#>  8 3.8.2     SH_OOP_XPD_EARNNET40 attribute Units     PERCENT Percentage   PT   
-#>  9 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       0-59    under 59 ye… Y0T59
-#> 10 3.8.2     SH_OOP_XPD_EARNNET40 dimension Age       60+     60 years ol… Y_GE…
-#> # ℹ 22 more rows
 ```
 
 The `code` column contains the JSON API codes used for filtering; the
@@ -824,23 +547,7 @@ To preserve source context as well as population dimensions:
 detailed <- sdg_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 detailed |>
   select(any_of(c("iso3", "year", "value_num", "attr_units", "attr_nature", "data_source")))
-#> # A tibble: 108 × 6
-#>    iso3   year value_num attr_units attr_nature data_source                     
-#>    <chr> <int>     <dbl> <chr>      <chr>       <chr>                           
-#>  1 PHL    2000     79.3  PERCENT    G           "Philippines - Family Income an…
-#>  2 PHL    2000      1.1  PERCENT    G           "Philippines - Family Income an…
-#>  3 PHL    2000      1.26 PERCENT    G           "Philippines - Family Income an…
-#>  4 PHL    2000      4.24 PERCENT    G           "Philippines - Family Income an…
-#>  5 PHL    2000     81.5  PERCENT    G           "Philippines - Family Income an…
-#>  6 PHL    2000     33.5  PERCENT    G           "Philippines - Family Income an…
-#>  7 PHL    2003     79.5  PERCENT    G           "Philippines - Family Income an…
-#>  8 PHL    2003     92.5  PERCENT    G           "Philippines - Family Income an…
-#>  9 PHL    2003      3.81 PERCENT    G           "Philippines - Family Income an…
-#> 10 PHL    2003      1.16 PERCENT    G           "Philippines - Family Income an…
-#> # ℹ 98 more rows
 head(detailed$footnotes, 1L)
-#> [[1]]
-#> [1] "Survey-based estimate, using household total consumption expenditure in the denominator"
 ```
 
 `keep_metadata` retains all returned attributes as `attr_*` columns,
@@ -851,30 +558,17 @@ Use RDS for storage when retaining this structure.
 
 For GHO, show each positional dimension’s type directly:
 
+This financial-hardship code is not in the public xMart directory as of
+2026-10-06. Select the legacy provider explicitly for this example.
+
 ``` r
 
+previous_options <- options(DSIR.who_backend = 'legacy')
 gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL") |>
   gho_clean(keep_dimensions = TRUE, keep_metadata = TRUE)
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/FINANCIALHARDSHIP_PROPORTIONOFPOP?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27PHL%27%29>
+options(previous_options)
 gho_detailed |>
   select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
-#> # A tibble: 144 × 7
-#>    iso3   year value_num dim1_type                  dim1         dim2_type dim2 
-#>    <chr> <int>     <dbl> <chr>                      <chr>        <chr>     <chr>
-#>  1 PHL    1997    89.0   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#>  2 PHL    1997    32.6   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
-#>  3 PHL    1997     1.42  WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#>  4 PHL    1997     0.901 WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#>  5 PHL    1997     2.88  WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#>  6 PHL    1997    32.6   RESIDENCEAREATYPE          RESIDENCEAR… NA        NA   
-#>  7 PHL    1997    68.8   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#>  8 PHL    1997     1.61  FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
-#>  9 PHL    1997    31.0   FINANCIALHARDSHIPCOMPONENT FINANCIALHA… NA        NA   
-#> 10 PHL    2000    81.5   WEALTHQUINTILE             WEALTHQUINT… NA        NA   
-#> # ℹ 134 more rows
 ```
 
 Types are taken from each observation’s `Dim1Type`–`Dim3Type`. They are
@@ -910,31 +604,8 @@ not harmonise codes or definitions across the sources.
 #   GHO NCDMORT3070 (probability of premature NCD mortality)
 #   SDG 3.4.1       (mortality rate from NCDs)
 gho_ncd <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
 sdg_ncd <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
 bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
-#> Rows: 1,914
-#> Columns: 15
-#> $ source        <chr> "gho", "gho", "gho", "gho", "gho", "gho", "gho", "gho", …
-#> $ id            <chr> "NCDMORT3070", "NCDMORT3070", "NCDMORT3070", "NCDMORT307…
-#> $ indicator     <chr> "Probability (%) of dying between age 30 and exact age 7…
-#> $ location      <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
-#> $ iso3          <chr> "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", "AUS", …
-#> $ location_name <chr> "Australia", "Australia", "Australia", "Australia", "Aus…
-#> $ year          <int> 2000, 2000, 2000, 2001, 2001, 2001, 2002, 2002, 2002, 20…
-#> $ value         <chr> "16.0 [14.1-18.0]", "9.8 [8.4-11.2]", "13.0 [11.3-14.7]"…
-#> $ value_num     <dbl> 16.0, 9.8, 13.0, 9.6, 15.6, 12.6, 15.0, 12.3, 9.6, 9.1, …
-#> $ low           <dbl> 14.1, 8.4, 11.3, 8.2, 13.7, 11.0, 13.1, 10.7, 8.2, 7.8, …
-#> $ high          <dbl> 18.0, 11.2, 14.7, 11.0, 17.5, 14.3, 16.8, 13.9, 10.9, 10…
-#> $ series        <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ dim1          <chr> "SEX_MLE", "SEX_FMLE", "SEX_BTSX", "SEX_FMLE", "SEX_MLE"…
-#> $ dim2          <chr> "AGEGROUP_YEARS30-69", "AGEGROUP_YEARS30-69", "AGEGROUP_…
-#> $ dim3          <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 ```
 
 ### Exploring series with sdg_coverage()
@@ -954,19 +625,6 @@ is covered before deciding which one to analyse.
 ``` r
 
 sdg_coverage("3.b.1", area = c("156", "608"))
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.b.1&pageSize=1000&areaCode=156&areaCode=608&page=1>
-#> # A tibble: 8 × 5
-#>   location series      year_min year_max n_obs
-#>   <chr>    <chr>          <int>    <int> <int>
-#> 1 156      SH_ACS_DTP3     2000     2024    25
-#> 2 156      SH_ACS_HPV      2010     2024    15
-#> 3 156      SH_ACS_MCV2     2000     2024    25
-#> 4 156      SH_ACS_PCV3     2008     2024    17
-#> 5 608      SH_ACS_DTP3     2000     2024    25
-#> 6 608      SH_ACS_HPV      2010     2024    15
-#> 7 608      SH_ACS_MCV2     2000     2024    25
-#> 8 608      SH_ACS_PCV3     2008     2024    17
 #>   location series      year_min year_max n_obs
 #> 1 156      SH_ACS_DTP3     2000     2023    24
 #> 2 156      SH_ACS_HPV      2018     2023     6

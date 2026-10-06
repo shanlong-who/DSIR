@@ -31,7 +31,7 @@ Life tables and age standardization for mortality and rate analysis.
 - [`age_standardize()`](https://shanlong-who.github.io/DSIR/reference/age_standardize.md)
   : Directly Age-Standardized Rate
 - [`who_std_pop`](https://shanlong-who.github.io/DSIR/reference/who_std_pop.md)
-  : WHO World Standard Population
+  : WHO 2026 Standard Population
 
 ## GHO indicator data
 
@@ -54,6 +54,22 @@ Observatory.
   : Check Whether a GHO Indicator Has Data for a Filter
 - [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
   : Bind Cleaned Indicator Tibbles
+
+## GHE estimates
+
+Current WHO Global Health Estimates with exact cause, age, sex and
+measure filters.
+
+- [`ghe_data()`](https://shanlong-who.github.io/DSIR/reference/ghe_data.md)
+  : Fetch WHO Global Health Estimates
+- [`ghe_causes()`](https://shanlong-who.github.io/DSIR/reference/ghe_causes.md)
+  : Explore Global Health Estimates Causes
+- [`ghe_dimensions()`](https://shanlong-who.github.io/DSIR/reference/ghe_dimensions.md)
+  : Explore Global Health Estimates Dimensions
+- [`ghe_coverage()`](https://shanlong-who.github.io/DSIR/reference/ghe_coverage.md)
+  : Summarise Global Health Estimates Coverage
+- [`ghe_clean()`](https://shanlong-who.github.io/DSIR/reference/ghe_clean.md)
+  : Put GHE Estimates in the Unified DSIR Schema
 
 ## SDG indicator data
 

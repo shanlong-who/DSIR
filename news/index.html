@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +19,8 @@
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ghe-xmart.html">WHO xMart and Global Health Estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/visualizing-indicators.html">Visualizing indicators</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -34,9 +35,31 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.10.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.11.0" id="dsir-0110">DSIR 0.11.0<a class="anchor" aria-label="anchor" href="#dsir-0110"></a></h2>
+<div class="section level3">
+<h3 id="who-data-infrastructure-0-11-0">WHO data infrastructure<a class="anchor" aria-label="anchor" href="#who-data-infrastructure-0-11-0"></a></h3>
+<ul><li>GHO now defaults to the public production WHO xMart API. An internal provider adapter maps the official indicator directory, download routes, geography, numeric measure families and named dimensions to DSIR fields. Existing arguments remain; <code>dimensions</code> adds exact named filters. The public xMart directory covers a different set of codes and vintages than the legacy catalog. Unknown codes warn; no automatic fallback occurs.</li>
+<li>
+<code>DSIR.who_backend = "legacy"</code> explicitly selects the previous GHO adapter. <code>DSIR.who_base_url</code> accepts a compatible HTTPS origin. Reference caches are session-only, expire after ten minutes and are scoped to provider/host.</li>
+<li>WHO downloads verify row counts, page consistency and unique identifiers. Incomplete downloads are discarded. Long filters use the public <code>/$query</code> POST endpoint. Compact list filters and batched dimension discovery respect the production query limits. A source-row limit prevents accidental bulk pulls.</li>
+<li>
+<code>gho_clean(keep_dimensions = TRUE)</code> retains named xMart dimensions in addition to dimension types. Metadata retention adds units, measure fields and provenance. The default remains the unified 15-column core.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="global-health-estimates-0-11-0">Global Health Estimates<a class="anchor" aria-label="anchor" href="#global-health-estimates-0-11-0"></a></h3>
+<ul><li>Add <code><a href="../reference/ghe_data.html">ghe_data()</a></code>, <code><a href="../reference/ghe_causes.html">ghe_causes()</a></code>, <code><a href="../reference/ghe_dimensions.html">ghe_dimensions()</a></code>, <code><a href="../reference/ghe_coverage.html">ghe_coverage()</a></code> and <code><a href="../reference/ghe_clean.html">ghe_clean()</a></code>, using <code>DEX_CMS/GHE_FULL</code>. Exact geography, year, sex, age, cause and friendly measure filters preserve uncertainty bounds and hierarchy. Cause grouping is not presented as a parent identifier. Rates do not invent uncertainty bounds. Named context can be retained when binding cleaned data.</li>
+<li>Discovery uses official references and small filtered code-list slices, avoiding expensive grouping of the full GHE database. Live tests require explicit opt-in and are skipped on CRAN.</li>
+<li>Vignette network examples are displayed without execution by default. This keeps package builds independent of temporary API availability.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="standard-population-intentional-behavior-change-0-11-0">Standard population: intentional behavior change<a class="anchor" aria-label="anchor" href="#standard-population-intentional-behavior-change-0-11-0"></a></h3>
+<ul><li>Beginning with DSIR 0.11.0, <code>who_std_pop</code> uses the WHO 2026 Standard Population (WHO/HSA/DDA/GHE/2026.4, Table 1). Its 18 groups run from <code>0-4</code> to <code>85+</code>. Published percentages sum to 100.02 and are explicitly normalized to 100; the derived standard million sums to 1,000,000 without integer rounding. The four column names remain, but <code>std_million</code> is now numeric. No old population object is retained. Align input ages before standardizing.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.0" id="dsir-0100">DSIR 0.10.0<a class="anchor" aria-label="anchor" href="#dsir-0100"></a></h2><p class="text-muted">CRAN release: 2026-10-01</p>
 <div class="section level3">
@@ -64,7 +87,7 @@
 <div class="section level3">
 <h3 id="new-features-0-9-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0"></a></h3>
 <ul><li><p>New <code><a href="../reference/age_standardize.html">age_standardize()</a></code>: the directly age-standardized rate, with an optional Fay-Feuer gamma confidence interval. Standard-population weights may be supplied as counts, a standard million, or percentages — they are normalised internally.</p></li>
-<li><p>New dataset <code>who_std_pop</code>: the WHO World Standard Population (Ahmad et al. 2001), as both the published percentages and the SEER standard million, in 21 five-year age groups (<code>0-4</code> to <code>100+</code>). Aggregate it to your own age groups and pass it to <code><a href="../reference/age_standardize.html">age_standardize()</a></code>.</p></li>
+<li><p>New dataset <code>who_std_pop</code> for direct age standardization. Its weights and age groups are replaced by the WHO 2026 standard in version 0.11.0.</p></li>
 <li><p>New <code><a href="../reference/life_table.html">life_table()</a></code>: a period life table (qx, lx, dx, Lx, Tx, ex) from age-specific mortality rates. Handles abridged and complete tables and an open final interval, with Coale-Demeny West infant and child <code>ax</code> by sex (overridable). Life expectancy at birth is <code>ex[1]</code>.</p></li>
 <li><p>New <code><a href="../reference/snapshot.html">snapshot()</a></code>: evaluate an expression (typically a <code><a href="../reference/gho_data.html">gho_data()</a></code> / <code><a href="../reference/gho_clean.html">gho_clean()</a></code> pull) once, save the result to an <code>.rds</code> file, and read it back on later runs so analyses re-run reproducibly and offline. An empty result — the signature of an unreachable API — is never written, so a failed refresh cannot destroy a good snapshot.</p></li>
 <li><p><code>who_countries</code> gains a <code>wb_income_group</code> column: the World Bank income classification (fiscal year 2027; 2025 GNI per capita, Atlas method). Cook Islands and Niue are <code>NA</code> as they are not World Bank economies.</p></li>

@@ -8,15 +8,15 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/shanlong-who/DSIR/blob/v0.10.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/shanlong-who/DSIR/blob/main/inst/CITATION)
 
 Ding S (2026). *DSIR: Data Science Infrastructure for Global Health*. R
-package version 0.10.0, <https://CRAN.R-project.org/package=DSIR>.
+package version 0.11.0, <https://CRAN.R-project.org/package=DSIR>.
 
     @Manual{DSIR-package,
       title = {{DSIR}: Data Science Infrastructure for Global Health},
       author = {Shanlong Ding},
       year = {2026},
-      note = {R package version 0.10.0},
+      note = {R package version 0.11.0},
       url = {https://CRAN.R-project.org/package=DSIR},
     }

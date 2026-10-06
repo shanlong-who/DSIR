@@ -22,7 +22,9 @@ gho_dimensions(indicator, dimension = "SpatialDimType")
   Character. Name of the dimension column in the indicator data. Common
   values include `"SpatialDim"`, `"SpatialDimType"`, `"TimeDim"`,
   `"Dim1"`, `"Dim2"`, and `"Dim3"`. Case-sensitive (it is sent to the
-  server as an OData `$select` field name). Default `"SpatialDimType"`.
+  server as an OData `$select` field name). xMart also accepts exact
+  named fields such as `"DIM_SEX"` or `"DIM_AGE"`. Default
+  `"SpatialDimType"`.
 
 ## Value
 
@@ -49,11 +51,11 @@ character vector.
 ``` r
 # \donttest{
 gho_dimensions("NCDMORT3070")
-#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> [1] "COUNTRY"              "GLOBAL"               "REGION"              
 #> [4] "WORLDBANKINCOMEGROUP"
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
-#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
+#> Fetching WHO: "DATA_/RELAY_WHS"
 #> [1] "SEX_BTSX" "SEX_FMLE" "SEX_MLE" 
 # }
 ```
