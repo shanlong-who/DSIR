@@ -14,12 +14,14 @@ mock_json <- function(body, status = 200L) {
 # ── Input validation (runs without any HTTP call) ────────────────────
 
 test_that("gho_dimensions validates the indicator argument", {
+  withr::local_options(DSIR.who_backend = "legacy")
   expect_error(gho_dimensions(123),         "is.character")
   expect_error(gho_dimensions(c("A", "B")), "length")
   expect_error(gho_dimensions(""),          "nzchar")
 })
 
 test_that("gho_dimensions validates the dimension argument", {
+  withr::local_options(DSIR.who_backend = "legacy")
   expect_error(gho_dimensions("X", dimension = 1L),
                "is.character")
   expect_error(gho_dimensions("X", dimension = c("a", "b")),
@@ -29,6 +31,7 @@ test_that("gho_dimensions validates the dimension argument", {
 # ── Behaviour under mocked GHO responses ─────────────────────────────
 
 test_that("gho_dimensions returns sorted unique values of the requested column", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # Three rows; SpatialDimType has two distinct values plus an NA. The
   # NA must be dropped and the result must be sorted.
   body <- paste0(
@@ -47,6 +50,7 @@ test_that("gho_dimensions returns sorted unique values of the requested column",
 })
 
 test_that("gho_dimensions picks the requested dimension column", {
+  withr::local_options(DSIR.who_backend = "legacy")
   body <- paste0(
     '{"value":[',
     '{"SpatialDimType":"COUNTRY","Dim1":"BTSX"},',
@@ -61,6 +65,7 @@ test_that("gho_dimensions picks the requested dimension column", {
 })
 
 test_that("gho_dimensions returns empty character when dimension column is missing", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # SpatialDimType absent from the response — function should return
   # character(0), not error.
   body <- '{"value":[{"Dim1":"BTSX"},{"Dim1":"MLE"}]}'
@@ -72,6 +77,7 @@ test_that("gho_dimensions returns empty character when dimension column is missi
 })
 
 test_that("gho_dimensions requests only the dimension column via $select", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.8.0: gho_dimensions() no longer downloads the full
   # observation table; it sends $select=<dimension> so only one column
   # travels over the wire. Capture the outgoing URL to lock this in.
@@ -95,6 +101,7 @@ test_that("gho_dimensions requests only the dimension column via $select", {
 })
 
 test_that("gho_dimensions returns empty character on HTTP failure", {
+  withr::local_options(DSIR.who_backend = "legacy")
   httr2::with_mocked_responses(
     mock_json('{"error":"not found"}', status = 404L),
     {

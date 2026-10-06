@@ -1,5 +1,6 @@
 test_that("gho_data handles long area vectors via in operator", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
   
   result <- gho_data("MDG_0000000026", 
@@ -18,6 +19,7 @@ test_that("gho_data validates area input", {
 
 test_that("gho_data infers country when area given without spatial_type", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   expect_message(

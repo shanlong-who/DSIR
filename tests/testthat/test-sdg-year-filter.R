@@ -7,6 +7,7 @@
 
 test_that("year_from works on the previously broken case (3.2.1, 608)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   t <- system.time({
@@ -23,6 +24,7 @@ test_that("year_from works on the previously broken case (3.2.1, 608)", {
 
 test_that("year_from + year_to bracket the result inclusively", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_data("3.2.1", area = "608",
@@ -36,6 +38,7 @@ test_that("year_from + year_to bracket the result inclusively", {
 
 test_that("no year filter returns the full result", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   full       <- sdg_data("3.2.1", area = "608")
@@ -52,6 +55,7 @@ test_that("no year filter returns the full result", {
 
 test_that("sdg_coverage inherits the year-filter fix", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   t <- system.time({

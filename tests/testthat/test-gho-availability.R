@@ -1,5 +1,6 @@
 test_that("gho_has_data returns TRUE when data exist for the filter", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   expect_true(gho_has_data("WHOSIS_000001", area = "FRA"))
@@ -7,15 +8,16 @@ test_that("gho_has_data returns TRUE when data exist for the filter", {
 
 test_that("gho_has_data returns FALSE when the server returns no rows", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
-  # "ZZZ" is a reserved ISO3 code never assigned to a country, so the
-  # GHO server returns an empty result (200 OK, value = []).
-  expect_false(gho_has_data("WHOSIS_000001", area = "ZZZ"))
+  # A valid country with a future year has no observations.
+  expect_false(gho_has_data("WHOSIS_000001", area = "FRA", year_from = 9999))
 })
 
 test_that("gho_has_data returns NA on request failure", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # A non-existent indicator code triggers HTTP 404 from the GHO server,
@@ -26,6 +28,7 @@ test_that("gho_has_data returns NA on request failure", {
 
 test_that("gho_has_data infers country when area given without spatial_type", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   expect_message(
@@ -36,6 +39,7 @@ test_that("gho_has_data infers country when area given without spatial_type", {
 
 test_that("gho_count returns an integer for valid filters", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   n <- gho_count("WHOSIS_000001", area = "FRA")
@@ -46,13 +50,15 @@ test_that("gho_count returns an integer for valid filters", {
 
 test_that("gho_count returns 0L when no rows match", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
-  expect_identical(gho_count("WHOSIS_000001", area = "ZZZ"), 0L)
+  expect_identical(gho_count("WHOSIS_000001", area = "FRA", year_from = 9999), 0L)
 })
 
 test_that("the GHO server accepts Dim1 'in' filters (dim1 argument)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # NCDMORT3070 carries a sex breakdown in Dim1 (SEX_BTSX / SEX_MLE /
@@ -72,6 +78,7 @@ test_that("the GHO server accepts Dim1 'in' filters (dim1 argument)", {
 
 test_that("gho_coverage returns the documented 4-column shape", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
@@ -90,9 +97,10 @@ test_that("gho_coverage returns the documented 4-column shape", {
 
 test_that("gho_coverage returns an empty tibble with correct columns on no match", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
-  out <- gho_coverage("WHOSIS_000001", area = "ZZZ")
+  out <- gho_coverage("WHOSIS_000001", area = "FRA", year_from = 9999)
   expect_s3_class(out, "tbl_df")
   expect_named(out, c("location", "year_min", "year_max", "n_obs"))
   expect_equal(nrow(out), 0L)

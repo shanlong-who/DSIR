@@ -62,6 +62,7 @@ test_that("Non-character input errors", {
 
 test_that("sdg_data accepts ISO3 directly (network test)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   result <- sdg_data("3.4.1", area = "PHL")

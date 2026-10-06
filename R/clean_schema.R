@@ -2,7 +2,7 @@
 # R/clean_schema.R
 #
 # Internal helpers for the unified 15-column schema produced by
-# gho_clean() and sdg_clean() (and consumed by bind_indicators()).
+# gho_clean(), sdg_clean() and ghe_clean() (and consumed by bind_indicators()).
 # Centralises column names and types so all three functions stay in sync.
 # =============================================================================
 

@@ -35,8 +35,10 @@ exports or reopen declined features unless the user asks.
   parsing failures warn and return the documented empty/NA result.
   Never interpolate external error text directly in a `cli_warn()`
   message template; use a variable such as `"x" = "{msg}"`.
-- GHO follows `@odata.nextLink`; SDG validates pagination before applying
-  local series and dimension filters. Keep these source-specific contracts.
+- WHO xMart validates row counts, stable identifiers and pagination before
+  returning observations. The explicit legacy GHO adapter follows
+  `@odata.nextLink`. SDG validates pagination before applying local series
+  and dimension filters. Keep these source-specific contracts.
 - `who_countries$m49_code` stores zero-padded M49 codes. Rebuild bundled
   data through `data-raw/` scripts; do not hand-edit binary data files.
 - Fonts must have portable defaults. Keep string-based ggplot column access
@@ -53,7 +55,8 @@ devtools::check()
 ```
 
 Tests that need live GHO or UN services use their existing `skip_on_cran()`
-guards. The independent CI workflow uses `NOT_CRAN=false` and
+guards and require explicit `DSIR_RUN_LIVE_TESTS=true` opt-in. The independent
+CI workflow uses `NOT_CRAN=false` and
 `R CMD check --no-manual --as-cran`; report when live tests are skipped.
 Keep `httptest2` installed so the existing offline mock tests run.
 For httr2 mocks, supply a function or a list of responses. Mocked responses

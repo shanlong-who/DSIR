@@ -118,10 +118,10 @@ test_that("age_standardize ci is NA with zero events", {
 })
 
 test_that("age_standardize works with who_std_pop weights", {
-  # 21 age groups matching who_std_pop; a flat rate schedule must return
+  # Age groups matching who_std_pop; a flat rate schedule must return
   # the flat rate regardless of the standard used.
   rate <- 0.003
-  pop  <- rep(10000, 21)
+  pop  <- rep(10000, nrow(who_std_pop))
   deaths <- pop * rate
   expect_equal(
     age_standardize(deaths, pop, who_std_pop$std_million),

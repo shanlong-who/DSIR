@@ -17,11 +17,11 @@
 #'   * a character vector, whose elements are used as terms verbatim
 #'     (whitespace inside an element is treated as part of the term).
 #'
-#'   Single quotes in any term are escaped for the OData filter.
+#'   Search terms are matched literally; they are not download identifiers.
 #'
 #' @return A [tibble][tibble::tibble] with columns `IndicatorCode`,
 #'   `IndicatorName` and `Language`. Returns an empty tibble (with
-#'   a message) when the service is unreachable.
+#'   a warning) when the service is unreachable.
 #' @seealso [gho_data()], [gho_dimensions()].
 #' @export
 #'
@@ -40,43 +40,10 @@
 #' gho_indicators(c("child", "mortality"))
 #' }
 gho_indicators <- function(search = NULL) {
-  url <- .gho_indicators_build_url(search)
-
-  res <- .gho_get(url)
-  if (is.null(res) || nrow(res) == 0L) {
-    return(tibble::tibble(IndicatorCode = character(),
-                          IndicatorName = character(),
-                          Language = character()))
-  }
-  res[, c("IndicatorCode", "IndicatorName", "Language")]
+  .who_gho("indicators", search = search)
 }
 
 
-#' @noRd
-.gho_indicators_build_url <- function(search = NULL) {
-  base_url <- "https://ghoapi.azureedge.net/api/Indicator"
-  if (is.null(search)) return(base_url)
-
-  stopifnot(
-    is.character(search),
-    length(search) >= 1L,
-    !anyNA(search),
-    all(nzchar(search))
-  )
-
-  terms <- if (length(search) == 1L) {
-    strsplit(search, "\\s+")[[1]]
-  } else {
-    search
-  }
-  terms <- terms[nzchar(terms)]
-  stopifnot(length(terms) >= 1L)
-
-  terms_escaped <- gsub("'", "''", tolower(terms), fixed = TRUE)
-  clauses <- paste0("contains(tolower(IndicatorName),'", terms_escaped, "')")
-  filter <- paste(clauses, collapse = " and ")
-  paste0(base_url, "?$filter=", utils::URLencode(filter, reserved = TRUE))
-}
 
 
 #' Fetch GHO Data
@@ -104,7 +71,21 @@ gho_indicators <- function(search = NULL) {
 #'   group for another); use [gho_dimensions()] to discover the values
 #'   available for a given indicator. Rows where the dimension is
 #'   empty (`null`) are excluded by the filter. Default `NULL` (no
-#'   filtering).
+#'   filtering). On xMart wide tables, positions follow named dimensions
+#'   in the source table schema (sex, age, then alphabetical).
+#'   These positions can differ from the legacy API. Prefer `dimensions`.
+#'   Canonical sex codes and the `AGEGROUP_` namespace remain supported in
+#'   positional filters. Named filters use the provider's exact native codes.
+#' @param dimensions Optional named list of exact xMart dimension fields and
+#'   values, e.g. `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
+#' @details
+#' Uses the public production xMart backend by default. Advanced users may
+#' set `DSIR.who_backend = "legacy"` for explicit comparisons, or set
+#' `DSIR.who_base_url` to another compatible HTTPS origin. Failures never
+#' trigger a silent fallback. Public directory coverage differs from the
+#' legacy catalog; unknown codes warn instead of substituting another code.
+#' Reference lookups are cached only in memory; no credentials
+#' or startup requests are required.
 #'
 #' @return A [tibble][tibble::tibble] of indicator observations, or
 #'   an empty tibble when the service is unreachable.
@@ -122,111 +103,16 @@ gho_indicators <- function(search = NULL) {
 #' # Keep only the both-sexes breakdown, filtered server-side
 #' gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #' }
-gho_data <- function(indicator, spatial_type = NULL, area = NULL,
-                     year_from = NULL, year_to = NULL,
-                     dim1 = NULL, dim2 = NULL, dim3 = NULL) {
-  url <- .gho_build_url(indicator,
-                        spatial_type = spatial_type, area = area,
-                        year_from = year_from, year_to = year_to,
-                        dim1 = dim1, dim2 = dim2, dim3 = dim3)
-  res <- .gho_get(url)
-  if (is.null(res)) tibble::tibble() else res
+gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
+  .who_gho("data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
 }
 
 
-#' @noRd
-.gho_build_url <- function(indicator, spatial_type = NULL, area = NULL,
-                           year_from = NULL, year_to = NULL,
-                           dim1 = NULL, dim2 = NULL, dim3 = NULL,
-                           top = NULL, select = NULL, count = FALSE) {
-  stopifnot(is.character(indicator), length(indicator) == 1L, nzchar(indicator))
-  base_url <- paste0("https://ghoapi.azureedge.net/api/", indicator)
-
-  filters <- character(0)
-
-  if (!is.null(area) && is.null(spatial_type)) {
-    cli::cli_inform(c(
-      "Assuming {.arg spatial_type} = {.val country} since {.arg area} was given.",
-      "i" = "Pass {.arg spatial_type} explicitly to silence this message."
-    ))
-    spatial_type <- "country"
-  }
-
-  if (!is.null(spatial_type)) {
-    spatial_type <- tolower(spatial_type)
-    st <- switch(spatial_type,
-                 country = "COUNTRY",
-                 region  = "REGION",
-                 global  = "GLOBAL",
-                 cli::cli_abort("Unknown {.arg spatial_type}: {.val {spatial_type}}. Use \"country\", \"region\", or \"global\".")
-    )
-    filters <- c(filters, paste0("SpatialDimType eq '", st, "'"))
-  }
-
-  if (!is.null(area)) {
-    stopifnot(
-      is.character(area),
-      length(area) >= 1L,
-      !anyNA(area),
-      all(nzchar(area))
-    )
-    area_filter <- paste0(
-      "SpatialDim in ('",
-      paste(area, collapse = "','"),
-      "')"
-    )
-    filters <- c(filters, area_filter)
-  }
-
-  if (!is.null(year_from)) {
-    filters <- c(filters, paste0("TimeDim ge ", year_from))
-  }
-  if (!is.null(year_to)) {
-    filters <- c(filters, paste0("TimeDim le ", year_to))
-  }
-
-  dim_args <- list(Dim1 = dim1, Dim2 = dim2, Dim3 = dim3)
-  for (col in names(dim_args)) {
-    values <- dim_args[[col]]
-    if (is.null(values)) next
-    stopifnot(
-      is.character(values),
-      length(values) >= 1L,
-      !anyNA(values),
-      all(nzchar(values))
-    )
-    # Escape single quotes for the OData string literal, as
-    # .gho_indicators_build_url() does for search terms.
-    escaped <- gsub("'", "''", values, fixed = TRUE)
-    filters <- c(filters, paste0(
-      col, " in ('", paste(escaped, collapse = "','"), "')"
-    ))
-  }
-
-  query_parts <- character(0)
-  if (length(filters) > 0) {
-    filter_str <- paste(filters, collapse = " and ")
-    query_parts <- c(query_parts,
-                     paste0("$filter=", utils::URLencode(filter_str, reserved = TRUE)))
-  }
-  if (!is.null(top)) {
-    query_parts <- c(query_parts, paste0("$top=", top))
-  }
-  if (!is.null(select)) {
-    query_parts <- c(query_parts, paste0("$select=", paste(select, collapse = ",")))
-  }
-  if (isTRUE(count)) {
-    query_parts <- c(query_parts, "$count=true")
-  }
-
-  if (length(query_parts) == 0L) return(base_url)
-  paste0(base_url, "?", paste(query_parts, collapse = "&"))
-}
 
 
 #' Check Whether a GHO Indicator Has Data for a Filter
 #'
-#' Sends a minimal request (`$top=1&$select=Id`) to the WHO GHO OData
+#' Sends a minimal request (`$top=1` with a row count) to the WHO GHO OData
 #' API to find out whether any observations exist for the given
 #' indicator and filter combination, without downloading the full
 #' result set. Useful as a quick precheck before [gho_data()].
@@ -251,17 +137,8 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' inds <- c("WHOSIS_000001", "NCDMORT3070")
 #' vapply(inds, gho_has_data, logical(1), area = "FRA")
 #' }
-gho_has_data <- function(indicator, spatial_type = NULL, area = NULL,
-                         year_from = NULL, year_to = NULL,
-                         dim1 = NULL, dim2 = NULL, dim3 = NULL) {
-  url <- .gho_build_url(indicator,
-                        spatial_type = spatial_type, area = area,
-                        year_from = year_from, year_to = year_to,
-                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
-                        top = 1, select = "Id")
-  res <- .gho_get(url)
-  if (is.null(res)) return(NA)
-  nrow(res) > 0L
+gho_has_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
+  .who_gho("has_data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
 }
 
 
@@ -288,55 +165,8 @@ gho_has_data <- function(indicator, spatial_type = NULL, area = NULL,
 #' gho_count("NCDMORT3070", spatial_type = "country")
 #' gho_count("NCDMORT3070", spatial_type = "region")
 #' }
-gho_count <- function(indicator, spatial_type = NULL, area = NULL,
-                      year_from = NULL, year_to = NULL,
-                      dim1 = NULL, dim2 = NULL, dim3 = NULL) {
-  url <- .gho_build_url(indicator,
-                        spatial_type = spatial_type, area = area,
-                        year_from = year_from, year_to = year_to,
-                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
-                        top = 0, count = TRUE)
-
-  cli::cli_inform("Fetching: {.url {url}}")
-  resp <- tryCatch(
-    .dsi_request(url) |>
-      httr2::req_perform(),
-    error = function(e) {
-      # Reference the message via a variable so cli does not glue-interpret
-      # any literal braces the error message may carry (see body parse below).
-      msg <- conditionMessage(e)
-      cli::cli_warn(c(
-        "GHO request failed.",
-        "i" = "URL: {.url {url}}",
-        "x" = "{msg}"
-      ))
-      NULL
-    }
-  )
-  if (is.null(resp)) return(NA_integer_)
-
-  # Body parse must also fail soft: a truncated response body (premature
-  # EOF) would otherwise propagate a jsonlite parse error and break
-  # R CMD check examples (CRAN-blocking).
-  body <- tryCatch(
-    httr2::resp_body_json(resp, simplifyVector = TRUE),
-    error = function(e) {
-      # Reference the message via a variable: a jsonlite parse error
-      # carries literal `{`/`}` from the offending JSON, which cli would
-      # otherwise try to interpret as glue expressions and re-error.
-      msg <- conditionMessage(e)
-      cli::cli_warn(c(
-        "GHO response could not be parsed as JSON.",
-        "i" = "URL: {.url {url}}",
-        "x" = "{msg}"
-      ))
-      NULL
-    }
-  )
-  if (is.null(body)) return(NA_integer_)
-  cnt <- body[["@odata.count"]]
-  if (is.null(cnt)) return(NA_integer_)
-  as.integer(cnt)
+gho_count <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
+  .who_gho("count", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
 }
 
 
@@ -383,42 +213,8 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL,
 #' # All countries with any life-expectancy data, since 2010
 #' gho_coverage("WHOSIS_000001", year_from = 2010)
 #' }
-gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
-                         year_from = NULL, year_to = NULL,
-                         dim1 = NULL, dim2 = NULL, dim3 = NULL) {
-  empty <- tibble::tibble(
-    location = character(),
-    year_min = integer(),
-    year_max = integer(),
-    n_obs    = integer()
-  )
-
-  url <- .gho_build_url(indicator,
-                        spatial_type = spatial_type, area = area,
-                        year_from = year_from, year_to = year_to,
-                        dim1 = dim1, dim2 = dim2, dim3 = dim3,
-                        select = c("SpatialDim", "TimeDim"))
-  res <- .gho_get(url)
-  if (is.null(res) || nrow(res) == 0L) return(empty)
-  if (!all(c("SpatialDim", "TimeDim") %in% names(res))) return(empty)
-
-  loc <- as.character(res$SpatialDim)
-  yr  <- suppressWarnings(as.integer(res$TimeDim))
-
-  by_loc <- split(yr, loc)
-  by_loc <- by_loc[order(names(by_loc))]
-
-  yr_range <- function(x, fn) {
-    x <- x[!is.na(x)]
-    if (length(x) == 0L) NA_integer_ else as.integer(fn(x))
-  }
-
-  tibble::tibble(
-    location = names(by_loc),
-    year_min = vapply(by_loc, yr_range, integer(1), fn = min),
-    year_max = vapply(by_loc, yr_range, integer(1), fn = max),
-    n_obs    = vapply(by_loc, length, integer(1))
-  )
+gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
+  .who_gho("coverage", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
 }
 
 
@@ -435,7 +231,8 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
 #'   indicator data. Common values include `"SpatialDim"`,
 #'   `"SpatialDimType"`, `"TimeDim"`, `"Dim1"`, `"Dim2"`, and
 #'   `"Dim3"`. Case-sensitive (it is sent to the server as an OData
-#'   `$select` field name). Default `"SpatialDimType"`.
+#'   `$select` field name). xMart also accepts exact named fields such as
+#'   `"DIM_SEX"` or `"DIM_AGE"`. Default `"SpatialDimType"`.
 #'
 #' @details
 #' Only the requested column is downloaded (via the OData `$select`
@@ -457,21 +254,17 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL,
 #' gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #' }
 gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
-  stopifnot(is.character(indicator), length(indicator) == 1L, nzchar(indicator))
-  stopifnot(is.character(dimension), length(dimension) == 1L, nzchar(dimension))
-
-  # $select fetches only the requested column instead of the full
-  # observation table — a large saving for high-volume indicators.
-  url <- .gho_build_url(indicator, select = dimension)
-  res <- .gho_get(url)
-  if (is.null(res) || !dimension %in% names(res)) return(character())
-  vals <- unique(res[[dimension]])
-  sort(vals[!is.na(vals)])
+  .who_gho("dimensions", indicator = indicator, dimension = dimension)
 }
 
 
 #' @noRd
 .gho_indicator_catalog <- function() {
+  key <- paste(.who_config()$backend, .who_config()$base, sep = '|')
+  if (!identical(.dsi_cache$gho_catalog_key, key)) {
+    .dsi_cache$gho_indicator_catalog <- NULL
+    .dsi_cache$gho_catalog_key <- key
+  }
   if (is.null(.dsi_cache$gho_indicator_catalog)) {
     catalog <- gho_indicators()
     # A failed fetch returns an empty tibble (fail-soft), which must
@@ -549,19 +342,19 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' * `Dim1`, `Dim2`, `Dim3` → `dim1`, `dim2`, `dim3` (character)
 #'
 #' The `series` column is always `NA` for GHO output (it is an SDG-only
-#' concept). The `location_name` column is populated by looking up
+#' concept; GHE uses it for measure codes). The `location_name` column is populated by looking up
 #' `location` (an ISO3 code or a WHO region code) against the
 #' [`who_countries`] dataset and a hardcoded set of WHO regional names;
-#' locations that match neither (e.g. non-Member State areas) are left
-#' as `NA`.
+#' other locations use a published `SpatialName` when available, otherwise
+#' they remain `NA`.
 #'
 #' Source columns absent from `df` (e.g. `Low` / `High` for indicators
 #' without confidence intervals) are filled with typed `NA`, so the
 #' default output always has the same 15 columns with the same column types.
 #'
-#' The GHO data endpoint (`/api/{IndicatorCode}`) does not return
-#' `IndicatorName`; that field lives on the catalog endpoint queried by
-#' [gho_indicators()]. On the first call within an R session,
+#' xMart supplies indicator labels through its official directory. Legacy
+#' observations without an `IndicatorName` use [gho_indicators()].
+#' For such input, on the first call within an R session,
 #' `gho_clean()` fetches the catalog once and caches it for the rest of
 #' the session, so the `indicator` column carries the full
 #' human-readable indicator name. If the catalog cannot be fetched
@@ -573,7 +366,8 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'   `dim3_type` from the source's `Dim1Type`, `Dim2Type`, and `Dim3Type`?
 #'   Default `FALSE`. Types are kept per row: one indicator can use the
 #'   same position for different dimensions. No type is guessed from a
-#'   code's spelling, and missing types remain `NA`.
+#'   code's spelling, and missing types remain `NA`. xMart output also
+#'   retains all named source dimensions as `dim_*` character columns.
 #' @param keep_metadata Logical. Retain source context? Default `FALSE`.
 #'   With `TRUE`, appends character columns `observation_id`, `spatial_type`,
 #'   `time_type`, `data_source_type`, `data_source`, `updated`,
@@ -582,7 +376,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'   as `footnotes`, a list-column of character vectors. Missing scalar
 #'   fields are `NA`; missing list fields are empty character vectors.
 #'   This option is independent of `keep_dimensions`. Unit and dimension
-#'   labels are not inferred. Retaining these fields makes no extra
+#'   labels are not inferred. xMart output also retains `unit`,
+#'   `measure_field`, `spatial_type_source`, and a `who_provenance` attribute.
+#'   Retaining these fields makes no extra
 #'   network requests beyond the usual indicator-name lookup.
 #'
 #' @return A [tibble][tibble::tibble] with 15 core columns: `source` (always
@@ -639,7 +435,8 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   out <- tibble::tibble(
     source        = rep("gho", n),
     id            = pick_chr("IndicatorCode"),
-    indicator     = .gho_resolve_indicator_name(pick_chr("IndicatorCode")),
+    indicator     = if ('IndicatorName' %in% names(df)) pick_chr('IndicatorName') else
+      .gho_resolve_indicator_name(pick_chr("IndicatorCode")),
     location      = location,
     iso3          = iso3,
     location_name = .gho_resolve_location_name(location),
@@ -656,68 +453,9 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   if (keep_dimensions) out <- .gho_append_dimensions(out, df)
   if (keep_metadata) out <- .gho_append_metadata(out, df)
 
+  missing_name <- is.na(out$location_name)
+  if ('SpatialName' %in% names(df)) out$location_name[missing_name] <- pick_chr('SpatialName')[missing_name]
+  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
+
   out[order(out$location, out$year), , drop = FALSE]
-}
-
-
-#' @noRd
-.gho_get <- function(url) {
-  all_data <- list()
-  next_url <- url
-
-  repeat {
-    cli::cli_inform("Fetching: {.url {next_url}}")
-
-    resp <- tryCatch(
-      .dsi_request(next_url) |>
-        httr2::req_perform(),
-      error = function(e) {
-        # Reference the message via a variable so cli does not glue-interpret
-        # any literal braces the error message may carry (see body parse below).
-        msg <- conditionMessage(e)
-        cli::cli_warn(c(
-          "GHO request failed.",
-          "i" = "URL: {.url {next_url}}",
-          "x" = "{msg}"
-        ))
-        NULL
-      }
-    )
-    if (is.null(resp)) return(NULL)
-
-    # Body parse must also fail soft: a truncated response body (premature
-    # EOF) would otherwise propagate a jsonlite parse error and break
-    # R CMD check examples (CRAN-blocking).
-    body <- tryCatch(
-      httr2::resp_body_json(resp, simplifyVector = TRUE),
-      error = function(e) {
-        # Reference the message via a variable: a jsonlite parse error
-        # carries literal `{`/`}` from the offending JSON, which cli would
-        # otherwise try to interpret as glue expressions and re-error.
-        msg <- conditionMessage(e)
-        cli::cli_warn(c(
-          "GHO response could not be parsed as JSON.",
-          "i" = "URL: {.url {next_url}}",
-          "x" = "{msg}"
-        ))
-        NULL
-      }
-    )
-    if (is.null(body)) return(NULL)
-    # Skip empty `value` chunks. GHO returns `value = []` (an empty list,
-    # not an empty data frame) when a filter matches no rows; rbind-ing
-    # it would produce a spurious 1x1 result.
-    val <- body$value
-    if (is.data.frame(val) && nrow(val) > 0L) {
-      all_data <- c(all_data, list(val))
-    }
-
-    next_url <- body[["@odata.nextLink"]]
-    if (is.null(next_url)) break
-  }
-
-  if (length(all_data) == 0L) return(tibble::tibble())
-  out <- do.call(rbind, c(all_data, list(make.row.names = FALSE)))
-  rownames(out) <- NULL
-  tibble::as_tibble(out)
 }

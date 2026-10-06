@@ -1,5 +1,6 @@
 test_that("sdg_indicators(NULL) returns the full unfiltered list", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_indicators()
@@ -10,6 +11,7 @@ test_that("sdg_indicators(NULL) returns the full unfiltered list", {
 
 test_that("sdg_indicators filters on a single term (case-insensitive substring)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_indicators("mortality")
@@ -24,6 +26,7 @@ test_that("sdg_indicators filters on a single term (case-insensitive substring)"
 
 test_that("sdg_indicators applies AND semantics on a whitespace-split string", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_indicators("mortality cancer")
@@ -39,6 +42,7 @@ test_that("sdg_indicators applies AND semantics on a whitespace-split string", {
 
 test_that("sdg_indicators accepts a character vector as terms (AND)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_indicators(c("maternal", "mortality"))
@@ -52,6 +56,7 @@ test_that("sdg_indicators accepts a character vector as terms (AND)", {
 
 test_that("sdg_indicators treats whitespace inside a vector element as part of the term", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # An element with internal whitespace is matched verbatim — not split
@@ -67,6 +72,7 @@ test_that("sdg_indicators treats whitespace inside a vector element as part of t
 
 test_that("sdg_indicators returns an empty tibble (correct shape) on no match", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   full <- sdg_indicators()
@@ -78,6 +84,7 @@ test_that("sdg_indicators returns an empty tibble (correct shape) on no match", 
 
 test_that("sdg_indicators handles search terms containing a single quote", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # Should not error — filter is client-side, fixed = TRUE

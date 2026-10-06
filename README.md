@@ -9,10 +9,10 @@
 [![R-CMD-check](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-An R package for global-health data work. Bundles country metadata 
-and lightweight clients for the [WHO Global Health Observatory][gho] 
-and [UN Sustainable Development Goals][sdg] APIs, plus reusable 
-WHO-style themes for `ggplot2` and `flextable` so that charts and 
+An R package for global-health data work. Bundles country metadata
+and lightweight clients for the [WHO Global Health Observatory][gho]
+and [UN Sustainable Development Goals][sdg] APIs, plus reusable
+WHO-style themes for `ggplot2` and `flextable` so that charts and
 tables produced from this data look consistent across reports.
 
 [gho]: https://www.who.int/data/gho
@@ -22,11 +22,14 @@ Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
+Version 0.11.0 is available from GitHub. This update has not been submitted
+to CRAN.
+
 ```r
 # from CRAN
 install.packages("DSIR")
 
-# or the development version from GitHub  
+# or the development version from GitHub
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```
@@ -35,8 +38,8 @@ remotes::install_github("shanlong-who/DSIR")
 
 ### Country metadata
 
-**`who_countries`** — a tibble of all 194 WHO Member States with 
-ISO3, ISO2, UN M49 codes, official and short names, WHO region, 
+**`who_countries`** — a tibble of all 194 WHO Member States with
+ISO3, ISO2, UN M49 codes, official and short names, WHO region,
 and a `is_pic` flag for Pacific Island Countries.
 
 ```r
@@ -51,7 +54,7 @@ who_countries |>
   select(iso3, name_short, is_pic)
 ```
 
-**Regional ISO3 vectors** — convenience character vectors for 
+**Regional ISO3 vectors** — convenience character vectors for
 each WHO region, derived from `who_countries`:
 
 ```r
@@ -95,9 +98,9 @@ its `iso3` column via `m49_to_iso3()`.
 
 ### Visualization
 
-**`theme_dsi()` and `theme_dsi_facet()`** — publication-ready `ggplot2` 
-themes. Use `theme_dsi()` for single-panel charts and `theme_dsi_facet()` 
-for faceted plots; the facet variant adds panel borders, light strip 
+**`theme_dsi()` and `theme_dsi_facet()`** — publication-ready `ggplot2`
+themes. Use `theme_dsi()` for single-panel charts and `theme_dsi_facet()`
+for faceted plots; the facet variant adds panel borders, light strip
 backgrounds, and panel spacing tuned for multi-panel layouts.
 
 ```r
@@ -131,14 +134,14 @@ who_countries |>
        x = NULL, y = NULL)
 ```
 
-**`scale_y_dsi_col()` and `scale_x_dsi_col()`** — drop-in replacements for 
-`scale_y_continuous()` and `scale_x_continuous()` that remove the default 
-lower expansion, so columns in bar charts sit flush with the axis instead 
-of floating above it. Pick the one that matches where you mapped the 
-value: `scale_y_dsi_col()` when `value` is the `y` aesthetic (including 
-horizontal bars made with `coord_flip()` — the aesthetic is still `y`), 
-and `scale_x_dsi_col()` when `value` is the `x` aesthetic (e.g. 
-`geom_col(aes(value, category))`). Both accept any argument that 
+**`scale_y_dsi_col()` and `scale_x_dsi_col()`** — drop-in replacements for
+`scale_y_continuous()` and `scale_x_continuous()` that remove the default
+lower expansion, so columns in bar charts sit flush with the axis instead
+of floating above it. Pick the one that matches where you mapped the
+value: `scale_y_dsi_col()` when `value` is the `y` aesthetic (including
+horizontal bars made with `coord_flip()` — the aesthetic is still `y`),
+and `scale_x_dsi_col()` when `value` is the `x` aesthetic (e.g.
+`geom_col(aes(value, category))`). Both accept any argument that
 `scale_*_continuous()` accepts.
 
 ```r
@@ -150,7 +153,7 @@ ggplot(mtcars, aes(factor(cyl))) +
   labs(title = "Cars by cylinder count", x = "Cylinders", y = NULL)
 ```
 
-**`dsi_flextable_defaults()`** — one-line setup for `flextable` 
+**`dsi_flextable_defaults()`** — one-line setup for `flextable`
 formatting (booktabs style, bold headers, paddings).
 
 ```r
@@ -169,8 +172,8 @@ ggpie(df, "region", "countries", .offset = 1.2)
 
 ### Utilities
 
-**`geomean()`** — geometric mean, with optional weights. Useful for 
-aggregating ratio-based health indicators where the composite is 
+**`geomean()`** — geometric mean, with optional weights. Useful for
+aggregating ratio-based health indicators where the composite is
 multiplicative — e.g. UHC service-coverage tracers.
 
 ```r
@@ -178,12 +181,12 @@ geomean(c(0.6, 0.8, 0.95))                      # ~0.772
 geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
 ```
 
-**`aarr()`** — average annual rate of reduction, the standard 
-WHO / UNICEF metric for tracking progress in declining indicators 
-(maternal / child mortality, premature NCD mortality, stunting). 
-Fits an OLS line to `log(value)` against `year` (the UNICEF-standard 
-method; an endpoint-only method is also available). Positive values 
-mean the indicator is declining; multiply by 100 to compare with 
+**`aarr()`** — average annual rate of reduction, the standard
+WHO / UNICEF metric for tracking progress in declining indicators
+(maternal / child mortality, premature NCD mortality, stunting).
+Fits an OLS line to `log(value)` against `year` (the UNICEF-standard
+method; an endpoint-only method is also available). Positive values
+mean the indicator is declining; multiply by 100 to compare with
 published tables.
 
 ```r
@@ -200,9 +203,9 @@ gho_data("NCDMORT3070", area = wpro_cty, dim1 = "SEX_BTSX") |>
 
 ### WHO GHO API
 
-**Check availability before downloading.** GHO has thousands of 
-indicators but any one of them may not cover the countries or years 
-you need. Three lightweight helpers ask the server what is available 
+**Check availability before downloading.** The public GHO directory contains many
+indicators but any one of them may not cover the countries or years
+you need. Three lightweight helpers ask the server what is available
 without transferring observations:
 
 ```r
@@ -214,10 +217,6 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 
 # Per-country year coverage and observation counts
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-#>   location year_min year_max n_obs
-#> 1 DEU          2000     2021    66
-#> 2 FRA          2000     2021    66
-#> 3 JPN          2000     2021    66
 ```
 
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
@@ -235,7 +234,7 @@ gho_data("NCDMORT3070", spatial_type = "country")
 
 # Fetch with area and year filters
 gho_data(
-  indicator = "WHOSIS_000001", 
+  indicator = "WHOSIS_000001",
   area      = wpro_cty,
   year_from = 2015
 )
@@ -266,11 +265,17 @@ for financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
 `FINANCIALHARDSHIPCOMPONENT`, or `DEMOGRAPHIC`, among others.
 
 ```r
+previous_options <- options(DSIR.who_backend = 'legacy')
 raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL")
+options(previous_options)
 gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 gho_detailed |>
   dplyr::select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
+
+As verified on 2026-10-06, this financial-hardship code is absent from the
+public xMart directory. The example explicitly selects the legacy provider;
+there is no automatic fallback. The UN SDG workflow below remains separate.
 
 `keep_metadata = TRUE` also preserves the observation identifier,
 source code and type, spatial/time types, parent location, update
@@ -419,11 +424,11 @@ Inputs without a given column receive typed missing values. Binding
 does not harmonise dimension codes or indicator definitions across
 the two sources.
 
-**Exploring series.** A single SDG indicator often contains 
-several series — for example different vaccines, sex strata, 
-or causes of death — each with its own country / year coverage. 
-`sdg_coverage()` summarises the year range and observation count 
-per `(location, series)` so you can see what is available before 
+**Exploring series.** A single SDG indicator often contains
+several series — for example different vaccines, sex strata,
+or causes of death — each with its own country / year coverage.
+`sdg_coverage()` summarises the year range and observation count
+per `(location, series)` so you can see what is available before
 deciding which series to analyse.
 
 ```r
@@ -440,10 +445,100 @@ sdg_coverage("3.b.1", area = c("156", "608"))
 #> 8 608      SH_ACS_PCV3     2014     2023    10
 ```
 
-GHO-style `has_data()` / `count()` helpers are intentionally not 
-provided for SDG because SDG data is generally complete enough 
+GHO-style `has_data()` / `count()` helpers are intentionally not
+provided for SDG because SDG data is generally complete enough
 that pre-flight checks add little value.
 
 ## License
 
 MIT — © 2026 Shanlong Ding
+
+### WHO xMart migration (0.11.0)
+
+GHO uses `https://xmart-api-public.who.int` by default. The official
+directory supplies public download routes; DSIR maps them into its familiar
+observation fields. The 15-column default of `gho_clean()` remains unchanged.
+Public codes and published vintages can differ from the legacy service.
+Search the current directory rather than assuming every former code exists.
+
+```r
+gho_indicators('mortality')
+gho_dimensions('NCDMORT3070', 'DIM_SEX')
+ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
+                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'))
+gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
+```
+
+Named dimensions carry their meaning directly (`dim_sex`, `dim_age`, etc.).
+For wide xMart tables, `Dim1`-`Dim3` follow the source table dimension
+schema, ordered by sex, age, then other names. This may differ from old positional
+breakdowns. The legacy sex codes and `AGEGROUP_` age namespace remain supported
+in positional filters. Named filters retain exact native source codes.
+Prefer named filters when updating analyses.
+
+Migration checks on 2026-10-06 matched 18 observations per indicator across
+France, Japan and the Philippines in 2020-2021. `NCDMORT3070` values and
+bounds agreed exactly. `WHOSIS_000001` and `MDG_0000000001` values and bounds
+differed after matching dimension codes; rounding alone did not explain all
+differences. DSIR preserves each provider's published estimates. Record the
+provider and retrieval date when comparing historical analyses.
+
+Failures warn and return empty results without switching providers. Reference
+lookups use a ten-minute memory cache. No keys, startup requests or disk cache
+are required. Advanced settings are `DSIR.who_backend` (`"xmart"` or explicit
+`"legacy"` for comparisons), `DSIR.who_base_url`, `DSIR.who_page_size` and
+`DSIR.who_max_rows`. Use `snapshot()` to save a reproducible pull explicitly.
+
+### Global Health Estimates
+
+Explore exact codes, then select a country, year, sex, age, cause and measure.
+GHE is a separate module backed by `DEX_CMS/GHE_FULL`. It returns long data
+with one row per measure. A download needs at least one filter and is limited
+to one million source rows by default.
+
+```r
+ghe_dimensions('sex')
+ghe_dimensions('age')
+ghe_dimensions('measure')
+ghe_causes('diabetes')
+ghe_causes('stroke')
+
+# All published ages, sexes and causes for one country/year
+phl_all_causes <- ghe_data(area = 'PHL', year = 2023, measure = 'deaths')
+
+# Philippine all-age, both-sex deaths, all causes, 2023
+phl_deaths <- ghe_data(area = 'PHL', year = 2023, sex = 'TOTAL',
+                       age = 'TOTAL', cause = 0, measure = 'deaths')
+
+# Age-specific death rates by sex
+phl_rates <- ghe_data(area = 'PHL', year = 2023,
+                      sex = c('FEMALE', 'MALE'), age = 'Y40T44',
+                      cause = 0, measure = 'death_rate')
+ghe_coverage(area = 'PHL', sex = 'TOTAL', age = 'TOTAL', cause = 0)
+ghe_clean(phl_rates, keep_dimensions = TRUE)
+```
+
+Counts are persons or years; rates are per 100,000; shares are percentages.
+Count uncertainty bounds are retained. Bounds for rates and shares are absent
+in the provider and remain missing. All-age rates are crude rates. Do not sum
+overlapping ages or cause-hierarchy totals. `cause_group` is a published group,
+not an invented parent code. Discovery lists describe the latest release;
+verify a selection with `ghe_coverage()`. New releases can revise earlier years.
+
+### WHO 2026 standard population
+
+Beginning with DSIR 0.11.0, `who_std_pop` uses the WHO 2026 Standard Population.
+Its 18 groups end at `85+`. WHO's rounded Table 1 percentages sum to 100.02;
+DSIR normalizes them to 100 and derives a numeric standard million summing to
+1,000,000. No finer split of `0-4` or `85+` is fabricated.
+
+```r
+who_std_pop
+count <- seq_len(nrow(who_std_pop))
+population <- rep(10000, nrow(who_std_pop))
+age_standardize(count, population, who_std_pop$weight)
+```
+
+See the [WHO technical report](https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf),
+Table 1, page 6 (September 2026). The former 21-row object is replaced;
+align observed age groups explicitly before computing a standardized rate.

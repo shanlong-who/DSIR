@@ -6,6 +6,11 @@ export(bind_indicators)
 export(dsi_flextable_defaults)
 export(geomean)
 export(ggpie)
+export(ghe_causes)
+export(ghe_clean)
+export(ghe_coverage)
+export(ghe_data)
+export(ghe_dimensions)
 export(gho_clean)
 export(gho_count)
 export(gho_coverage)
@@ -30,7 +35,11 @@ export(sdg_targets)
 export(snapshot)
 export(theme_dsi)
 export(theme_dsi_facet)
-importFrom(rlang,"%||%")
-importFrom(rlang,.data)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tibble)
+importFrom(rlang,
+  "%||%",
+  .data
+)
+importFrom(tibble,
+  as_tibble,
+  tibble
+)

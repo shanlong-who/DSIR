@@ -13,7 +13,8 @@ gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 \code{dim3_type} from the source's \code{Dim1Type}, \code{Dim2Type}, and \code{Dim3Type}?
 Default \code{FALSE}. Types are kept per row: one indicator can use the
 same position for different dimensions. No type is guessed from a
-code's spelling, and missing types remain \code{NA}.}
+code's spelling, and missing types remain \code{NA}. xMart output also
+retains all named source dimensions as \verb{dim_*} character columns.}
 
 \item{keep_metadata}{Logical. Retain source context? Default \code{FALSE}.
 With \code{TRUE}, appends character columns \code{observation_id}, \code{spatial_type},
@@ -23,7 +24,9 @@ and \code{time_end}, copied from the raw API fields. Raw \code{Comments} are kep
 as \code{footnotes}, a list-column of character vectors. Missing scalar
 fields are \code{NA}; missing list fields are empty character vectors.
 This option is independent of \code{keep_dimensions}. Unit and dimension
-labels are not inferred. Retaining these fields makes no extra
+labels are not inferred. xMart output also retains \code{unit},
+\code{measure_field}, \code{spatial_type_source}, and a \code{who_provenance} attribute.
+Retaining these fields makes no extra
 network requests beyond the usual indicator-name lookup.}
 }
 \value{
@@ -58,19 +61,19 @@ Member State, otherwise \code{iso3 = NA}
 }
 
 The \code{series} column is always \code{NA} for GHO output (it is an SDG-only
-concept). The \code{location_name} column is populated by looking up
+concept; GHE uses it for measure codes). The \code{location_name} column is populated by looking up
 \code{location} (an ISO3 code or a WHO region code) against the
 \code{\link{who_countries}} dataset and a hardcoded set of WHO regional names;
-locations that match neither (e.g. non-Member State areas) are left
-as \code{NA}.
+other locations use a published \code{SpatialName} when available, otherwise
+they remain \code{NA}.
 
 Source columns absent from \code{df} (e.g. \code{Low} / \code{High} for indicators
 without confidence intervals) are filled with typed \code{NA}, so the
 default output always has the same 15 columns with the same column types.
 
-The GHO data endpoint (\verb{/api/\{IndicatorCode\}}) does not return
-\code{IndicatorName}; that field lives on the catalog endpoint queried by
-\code{\link[=gho_indicators]{gho_indicators()}}. On the first call within an R session,
+xMart supplies indicator labels through its official directory. Legacy
+observations without an \code{IndicatorName} use \code{\link[=gho_indicators]{gho_indicators()}}.
+For such input, on the first call within an R session,
 \code{gho_clean()} fetches the catalog once and caches it for the rest of
 the session, so the \code{indicator} column carries the full
 human-readable indicator name. If the catalog cannot be fetched

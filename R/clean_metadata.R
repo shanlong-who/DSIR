@@ -46,6 +46,10 @@
   for (i in seq_len(3L)) {
     out[[paste0("dim", i, "_type")]] <- .dsi_pick_chr(df, paste0("Dim", i, "Type"))
   }
+  fields <- grep('^DIM_', names(df), value = TRUE)
+  for (field in fields) {
+    out[[paste0('dim_', tolower(sub('^DIM_', '', field)))]] <- .dsi_pick_chr(df, field)
+  }
   out
 }
 
@@ -62,5 +66,10 @@
   )
   for (nm in names(mapping)) out[[nm]] <- .dsi_pick_chr(df, mapping[[nm]])
   out$footnotes <- .dsi_pick_list(df, "Comments")
+  for (field in intersect(c('Unit', 'MeasureField'), names(df))) {
+    out[[if (field == 'Unit') 'unit' else 'measure_field']] <- .dsi_pick_chr(df, field)
+  }
+  if ('SpatialDimTypeOriginal' %in% names(df)) out$spatial_type_source <- .dsi_pick_chr(df, 'SpatialDimTypeOriginal')
+  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
   out
 }

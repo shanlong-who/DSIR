@@ -1,5 +1,6 @@
 test_that("sdg_coverage returns the documented 5-column shape", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_coverage("3.4.1", area = c("156", "608"))
@@ -18,6 +19,7 @@ test_that("sdg_coverage returns the documented 5-column shape", {
 
 test_that("sdg_coverage exposes multiple series per location for a multi-series indicator", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # 3.b.1 (vaccine coverage) is published as multiple series:
@@ -30,6 +32,7 @@ test_that("sdg_coverage exposes multiple series per location for a multi-series 
 
 test_that("sdg_coverage is sorted by location then series", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   out <- sdg_coverage("3.b.1", area = c("608", "156"))
@@ -112,6 +115,7 @@ test_that("sdg_coverage keeps a missing series code as NA", {
 
 test_that("sdg_coverage returns an empty 5-col tibble on no match", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   # "999" is not a valid M49 area code.

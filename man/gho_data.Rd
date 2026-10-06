@@ -12,7 +12,8 @@ gho_data(
   year_to = NULL,
   dim1 = NULL,
   dim2 = NULL,
-  dim3 = NULL
+  dim3 = NULL,
+  dimensions = NULL
 )
 }
 \arguments{
@@ -40,7 +41,14 @@ varies by indicator (\code{Dim1} is sex for one indicator, an age
 group for another); use \code{\link[=gho_dimensions]{gho_dimensions()}} to discover the values
 available for a given indicator. Rows where the dimension is
 empty (\code{null}) are excluded by the filter. Default \code{NULL} (no
-filtering).}
+filtering). On xMart wide tables, positions follow named dimensions
+in the source table schema (sex, age, then alphabetical).
+These positions can differ from the legacy API. Prefer \code{dimensions}.
+Canonical sex codes and the \code{AGEGROUP_} namespace remain supported in
+positional filters. Named filters use the provider's exact native codes.}
+
+\item{dimensions}{Optional named list of exact xMart dimension fields and
+values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires the xMart backend.}
 }
 \value{
 A \link[tibble:tibble]{tibble} of indicator observations, or
@@ -50,6 +58,15 @@ an empty tibble when the service is unreachable.
 Retrieves observations for a specific indicator from the WHO GHO
 OData API, with optional filters by spatial level, country /
 region and year range.
+}
+\details{
+Uses the public production xMart backend by default. Advanced users may
+set \code{DSIR.who_backend = "legacy"} for explicit comparisons, or set
+\code{DSIR.who_base_url} to another compatible HTTPS origin. Failures never
+trigger a silent fallback. Public directory coverage differs from the
+legacy catalog; unknown codes warn instead of substituting another code.
+Reference lookups are cached only in memory; no credentials
+or startup requests are required.
 }
 \examples{
 \donttest{

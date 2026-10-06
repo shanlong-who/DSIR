@@ -179,56 +179,38 @@ NULL
 "pic_cty"
 
 
-#' WHO World Standard Population
+#' WHO 2026 Standard Population
 #'
-#' The WHO World Standard Population (world average population
-#' 2000-2025) of Ahmad et al. (2001), used for direct age standardization
-#' of rates so that populations with different age structures can be
-#' compared. This is the standard used for WHO indicators such as
-#' age-standardized NCD mortality.
+#' Beginning with DSIR 0.11.0, `who_std_pop` uses the WHO 2026 Standard
+#' Population, based on projected world population during 2026-2050.
 #'
-#' @format A tibble with 21 rows (five-year age groups `"0-4"` to
-#' `"100+"`) and 4 columns:
+#' @format A tibble with 18 rows: five-year groups `0-4` to `80-84`,
+#' followed by `85+`, and four columns:
 #' \describe{
-#'   \item{age_group}{Age-group label, e.g. `"0-4"`, `"85-89"`, `"100+"`.}
-#'   \item{age_start}{Integer lower bound of the age group.}
-#'   \item{weight}{The published WHO percentage for the age group. The
-#'   published values sum to 100.035 (not exactly 100); this is carried
-#'   verbatim from the source and is harmless, since weights are
-#'   normalized wherever they are used.}
-#'   \item{std_million}{The SEER "standard million" form: the weight
-#'   scaled to a population of exactly 1,000,000 (the only adjustment is
-#'   the 90-94 group rounded from 1,499.48 up to 1,500 so the total is
-#'   exact).}
+#'   \item{age_group}{Character age-group label.}
+#'   \item{age_start}{Integer lower bound in years.}
+#'   \item{weight}{Percentage normalized to sum to 100. WHO's rounded
+#'   published values sum to 100.02: divide each by 100.02 and multiply
+#'   by 100.}
+#'   \item{std_million}{Numeric weight scaled to sum to 1,000,000,
+#'   without integer rounding. Derived counts, not separately published
+#'   WHO counts.}
 #' }
-#'
 #' @details
-#' To standardize data on coarser age groups (e.g. `0-4, 5-14, ...,
-#' 85+`), aggregate the weights by summing `weight` (or `std_million`)
-#' over the constituent five-year groups, then pass them to
-#' [age_standardize()]. Only relative weights matter, so either column
-#' gives identical results.
-#'
-#' The original publication does not split ages 0 and 1-4; the finest
-#' first group is `0-4`. Splits of the first group circulating in some
-#' registries are downstream constructions, not part of the WHO
-#' standard.
-#'
+#' Aggregate weights by summation for coarser age groups. Both weight
+#' columns give identical standardized rates. The published table does
+#' not split `0-4` or `85+`: aggregate finer observed ages to these groups.
+#' The four column names are retained; the dataset now has 18 rather than
+#' 21 rows and `std_million` is numeric rather than integer.
 #' @source
-#' Ahmad OB, Boschi-Pinto C, Lopez AD, Murray CJL, Lozano R, Inoue M
-#' (2001). *Age standardization of rates: a new WHO standard.* GPE
-#' Discussion Paper Series No. 31. World Health Organization. Cross-checked
-#' against the SEER standard-population tables:
-#' \url{https://seer.cancer.gov/stdpopulations/world.who.html}
-#'
-#' @seealso [age_standardize()], which consumes these weights.
-#'
+#' World Health Organization (2026). *Revised WHO standard population
+#' for calculating age-standardized rates*. WHO/HSA/DDA/GHE/2026.4,
+#' Table 1, page 6. Accessed 2026-10-06.
+#' \url{https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf}
+#' @seealso [age_standardize()]
 #' @examples
 #' who_std_pop
-#'
-#' # Aggregate to broad age groups (0-24, 25-64, 65+) for coarser data
-#' breaks <- c(0, 25, 65, Inf)
-#' grp <- cut(who_std_pop$age_start, breaks, right = FALSE,
-#'            labels = c("0-24", "25-64", "65+"))
+#' grp <- cut(who_std_pop$age_start, c(0, 25, 65, Inf), right = FALSE,
+#'            labels = c('0-24', '25-64', '65+'))
 #' tapply(who_std_pop$std_million, grp, sum)
 "who_std_pop"

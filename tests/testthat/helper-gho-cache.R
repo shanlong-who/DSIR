@@ -11,3 +11,4 @@
   IndicatorName = c("Life expectancy at birth (years)"),
   Language      = c("EN")
 )
+.dsi_cache$gho_catalog_key <- paste(.who_config()$backend, .who_config()$base, sep = '|')

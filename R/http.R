@@ -1,4 +1,4 @@
-#' Shared HTTP request configuration for the GHO and SDG clients
+#' Shared HTTP request configuration for the WHO and SDG clients
 #'
 #' Every DSIR network call builds its request here so the timeout and
 #' retry policy stay identical across `.gho_get()`, the inline call in

@@ -211,6 +211,7 @@ test_that("gho_clean falls back to NA indicator when the catalog is empty", {
 
 test_that("gho_clean populates indicator from live catalog (integration)", {
   skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
   old <- .dsi_cache$gho_indicator_catalog

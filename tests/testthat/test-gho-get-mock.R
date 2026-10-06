@@ -17,6 +17,7 @@ mock_json <- function(body, status = 200L) {
 }
 
 test_that(".gho_get returns an empty tibble when GHO sends value = []", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.6.0: the previous implementation produced a spurious 1x1
   # list-column tibble for an empty `value` field. We assert the fix.
   httr2::with_mocked_responses(
@@ -30,6 +31,7 @@ test_that(".gho_get returns an empty tibble when GHO sends value = []", {
 })
 
 test_that(".gho_get follows @odata.nextLink and concatenates pages", {
+  withr::local_options(DSIR.who_backend = "legacy")
   page1 <- paste0(
     '{"value":[',
     '{"IndicatorCode":"X","SpatialDim":"FRA","TimeDim":2019,"NumericValue":1}',
@@ -53,6 +55,7 @@ test_that(".gho_get follows @odata.nextLink and concatenates pages", {
 })
 
 test_that(".gho_get returns NULL with a warning when GHO errors out", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # 404 is not retried (req_retry only retries on 5xx / 429 / network),
   # so a single mocked 404 lands in the tryCatch and triggers the
   # cli_warn + NULL return that .gho_get advertises.
@@ -69,6 +72,7 @@ test_that(".gho_get returns NULL with a warning when GHO errors out", {
 })
 
 test_that("gho_data returns an empty tibble on request failure", {
+  withr::local_options(DSIR.who_backend = "legacy")
   httr2::with_mocked_responses(
     mock_json('{"error":"not found"}', status = 404L),
     {
@@ -82,6 +86,7 @@ test_that("gho_data returns an empty tibble on request failure", {
 })
 
 test_that("gho_indicators returns an empty 3-col tibble on request failure", {
+  withr::local_options(DSIR.who_backend = "legacy")
   httr2::with_mocked_responses(
     mock_json('{"error":"oops"}', status = 404L),
     {
@@ -94,6 +99,7 @@ test_that("gho_indicators returns an empty 3-col tibble on request failure", {
 })
 
 test_that("gho_data() sends area filter using the OData 'in' operator", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.5.0: switched from chained OR to `SpatialDim in (...)` to
   # avoid HTTP 400 on long area vectors. Verify the URL form.
   captured <- character()
@@ -115,6 +121,7 @@ test_that("gho_data() sends area filter using the OData 'in' operator", {
 })
 
 test_that("gho_data() sends dim1/dim2/dim3 filters server-side", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.8.0: dimension breakdowns (sex, age group, ...) can be
   # filtered server-side instead of downloading the full table.
   captured <- character()
@@ -137,6 +144,7 @@ test_that("gho_data() sends dim1/dim2/dim3 filters server-side", {
 })
 
 test_that("gho_has_data, gho_count, and gho_coverage pass dim filters through", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # All four public wrappers route through .gho_build_url; deleting the
   # dim passthrough in any one of them must fail a test, not just the
   # gho_data() one above.
@@ -163,6 +171,7 @@ test_that("gho_has_data, gho_count, and gho_coverage pass dim filters through", 
 })
 
 test_that("the shared request config retries transient errors and low-level failures", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.9.0: GHO/SDG instability surfaces as 500/502/504 responses
   # and dropped connections, which httr2 does not retry by default
   # (429/503 only, and no connection-level retries at all). All three
@@ -183,6 +192,7 @@ test_that("the shared request config retries transient errors and low-level fail
 })
 
 test_that(".gho_get returns NULL with a warning on a malformed JSON body", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.7.0: a truncated upstream body (premature EOF) reaches
   # resp_body_json() as unparseable JSON. The body-parse tryCatch must
   # downgrade the jsonlite error to a warning + NULL, the same way an
@@ -201,6 +211,7 @@ test_that(".gho_get returns NULL with a warning on a malformed JSON body", {
 })
 
 test_that("gho_count returns NA on a malformed JSON body", {
+  withr::local_options(DSIR.who_backend = "legacy")
   # NEWS 0.7.0: gho_count() has its own HTTP call site (it needs
   # @odata.count, not value), so it carries its own body-parse
   # tryCatch. A truncated body must yield NA_integer_, not an error.

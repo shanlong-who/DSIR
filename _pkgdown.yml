@@ -57,6 +57,14 @@ reference:
   - gho_coverage
   - gho_has_data
   - bind_indicators
+- title: GHE estimates
+  desc: Current WHO Global Health Estimates with exact cause, age, sex and measure filters.
+  contents:
+  - ghe_data
+  - ghe_causes
+  - ghe_dimensions
+  - ghe_coverage
+  - ghe_clean
 - title: SDG indicator data
   desc: Functions for fetching and cleaning data from the UN SDG API.
   contents:

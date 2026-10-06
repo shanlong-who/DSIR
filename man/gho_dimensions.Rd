@@ -14,7 +14,8 @@ gho_dimensions(indicator, dimension = "SpatialDimType")
 indicator data. Common values include \code{"SpatialDim"},
 \code{"SpatialDimType"}, \code{"TimeDim"}, \code{"Dim1"}, \code{"Dim2"}, and
 \code{"Dim3"}. Case-sensitive (it is sent to the server as an OData
-\verb{$select} field name). Default \code{"SpatialDimType"}.}
+\verb{$select} field name). xMart also accepts exact named fields such as
+\code{"DIM_SEX"} or \code{"DIM_AGE"}. Default \code{"SpatialDimType"}.}
 }
 \value{
 A character vector of unique, sorted dimension values,

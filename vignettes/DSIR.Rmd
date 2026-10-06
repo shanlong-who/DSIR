@@ -8,6 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+run_live <- identical(Sys.getenv('DSIR_BUILD_LIVE_VIGNETTE'), 'true')
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment  = "#>", 
@@ -94,9 +95,13 @@ In practice you can usually skip the explicit conversion: `sdg_data()`
 and `sdg_coverage()` accept ISO3 codes for their `area` argument and
 do the lookup internally (see the SDG section below).
 
+Network examples and the charts using their results are displayed without
+execution during package builds. To run them when rendering this vignette,
+set `DSIR_BUILD_LIVE_VIGNETTE=true` in the rendering session.
+
 ## Checking availability before fetching
 
-GHO has thousands of indicators, but any single indicator may not cover
+The public GHO directory contains many indicators, but any single indicator may not cover
 the countries or years you need. Before issuing a full download with
 `gho_data()`, three lightweight helpers let you ask the server what is
 available without transferring any observations.
@@ -104,7 +109,7 @@ available without transferring any observations.
 `gho_has_data()` is a quick yes / no for a given indicator and filter —
 useful when screening a list of candidate indicators.
 
-```{r}
+```{r, eval = run_live}
 # Does WHO have life-expectancy data for France?
 gho_has_data("WHOSIS_000001", area = "FRA")
 # TRUE
@@ -115,12 +120,12 @@ vapply(inds, gho_has_data, logical(1), area = "PHL")
 ```
 
 It returns `TRUE`, `FALSE`, or `NA` (for request failures, including a
-non-existent indicator code — GHO returns HTTP 404 in that case).
+a code absent from the current public directory).
 
 `gho_count()` returns the number of rows the same filter would produce,
 which is useful for sizing a download.
 
-```{r}
+```{r, eval = run_live}
 gho_count("WHOSIS_000001", area = wpro_cty)
 ```
 
@@ -128,12 +133,8 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 country. The payload is small because only `SpatialDim` and `TimeDim`
 are requested from the server.
 
-```{r}
+```{r, eval = run_live}
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-#>   location year_min year_max n_obs
-#> 1 DEU          2000     2021    66
-#> 2 FRA          2000     2021    66
-#> 3 JPN          2000     2021    66
 ```
 
 ## Fetching indicator data from GHO
@@ -145,7 +146,7 @@ be pulled in one call.
 
 ### Step 1: Search for an indicator
 
-```{r}
+```{r, eval = run_live}
 gho_indicators("UHC") |> head()
 ```
 
@@ -154,7 +155,7 @@ to `gho_data()` in the next step.
 
 ### Step 2: Fetch the data
 
-```{r}
+```{r, eval = run_live}
 uhc <- gho_data(
   indicator    = "UHC_INDEX_REPORTED",
   spatial_type = "country",
@@ -173,12 +174,12 @@ countries in one call.
 `gho_clean()` produces the **unified DSIR cleaned-indicator schema** —
 the same 15-column shape as `sdg_clean()`. Columns include `source`
 (`"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`
-(empty for GHO), `year`, `value`, `value_num`, `low`, `high`, `series`
-(empty for GHO), and the three optional GHO dimensions
+(resolved for known locations), `year`, `value`, `value_num`, `low`, `high`, `series`
+(resolved for known locations), and the three optional GHO dimensions
 `dim1`–`dim3`. Columns absent from the raw response are filled with
 typed `NA`.
 
-```{r}
+```{r, eval = run_live}
 uhc_clean <- gho_clean(uhc)
 uhc_clean
 ```
@@ -223,7 +224,7 @@ single-panel chart.
 
 `theme_dsi()` keeps the chart chrome minimal — a half-frame axis, light grid lines, and the WHO-blue accent on the axis line. By default the grid runs in both directions; pass `grid = "y"` for the minimalist horizontal-only look.
 
-```{r, fig.width = 7, fig.height = 4}
+```{r, fig.width = 7, fig.height = 4, eval = run_live}
 uhc_clean |>
   filter(iso3 %in% c("AUS", "CHN", "PHL", "FJI")) |>
   left_join(who_countries, by = "iso3") |>
@@ -240,7 +241,7 @@ uhc_clean |>
 
 For bar charts, pair `theme_dsi()` with `scale_y_dsi_col()` (or `scale_x_dsi_col()` when `value` is mapped to `x`) — these are thin wrappers around `scale_*_continuous()` that remove the lower axis expansion, so columns sit flush with the axis instead of floating above it.
 
-```{r, fig.width = 7, fig.height = 4}
+```{r, fig.width = 7, fig.height = 4, eval = run_live}
 uhc_clean |>
   filter(year == max(year)) |>
   left_join(who_countries, by = "iso3") |>
@@ -266,7 +267,7 @@ every facet. `theme_dsi_facet()` switches to a full panel border, adds a
 light grey strip background to clearly mark each facet's label, and 
 introduces panel spacing so adjacent panels don't run together.
 
-```{r, fig.width = 8, fig.height = 5}
+```{r, fig.width = 8, fig.height = 5, eval = run_live}
 uhc_clean |>
   left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
@@ -286,7 +287,7 @@ The `strip_fill` argument lets you change the strip background colour
 for emphasis — for example, a light-blue tone derived from the WHO 
 accent for a deliverable where the strips themselves carry meaning:
 
-```{r, fig.width = 8, fig.height = 5}
+```{r, fig.width = 8, fig.height = 5, eval = run_live}
 uhc_clean |>
   left_join(who_countries, by = "iso3") |>
   filter(is_pic) |>
@@ -305,7 +306,7 @@ globally — booktabs theme, bold headers, modest padding. Call it once
 near the top of your report and every subsequent `flextable()` picks 
 up the formatting.
 
-```{r}
+```{r, eval = run_live}
 library(flextable)
 dsi_flextable_defaults(font_family = "Geogria")
 
@@ -335,7 +336,7 @@ together and matched case-insensitively against the indicator
 description. The filter runs client-side because the UN SDG
 indicator list is short (~250 rows) and the endpoint is not OData.
 
-```{r}
+```{r, eval = run_live}
 # All indicators that mention both mortality and cancer
 sdg_indicators("mortality cancer")
 
@@ -349,7 +350,7 @@ M49 numeric codes — so DSIR's regional vectors (`wpro_cty`,
 `afro_cty`, etc.) work directly, the same way they do with the GHO
 client. Do not mix the two formats in a single call.
 
-```{r}
+```{r, eval = run_live}
 # ISO3 — regional vector passed straight through
 sdg <- sdg_data(
   indicator = "3.4.1",
@@ -361,7 +362,7 @@ sdg |> glimpse()
 sdg_data("3.4.1", area = c("608", "250"))
 ```
 
-```{r}
+```{r, eval = run_live}
 sdg_clean(sdg)
 ```
 
@@ -377,7 +378,7 @@ SDG dimensions are named fields in `sdg$dimensions`, not positional
 GHO dimensions. The compact 15-column output omits them. For
 disaggregated analysis, retain them explicitly:
 
-```{r}
+```{r, eval = run_live}
 raw <- sdg_data("3.8.2", area = "PHL")
 unique(raw$dimensions)
 sdg_clean(raw, keep_dimensions = TRUE)
@@ -392,7 +393,7 @@ also retain units and other attributes in the cleaned table.
 
 Select a series and strata with the exact source names and codes:
 
-```{r}
+```{r, eval = run_live}
 sdg_data(
   "3.8.2", area = "PHL",
   series = "SH_OOP_XPD_EARNNET40",
@@ -423,7 +424,7 @@ Use `sdg_dimensions()` to see the official categories and labels for
 each series. This does not download observations, and the listed
 categories need not occur in every country:
 
-```{r}
+```{r, eval = run_live}
 sdg_dimensions("3.8.2", include_attributes = TRUE)
 ```
 
@@ -433,7 +434,7 @@ distinguishes dimensions from attributes such as units and nature.
 
 To preserve source context as well as population dimensions:
 
-```{r}
+```{r, eval = run_live}
 detailed <- sdg_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 detailed |>
   select(any_of(c("iso3", "year", "value_num", "attr_units", "attr_nature", "data_source")))
@@ -448,9 +449,14 @@ preserved. Use RDS for storage when retaining this structure.
 
 For GHO, show each positional dimension's type directly:
 
-```{r}
+This financial-hardship code is not in the public xMart directory as of
+2026-10-06. Select the legacy provider explicitly for this example.
+
+```{r, eval = run_live}
+previous_options <- options(DSIR.who_backend = 'legacy')
 gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL") |>
   gho_clean(keep_dimensions = TRUE, keep_metadata = TRUE)
+options(previous_options)
 gho_detailed |>
   select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
@@ -479,7 +485,7 @@ Additional columns, including named SDG dimensions, are retained;
 inputs without those columns receive typed missing values. Binding
 rows does not harmonise codes or definitions across the sources.
 
-```{r}
+```{r, eval = run_live}
 # Two indicators on the same topic from different APIs:
 #   GHO NCDMORT3070 (probability of premature NCD mortality)
 #   SDG 3.4.1       (mortality rate from NCDs)
@@ -501,7 +507,7 @@ the newer vaccines is much shorter than that of DTP3.
 per `(location, series)`, so you can inspect what series exist and
 how each is covered before deciding which one to analyse.
 
-```{r}
+```{r, eval = run_live}
 sdg_coverage("3.b.1", area = c("156", "608"))
 #>   location series      year_min year_max n_obs
 #> 1 156      SH_ACS_DTP3     2000     2023    24

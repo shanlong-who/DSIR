@@ -18,12 +18,12 @@ gho_indicators(search = NULL)
 (whitespace inside an element is treated as part of the term).
 }
 
-Single quotes in any term are escaped for the OData filter.}
+Search terms are matched literally; they are not download identifiers.}
 }
 \value{
 A \link[tibble:tibble]{tibble} with columns \code{IndicatorCode},
 \code{IndicatorName} and \code{Language}. Returns an empty tibble (with
-a message) when the service is unreachable.
+a warning) when the service is unreachable.
 }
 \description{
 Fetches the catalog of indicators from the WHO Global Health

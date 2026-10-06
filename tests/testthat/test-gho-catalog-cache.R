@@ -21,6 +21,7 @@ catalog_body <- paste0(
 )
 
 test_that("a failed catalog fetch is not cached and is retried on the next call", {
+  withr::local_options(DSIR.who_backend = "legacy")
   old <- .dsi_cache$gho_indicator_catalog
   on.exit(.dsi_cache$gho_indicator_catalog <- old)
   .dsi_cache$gho_indicator_catalog <- NULL
@@ -46,6 +47,7 @@ test_that("a failed catalog fetch is not cached and is retried on the next call"
 })
 
 test_that("gho_clean resolves indicator names on retry after an offline first call", {
+  withr::local_options(DSIR.who_backend = "legacy")
   old <- .dsi_cache$gho_indicator_catalog
   on.exit(.dsi_cache$gho_indicator_catalog <- old)
   .dsi_cache$gho_indicator_catalog <- NULL
