@@ -20,6 +20,10 @@
   public `/$query` POST endpoint. Compact list filters and batched
   dimension discovery respect the production query limits. A source-row
   limit prevents accidental bulk pulls.
+- xMart queries retry HTTP 200 HTML error pages within the existing
+  three-attempt limit. If the service still returns HTML, the warning
+  identifies a service failure rather than a JSON parsing problem.
+  Failed catalogs are not cached.
 - `gho_clean(keep_dimensions = TRUE)` retains named xMart dimensions in
   addition to dimension types. Metadata retention adds units, measure
   fields and provenance. The default remains the unified 15-column core.

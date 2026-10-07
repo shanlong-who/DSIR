@@ -84,18 +84,18 @@ path <- tempfile(fileext = ".rds")
 
 # First call evaluates the expression and writes the snapshot
 x <- snapshot(data.frame(a = 1:3), path)
-#> Snapshot written to /tmp/Rtmpya8Ty8/file1a91468a1b72.rds.
+#> Snapshot written to /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds.
 
 # Second call reads the snapshot; the expression is not evaluated
 y <- snapshot(stop("not evaluated"), path)
-#> Using snapshot /tmp/Rtmpya8Ty8/file1a91468a1b72.rds (saved 2026-10-06
-#> 07:04:19).
+#> Using snapshot /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds (saved 2026-10-07
+#> 06:41:51).
 identical(x, y)
 #> [1] TRUE
 
 # Force a refresh
 z <- snapshot(data.frame(a = 1:5), path, refresh = TRUE)
-#> Snapshot written to /tmp/Rtmpya8Ty8/file1a91468a1b72.rds.
+#> Snapshot written to /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds.
 nrow(z)
 #> [1] 5
 
@@ -107,6 +107,6 @@ ncd <- snapshot(
   file.path(tempdir(), "ncdmort3070.rds")
 )
 #> Fetching WHO: "DATA_/RELAY_WHS"
-#> Snapshot written to /tmp/Rtmpya8Ty8/ncdmort3070.rds.
+#> Snapshot written to /tmp/Rtmpt5DNhG/ncdmort3070.rds.
 # }
 ```

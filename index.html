@@ -353,12 +353,18 @@
 <p>Named dimensions carry their meaning directly (<code>dim_sex</code>, <code>dim_age</code>, etc.). For wide xMart tables, <code>Dim1</code>-<code>Dim3</code> follow the source table dimension schema, ordered by sex, age, then other names. This may differ from old positional breakdowns. The legacy sex codes and <code>AGEGROUP_</code> age namespace remain supported in positional filters. Named filters retain exact native source codes. Prefer named filters when updating analyses.</p>
 <p>Migration checks on 2026-10-06 matched 18 observations per indicator across France, Japan and the Philippines in 2020-2021. <code>NCDMORT3070</code> values and bounds agreed exactly. <code>WHOSIS_000001</code> and <code>MDG_0000000001</code> values and bounds differed after matching dimension codes; rounding alone did not explain all differences. DSIR preserves each provider’s published estimates. Record the provider and retrieval date when comparing historical analyses.</p>
 <p>Failures warn and return empty results without switching providers. Reference lookups use a ten-minute memory cache. No keys, startup requests or disk cache are required. Advanced settings are <code>DSIR.who_backend</code> (<code>"xmart"</code> or explicit <code>"legacy"</code> for comparisons), <code>DSIR.who_base_url</code>, <code>DSIR.who_page_size</code> and <code>DSIR.who_max_rows</code>. Use <code><a href="reference/snapshot.html">snapshot()</a></code> to save a reproducible pull explicitly.</p>
+<p>If xMart redirects a query to an HTML error page, DSIR retries within its three-attempt limit and warns if the service still does not return JSON. An empty result accompanied by this warning is a failed request, not evidence that no matching indicators or observations exist. Retry later. To use the separate legacy GHO service explicitly for a comparison or temporary workaround:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">previous_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>DSIR.who_backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
+<span><span class="va">mortality_indicators</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">previous_options</span><span class="op">)</span></span></code></pre></div>
+<p>The legacy catalog and estimates can differ from xMart. This setting applies to GHO functions; GHE continues to use its xMart source.</p>
 </div>
 <div class="section level3">
 <h3 id="global-health-estimates">Global Health Estimates<a class="anchor" aria-label="anchor" href="#global-health-estimates"></a>
 </h3>
 <p>Explore exact codes, then select a country, year, sex, age, cause and measure. GHE is a separate module backed by <code>DEX_CMS/GHE_FULL</code>. It returns long data with one row per measure. A download needs at least one filter and is limited to one million source rows by default.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'sex'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'age'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'measure'</span><span class="op">)</span></span>
@@ -384,7 +390,7 @@
 <h3 id="who-2026-standard-population">WHO 2026 standard population<a class="anchor" aria-label="anchor" href="#who-2026-standard-population"></a>
 </h3>
 <p>Beginning with DSIR 0.11.0, <code>who_std_pop</code> uses the WHO 2026 Standard Population. Its 18 groups end at <code>85+</code>. WHO’s rounded Table 1 percentages sum to 100.02; DSIR normalizes them to 100 and derives a numeric standard million summing to 1,000,000. No finer split of <code>0-4</code> or <code>85+</code> is fabricated.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">who_std_pop</span></span>
 <span><span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>

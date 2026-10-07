@@ -46,6 +46,7 @@
 <li>
 <code>DSIR.who_backend = "legacy"</code> explicitly selects the previous GHO adapter. <code>DSIR.who_base_url</code> accepts a compatible HTTPS origin. Reference caches are session-only, expire after ten minutes and are scoped to provider/host.</li>
 <li>WHO downloads verify row counts, page consistency and unique identifiers. Incomplete downloads are discarded. Long filters use the public <code>/$query</code> POST endpoint. Compact list filters and batched dimension discovery respect the production query limits. A source-row limit prevents accidental bulk pulls.</li>
+<li>xMart queries retry HTTP 200 HTML error pages within the existing three-attempt limit. If the service still returns HTML, the warning identifies a service failure rather than a JSON parsing problem. Failed catalogs are not cached.</li>
 <li>
 <code>gho_clean(keep_dimensions = TRUE)</code> retains named xMart dimensions in addition to dimension types. Metadata retention adds units, measure fields and provenance. The default remains the unified 15-column core.</li>
 </ul></div>
