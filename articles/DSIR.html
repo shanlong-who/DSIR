@@ -520,19 +520,19 @@ structure.</p>
 of 2026-10-06. Select the legacy provider explicitly for this
 example.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">previous_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>DSIR.who_backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
-<span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
+<span>                         backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">previous_options</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">provider</span>, <span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
 <p>Types are taken from each observation’s
 <code>Dim1Type</code>–<code>Dim3Type</code>. They are never guessed from
 a code prefix or assumed constant for the whole indicator. GHO metadata
-includes original source codes, observation identifiers, comments (in
-<code>footnotes</code>), location/time types, parent locations, update
-timestamps, and time intervals. Neither optional flag changes the
-default 15-column output.</p>
+includes the retrieval <code>provider</code>, original source codes,
+observation identifiers, comments (in <code>footnotes</code>),
+location/time types, parent locations, update timestamps, and time
+intervals. Neither optional flag changes the default 15-column
+output.</p>
 <p><code><a href="../reference/sdg_data.html">sdg_data()</a></code> validates declared pagination and total row
 counts before local filtering. An incomplete download returns no rows
 with a warning. <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> retains such warnings and

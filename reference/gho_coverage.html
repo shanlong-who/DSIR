@@ -66,7 +66,8 @@ before committing to a full download.</p>
 <span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim3 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -122,6 +123,13 @@ positional filters. Named filters use the provider's exact native codes.</p></dd
 <dd><p>Optional named list of exact xMart dimension fields and
 values, e.g. <code>list(DIM_SEX = 'TOTAL')</code>. Requires the xMart backend.</p></dd>
 
+
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>Character scalar. <code>"legacy"</code> or <code>"xmart"</code>. Default <code>NULL</code>
+uses the <code>DSIR.who_backend</code> option, or <code>"legacy"</code> when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -143,32 +151,34 @@ an empty tibble with the same four columns.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Year coverage of life expectancy for three countries</span></span></span>
 <span class="r-in"><span><span class="fu">gho_coverage</span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   location year_min year_max n_obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> DEU          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>021    66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> FRA          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>021    66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> JPN          <span style="text-decoration: underline;">2</span>000     <span style="text-decoration: underline;">2</span>021    66</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&amp;$select=SpatialDim,TimeDim&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&amp;$select=SpatialDim,TimeDim&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 variables: location &lt;chr&gt;, year_min &lt;int&gt;, year_max &lt;int&gt;, n_obs &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># All countries with any life-expectancy data, since 2010</span></span></span>
 <span class="r-in"><span><span class="fu">gho_coverage</span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, year_from <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 185 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    location year_min year_max n_obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AFG          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AGO          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ALB          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ARE          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ARG          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ARM          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ATG          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AUS          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AUT          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AZE          <span style="text-decoration: underline;">2</span>010     <span style="text-decoration: underline;">2</span>021    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 175 more rows</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&amp;$select=SpatialDim,TimeDim&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■                     </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&amp;$select=SpatialDim,TimeDim&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 variables: location &lt;chr&gt;, year_min &lt;int&gt;, year_max &lt;int&gt;, n_obs &lt;int&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

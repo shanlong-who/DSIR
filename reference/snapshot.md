@@ -84,18 +84,18 @@ path <- tempfile(fileext = ".rds")
 
 # First call evaluates the expression and writes the snapshot
 x <- snapshot(data.frame(a = 1:3), path)
-#> Snapshot written to /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds.
+#> Snapshot written to /tmp/RtmpIzzB2W/file1a1215a56958.rds.
 
 # Second call reads the snapshot; the expression is not evaluated
 y <- snapshot(stop("not evaluated"), path)
-#> Using snapshot /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds (saved 2026-10-07
-#> 06:41:51).
+#> Using snapshot /tmp/RtmpIzzB2W/file1a1215a56958.rds (saved 2026-10-07
+#> 07:26:27).
 identical(x, y)
 #> [1] TRUE
 
 # Force a refresh
 z <- snapshot(data.frame(a = 1:5), path, refresh = TRUE)
-#> Snapshot written to /tmp/Rtmpt5DNhG/file1abc7ab0c24c.rds.
+#> Snapshot written to /tmp/RtmpIzzB2W/file1a1215a56958.rds.
 nrow(z)
 #> [1] 5
 
@@ -106,7 +106,16 @@ ncd <- snapshot(
   gho_clean(gho_data("NCDMORT3070", "country", wpro_cty)),
   file.path(tempdir(), "ncdmort3070.rds")
 )
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Snapshot written to /tmp/Rtmpt5DNhG/ncdmort3070.rds.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■■                       
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29>
+#> ✖ HTTP 502 Bad Gateway.
+#> Warning: The expression returned an empty result; no snapshot written.
 # }
 ```

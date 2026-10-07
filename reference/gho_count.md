@@ -16,7 +16,8 @@ gho_count(
   dim1 = NULL,
   dim2 = NULL,
   dim3 = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  backend = NULL
 )
 ```
 
@@ -68,6 +69,13 @@ gho_count(
   Optional named list of exact xMart dimension fields and values, e.g.
   `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
 
+- backend:
+
+  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
+  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
+  explicit argument overrides the option for this call without changing
+  it. Use the same backend for discovery and retrieval.
+
 ## Value
 
 An integer scalar — the number of observations the server would return
@@ -88,15 +96,42 @@ Returns `NA_integer_` (with a warning) if the request fails.
 # How many rows would gho_data() pull for France?
 gho_count("WHOSIS_000001", area = "FRA")
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> [1] 66
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=0&$count=true>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&$top=0&$count=true>
+#> ✖ HTTP 502 Bad Gateway.
+#> [1] NA
 
 # Compare coverage across regions
 gho_count("NCDMORT3070", spatial_type = "country")
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> [1] 12208
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&$top=0&$count=true>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■     
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&$top=0&$count=true>
+#> ✖ HTTP 502 Bad Gateway.
+#> [1] NA
 gho_count("NCDMORT3070", spatial_type = "region")
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> [1] 396
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&$top=0&$count=true>
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&$top=0&$count=true>
+#> ✖ HTTP 502 Bad Gateway.
+#> [1] NA
 # }
 ```

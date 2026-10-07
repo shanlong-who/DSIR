@@ -35,8 +35,8 @@ Life tables and age standardization for mortality and rate analysis.
 
 ## GHO indicator data
 
-Functions for fetching and cleaning data from the WHO Global Health
-Observatory.
+WHO Global Health Observatory queries with legacy compatibility and
+per-call xMart selection.
 
 - [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
   : List GHO Indicators

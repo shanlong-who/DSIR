@@ -69,38 +69,59 @@
 
     
     
-<p>DSIR 0.11.0 uses WHO’s public production xMart service. GHO and GHE
-share the request layer but keep separate data models. Downloads verify
-pagination and never switch to the legacy service after a failure.
-Network examples below are shown without running during vignette
-builds.</p>
+<p>DSIR 0.11.0 keeps the legacy GHO OData service as its compatibility
+default and supports WHO’s public production xMart service through
+<code>backend = 'xmart'</code>. GHE always uses xMart. Downloads never
+switch providers after a failure. Network examples below are shown
+without running during vignette builds.</p>
 <div class="section level2">
 <h2 id="discover-gho-codes-and-preserve-named-dimensions">Discover GHO codes and preserve named dimensions<a class="anchor" aria-label="anchor" href="#discover-gho-codes-and-preserve-named-dimensions"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/gho_dimensions.html">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gho_dimensions.html">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="va">ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>, year_from <span class="op">=</span> <span class="fl">2020</span>,</span>
-<span>                year_to <span class="op">=</span> <span class="fl">2021</span>, dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIM_SEX <span class="op">=</span> <span class="st">'TOTAL'</span><span class="op">)</span><span class="op">)</span></span>
+<span>                year_to <span class="op">=</span> <span class="fl">2021</span>, dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIM_SEX <span class="op">=</span> <span class="st">'TOTAL'</span><span class="op">)</span>,</span>
+<span>                backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">ncd</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The public directory identifies a published route and indicator
 identifier. Wide tables store named dimensions and numeric measure
 families; long tables store explicit dimension type/member pairs. DSIR
 maps both into its familiar raw columns. <code><a href="../reference/gho_clean.html">gho_clean()</a></code> keeps
 15 columns by default. Optional named fields preserve category meaning;
-optional metadata preserves units and provenance. Positions can differ
-from legacy <code>Dim1</code>-<code>Dim3</code>. Prefer named
-filters.</p>
+optional metadata preserves units and a row-level <code>provider</code>
+column. Raw GHO observations record <code>Provider</code> and a
+<code>who_provenance</code> attribute. Missing labels are resolved with
+the recorded backend, even if the session option has changed. Unknown
+imported origins remain <code>NA</code>. Positions can differ from
+legacy <code>Dim1</code>-<code>Dim3</code>. Prefer named filters.</p>
 <p>The xMart directory and old catalog cover different codes and
 publication vintages. An unknown code warns; it is never replaced by a
-similar code. Use <code>options(DSIR.who_backend = 'legacy')</code> only
-for an explicit comparison. GHE always uses xMart. Restore
-<code>options(DSIR.who_backend = 'xmart')</code> afterwards.</p>
+similar code. All six GHO query functions accept <code>backend</code>.
+An explicit argument overrides <code>DSIR.who_backend</code> without
+changing that option; an unset option uses legacy. Use the same backend
+for code discovery, dimensions, counts, coverage and data.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">financial</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">'FINANCIALHARDSHIP_PROPORTIONOFPOP'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>,</span>
+<span>                       backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">financial</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optional session default; explicit arguments still take precedence.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>DSIR.who_backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span>, backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span></code></pre></div>
+<p>Successful empty observation selections give an informational
+message. <code><a href="../reference/gho_has_data.html">gho_has_data()</a></code> returns <code>FALSE</code> and
+<code><a href="../reference/gho_count.html">gho_count()</a></code> returns <code>0L</code> in that case. Requests
+or parsing failures warn and return empty tables or <code>NA</code>. An
+unknown xMart directory code warns. Legacy HTTP 404 responses trigger a
+small directory check before an indicator is reported absent. A failed
+directory check cannot establish absence. There is no automatic
+fallback.</p>
 </div>
 <div class="section level2">
 <h2 id="discover-ghe-selections">Discover GHE selections<a class="anchor" aria-label="anchor" href="#discover-ghe-selections"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'year'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'area'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'sex'</span><span class="op">)</span></span>
@@ -123,7 +144,7 @@ parents. Do not sum a hierarchy total together with its descendants.</p>
 <div class="section level2">
 <h2 id="download-selected-measures">Download selected measures<a class="anchor" aria-label="anchor" href="#download-selected-measures"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">phl_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ghe_data.html">ghe_data</a></span><span class="op">(</span><span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>, age <span class="op">=</span> <span class="st">'TOTAL'</span>, sex <span class="op">=</span> <span class="st">'TOTAL'</span>,</span>
 <span>                       cause <span class="op">=</span> <span class="fl">0</span>, measure <span class="op">=</span> <span class="st">'deaths'</span><span class="op">)</span></span>
 <span><span class="va">phl_rates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ghe_data.html">ghe_data</a></span><span class="op">(</span><span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>, age <span class="op">=</span> <span class="st">'Y40T44'</span>,</span>
@@ -147,7 +168,7 @@ a text-body POST internally.</p>
 <div class="section level2">
 <h2 id="reproducible-pulls-and-revised-estimates">Reproducible pulls and revised estimates<a class="anchor" aria-label="anchor" href="#reproducible-pulls-and-revised-estimates"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">phl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/snapshot.html">snapshot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/ghe_data.html">ghe_data</a></span><span class="op">(</span><span class="st">'PHL'</span>, year <span class="op">=</span> <span class="fl">2023</span>, age <span class="op">=</span> <span class="st">'TOTAL'</span>, sex <span class="op">=</span> <span class="st">'TOTAL'</span>, cause <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>            measure <span class="op">=</span> <span class="st">'deaths'</span><span class="op">)</span>,</span>
@@ -170,7 +191,7 @@ or <code>GHE_FULL_DD</code> views.</p>
 normalizes them to 100. <code>std_million</code> is a proportional
 numeric count scaled to one million, derived without integer
 rounding.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">who_std_pop</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 18 × 4</span></span></span>
 <span><span class="co">#&gt;    age_group age_start weight std_million</span></span>

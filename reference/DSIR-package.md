@@ -19,7 +19,8 @@ with WHO region and UN M49 lookups
 [`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)),
 a geometric mean helper for indicator aggregation
 ([`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)),
-clients for the WHO public xMart Global Health Observatory API
+clients for the WHO Global Health Observatory legacy and public xMart
+APIs
 ([`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md),
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md),
 [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md),

@@ -60,7 +60,8 @@ region and year range.</p>
 <span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim3 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,19 +115,34 @@ positional filters. Named filters use the provider's exact native codes.</p></dd
 <dd><p>Optional named list of exact xMart dimension fields and
 values, e.g. <code>list(DIM_SEX = 'TOTAL')</code>. Requires the xMart backend.</p></dd>
 
+
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>Character scalar. <code>"legacy"</code> or <code>"xmart"</code>. Default <code>NULL</code>
+uses the <code>DSIR.who_backend</code> option, or <code>"legacy"</code> when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> of indicator observations, or
-an empty tibble when the service is unreachable.</p>
+an empty tibble when the service is unreachable or no observations match.
+The raw <code>Provider</code> column records <code>"legacy"</code> or <code>"xmart"</code> per row.
+A <code>who_provenance</code> attribute records the selected backend and, for
+successful downloads, the request context and retrieval time.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Uses the public production xMart backend by default. Advanced users may
-set <code>DSIR.who_backend = "legacy"</code> for explicit comparisons, or set
-<code>DSIR.who_base_url</code> to another compatible HTTPS origin. Failures never
+    <p>Uses the legacy GHO OData backend by default for compatibility. Select
+<code>backend = "xmart"</code> to use the public production WHO xMart service, or
+set <code>options(DSIR.who_backend = "xmart")</code> as a session default.
+<code>DSIR.who_base_url</code> selects another compatible HTTPS xMart origin. Failures never
 trigger a silent fallback. Public directory coverage differs from the
-legacy catalog; unknown codes warn instead of substituting another code.
+legacy catalog, and published estimates can differ. Unknown xMart directory
+codes warn; legacy HTTP 404 responses are checked against its directory
+before being classified as absent codes. A successful query with no
+matching observations emits an informational message. Request or parsing
+failures warn, and do not establish that no data exist.
 Reference lookups are cached only in memory; no credentials
 or startup requests are required.</p>
     </div>
@@ -140,78 +156,71 @@ or startup requests are required.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Country-level data for one indicator</span></span></span>
 <span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,208 × 49</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 776b0b46-f1dc-86b0-906… NCDMORT3070   Probability … AFG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> edf1459a-be91-88d7-906… NCDMORT3070   Probability … AFG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> aa638549-26ae-842d-906… NCDMORT3070   Probability … AFG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 4088a1b8-09ef-8bf7-906… NCDMORT3070   Probability … ALB        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 3a53530e-1059-8cc6-906… NCDMORT3070   Probability … ALB        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> c75b8750-eef1-8098-906… NCDMORT3070   Probability … ALB        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> e60aca22-9feb-8390-906… NCDMORT3070   Probability … DZA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 66b006ab-e581-8d87-907… NCDMORT3070   Probability … DZA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 07a4b550-018e-8067-907… NCDMORT3070   Probability … DZA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> cbecd4bf-db28-8c54-907… NCDMORT3070   Probability … AGO        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,198 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 44 more variables: SpatialDimTypeOriginal &lt;chr&gt;, SpatialName &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDim &lt;int&gt;, TimeDimType &lt;chr&gt;, TimeDimensionValue &lt;chr&gt;, Value &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NumericValue &lt;dbl&gt;, Low &lt;dbl&gt;, High &lt;dbl&gt;, Date &lt;chr&gt;, Unit &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MeasureField &lt;chr&gt;, DataSourceDim &lt;chr&gt;, Comments &lt;chr&gt;, Dim1Type &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Dim1 &lt;chr&gt;, Dim2Type &lt;chr&gt;, Dim2 &lt;chr&gt;, Dim3Type &lt;chr&gt;, Dim3 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DIM_SEX &lt;chr&gt;, DIM_AGE &lt;chr&gt;, DIM_AMR_GLASS_AWARE &lt;chr&gt;, …</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 variable: Provider &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Specific countries and years</span></span></span>
 <span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span><span class="op">)</span>, year_from <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 42 × 49</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> d1559bb3-a35c-8f15-820… WHOSIS_000001 Life expecta… FRA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> c51700b5-bb92-8081-820… WHOSIS_000001 Life expecta… DEU        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 60501b58-04e9-8bbc-8d3… WHOSIS_000001 Life expecta… DEU        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 37853978-1351-8e0e-8a8… WHOSIS_000001 Life expecta… FRA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 4703d3d5-4fdf-8d7b-871… WHOSIS_000001 Life expecta… DEU        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 3e2efe26-0cd4-88d8-811… WHOSIS_000001 Life expecta… FRA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 34c96dc7-1c80-8cdd-836… WHOSIS_000001 Life expecta… DEU        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 9ef2600f-03ec-8cf4-83a… WHOSIS_000001 Life expecta… FRA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> bb5388ef-2413-8871-907… WHOSIS_000001 Life expecta… DEU        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 3ecebba1-f438-80b0-968… WHOSIS_000001 Life expecta… FRA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 32 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 44 more variables: SpatialDimTypeOriginal &lt;chr&gt;, SpatialName &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDim &lt;int&gt;, TimeDimType &lt;chr&gt;, TimeDimensionValue &lt;chr&gt;, Value &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NumericValue &lt;dbl&gt;, Low &lt;dbl&gt;, High &lt;dbl&gt;, Date &lt;chr&gt;, Unit &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MeasureField &lt;chr&gt;, DataSourceDim &lt;chr&gt;, Comments &lt;chr&gt;, Dim1Type &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Dim1 &lt;chr&gt;, Dim2Type &lt;chr&gt;, Dim2 &lt;chr&gt;, Dim3Type &lt;chr&gt;, Dim3 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DIM_SEX &lt;chr&gt;, DIM_AGE &lt;chr&gt;, DIM_AMR_GLASS_AWARE &lt;chr&gt;, …</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 variable: Provider &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Keep only the both-sexes breakdown, filtered server-side</span></span></span>
 <span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span>, dim1 <span class="op">=</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 variable: Provider &lt;chr&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Select xMart for one call without changing the session default</span></span></span>
+<span class="r-in"><span><span class="fu">gho_data</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>, year_from <span class="op">=</span> <span class="fl">2020</span>, year_to <span class="op">=</span> <span class="fl">2021</span>,</span></span>
+<span class="r-in"><span>         dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIM_SEX <span class="op">=</span> <span class="st">"TOTAL"</span><span class="op">)</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/IND_DIRECTORY_WIDE"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4,068 × 49</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> aa638549-26ae-842d-906… NCDMORT3070   Probability … AFG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> c75b8750-eef1-8098-906… NCDMORT3070   Probability … ALB        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 07a4b550-018e-8067-907… NCDMORT3070   Probability … DZA        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> fb25255f-433e-840a-907… NCDMORT3070   Probability … AGO        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 63d93527-7b21-8e2a-907… NCDMORT3070   Probability … ATG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> f231bb3d-5806-8e55-805… NCDMORT3070   Probability … AZE        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> d45a826c-8f4b-822a-805… NCDMORT3070   Probability … ARG        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 9c0bb9dd-1410-8c65-806… NCDMORT3070   Probability … AUS        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 4fc7fad3-bf2d-805f-806… NCDMORT3070   Probability … AUT        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2b82447c-09b6-8489-806… NCDMORT3070   Probability … BHS        COUNTRY       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4,058 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 44 more variables: SpatialDimTypeOriginal &lt;chr&gt;, SpatialName &lt;chr&gt;,</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/REF_GEO"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 50</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Id                       IndicatorCode IndicatorName SpatialDim SpatialDimType</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 8409c30b-3c53-81d3-8e23… NCDMORT3070   Probability … PHL        COUNTRY       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 800448d6-5025-8bd8-9264… NCDMORT3070   Probability … PHL        COUNTRY       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 45 more variables: SpatialDimTypeOriginal &lt;chr&gt;, SpatialName &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   TimeDim &lt;int&gt;, TimeDimType &lt;chr&gt;, TimeDimensionValue &lt;chr&gt;, Value &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   NumericValue &lt;dbl&gt;, Low &lt;dbl&gt;, High &lt;dbl&gt;, Date &lt;chr&gt;, Unit &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MeasureField &lt;chr&gt;, DataSourceDim &lt;chr&gt;, Comments &lt;chr&gt;, Dim1Type &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Dim1 &lt;chr&gt;, Dim2Type &lt;chr&gt;, Dim2 &lt;chr&gt;, Dim3Type &lt;chr&gt;, Dim3 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DIM_SEX &lt;chr&gt;, DIM_AGE &lt;chr&gt;, DIM_AMR_GLASS_AWARE &lt;chr&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DIM_SEX &lt;chr&gt;, DIM_AGE &lt;chr&gt;, DIM_AMR_GLASS_AWARE &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DIM_ASSISTIVETECHBARRIER &lt;chr&gt;, DIM_ASSISTIVETECHFUNDING &lt;chr&gt;, …</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -16,7 +16,8 @@ gho_data(
   dim1 = NULL,
   dim2 = NULL,
   dim3 = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  backend = NULL
 )
 ```
 
@@ -68,21 +69,36 @@ gho_data(
   Optional named list of exact xMart dimension fields and values, e.g.
   `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
 
+- backend:
+
+  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
+  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
+  explicit argument overrides the option for this call without changing
+  it. Use the same backend for discovery and retrieval.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) of
 indicator observations, or an empty tibble when the service is
-unreachable.
+unreachable or no observations match. The raw `Provider` column records
+`"legacy"` or `"xmart"` per row. A `who_provenance` attribute records
+the selected backend and, for successful downloads, the request context
+and retrieval time.
 
 ## Details
 
-Uses the public production xMart backend by default. Advanced users may
-set `DSIR.who_backend = "legacy"` for explicit comparisons, or set
-`DSIR.who_base_url` to another compatible HTTPS origin. Failures never
-trigger a silent fallback. Public directory coverage differs from the
-legacy catalog; unknown codes warn instead of substituting another code.
-Reference lookups are cached only in memory; no credentials or startup
-requests are required.
+Uses the legacy GHO OData backend by default for compatibility. Select
+`backend = "xmart"` to use the public production WHO xMart service, or
+set `options(DSIR.who_backend = "xmart")` as a session default.
+`DSIR.who_base_url` selects another compatible HTTPS xMart origin.
+Failures never trigger a silent fallback. Public directory coverage
+differs from the legacy catalog, and published estimates can differ.
+Unknown xMart directory codes warn; legacy HTTP 404 responses are
+checked against its directory before being classified as absent codes. A
+successful query with no matching observations emits an informational
+message. Request or parsing failures warn, and do not establish that no
+data exist. Reference lookups are cached only in memory; no credentials
+or startup requests are required.
 
 ## See also
 
@@ -95,77 +111,70 @@ requests are required.
 # \donttest{
 # Country-level data for one indicator
 gho_data("NCDMORT3070", spatial_type = "country")
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> # A tibble: 12,208 × 49
-#>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType
-#>    <chr>                   <chr>         <chr>         <chr>      <chr>         
-#>  1 776b0b46-f1dc-86b0-906… NCDMORT3070   Probability … AFG        COUNTRY       
-#>  2 edf1459a-be91-88d7-906… NCDMORT3070   Probability … AFG        COUNTRY       
-#>  3 aa638549-26ae-842d-906… NCDMORT3070   Probability … AFG        COUNTRY       
-#>  4 4088a1b8-09ef-8bf7-906… NCDMORT3070   Probability … ALB        COUNTRY       
-#>  5 3a53530e-1059-8cc6-906… NCDMORT3070   Probability … ALB        COUNTRY       
-#>  6 c75b8750-eef1-8098-906… NCDMORT3070   Probability … ALB        COUNTRY       
-#>  7 e60aca22-9feb-8390-906… NCDMORT3070   Probability … DZA        COUNTRY       
-#>  8 66b006ab-e581-8d87-907… NCDMORT3070   Probability … DZA        COUNTRY       
-#>  9 07a4b550-018e-8067-907… NCDMORT3070   Probability … DZA        COUNTRY       
-#> 10 cbecd4bf-db28-8c54-907… NCDMORT3070   Probability … AGO        COUNTRY       
-#> # ℹ 12,198 more rows
-#> # ℹ 44 more variables: SpatialDimTypeOriginal <chr>, SpatialName <chr>,
-#> #   TimeDim <int>, TimeDimType <chr>, TimeDimensionValue <chr>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Date <chr>, Unit <chr>,
-#> #   MeasureField <chr>, DataSourceDim <chr>, Comments <chr>, Dim1Type <chr>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <chr>, Dim3 <chr>,
-#> #   DIM_SEX <chr>, DIM_AGE <chr>, DIM_AMR_GLASS_AWARE <chr>, …
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■           
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 1
+#> # ℹ 1 variable: Provider <chr>
 
 # Specific countries and years
 gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> Assuming `spatial_type` = "country" since `area` was given.
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> # A tibble: 42 × 49
-#>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType
-#>    <chr>                   <chr>         <chr>         <chr>      <chr>         
-#>  1 d1559bb3-a35c-8f15-820… WHOSIS_000001 Life expecta… FRA        COUNTRY       
-#>  2 c51700b5-bb92-8081-820… WHOSIS_000001 Life expecta… DEU        COUNTRY       
-#>  3 60501b58-04e9-8bbc-8d3… WHOSIS_000001 Life expecta… DEU        COUNTRY       
-#>  4 37853978-1351-8e0e-8a8… WHOSIS_000001 Life expecta… FRA        COUNTRY       
-#>  5 4703d3d5-4fdf-8d7b-871… WHOSIS_000001 Life expecta… DEU        COUNTRY       
-#>  6 3e2efe26-0cd4-88d8-811… WHOSIS_000001 Life expecta… FRA        COUNTRY       
-#>  7 34c96dc7-1c80-8cdd-836… WHOSIS_000001 Life expecta… DEU        COUNTRY       
-#>  8 9ef2600f-03ec-8cf4-83a… WHOSIS_000001 Life expecta… FRA        COUNTRY       
-#>  9 bb5388ef-2413-8871-907… WHOSIS_000001 Life expecta… DEU        COUNTRY       
-#> 10 3ecebba1-f438-80b0-968… WHOSIS_000001 Life expecta… FRA        COUNTRY       
-#> # ℹ 32 more rows
-#> # ℹ 44 more variables: SpatialDimTypeOriginal <chr>, SpatialName <chr>,
-#> #   TimeDim <int>, TimeDimType <chr>, TimeDimensionValue <chr>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Date <chr>, Unit <chr>,
-#> #   MeasureField <chr>, DataSourceDim <chr>, Comments <chr>, Dim1Type <chr>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <chr>, Dim3 <chr>,
-#> #   DIM_SEX <chr>, DIM_AGE <chr>, DIM_AMR_GLASS_AWARE <chr>, …
+#> ℹ Pass `spatial_type` explicitly to silence this message.
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 1
+#> # ℹ 1 variable: Provider <chr>
 
 # Keep only the both-sexes breakdown, filtered server-side
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■              
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 1
+#> # ℹ 1 variable: Provider <chr>
+
+# Select xMart for one call without changing the session default
+gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,
+         dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
+#> Assuming `spatial_type` = "country" since `area` was given.
+#> Fetching WHO: "DATA_/IND_DIRECTORY_WIDE"
 #> Fetching WHO: "DATA_/RELAY_WHS"
-#> # A tibble: 4,068 × 49
-#>    Id                      IndicatorCode IndicatorName SpatialDim SpatialDimType
-#>    <chr>                   <chr>         <chr>         <chr>      <chr>         
-#>  1 aa638549-26ae-842d-906… NCDMORT3070   Probability … AFG        COUNTRY       
-#>  2 c75b8750-eef1-8098-906… NCDMORT3070   Probability … ALB        COUNTRY       
-#>  3 07a4b550-018e-8067-907… NCDMORT3070   Probability … DZA        COUNTRY       
-#>  4 fb25255f-433e-840a-907… NCDMORT3070   Probability … AGO        COUNTRY       
-#>  5 63d93527-7b21-8e2a-907… NCDMORT3070   Probability … ATG        COUNTRY       
-#>  6 f231bb3d-5806-8e55-805… NCDMORT3070   Probability … AZE        COUNTRY       
-#>  7 d45a826c-8f4b-822a-805… NCDMORT3070   Probability … ARG        COUNTRY       
-#>  8 9c0bb9dd-1410-8c65-806… NCDMORT3070   Probability … AUS        COUNTRY       
-#>  9 4fc7fad3-bf2d-805f-806… NCDMORT3070   Probability … AUT        COUNTRY       
-#> 10 2b82447c-09b6-8489-806… NCDMORT3070   Probability … BHS        COUNTRY       
-#> # ℹ 4,058 more rows
-#> # ℹ 44 more variables: SpatialDimTypeOriginal <chr>, SpatialName <chr>,
+#> Fetching WHO: "DATA_/REF_GEO"
+#> Fetching WHO: "DATA_/RELAY_WHS"
+#> # A tibble: 2 × 50
+#>   Id                       IndicatorCode IndicatorName SpatialDim SpatialDimType
+#>   <chr>                    <chr>         <chr>         <chr>      <chr>         
+#> 1 8409c30b-3c53-81d3-8e23… NCDMORT3070   Probability … PHL        COUNTRY       
+#> 2 800448d6-5025-8bd8-9264… NCDMORT3070   Probability … PHL        COUNTRY       
+#> # ℹ 45 more variables: SpatialDimTypeOriginal <chr>, SpatialName <chr>,
 #> #   TimeDim <int>, TimeDimType <chr>, TimeDimensionValue <chr>, Value <chr>,
 #> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Date <chr>, Unit <chr>,
 #> #   MeasureField <chr>, DataSourceDim <chr>, Comments <chr>, Dim1Type <chr>,
 #> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <chr>, Dim3 <chr>,
-#> #   DIM_SEX <chr>, DIM_AGE <chr>, DIM_AMR_GLASS_AWARE <chr>, …
+#> #   DIM_SEX <chr>, DIM_AGE <chr>, DIM_AMR_GLASS_AWARE <chr>,
+#> #   DIM_ASSISTIVETECHBARRIER <chr>, DIM_ASSISTIVETECHFUNDING <chr>, …
 # }
 ```

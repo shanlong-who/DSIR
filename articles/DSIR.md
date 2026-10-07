@@ -563,20 +563,19 @@ This financial-hardship code is not in the public xMart directory as of
 
 ``` r
 
-previous_options <- options(DSIR.who_backend = 'legacy')
-gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL") |>
+gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL",
+                         backend = "legacy") |>
   gho_clean(keep_dimensions = TRUE, keep_metadata = TRUE)
-options(previous_options)
 gho_detailed |>
-  select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
+  select(provider, iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
 
 Types are taken from each observation’s `Dim1Type`–`Dim3Type`. They are
 never guessed from a code prefix or assumed constant for the whole
-indicator. GHO metadata includes original source codes, observation
-identifiers, comments (in `footnotes`), location/time types, parent
-locations, update timestamps, and time intervals. Neither optional flag
-changes the default 15-column output.
+indicator. GHO metadata includes the retrieval `provider`, original
+source codes, observation identifiers, comments (in `footnotes`),
+location/time types, parent locations, update timestamps, and time
+intervals. Neither optional flag changes the default 15-column output.
 
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
 validates declared pagination and total row counts before local

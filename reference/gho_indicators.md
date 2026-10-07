@@ -6,7 +6,7 @@ Fetches the catalog of indicators from the WHO Global Health Observatory
 ## Usage
 
 ``` r
-gho_indicators(search = NULL)
+gho_indicators(search = NULL, backend = NULL)
 ```
 
 ## Arguments
@@ -26,6 +26,13 @@ gho_indicators(search = NULL)
 
   Search terms are matched literally; they are not download identifiers.
 
+- backend:
+
+  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
+  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
+  explicit argument overrides the option for this call without changing
+  it. Use the same backend for discovery and retrieval.
+
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with
@@ -43,38 +50,53 @@ empty tibble (with a warning) when the service is unreachable.
 # \donttest{
 # All indicators
 inds <- gho_indicators()
+#> Fetching: <https://ghoapi.azureedge.net/api/Indicator>
 
 # Single keyword
 gho_indicators("mortality")
-#> # A tibble: 25 × 3
-#>    IndicatorCode         IndicatorName                                  Language
-#>    <chr>                 <chr>                                          <chr>   
-#>  1 SDGSUICIDE            Suicide mortality rate (per 100 000 populatio… EN      
-#>  2 NCDMORT3070           Probability of premature mortality from NCDs   EN      
-#>  3 MDG_0000000007        Under-five mortality rate (per 1000 live birt… EN      
-#>  4 VIOLENCE_HOMICIDERATE Mortality rate due to homicide (per 100 000 p… EN      
-#>  5 TB_e_mort_100k        HIV-negative TB mortality                      EN      
-#>  6 TB_e_mort_agesex_100k TB mortality rate by age and sex per 100 000 … EN      
-#>  7 SDGPOISON             Mortality rate from unintentional poisoning (… EN      
-#>  8 WHOSIS_000003         Neonatal mortality rate (per 1000 live births) EN      
-#>  9 MDG_0000000026        Maternal mortality ratio (per 100 000 live bi… EN      
-#> 10 MALARIA_EST_MORTALITY Estimated malaria mortality rate (per 100 000… EN      
-#> # ℹ 15 more rows
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■       
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 3
+#> # ℹ 3 variables: IndicatorCode <chr>, IndicatorName <chr>, Language <chr>
 
 # Multiple keywords from one string (AND): both terms must appear
 gho_indicators("child mortality")
-#> # A tibble: 2 × 3
-#>   IndicatorCode  IndicatorName                                          Language
-#>   <chr>          <chr>                                                  <chr>   
-#> 1 CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      
-#> 2 WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■■■■                     
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 3
+#> # ℹ 3 variables: IndicatorCode <chr>, IndicatorName <chr>, Language <chr>
 
 # Or pass terms as a vector
 gho_indicators(c("child", "mortality"))
-#> # A tibble: 2 × 3
-#>   IndicatorCode  IndicatorName                                          Language
-#>   <chr>          <chr>                                                  <chr>   
-#> 1 CHILDMORT5TO14 Mortality rate among children ages 5 to 14 years of a… EN      
-#> 2 WHOSIS_000016  Mortality rate among children ages 5 to 9 years (per … EN      
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■            
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/Indicator?$filter=contains%28tolower%28IndicatorName%29%2C%27child%27%29%20and%20contains%28tolower%28IndicatorName%29%2C%27mortality%27%29>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 3
+#> # ℹ 3 variables: IndicatorCode <chr>, IndicatorName <chr>, Language <chr>
 # }
 ```

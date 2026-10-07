@@ -60,7 +60,8 @@ observations. Useful for sizing a download before issuing it.</p>
 <span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim3 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,6 +115,13 @@ positional filters. Named filters use the provider's exact native codes.</p></dd
 <dd><p>Optional named list of exact xMart dimension fields and
 values, e.g. <code>list(DIM_SEX = 'TOTAL')</code>. Requires the xMart backend.</p></dd>
 
+
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>Character scalar. <code>"legacy"</code> or <code>"xmart"</code>. Default <code>NULL</code>
+uses the <code>DSIR.who_backend</code> option, or <code>"legacy"</code> when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -132,16 +140,43 @@ Returns <code>NA_integer_</code> (with a warning) if the request fails.</p>
 <span class="r-in"><span><span class="co"># How many rows would gho_data() pull for France?</span></span></span>
 <span class="r-in"><span><span class="fu">gho_count</span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 66</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%29&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compare coverage across regions</span></span></span>
 <span class="r-in"><span><span class="fu">gho_count</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12208</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span><span class="fu">gho_count</span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"region"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 396</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&amp;$top=0&amp;$count=true&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

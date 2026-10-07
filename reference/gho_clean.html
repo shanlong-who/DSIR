@@ -79,7 +79,9 @@ retains all named source dimensions as <code>dim_*</code> character columns.</p>
 
 <dt id="arg-keep-metadata">keep_metadata<a class="anchor" aria-label="anchor" href="#arg-keep-metadata"></a></dt>
 <dd><p>Logical. Retain source context? Default <code>FALSE</code>.
-With <code>TRUE</code>, appends character columns <code>observation_id</code>, <code>spatial_type</code>,
+With <code>TRUE</code>, appends <code>provider</code> (<code>"legacy"</code> or <code>"xmart"</code>) from recorded
+retrieval provenance; unknown origins remain <code>NA</code>, never the current
+session setting. Also appends character columns <code>observation_id</code>, <code>spatial_type</code>,
 <code>time_type</code>, <code>data_source_type</code>, <code>data_source</code>, <code>updated</code>,
 <code>parent_location</code>, <code>parent_location_name</code>, <code>time_detail</code>, <code>time_start</code>,
 and <code>time_end</code>, copied from the raw API fields. Raw <code>Comments</code> are kept
@@ -87,7 +89,8 @@ as <code>footnotes</code>, a list-column of character vectors. Missing scalar
 fields are <code>NA</code>; missing list fields are empty character vectors.
 This option is independent of <code>keep_dimensions</code>. Unit and dimension
 labels are not inferred. xMart output also retains <code>unit</code>,
-<code>measure_field</code>, <code>spatial_type_source</code>, and a <code>who_provenance</code> attribute.
+<code>measure_field</code>, and <code>spatial_type_source</code>. Both backends preserve a
+<code>who_provenance</code> attribute, including with the default 15-column output.
 Retaining these fields makes no extra
 network requests beyond the usual indicator-name lookup.</p></dd>
 
@@ -124,7 +127,10 @@ they remain <code>NA</code>.</p>
 without confidence intervals) are filled with typed <code>NA</code>, so the
 default output always has the same 15 columns with the same column types.</p>
 <p>xMart supplies indicator labels through its official directory. Legacy
-observations without an <code>IndicatorName</code> use <code><a href="gho_indicators.html">gho_indicators()</a></code>.
+observations without an <code>IndicatorName</code> use <code><a href="gho_indicators.html">gho_indicators()</a></code> with the
+backend recorded in their <code>Provider</code> column or <code>who_provenance</code> attribute,
+even if the session default has changed since retrieval. Older/imported
+data without provenance use the session default for this label lookup.
 For such input, on the first call within an R session,
 <code>gho_clean()</code> fetches the catalog once and caches it for the rest of
 the session, so the <code>indicator</code> column carries the full
@@ -142,25 +148,21 @@ human-readable indicator name. If the catalog cannot be fetched
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, spatial_type <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">gho_clean</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12,208 × 15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    source id        indicator location iso3  location_name  year value value_num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 40         40  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 46.7       46.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>000 43.2       43.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 40.5       40.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 46.8       46.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>001 43.5       43.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 40.3       40.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 46         46  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>002 43.1       43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    <span style="text-decoration: underline;">2</span>003 40         40  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12,198 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■                        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 variables: source &lt;chr&gt;, id &lt;chr&gt;, indicator &lt;chr&gt;, location &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   iso3 &lt;chr&gt;, location_name &lt;chr&gt;, year &lt;int&gt;, value &lt;chr&gt;, value_num &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;, dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

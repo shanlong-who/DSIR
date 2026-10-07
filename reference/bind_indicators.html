@@ -88,7 +88,11 @@ have been fetched.</p>
 <code>sdg_clean(keep_dimensions = TRUE)</code>, are preserved. Columns absent
 from an input are filled with typed missing values. Binding rows
 does not harmonise dimension codes or indicator definitions across
-sources.</p>
+sources.
+<code>gho_clean(keep_metadata = TRUE)</code> retains a row-level <code>provider</code> column
+so legacy and xMart GHO observations remain distinguishable after binding.
+Binding does not merge the input <code>who_provenance</code> attributes; preserve raw
+pulls or snapshots when request-level provenance is needed.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -100,28 +104,35 @@ sources.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">gho</span> <span class="op">&lt;-</span> <span class="fu"><a href="gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming `spatial_type` = <span style="color: #0000BB;">"country"</span> since `area` was given.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/IND_DIRECTORY_WIDE"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/REF_GEO"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching WHO: <span style="color: #0000BB;">"DATA_/RELAY_WHS"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Pass `spatial_type` explicitly to silence this message.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 4s for retry backoff <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GHO request failed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> URL:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB; font-style: italic;">&lt;https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27AUS%27%2C%27BRN%27%2C%27CHN%27%2C%27COK%27%2C%27FJI%27%2C%27FSM%27%2C%27IDN%27%2C%27JPN%27%2C%27KHM%27%2C%27KIR%27%2C%27KOR%27%2C%27LAO%27%2C%27MHL%27%2C%27MNG%27%2C%27MYS%27%2C%27NIU%27%2C%27NRU%27%2C%27NZL%27%2C%27PHL%27%2C%27PLW%27%2C%27PNG%27%2C%27SGP%27%2C%27SLB%27%2C%27TON%27%2C%27TUV%27%2C%27VNM%27%2C%27VUT%27%2C%27WSM%27%29&gt;</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> HTTP 502 Bad Gateway.</span>
 <span class="r-in"><span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fetching:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-style: italic;">&lt;https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&amp;pageSize=1000&amp;areaCode=036&amp;areaCode=096&amp;areaCode=156&amp;areaCode=184&amp;areaCode=242&amp;areaCode=583&amp;areaCode=360&amp;areaCode=392&amp;areaCode=116&amp;areaCode=296&amp;areaCode=410&amp;areaCode=418&amp;areaCode=584&amp;areaCode=496&amp;areaCode=458&amp;areaCode=570&amp;areaCode=520&amp;areaCode=554&amp;areaCode=608&amp;areaCode=585&amp;areaCode=598&amp;areaCode=702&amp;areaCode=090&amp;areaCode=776&amp;areaCode=798&amp;areaCode=704&amp;areaCode=548&amp;areaCode=882&amp;page=1&gt;</span></span>
 <span class="r-in"><span><span class="fu">bind_indicators</span><span class="op">(</span><span class="va">gho</span>, <span class="va">sdg</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,914 × 15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    source id        indicator location iso3  location_name  year value value_num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>000 9.8         9.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>000 16         16  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>000 13         13  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>001 9.6         9.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>001 15.6       15.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>001 12.6       12.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>002 9.6         9.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>002 15         15  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>002 12.3       12.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> gho    NCDMORT3… Probabil… AUS      AUS   Australia      <span style="text-decoration: underline;">2</span>003 9.1         9.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,904 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 462 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    source id    indicator     location iso3  location_name  year value value_num</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 28.1       28.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 25.4       25.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>000 31.8       31.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 22.5       22.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 25.6       25.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>005 29.7       29.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 24.4       24.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 20.9       20.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>010 29.1       29.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> sdg    3.4.1 Mortality ra… 116      KHM   Cambodia       <span style="text-decoration: underline;">2</span>015 28.3       28.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 452 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: low &lt;dbl&gt;, high &lt;dbl&gt;, series &lt;chr&gt;, dim1 &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>

@@ -34,17 +34,20 @@ gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
 - keep_metadata:
 
   Logical. Retain source context? Default `FALSE`. With `TRUE`, appends
-  character columns `observation_id`, `spatial_type`, `time_type`,
-  `data_source_type`, `data_source`, `updated`, `parent_location`,
-  `parent_location_name`, `time_detail`, `time_start`, and `time_end`,
-  copied from the raw API fields. Raw `Comments` are kept as
-  `footnotes`, a list-column of character vectors. Missing scalar fields
-  are `NA`; missing list fields are empty character vectors. This option
-  is independent of `keep_dimensions`. Unit and dimension labels are not
-  inferred. xMart output also retains `unit`, `measure_field`,
-  `spatial_type_source`, and a `who_provenance` attribute. Retaining
-  these fields makes no extra network requests beyond the usual
-  indicator-name lookup.
+  `provider` (`"legacy"` or `"xmart"`) from recorded retrieval
+  provenance; unknown origins remain `NA`, never the current session
+  setting. Also appends character columns `observation_id`,
+  `spatial_type`, `time_type`, `data_source_type`, `data_source`,
+  `updated`, `parent_location`, `parent_location_name`, `time_detail`,
+  `time_start`, and `time_end`, copied from the raw API fields. Raw
+  `Comments` are kept as `footnotes`, a list-column of character
+  vectors. Missing scalar fields are `NA`; missing list fields are empty
+  character vectors. This option is independent of `keep_dimensions`.
+  Unit and dimension labels are not inferred. xMart output also retains
+  `unit`, `measure_field`, and `spatial_type_source`. Both backends
+  preserve a `who_provenance` attribute, including with the default
+  15-column output. Retaining these fields makes no extra network
+  requests beyond the usual indicator-name lookup.
 
 ## Value
 
@@ -92,11 +95,14 @@ output always has the same 15 columns with the same column types.
 
 xMart supplies indicator labels through its official directory. Legacy
 observations without an `IndicatorName` use
-[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md).
-For such input, on the first call within an R session, `gho_clean()`
-fetches the catalog once and caches it for the rest of the session, so
-the `indicator` column carries the full human-readable indicator name.
-If the catalog cannot be fetched (e.g. no network),
+[`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
+with the backend recorded in their `Provider` column or `who_provenance`
+attribute, even if the session default has changed since retrieval.
+Older/imported data without provenance use the session default for this
+label lookup. For such input, on the first call within an R session,
+`gho_clean()` fetches the catalog once and caches it for the rest of the
+session, so the `indicator` column carries the full human-readable
+indicator name. If the catalog cannot be fetched (e.g. no network),
 [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
 emits a warning and the `indicator` column falls back to `NA`.
 
@@ -112,24 +118,20 @@ emits a warning and the `indicator` column falls back to `NA`.
 # \donttest{
 gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> # A tibble: 12,208 × 15
-#>    source id        indicator location iso3  location_name  year value value_num
-#>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40         40  
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7       46.7
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2       43.2
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5       40.5
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8       46.8
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5       43.5
-#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3       40.3
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46         46  
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1       43.1
-#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 40         40  
-#> # ℹ 12,198 more rows
-#> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>
+#> Fetching:
+#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■     
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL:
+#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
+#> ✖ HTTP 502 Bad Gateway.
+#> # A tibble: 0 × 15
+#> # ℹ 15 variables: source <chr>, id <chr>, indicator <chr>, location <chr>,
+#> #   iso3 <chr>, location_name <chr>, year <int>, value <chr>, value_num <dbl>,
+#> #   low <dbl>, high <dbl>, series <chr>, dim1 <chr>, dim2 <chr>, dim3 <chr>
 # }
 ```

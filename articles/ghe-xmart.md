@@ -1,18 +1,20 @@
 # WHO xMart and Global Health Estimates
 
-DSIR 0.11.0 uses WHO’s public production xMart service. GHO and GHE
-share the request layer but keep separate data models. Downloads verify
-pagination and never switch to the legacy service after a failure.
-Network examples below are shown without running during vignette builds.
+DSIR 0.11.0 keeps the legacy GHO OData service as its compatibility
+default and supports WHO’s public production xMart service through
+`backend = 'xmart'`. GHE always uses xMart. Downloads never switch
+providers after a failure. Network examples below are shown without
+running during vignette builds.
 
 ## Discover GHO codes and preserve named dimensions
 
 ``` r
 
-gho_indicators('mortality')
-gho_dimensions('NCDMORT3070', 'DIM_SEX')
+gho_indicators('mortality', backend = 'xmart')
+gho_dimensions('NCDMORT3070', 'DIM_SEX', backend = 'xmart')
 ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
-                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'))
+                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'),
+                backend = 'xmart')
 gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
 ```
 
@@ -22,14 +24,39 @@ families; long tables store explicit dimension type/member pairs. DSIR
 maps both into its familiar raw columns.
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
 keeps 15 columns by default. Optional named fields preserve category
-meaning; optional metadata preserves units and provenance. Positions can
-differ from legacy `Dim1`-`Dim3`. Prefer named filters.
+meaning; optional metadata preserves units and a row-level `provider`
+column. Raw GHO observations record `Provider` and a `who_provenance`
+attribute. Missing labels are resolved with the recorded backend, even
+if the session option has changed. Unknown imported origins remain `NA`.
+Positions can differ from legacy `Dim1`-`Dim3`. Prefer named filters.
 
 The xMart directory and old catalog cover different codes and
 publication vintages. An unknown code warns; it is never replaced by a
-similar code. Use `options(DSIR.who_backend = 'legacy')` only for an
-explicit comparison. GHE always uses xMart. Restore
-`options(DSIR.who_backend = 'xmart')` afterwards.
+similar code. All six GHO query functions accept `backend`. An explicit
+argument overrides `DSIR.who_backend` without changing that option; an
+unset option uses legacy. Use the same backend for code discovery,
+dimensions, counts, coverage and data.
+
+``` r
+
+financial <- gho_data('FINANCIALHARDSHIP_PROPORTIONOFPOP', area = 'PHL',
+                       backend = 'legacy')
+gho_clean(financial, keep_dimensions = TRUE, keep_metadata = TRUE)
+
+# Optional session default; explicit arguments still take precedence.
+options(DSIR.who_backend = 'xmart')
+gho_indicators('mortality', backend = 'legacy')
+```
+
+Successful empty observation selections give an informational message.
+[`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
+returns `FALSE` and
+[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
+returns `0L` in that case. Requests or parsing failures warn and return
+empty tables or `NA`. An unknown xMart directory code warns. Legacy HTTP
+404 responses trigger a small directory check before an indicator is
+reported absent. A failed directory check cannot establish absence.
+There is no automatic fallback.
 
 ## Discover GHE selections
 

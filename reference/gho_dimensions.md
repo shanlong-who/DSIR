@@ -8,7 +8,7 @@ or other breakdowns are available before calling
 ## Usage
 
 ``` r
-gho_dimensions(indicator, dimension = "SpatialDimType")
+gho_dimensions(indicator, dimension = "SpatialDimType", backend = NULL)
 ```
 
 ## Arguments
@@ -25,6 +25,13 @@ gho_dimensions(indicator, dimension = "SpatialDimType")
   server as an OData `$select` field name). xMart also accepts exact
   named fields such as `"DIM_SEX"` or `"DIM_AGE"`. Default
   `"SpatialDimType"`.
+
+- backend:
+
+  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
+  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
+  explicit argument overrides the option for this call without changing
+  it. Use the same backend for discovery and retrieval.
 
 ## Value
 
@@ -51,11 +58,25 @@ character vector.
 ``` r
 # \donttest{
 gho_dimensions("NCDMORT3070")
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> [1] "COUNTRY"              "GLOBAL"               "REGION"              
-#> [4] "WORLDBANKINCOMEGROUP"
+#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■                        
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■          
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
+#> ✖ HTTP 502 Bad Gateway.
+#> character(0)
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> [1] "SEX_BTSX" "SEX_FMLE" "SEX_MLE" 
+#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Waiting 4s for retry backoff ■■■■■■■■■■                      
+#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+#> Warning: GHO request failed.
+#> ℹ URL: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
+#> ✖ HTTP 502 Bad Gateway.
+#> character(0)
 # }
 ```
