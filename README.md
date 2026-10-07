@@ -265,19 +265,18 @@ for financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
 `FINANCIALHARDSHIPCOMPONENT`, or `DEMOGRAPHIC`, among others.
 
 ```r
-previous_options <- options(DSIR.who_backend = 'legacy')
-raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL")
-options(previous_options)
+raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL",
+                backend = "legacy")
 gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 gho_detailed |>
-  dplyr::select(iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
+  dplyr::select(provider, iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
 
 As verified on 2026-10-06, this financial-hardship code is absent from the
 public xMart directory. The example explicitly selects the legacy provider;
 there is no automatic fallback. The UN SDG workflow below remains separate.
 
-`keep_metadata = TRUE` also preserves the observation identifier,
+`keep_metadata = TRUE` also preserves the retrieval `provider`, observation identifier,
 source code and type, spatial/time types, parent location, update
 timestamp, time interval, and comments. Comments are stored in the
 `footnotes` list-column. No dimension type or unit is inferred from
@@ -455,17 +454,19 @@ MIT — © 2026 Shanlong Ding
 
 ### WHO xMart migration (0.11.0)
 
-GHO uses `https://xmart-api-public.who.int` by default. The official
-directory supplies public download routes; DSIR maps them into its familiar
-observation fields. The 15-column default of `gho_clean()` remains unchanged.
-Public codes and published vintages can differ from the legacy service.
-Search the current directory rather than assuming every former code exists.
+GHO keeps the legacy OData API as its compatibility default. Select
+`backend = "xmart"` to use `https://xmart-api-public.who.int` for one call.
+Its official directory supplies public download routes; DSIR maps them into
+its familiar observation fields. The 15-column default of `gho_clean()`
+remains unchanged. Public codes and published vintages can differ between
+providers. Use the same backend for discovery and retrieval.
 
 ```r
-gho_indicators('mortality')
-gho_dimensions('NCDMORT3070', 'DIM_SEX')
+gho_indicators('mortality', backend = 'xmart')
+gho_dimensions('NCDMORT3070', 'DIM_SEX', backend = 'xmart')
 ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
-                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'))
+                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'),
+                backend = 'xmart')
 gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
 ```
 
@@ -482,12 +483,27 @@ bounds agreed exactly. `WHOSIS_000001` and `MDG_0000000001` values and bounds
 differed after matching dimension codes; rounding alone did not explain all
 differences. DSIR preserves each provider's published estimates. Record the
 provider and retrieval date when comparing historical analyses.
+Raw observations have a `Provider` column and a `who_provenance` attribute.
+`gho_clean(keep_metadata = TRUE)` retains row-level origin as `provider`,
+which survives `bind_indicators()`. Unknown imported origins remain `NA`.
+Missing indicator labels are resolved with the recorded backend, even when
+the session option has changed since retrieval.
 
 Failures warn and return empty results without switching providers. Reference
 lookups use a ten-minute memory cache. No keys, startup requests or disk cache
-are required. Advanced settings are `DSIR.who_backend` (`"xmart"` or explicit
-`"legacy"` for comparisons), `DSIR.who_base_url`, `DSIR.who_page_size` and
+are required. Selection follows: explicit `backend` argument, then the
+`DSIR.who_backend` option, then `"legacy"`. An argument never changes the
+session option. To choose a session default once, use
+`options(DSIR.who_backend = "xmart")`. Other advanced settings are
+`DSIR.who_base_url` (xMart HTTPS origin), `DSIR.who_page_size` and
 `DSIR.who_max_rows`. Use `snapshot()` to save a reproducible pull explicitly.
+
+An absent xMart directory code produces a warning. For legacy HTTP 404
+responses, DSIR checks the exact code in its directory before reporting
+absence. Successful observation queries with no matching rows give an
+informational message: `gho_has_data()` returns `FALSE`, `gho_count()` returns
+`0L`, and data/coverage queries return empty tables. Failed requests or malformed
+responses warn; availability and count queries return `NA`, never `FALSE` or zero.
 
 If xMart redirects a query to an HTML error page, DSIR retries within its
 three-attempt limit and warns if the service still does not return JSON.
@@ -496,13 +512,11 @@ that no matching indicators or observations exist. Retry later. To use the
 separate legacy GHO service explicitly for a comparison or temporary workaround:
 
 ```r
-previous_options <- options(DSIR.who_backend = 'legacy')
-mortality_indicators <- gho_indicators('mortality')
-options(previous_options)
+mortality_indicators <- gho_indicators('mortality', backend = 'legacy')
 ```
 
-The legacy catalog and estimates can differ from xMart. This setting applies
-to GHO functions; GHE continues to use its xMart source.
+The legacy catalog and estimates can differ from xMart. Backend selection
+applies to GHO functions; GHE continues to use its xMart source.
 
 ### Global Health Estimates
 

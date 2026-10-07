@@ -1,10 +1,21 @@
 # GHO adapters. Provider fields are confined to this file and the legacy adapter.
-.who_gho <- function(operation, ...) {
+.who_gho <- function(operation, ..., backend = NULL) {
   args <- list(...)
-  if (.who_config()$backend == 'legacy') {
-    return(do.call(get(paste0('.legacy_gho_', operation), mode = 'function'), args))
+  config <- .who_config(backend)
+  out <- do.call(get(paste0('.', config$backend, '_gho_', operation), mode = 'function'), args)
+  if (operation == 'data') {
+    # Keep row-level origin when raw observations from both providers are bound.
+    out$Provider <- rep(config$backend, nrow(out))
+    provenance <- attr(out, 'who_provenance')
+    if (is.null(provenance)) provenance <- list()
+    provenance$backend <- config$backend
+    attr(out, 'who_provenance') <- provenance
   }
-  do.call(get(paste0('.xmart_gho_', operation), mode = 'function'), args)
+  out
+}
+
+.gho_inform_empty <- function(backend) {
+  cli::cli_inform('No GHO observations match the requested filters on {.val {backend}}.')
 }
 
 .xmart_catalog <- function() {
@@ -43,10 +54,15 @@
 
 .xmart_gho_route <- function(indicator) {
   df <- .xmart_catalog()
-  if (is.null(df) || !nrow(df)) return(NULL)
+  if (is.null(df)) return(NULL)
+  if (!nrow(df)) {
+    cli::cli_warn('The WHO xMart indicator directory is empty; indicator availability could not be verified.')
+    return(NULL)
+  }
   rows <- df[!is.na(df$IND_CODE_GHO) & df$IND_CODE_GHO == indicator, , drop = FALSE]
   if (!nrow(rows)) {
-    cli::cli_warn('Unknown GHO code in the public xMart directory: {.val {indicator}}. Use {.fn gho_indicators} to inspect current codes.')
+    cli::cli_warn(c('Unknown GHO code in the public xMart directory: {.val {indicator}}.',
+      'i' = 'The code is absent from this directory, not a valid empty observation selection. Use {.fn gho_indicators} with {.code backend = "xmart"} to inspect current codes.'))
     return(NULL)
   }
   downloadable <- !is.na(rows$DWNL_QUERY) & nzchar(rows$DWNL_QUERY)
@@ -380,18 +396,21 @@
   context <- .xmart_gho_context(...)
   if (is.null(context)) return(tibble::tibble())
   df <- .who_odata(context$path, filter = context$filter)
+  if (!is.null(df) && !nrow(df)) .gho_inform_empty('xmart')
   .xmart_gho_normalize(df, context)
 }
 .xmart_gho_count <- function(...) {
   context <- .xmart_gho_context(...)
   if (is.null(context)) return(NA_integer_)
   out <- .who_odata(context$path, context$filter, mode = 'count')
+  if (!is.null(out) && out == 0) .gho_inform_empty('xmart')
   if (is.null(out)) NA_integer_ else out
 }
 .xmart_gho_has_data <- function(...) {
   context <- .xmart_gho_context(...)
   if (is.null(context)) return(NA)
   out <- .who_odata(context$path, context$filter, mode = 'exists')
+  if (identical(out, FALSE)) .gho_inform_empty('xmart')
   if (is.null(out)) NA else out
 }
 .xmart_gho_coverage <- function(...) {
@@ -399,6 +418,7 @@
   empty <- tibble::tibble(location = character(), year_min = integer(), year_max = integer(), n_obs = integer())
   if (is.null(context)) return(empty)
   df <- .who_odata(context$path, context$filter, select = c('Sys_PK', 'DIM_GEO_CODE_M49', 'DIM_TIME'))
+  if (!is.null(df) && !nrow(df)) .gho_inform_empty('xmart')
   if (is.null(df) || !nrow(df)) return(empty)
   if (!all(c('DIM_GEO_CODE_M49', 'DIM_TIME') %in% names(df))) {
     cli::cli_warn('Malformed WHO GHO coverage response; no data returned.')

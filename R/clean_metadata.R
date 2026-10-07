@@ -55,7 +55,26 @@
 
 
 #' @noRd
+.gho_provider <- function(df) {
+  provider <- .dsi_pick_chr(df, 'Provider')
+  if ('Provider' %in% names(df)) {
+    provider[!provider %in% c('legacy', 'xmart')] <- NA_character_
+    return(provider)
+  }
+  provenance <- attr(df, 'who_provenance')
+  if (is.list(provenance) && length(provenance$backend) == 1L &&
+      is.character(provenance$backend) && provenance$backend %in% c('legacy', 'xmart')) {
+    missing <- is.na(provider)
+    provider[missing] <- provenance$backend
+  }
+  provider
+}
+
+
+#' @noRd
 .gho_append_metadata <- function(out, df) {
+  # Unknown imported data retain NA: the current option is not its origin.
+  out$provider <- .gho_provider(df)
   mapping <- c(
     observation_id = "Id", spatial_type = "SpatialDimType",
     time_type = "TimeDimType", data_source_type = "DataSourceDimType",

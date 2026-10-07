@@ -17,7 +17,9 @@ code's spelling, and missing types remain \code{NA}. xMart output also
 retains all named source dimensions as \verb{dim_*} character columns.}
 
 \item{keep_metadata}{Logical. Retain source context? Default \code{FALSE}.
-With \code{TRUE}, appends character columns \code{observation_id}, \code{spatial_type},
+With \code{TRUE}, appends \code{provider} (\code{"legacy"} or \code{"xmart"}) from recorded
+retrieval provenance; unknown origins remain \code{NA}, never the current
+session setting. Also appends character columns \code{observation_id}, \code{spatial_type},
 \code{time_type}, \code{data_source_type}, \code{data_source}, \code{updated},
 \code{parent_location}, \code{parent_location_name}, \code{time_detail}, \code{time_start},
 and \code{time_end}, copied from the raw API fields. Raw \code{Comments} are kept
@@ -25,7 +27,8 @@ as \code{footnotes}, a list-column of character vectors. Missing scalar
 fields are \code{NA}; missing list fields are empty character vectors.
 This option is independent of \code{keep_dimensions}. Unit and dimension
 labels are not inferred. xMart output also retains \code{unit},
-\code{measure_field}, \code{spatial_type_source}, and a \code{who_provenance} attribute.
+\code{measure_field}, and \code{spatial_type_source}. Both backends preserve a
+\code{who_provenance} attribute, including with the default 15-column output.
 Retaining these fields makes no extra
 network requests beyond the usual indicator-name lookup.}
 }
@@ -72,7 +75,10 @@ without confidence intervals) are filled with typed \code{NA}, so the
 default output always has the same 15 columns with the same column types.
 
 xMart supplies indicator labels through its official directory. Legacy
-observations without an \code{IndicatorName} use \code{\link[=gho_indicators]{gho_indicators()}}.
+observations without an \code{IndicatorName} use \code{\link[=gho_indicators]{gho_indicators()}} with the
+backend recorded in their \code{Provider} column or \code{who_provenance} attribute,
+even if the session default has changed since retrieval. Older/imported
+data without provenance use the session default for this label lookup.
 For such input, on the first call within an R session,
 \code{gho_clean()} fetches the catalog once and caches it for the rest of
 the session, so the \code{indicator} column carries the full

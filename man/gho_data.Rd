@@ -13,7 +13,8 @@ gho_data(
   dim1 = NULL,
   dim2 = NULL,
   dim3 = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  backend = NULL
 )
 }
 \arguments{
@@ -49,10 +50,18 @@ positional filters. Named filters use the provider's exact native codes.}
 
 \item{dimensions}{Optional named list of exact xMart dimension fields and
 values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires the xMart backend.}
+
+\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.}
 }
 \value{
 A \link[tibble:tibble]{tibble} of indicator observations, or
-an empty tibble when the service is unreachable.
+an empty tibble when the service is unreachable or no observations match.
+The raw \code{Provider} column records \code{"legacy"} or \code{"xmart"} per row.
+A \code{who_provenance} attribute records the selected backend and, for
+successful downloads, the request context and retrieval time.
 }
 \description{
 Retrieves observations for a specific indicator from the WHO GHO
@@ -60,11 +69,16 @@ OData API, with optional filters by spatial level, country /
 region and year range.
 }
 \details{
-Uses the public production xMart backend by default. Advanced users may
-set \code{DSIR.who_backend = "legacy"} for explicit comparisons, or set
-\code{DSIR.who_base_url} to another compatible HTTPS origin. Failures never
+Uses the legacy GHO OData backend by default for compatibility. Select
+\code{backend = "xmart"} to use the public production WHO xMart service, or
+set \code{options(DSIR.who_backend = "xmart")} as a session default.
+\code{DSIR.who_base_url} selects another compatible HTTPS xMart origin. Failures never
 trigger a silent fallback. Public directory coverage differs from the
-legacy catalog; unknown codes warn instead of substituting another code.
+legacy catalog, and published estimates can differ. Unknown xMart directory
+codes warn; legacy HTTP 404 responses are checked against its directory
+before being classified as absent codes. A successful query with no
+matching observations emits an informational message. Request or parsing
+failures warn, and do not establish that no data exist.
 Reference lookups are cached only in memory; no credentials
 or startup requests are required.
 }
@@ -78,6 +92,10 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 
 # Keep only the both-sexes breakdown, filtered server-side
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
+
+# Select xMart for one call without changing the session default
+gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,
+         dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
 }
 }
 \seealso{

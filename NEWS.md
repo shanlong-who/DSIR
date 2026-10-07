@@ -6,14 +6,17 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
 
 ## WHO data infrastructure
 
-* GHO now defaults to the public production WHO xMart API. An internal
+* GHO retains the legacy OData API as its compatibility default and adds the
+  public production WHO xMart API. An internal
   provider adapter maps the official indicator directory, download routes,
   geography, numeric measure families and named dimensions to DSIR fields.
   Existing arguments remain; `dimensions` adds exact named filters.
   The public xMart directory covers a different set of codes and vintages
   than the legacy catalog. Unknown codes warn; no automatic fallback occurs.
-* `DSIR.who_backend = "legacy"` explicitly selects the previous GHO adapter.
-  `DSIR.who_base_url` accepts a compatible HTTPS origin. Reference caches
+* All six GHO query functions accept `backend = "legacy"` or `"xmart"`.
+  An explicit argument overrides `DSIR.who_backend` for that call without
+  changing the option; an unset option defaults to legacy. GHE always uses
+  xMart. `DSIR.who_base_url` accepts a compatible HTTPS xMart origin. Reference caches
   are session-only, expire after ten minutes and are scoped to provider/host.
 * WHO downloads verify row counts, page consistency and unique identifiers.
   Incomplete downloads are discarded. Long filters use the public `/$query`
@@ -24,7 +27,14 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   failure rather than a JSON parsing problem. Failed catalogs are not cached.
 * `gho_clean(keep_dimensions = TRUE)` retains named xMart dimensions in
   addition to dimension types. Metadata retention adds units, measure fields
-  and provenance. The default remains the unified 15-column core.
+  and a row-level `provider` column. Both GHO backends record retrieval
+  provenance; cleaning resolves missing labels with the recorded provider,
+  even after the session default changes. Unknown imported origins stay `NA`.
+  The default remains the unified 15-column core.
+* GHO distinguishes absent directory codes, successful empty selections, and
+  request or parsing failures. Legacy HTTP 404 responses trigger a small
+  directory check before a code is reported absent. Valid empty observations
+  produce an informational message; failures warn and retain empty/NA contracts.
 
 ## Global Health Estimates
 

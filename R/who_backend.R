@@ -1,9 +1,11 @@
 # WHO provider configuration and read-only OData transport. No disk cache.
-.who_config <- function() {
-  backend <- getOption('DSIR.who_backend', 'xmart')
+.who_config <- function(backend = NULL) {
+  from_option <- is.null(backend)
+  if (from_option) backend <- getOption('DSIR.who_backend', 'legacy')
   if (!is.character(backend) || length(backend) != 1L || is.na(backend) ||
       !backend %in% c('xmart', 'legacy')) {
-    cli::cli_abort('Option {.code DSIR.who_backend} must be "xmart" or "legacy".')
+    if (from_option) cli::cli_abort('Option {.code DSIR.who_backend} must be "xmart" or "legacy".')
+    cli::cli_abort('{.arg backend} must be "xmart" or "legacy".')
   }
   base <- getOption('DSIR.who_base_url', 'https://xmart-api-public.who.int')
   if (!is.character(base) || length(base) != 1L || is.na(base) ||
@@ -15,7 +17,9 @@
 
 .who_cache <- new.env(parent = emptyenv())
 .who_cached <- function(key, fetch) {
-  config <- .who_config()
+  # These reference caches serve xMart, including GHE, independently of
+  # the selected GHO backend. Per-call selection never changes options.
+  config <- .who_config('xmart')
   key <- paste(config$backend, config$base, key, sep = '|')
   saved <- .who_cache[[key]]
   if (!is.null(saved) && as.numeric(difftime(Sys.time(), saved$time, units = 'secs')) < 600) {
@@ -62,7 +66,7 @@
 }
 
 .who_query <- function(path, params) {
-  config <- .who_config()
+  config <- .who_config('xmart')
   stopifnot(grepl('^[A-Za-z0-9_]+/[A-Za-z0-9_]+$', path))
   params <- params[!vapply(params, is.null, logical(1))]
   query <- paste(paste0(names(params), '=', vapply(params, as.character, character(1))), collapse = '&')
@@ -180,7 +184,7 @@
     return(NULL)
   }
   out <- tibble::as_tibble(out)
-  attr(out, 'who_provenance') <- list(backend = 'xmart', base_url = .who_config()$base,
+  attr(out, 'who_provenance') <- list(backend = 'xmart', base_url = .who_config('xmart')$base,
                                     table = path, filter = filter, retrieved = format(Sys.time(), tz = 'UTC'),
                                     complete = TRUE, rows = nrow(out))
   out

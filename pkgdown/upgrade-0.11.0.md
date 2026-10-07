@@ -4,6 +4,11 @@ Prepared for Shanlong Ding. Investigation date: 2026-10-06.
 This is the release candidate prepared for GitHub publication. No CRAN
 submission or GitHub release was made.
 
+Backend selection was revised on 2026-10-07 before any 0.11.0 CRAN release.
+GHO now retains the legacy compatibility default, supports per-call `backend`
+arguments, and records row-level provider metadata. GHE remains on xMart.
+The provider/schema comparisons below retain their original investigation date.
+
 ## A. Main files
 
 | Area | Files |
@@ -172,29 +177,31 @@ ghe_clean(df, keep_dimensions = FALSE)
 Unfiltered full-database requests are rejected. Download codes are exact;
 name searching is confined to catalog functions.
 
-The existing GHO argument order remains intact. `dimensions = NULL` is appended
-to `gho_data()`, `gho_has_data()`, `gho_count()` and `gho_coverage()`.
-`gho_indicators(search = NULL)`, `gho_dimensions(indicator,
-dimension = "SpatialDimType")` and `gho_clean(df, keep_dimensions = FALSE,
-keep_metadata = FALSE)` retain their signatures.
+The existing GHO argument order remains intact. `dimensions = NULL` adds named
+filters to the four observation queries. `backend = NULL` is appended to all
+six query functions, including `gho_indicators(search = NULL, backend = NULL)`
+and `gho_dimensions(indicator, dimension = "SpatialDimType", backend = NULL)`.
+`gho_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)` is unchanged.
 
 ```r
 gho_data(indicator, spatial_type = NULL, area = NULL,
          year_from = NULL, year_to = NULL, dim1 = NULL,
-         dim2 = NULL, dim3 = NULL, dimensions = NULL)
+         dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL)
 gho_has_data(indicator, spatial_type = NULL, area = NULL,
              year_from = NULL, year_to = NULL, dim1 = NULL,
-             dim2 = NULL, dim3 = NULL, dimensions = NULL)
+             dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL)
 gho_count(indicator, spatial_type = NULL, area = NULL,
           year_from = NULL, year_to = NULL, dim1 = NULL,
-          dim2 = NULL, dim3 = NULL, dimensions = NULL)
+          dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL)
 gho_coverage(indicator, spatial_type = "country", area = NULL,
              year_from = NULL, year_to = NULL, dim1 = NULL,
-             dim2 = NULL, dim3 = NULL, dimensions = NULL)
+             dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL)
 ```
 
-Advanced options are `DSIR.who_backend` (default `"xmart"`, explicit `"legacy"`),
-`DSIR.who_base_url` (HTTPS origin), `DSIR.who_page_size` and `DSIR.who_max_rows`.
+All six GHO query functions accept `backend = "legacy"` or `"xmart"`.
+Selection follows: explicit argument, then `DSIR.who_backend`, then `"legacy"`.
+Per-call selection never changes session options. Other advanced options are
+`DSIR.who_base_url` (xMart HTTPS origin), `DSIR.who_page_size` and `DSIR.who_max_rows`.
 GHE always uses xMart. Failed xMart queries never switch providers.
 
 ## D. Compatibility
@@ -218,19 +225,22 @@ region/world queries, dimension discovery, and the 28-area `wpro_cty` UHC pull.
 
 Intentional changes:
 
-- The default GHO provider, directory coverage, published precision and
-  estimates can differ from the legacy API.
+- The optional xMart provider has directory coverage, published precision and
+  estimates that can differ from legacy; legacy remains the default.
 - Wide-table positions follow source schema, ordered by sex, age, then other
   names; they need not match every legacy indicator's positions. Prefer named
   filters. Long tables preserve explicit row-specific positions.
 - `keep_dimensions = TRUE` adds meaningful native `dim_*` columns; metadata
-  adds units, measure field, raw time, source geography type and provenance.
+  adds units, measure field, raw time, source geography type, row-level `provider`
+  and provenance. Raw `Provider` columns survive combining raw observations.
+  Cleaner label lookups use recorded origin, even after session options change.
 - `who_std_pop` has 18 rows instead of 21, and `std_million` is double instead
   of integer. Existing analyses must align age groups again.
 
 `FINANCIALHARDSHIP_PROPORTIONOFPOP` was absent from the public English directory
-and the checked GHO/WHS fact selections. Its old call requires explicit legacy
-selection while that service remains available. No substitute is guessed.
+and the checked GHO/WHS fact selections. It uses legacy by default; an explicit
+`backend = "legacy"` also works when the session default is xMart.
+No substitute is guessed.
 
 ## E. WHO 2026 standard population
 

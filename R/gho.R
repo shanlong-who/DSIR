@@ -18,6 +18,7 @@
 #'     (whitespace inside an element is treated as part of the term).
 #'
 #'   Search terms are matched literally; they are not download identifiers.
+#' @inheritParams gho_data
 #'
 #' @return A [tibble][tibble::tibble] with columns `IndicatorCode`,
 #'   `IndicatorName` and `Language`. Returns an empty tibble (with
@@ -39,8 +40,8 @@
 #' # Or pass terms as a vector
 #' gho_indicators(c("child", "mortality"))
 #' }
-gho_indicators <- function(search = NULL) {
-  .who_gho("indicators", search = search)
+gho_indicators <- function(search = NULL, backend = NULL) {
+  .who_gho("indicators", search = search, backend = backend)
 }
 
 
@@ -78,17 +79,29 @@ gho_indicators <- function(search = NULL) {
 #'   positional filters. Named filters use the provider's exact native codes.
 #' @param dimensions Optional named list of exact xMart dimension fields and
 #'   values, e.g. `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
+#' @param backend Character scalar. `"legacy"` or `"xmart"`. Default `NULL`
+#'   uses the `DSIR.who_backend` option, or `"legacy"` when that option is
+#'   unset. An explicit argument overrides the option for this call without
+#'   changing it. Use the same backend for discovery and retrieval.
 #' @details
-#' Uses the public production xMart backend by default. Advanced users may
-#' set `DSIR.who_backend = "legacy"` for explicit comparisons, or set
-#' `DSIR.who_base_url` to another compatible HTTPS origin. Failures never
+#' Uses the legacy GHO OData backend by default for compatibility. Select
+#' `backend = "xmart"` to use the public production WHO xMart service, or
+#' set `options(DSIR.who_backend = "xmart")` as a session default.
+#' `DSIR.who_base_url` selects another compatible HTTPS xMart origin. Failures never
 #' trigger a silent fallback. Public directory coverage differs from the
-#' legacy catalog; unknown codes warn instead of substituting another code.
+#' legacy catalog, and published estimates can differ. Unknown xMart directory
+#' codes warn; legacy HTTP 404 responses are checked against its directory
+#' before being classified as absent codes. A successful query with no
+#' matching observations emits an informational message. Request or parsing
+#' failures warn, and do not establish that no data exist.
 #' Reference lookups are cached only in memory; no credentials
 #' or startup requests are required.
 #'
 #' @return A [tibble][tibble::tibble] of indicator observations, or
-#'   an empty tibble when the service is unreachable.
+#'   an empty tibble when the service is unreachable or no observations match.
+#'   The raw `Provider` column records `"legacy"` or `"xmart"` per row.
+#'   A `who_provenance` attribute records the selected backend and, for
+#'   successful downloads, the request context and retrieval time.
 #' @seealso [gho_indicators()], [gho_dimensions()].
 #' @export
 #'
@@ -102,9 +115,13 @@ gho_indicators <- function(search = NULL) {
 #'
 #' # Keep only the both-sexes breakdown, filtered server-side
 #' gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
+#'
+#' # Select xMart for one call without changing the session default
+#' gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,
+#'          dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
 #' }
-gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
-  .who_gho("data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
+gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
+  .who_gho("data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
 }
 
 
@@ -137,8 +154,8 @@ gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NU
 #' inds <- c("WHOSIS_000001", "NCDMORT3070")
 #' vapply(inds, gho_has_data, logical(1), area = "FRA")
 #' }
-gho_has_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
-  .who_gho("has_data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
+gho_has_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
+  .who_gho("has_data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
 }
 
 
@@ -165,8 +182,8 @@ gho_has_data <- function(indicator, spatial_type = NULL, area = NULL, year_from 
 #' gho_count("NCDMORT3070", spatial_type = "country")
 #' gho_count("NCDMORT3070", spatial_type = "region")
 #' }
-gho_count <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
-  .who_gho("count", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
+gho_count <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
+  .who_gho("count", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
 }
 
 
@@ -213,8 +230,8 @@ gho_count <- function(indicator, spatial_type = NULL, area = NULL, year_from = N
 #' # All countries with any life-expectancy data, since 2010
 #' gho_coverage("WHOSIS_000001", year_from = 2010)
 #' }
-gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL) {
-  .who_gho("coverage", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions)
+gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
+  .who_gho("coverage", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
 }
 
 
@@ -233,6 +250,7 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_
 #'   `"Dim3"`. Case-sensitive (it is sent to the server as an OData
 #'   `$select` field name). xMart also accepts exact named fields such as
 #'   `"DIM_SEX"` or `"DIM_AGE"`. Default `"SpatialDimType"`.
+#' @inheritParams gho_data
 #'
 #' @details
 #' Only the requested column is downloaded (via the OData `$select`
@@ -253,20 +271,21 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_
 #' gho_dimensions("NCDMORT3070")
 #' gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #' }
-gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
-  .who_gho("dimensions", indicator = indicator, dimension = dimension)
+gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NULL) {
+  .who_gho("dimensions", indicator = indicator, dimension = dimension, backend = backend)
 }
 
 
 #' @noRd
-.gho_indicator_catalog <- function() {
-  key <- paste(.who_config()$backend, .who_config()$base, sep = '|')
+.gho_indicator_catalog <- function(backend = NULL) {
+  config <- .who_config(backend)
+  key <- paste(config$backend, config$base, sep = '|')
   if (!identical(.dsi_cache$gho_catalog_key, key)) {
     .dsi_cache$gho_indicator_catalog <- NULL
     .dsi_cache$gho_catalog_key <- key
   }
   if (is.null(.dsi_cache$gho_indicator_catalog)) {
-    catalog <- gho_indicators()
+    catalog <- gho_indicators(backend = config$backend)
     # A failed fetch returns an empty tibble (fail-soft), which must
     # NOT be cached: caching it would pin `indicator = NA` for the
     # rest of the session even after connectivity returns. The real
@@ -309,14 +328,32 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 
 
 #' @noRd
-.gho_resolve_indicator_name <- function(codes) {
+.gho_resolve_indicator_name <- function(codes, backend = NULL) {
   if (all(is.na(codes))) return(.fill_na(length(codes), "chr"))
 
-  catalog <- .gho_indicator_catalog()
+  catalog <- .gho_indicator_catalog(backend)
 
   if (nrow(catalog) == 0L) return(.fill_na(length(codes), "chr"))
 
   catalog$IndicatorName[match(codes, catalog$IndicatorCode)]
+}
+
+
+#' @noRd
+.gho_indicator_names <- function(df) {
+  if ('IndicatorName' %in% names(df)) return(.dsi_pick_chr(df, 'IndicatorName'))
+  codes <- .dsi_pick_chr(df, 'IndicatorCode')
+  out <- rep(NA_character_, nrow(df))
+  if (all(is.na(codes))) return(out)
+  provider <- .gho_provider(df)
+  # Older/imported observations without origin metadata use the session
+  # default for label lookup only. Their reported provider remains unknown.
+  if (anyNA(provider)) provider[is.na(provider)] <- .who_config()$backend
+  for (backend in unique(provider)) {
+    keep <- provider == backend
+    out[keep] <- .gho_resolve_indicator_name(codes[keep], backend)
+  }
+  out
 }
 
 
@@ -353,7 +390,10 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #' default output always has the same 15 columns with the same column types.
 #'
 #' xMart supplies indicator labels through its official directory. Legacy
-#' observations without an `IndicatorName` use [gho_indicators()].
+#' observations without an `IndicatorName` use [gho_indicators()] with the
+#' backend recorded in their `Provider` column or `who_provenance` attribute,
+#' even if the session default has changed since retrieval. Older/imported
+#' data without provenance use the session default for this label lookup.
 #' For such input, on the first call within an R session,
 #' `gho_clean()` fetches the catalog once and caches it for the rest of
 #' the session, so the `indicator` column carries the full
@@ -369,7 +409,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'   code's spelling, and missing types remain `NA`. xMart output also
 #'   retains all named source dimensions as `dim_*` character columns.
 #' @param keep_metadata Logical. Retain source context? Default `FALSE`.
-#'   With `TRUE`, appends character columns `observation_id`, `spatial_type`,
+#'   With `TRUE`, appends `provider` (`"legacy"` or `"xmart"`) from recorded
+#'   retrieval provenance; unknown origins remain `NA`, never the current
+#'   session setting. Also appends character columns `observation_id`, `spatial_type`,
 #'   `time_type`, `data_source_type`, `data_source`, `updated`,
 #'   `parent_location`, `parent_location_name`, `time_detail`, `time_start`,
 #'   and `time_end`, copied from the raw API fields. Raw `Comments` are kept
@@ -377,7 +419,8 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType") {
 #'   fields are `NA`; missing list fields are empty character vectors.
 #'   This option is independent of `keep_dimensions`. Unit and dimension
 #'   labels are not inferred. xMart output also retains `unit`,
-#'   `measure_field`, `spatial_type_source`, and a `who_provenance` attribute.
+#'   `measure_field`, and `spatial_type_source`. Both backends preserve a
+#'   `who_provenance` attribute, including with the default 15-column output.
 #'   Retaining these fields makes no extra
 #'   network requests beyond the usual indicator-name lookup.
 #'
@@ -407,6 +450,7 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
     out <- .dsi_empty_clean()
     if (keep_dimensions) out <- .gho_append_dimensions(out, df)
     if (keep_metadata) out <- .gho_append_metadata(out, df)
+    attr(out, 'who_provenance') <- attr(df, 'who_provenance')
     return(out)
   }
 
@@ -435,8 +479,7 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   out <- tibble::tibble(
     source        = rep("gho", n),
     id            = pick_chr("IndicatorCode"),
-    indicator     = if ('IndicatorName' %in% names(df)) pick_chr('IndicatorName') else
-      .gho_resolve_indicator_name(pick_chr("IndicatorCode")),
+    indicator     = .gho_indicator_names(df),
     location      = location,
     iso3          = iso3,
     location_name = .gho_resolve_location_name(location),

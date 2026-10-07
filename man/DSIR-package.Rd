@@ -15,7 +15,7 @@ a quick pie chart helper (\code{\link[=ggpie]{ggpie()}}), regional country-code
 datasets (\link{wpro_cty}) with WHO region and UN M49 lookups
 (\code{\link[=iso3_to_region]{iso3_to_region()}}, \code{\link[=iso3_to_m49]{iso3_to_m49()}}, \code{\link[=m49_to_iso3]{m49_to_iso3()}}), a
 geometric mean helper for indicator aggregation (\code{\link[=geomean]{geomean()}}),
-clients for the WHO public xMart Global Health Observatory API
+clients for the WHO Global Health Observatory legacy and public xMart APIs
 (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}}, \code{\link[=gho_dimensions]{gho_dimensions()}},
 \code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}}, \code{\link[=gho_coverage]{gho_coverage()}}), Global Health Estimates
 (\code{\link[=ghe_data]{ghe_data()}}, \code{\link[=ghe_causes]{ghe_causes()}}, \code{\link[=ghe_dimensions]{ghe_dimensions()}}, \code{\link[=ghe_coverage]{ghe_coverage()}}) and the UN

@@ -4,7 +4,7 @@
 \alias{gho_indicators}
 \title{List GHO Indicators}
 \usage{
-gho_indicators(search = NULL)
+gho_indicators(search = NULL, backend = NULL)
 }
 \arguments{
 \item{search}{Optional character. Search keywords matched against
@@ -19,6 +19,11 @@ gho_indicators(search = NULL)
 }
 
 Search terms are matched literally; they are not download identifiers.}
+
+\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.}
 }
 \value{
 A \link[tibble:tibble]{tibble} with columns \code{IndicatorCode},

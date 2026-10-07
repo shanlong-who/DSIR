@@ -9,7 +9,7 @@
 #' datasets ([wpro_cty]) with WHO region and UN M49 lookups
 #' ([iso3_to_region()], [iso3_to_m49()], [m49_to_iso3()]), a
 #' geometric mean helper for indicator aggregation ([geomean()]),
-#' clients for the WHO public xMart Global Health Observatory API
+#' clients for the WHO Global Health Observatory legacy and public xMart APIs
 #' ([gho_indicators()], [gho_data()], [gho_dimensions()],
 #' [gho_has_data()], [gho_count()], [gho_coverage()]), Global Health Estimates
 #' ([ghe_data()], [ghe_causes()], [ghe_dimensions()], [ghe_coverage()]) and the UN

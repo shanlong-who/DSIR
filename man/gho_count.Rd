@@ -13,7 +13,8 @@ gho_count(
   dim1 = NULL,
   dim2 = NULL,
   dim3 = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  backend = NULL
 )
 }
 \arguments{
@@ -49,6 +50,11 @@ positional filters. Named filters use the provider's exact native codes.}
 
 \item{dimensions}{Optional named list of exact xMart dimension fields and
 values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires the xMart backend.}
+
+\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.}
 }
 \value{
 An integer scalar — the number of observations the

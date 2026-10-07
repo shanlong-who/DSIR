@@ -4,7 +4,7 @@
 \alias{gho_dimensions}
 \title{List Dimensions of a GHO Indicator}
 \usage{
-gho_dimensions(indicator, dimension = "SpatialDimType")
+gho_dimensions(indicator, dimension = "SpatialDimType", backend = NULL)
 }
 \arguments{
 \item{indicator}{Character scalar. The indicator code
@@ -16,6 +16,11 @@ indicator data. Common values include \code{"SpatialDim"},
 \code{"Dim3"}. Case-sensitive (it is sent to the server as an OData
 \verb{$select} field name). xMart also accepts exact named fields such as
 \code{"DIM_SEX"} or \code{"DIM_AGE"}. Default \code{"SpatialDimType"}.}
+
+\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+unset. An explicit argument overrides the option for this call without
+changing it. Use the same backend for discovery and retrieval.}
 }
 \value{
 A character vector of unique, sorted dimension values,

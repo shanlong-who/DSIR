@@ -16,6 +16,10 @@
 #' from an input are filled with typed missing values. Binding rows
 #' does not harmonise dimension codes or indicator definitions across
 #' sources.
+#' `gho_clean(keep_metadata = TRUE)` retains a row-level `provider` column
+#' so legacy and xMart GHO observations remain distinguishable after binding.
+#' Binding does not merge the input `who_provenance` attributes; preserve raw
+#' pulls or snapshots when request-level provenance is needed.
 #'
 #' @param ... Two or more tibbles returned by [gho_clean()] or
 #'   [sdg_clean()] or [ghe_clean()] (or any data frame containing the core columns). `NULL`

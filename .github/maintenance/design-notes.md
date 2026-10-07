@@ -59,9 +59,14 @@ tests, help pages, and [release notes](../../NEWS.md).
   [cache regressions](../../tests/testthat/test-gho-catalog-cache.R)
   protect recovery after an offline first call. Since 0.11.0, xMart reference
   caches expire after ten minutes and are scoped to backend and origin.
-- **Paging:** since 0.11.0, the default WHO xMart adapter validates row counts,
+- **Backend selection:** GHO retains the legacy compatibility default.
+  All six query functions accept `backend`; an explicit argument overrides
+  the session option without changing it. GHE always uses xMart. Recorded
+  raw provenance controls cleaner label lookups; optional `provider` columns
+  distinguish origins when binding observations. No automatic fallback occurs.
+- **Paging:** since 0.11.0, the optional WHO xMart adapter validates row counts,
   stable identifiers and page consistency; incomplete downloads are discarded.
-  The explicit legacy GHO adapter follows OData next links. SDG validates page
+  The legacy GHO adapter follows OData next links. SDG validates page
   and row counts, combines unlike nested columns with `vctrs::vec_rbind()`, and
   applies local filters only after retrieval is complete. Coverage must preserve
   warnings and genuine missing series codes.

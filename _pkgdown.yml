@@ -47,7 +47,7 @@ reference:
   - age_standardize
   - who_std_pop
 - title: GHO indicator data
-  desc: Functions for fetching and cleaning data from the WHO Global Health Observatory.
+  desc: WHO Global Health Observatory queries with legacy compatibility and per-call xMart selection.
   contents:
   - gho_indicators
   - gho_dimensions
