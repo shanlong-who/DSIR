@@ -489,6 +489,21 @@ are required. Advanced settings are `DSIR.who_backend` (`"xmart"` or explicit
 `"legacy"` for comparisons), `DSIR.who_base_url`, `DSIR.who_page_size` and
 `DSIR.who_max_rows`. Use `snapshot()` to save a reproducible pull explicitly.
 
+If xMart redirects a query to an HTML error page, DSIR retries within its
+three-attempt limit and warns if the service still does not return JSON.
+An empty result accompanied by this warning is a failed request, not evidence
+that no matching indicators or observations exist. Retry later. To use the
+separate legacy GHO service explicitly for a comparison or temporary workaround:
+
+```r
+previous_options <- options(DSIR.who_backend = 'legacy')
+mortality_indicators <- gho_indicators('mortality')
+options(previous_options)
+```
+
+The legacy catalog and estimates can differ from xMart. This setting applies
+to GHO functions; GHE continues to use its xMart source.
+
 ### Global Health Estimates
 
 Explore exact codes, then select a country, year, sex, age, cause and measure.

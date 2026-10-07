@@ -72,10 +72,10 @@
   url <- paste0(config$base, '/', path)
   # The public xMart $query endpoint accepts a query string in a text body.
   req <- if (nchar(encoded, type = 'bytes') > 1800L) {
-    .dsi_request(paste0(url, '/$query')) |>
+    .dsi_request(paste0(url, '/$query'), retry_on_html = TRUE) |>
       httr2::req_method('POST') |>
       httr2::req_body_raw(query, type = 'text/plain')
-  } else .dsi_request(paste0(url, '?', encoded))
+  } else .dsi_request(paste0(url, '?', encoded), retry_on_html = TRUE)
   cli::cli_inform('Fetching WHO: {.val {path}}')
   resp <- tryCatch(httr2::req_perform(req), error = function(e) {
     msg <- conditionMessage(e)
@@ -83,6 +83,11 @@
     NULL
   })
   if (is.null(resp)) return(NULL)
+  if (httr2::resp_content_type(resp) %in% c('text/html', 'application/xhtml+xml')) {
+    cli::cli_warn(c('WHO API returned an HTML page instead of JSON; no observations returned.',
+      'i' = 'The service may be temporarily unavailable. Retry later; this is not a valid empty data result.'))
+    return(NULL)
+  }
   tryCatch(httr2::resp_body_json(resp, simplifyVector = TRUE), error = function(e) {
     msg <- conditionMessage(e)
     cli::cli_warn(c('WHO response could not be parsed as JSON.', 'x' = '{msg}'))
