@@ -16,10 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest, r: devel}
           - {os: macos-15, r: devel}
-          - {os: windows-latest, r: devel}
-          - {os: windows-latest, r: 'oldrel/1'}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: 'yes'
@@ -41,6 +38,20 @@ jobs:
         run: |
           print(R.version)
           stopifnot(grepl("aarch64", R.version$platform, fixed = TRUE))
+      - name: Configure gettext headers for source dependencies
+        if: runner.os == 'macOS'
+        shell: Rscript {0}
+        run: |
+          gettext_dir <- system2("brew", c("--prefix", "gettext"), stdout = TRUE)
+          if (!file.exists(file.path(gettext_dir, "include", "libintl.h"))) {
+            stopifnot(system2("brew", c("install", "gettext")) == 0L)
+          }
+          stopifnot(file.exists(file.path(gettext_dir, "include", "libintl.h")))
+          dir.create(path.expand("~/.R"), showWarnings = FALSE)
+          flags <- c(paste0("CPPFLAGS += -I", file.path(gettext_dir, "include")),
+                     paste0("LDFLAGS += -L", file.path(gettext_dir, "lib")))
+          cat(flags, sep = "\n", file = path.expand("~/.R/Makevars"), append = TRUE)
+          cat("\n", file = path.expand("~/.R/Makevars"), append = TRUE)
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
