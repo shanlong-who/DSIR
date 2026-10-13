@@ -2,7 +2,7 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
-# DSIR 0.11.0
+# DSIR 0.11.0 (2026-10-12)
 
 ## WHO data infrastructure
 
