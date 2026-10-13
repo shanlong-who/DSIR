@@ -1,6 +1,8 @@
 # Changelog
 
-## DSIR 0.11.0
+## DSIR 0.11.0 (2026-10-12)
+
+CRAN release: 2026-10-12
 
 ### WHO data infrastructure
 

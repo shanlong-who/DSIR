@@ -113,17 +113,26 @@ or startup requests are required.
 gho_data("NCDMORT3070", spatial_type = "country")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■           
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> ✖ HTTP 502 Bad Gateway.
-#> # A tibble: 0 × 1
-#> # ℹ 1 variable: Provider <chr>
+#> # A tibble: 12,210 × 26
+#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
+#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
+#>  1 1.39e6 NCDMORT3070   COUNTRY        HRV        EUR                YEAR       
+#>  2 1.40e6 NCDMORT3070   COUNTRY        SLV        AMR                YEAR       
+#>  3 1.40e6 NCDMORT3070   COUNTRY        BGR        EUR                YEAR       
+#>  4 1.40e6 NCDMORT3070   COUNTRY        BRB        AMR                YEAR       
+#>  5 1.40e6 NCDMORT3070   COUNTRY        GNQ        AFR                YEAR       
+#>  6 1.40e6 NCDMORT3070   COUNTRY        PAN        AMR                YEAR       
+#>  7 1.40e6 NCDMORT3070   COUNTRY        SGP        WPR                YEAR       
+#>  8 1.40e6 NCDMORT3070   COUNTRY        CAF        AFR                YEAR       
+#>  9 1.40e6 NCDMORT3070   COUNTRY        EGY        EMR                YEAR       
+#> 10 1.40e6 NCDMORT3070   COUNTRY        TUN        EMR                YEAR       
+#> # ℹ 12,200 more rows
+#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
+#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
+#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
+#> #   Provider <chr>
 
 # Specific countries and years
 gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
@@ -131,30 +140,51 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> ℹ Pass `spatial_type` explicitly to silence this message.
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
-#> ✖ HTTP 502 Bad Gateway.
-#> # A tibble: 0 × 1
-#> # ℹ 1 variable: Provider <chr>
+#> # A tibble: 54 × 26
+#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
+#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
+#>  1 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  2 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  3 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  4 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  5 1.48e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  6 2.03e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  7 2.11e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>  8 2.24e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#>  9 2.61e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#> 10 2.86e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
+#> # ℹ 44 more rows
+#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
+#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
+#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
+#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
+#> #   Provider <chr>
 
 # Keep only the both-sexes breakdown, filtered server-side
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■              
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
-#> ✖ HTTP 502 Bad Gateway.
-#> # A tibble: 0 × 1
-#> # ℹ 1 variable: Provider <chr>
+#> # A tibble: 4,070 × 26
+#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
+#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
+#>  1 1.40e6 NCDMORT3070   COUNTRY        PAN        AMR                YEAR       
+#>  2 1.40e6 NCDMORT3070   COUNTRY        TUN        EMR                YEAR       
+#>  3 1.40e6 NCDMORT3070   COUNTRY        TZA        AFR                YEAR       
+#>  4 1.41e6 NCDMORT3070   COUNTRY        HTI        AMR                YEAR       
+#>  5 1.41e6 NCDMORT3070   COUNTRY        TZA        AFR                YEAR       
+#>  6 1.41e6 NCDMORT3070   COUNTRY        CAN        AMR                YEAR       
+#>  7 1.41e6 NCDMORT3070   COUNTRY        IRN        EMR                YEAR       
+#>  8 1.41e6 NCDMORT3070   COUNTRY        IDN        WPR                YEAR       
+#>  9 1.42e6 NCDMORT3070   COUNTRY        TUR        EUR                YEAR       
+#> 10 1.42e6 NCDMORT3070   COUNTRY        GHA        AFR                YEAR       
+#> # ℹ 4,060 more rows
+#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
+#> #   TimeDim <int>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
+#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
+#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <chr>, Date <chr>,
+#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
+#> #   Provider <chr>
 
 # Select xMart for one call without changing the session default
 gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,

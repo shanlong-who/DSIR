@@ -59,24 +59,10 @@ character vector.
 # \donttest{
 gho_dimensions("NCDMORT3070")
 #> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■          
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
-#> ✖ HTTP 502 Bad Gateway.
-#> character(0)
+#> [1] "COUNTRY"              "GLOBAL"               "REGION"              
+#> [4] "WORLDBANKINCOMEGROUP"
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■■■                      
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
-#> ✖ HTTP 502 Bad Gateway.
-#> character(0)
+#> [1] "SEX_BTSX" "SEX_FMLE" "SEX_MLE" 
 # }
 ```

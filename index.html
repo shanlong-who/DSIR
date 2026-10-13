@@ -13,9 +13,15 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="DSIR — Data Science Infrastructure for Global Health">
-<meta name="description" content="A small R package for global-health data work: WHO Member State  metadata, lightweight clients for the GHO and UN SDG indicator APIs,  and reusable WHO-style ggplot2 and flextable themes.
+<meta name="description" content="An R package for global-health data work: WHO Member State metadata,
+GHO queries with legacy and xMart backends, Global Health Estimates,
+UN SDG indicators, demographic methods, and reusable WHO-style
+ggplot2 and flextable themes.
 ">
-<meta property="og:description" content="A small R package for global-health data work: WHO Member State  metadata, lightweight clients for the GHO and UN SDG indicator APIs,  and reusable WHO-style ggplot2 and flextable themes.
+<meta property="og:description" content="An R package for global-health data work: WHO Member State metadata,
+GHO queries with legacy and xMart backends, Global Health Estimates,
+UN SDG indicators, demographic methods, and reusable WHO-style
+ggplot2 and flextable themes.
 ">
 </head>
 <body>
@@ -67,12 +73,12 @@
 </blockquote>
 <!-- badges: start -->
 
-<p>An R package for global-health data work. Bundles country metadata and lightweight clients for the <a href="https://www.who.int/data/gho" class="external-link">WHO Global Health Observatory</a> and <a href="https://unstats.un.org/sdgs" class="external-link">UN Sustainable Development Goals</a> APIs, plus reusable WHO-style themes for <code>ggplot2</code> and <code>flextable</code> so that charts and tables produced from this data look consistent across reports.</p>
+<p>An R package for global-health data work. Bundles country metadata and lightweight clients for the <a href="https://www.who.int/data/gho" class="external-link">WHO Global Health Observatory</a>, <a href="https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates" class="external-link">WHO Global Health Estimates</a> and <a href="https://unstats.un.org/sdgs" class="external-link">UN Sustainable Development Goals</a> APIs, plus reusable WHO-style themes for <code>ggplot2</code> and <code>flextable</code> so that charts and tables produced from this data look consistent across reports.</p>
 <p>Documentation: <a href="https://shanlong-who.github.io/DSIR/" class="uri">https://shanlong-who.github.io/DSIR/</a></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Version 0.11.0 is available from GitHub. This update has not been submitted to CRAN.</p>
+<p>Version <strong>0.11.0</strong> is available on <a href="https://CRAN.R-project.org/package=DSIR" class="external-link">CRAN</a>, published on <strong>12 October 2026</strong>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># from CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
@@ -80,6 +86,23 @@
 <span><span class="co"># or the development version from GitHub</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="whats-new-in-0110">What’s new in 0.11.0<a class="anchor" aria-label="anchor" href="#whats-new-in-0110"></a>
+</h2>
+<ul>
+<li>
+<strong>Global Health Estimates:</strong> retrieve deaths, rates and disease-burden measures by country, year, sex, age and cause; explore codes and coverage.</li>
+<li>
+<strong>GHO backend choice:</strong> select <code>backend = "legacy"</code> or <code>"xmart"</code> for each request. Legacy remains the compatibility default when no session option is set; there is no automatic fallback between providers.</li>
+<li>
+<strong>More data context:</strong> optionally retain named xMart dimensions, units and provider information. The default cleaned output still has 15 columns.</li>
+<li>
+<strong>WHO 2026 Standard Population:</strong> <code>who_std_pop</code> now has 18 age groups from <code>0-4</code> to <code>85+</code>. Align input age groups before rerunning age standardization.</li>
+<li>
+<strong>Reliable package builds:</strong> live API examples are displayed without execution during default vignette builds.</li>
+</ul>
+<p>See the <a href="https://shanlong-who.github.io/DSIR/news/index.html">release notes</a> and <a href="https://shanlong-who.github.io/DSIR/articles/ghe-xmart.html">WHO xMart and GHE guide</a> for examples and migration details.</p>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>

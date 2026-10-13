@@ -108,31 +108,30 @@ row per location and columns:
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&$select=SpatialDim,TimeDim>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■                        
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■          
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%2C%27JPN%27%29&$select=SpatialDim,TimeDim>
-#> ✖ HTTP 502 Bad Gateway.
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: location <chr>, year_min <int>, year_max <int>, n_obs <int>
+#> # A tibble: 3 × 4
+#>   location year_min year_max n_obs
+#>   <chr>       <int>    <int> <int>
+#> 1 DEU          2000     2023    72
+#> 2 FRA          2000     2023    72
+#> 3 JPN          2000     2023    72
 
 # All countries with any life-expectancy data, since 2010
 gho_coverage("WHOSIS_000001", year_from = 2010)
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&$select=SpatialDim,TimeDim>
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
-#> Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Waiting 4s for retry backoff ■■■■■■■■■■■                     
-#> Waiting 4s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
-#> Warning: GHO request failed.
-#> ℹ URL:
-#>   <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20TimeDim%20ge%202010&$select=SpatialDim,TimeDim>
-#> ✖ HTTP 502 Bad Gateway.
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: location <chr>, year_min <int>, year_max <int>, n_obs <int>
+#> # A tibble: 185 × 4
+#>    location year_min year_max n_obs
+#>    <chr>       <int>    <int> <int>
+#>  1 AFG          2010     2023    42
+#>  2 AGO          2010     2023    42
+#>  3 ALB          2010     2023    42
+#>  4 ARE          2010     2023    42
+#>  5 ARG          2010     2023    42
+#>  6 ARM          2010     2023    42
+#>  7 ATG          2010     2023    42
+#>  8 AUS          2010     2023    42
+#>  9 AUT          2010     2023    42
+#> 10 AZE          2010     2023    42
+#> # ℹ 175 more rows
 # }
 ```

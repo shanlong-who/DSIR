@@ -4,17 +4,20 @@
 
 An R package for global-health data work. Bundles country metadata and
 lightweight clients for the [WHO Global Health
-Observatory](https://www.who.int/data/gho) and [UN Sustainable
-Development Goals](https://unstats.un.org/sdgs) APIs, plus reusable
-WHO-style themes for `ggplot2` and `flextable` so that charts and tables
-produced from this data look consistent across reports.
+Observatory](https://www.who.int/data/gho), [WHO Global Health
+Estimates](https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates)
+and [UN Sustainable Development Goals](https://unstats.un.org/sdgs)
+APIs, plus reusable WHO-style themes for `ggplot2` and `flextable` so
+that charts and tables produced from this data look consistent across
+reports.
 
 Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
-Version 0.11.0 is available from GitHub. This update has not been
-submitted to CRAN.
+Version **0.11.0** is available on
+[CRAN](https://CRAN.R-project.org/package=DSIR), published on **12
+October 2026**.
 
 ``` r
 
@@ -25,6 +28,29 @@ install.packages("DSIR")
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```
+
+## What’s new in 0.11.0
+
+- **Global Health Estimates:** retrieve deaths, rates and disease-burden
+  measures by country, year, sex, age and cause; explore codes and
+  coverage.
+- **GHO backend choice:** select `backend = "legacy"` or `"xmart"` for
+  each request. Legacy remains the compatibility default when no session
+  option is set; there is no automatic fallback between providers.
+- **More data context:** optionally retain named xMart dimensions, units
+  and provider information. The default cleaned output still has 15
+  columns.
+- **WHO 2026 Standard Population:** `who_std_pop` now has 18 age groups
+  from `0-4` to `85+`. Align input age groups before rerunning age
+  standardization.
+- **Reliable package builds:** live API examples are displayed without
+  execution during default vignette builds.
+
+See the [release
+notes](https://shanlong-who.github.io/DSIR/news/index.html) and [WHO
+xMart and GHE
+guide](https://shanlong-who.github.io/DSIR/articles/ghe-xmart.html) for
+examples and migration details.
 
 ## Features
 
