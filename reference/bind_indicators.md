@@ -74,20 +74,20 @@ sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
 #> Fetching:
 #> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.4.1&pageSize=1000&areaCode=036&areaCode=096&areaCode=156&areaCode=184&areaCode=242&areaCode=583&areaCode=360&areaCode=392&areaCode=116&areaCode=296&areaCode=410&areaCode=418&areaCode=584&areaCode=496&areaCode=458&areaCode=570&areaCode=520&areaCode=554&areaCode=608&areaCode=585&areaCode=598&areaCode=702&areaCode=090&areaCode=776&areaCode=798&areaCode=704&areaCode=548&areaCode=882&page=1>
 bind_indicators(gho, sdg)
-#> # A tibble: 1,914 × 15
+#> # A tibble: 2,046 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 16.0…      16  
+#>  1 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 13.0…      13  
 #>  2 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 9.8 …       9.8
-#>  3 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 13.0…      13  
-#>  4 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 9.6 …       9.6
-#>  5 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 15.6…      15.6
-#>  6 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 12.6…      12.6
-#>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
-#>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
-#>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
-#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 9.1 …       9.1
-#> # ℹ 1,904 more rows
+#>  3 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2000 16.0…      16  
+#>  4 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 12.6…      12.6
+#>  5 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 9.6 …       9.6
+#>  6 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2001 15.6…      15.6
+#>  7 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 12.3…      12.3
+#>  8 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 9.6 …       9.6
+#>  9 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2002 15.0…      15  
+#> 10 gho    NCDMORT3… Probabil… AUS      AUS   Australia      2003 11.8…      11.8
+#> # ℹ 2,036 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
 # }

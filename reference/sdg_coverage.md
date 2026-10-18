@@ -79,11 +79,10 @@ row per `(location, series)` and columns:
 
 Unlike the GHO availability helpers, this function is a
 series-exploration tool rather than a payload-saving precheck: SDG data
-is generally complete enough that GHO-style `has_data()` /
-[`count()`](https://dplyr.tidyverse.org/reference/count.html) helpers
-add little value, so they are intentionally not provided. The SDG API
-also offers no payload-reduction option (no `$select` equivalent), so
-`sdg_coverage()` calls
+is generally complete enough that GHO-style `has_data()` / `count()`
+helpers add little value, so they are intentionally not provided. The
+SDG API also offers no payload-reduction option (no `$select`
+equivalent), so `sdg_coverage()` calls
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
 internally and aggregates the result client-side.
 

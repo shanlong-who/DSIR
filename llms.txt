@@ -1,680 +1,174 @@
-# DSIR [![DSIR website](reference/figures/logo.jpg)](https://shanlong-who.github.io/DSIR/)
+# From Global Health Data to Clear Insights
 
-> Data Science Infrastructure for Global Health
+DSIR
 
-An R package for global-health data work. Bundles country metadata and
-lightweight clients for the [WHO Global Health
-Observatory](https://www.who.int/data/gho), [WHO Global Health
-Estimates](https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates)
-and [UN Sustainable Development Goals](https://unstats.un.org/sdgs)
-APIs, plus reusable WHO-style themes for `ggplot2` and `flextable` so
-that charts and tables produced from this data look consistent across
-reports.
+Data Science Infrastructure for Global Health
 
-Documentation: <https://shanlong-who.github.io/DSIR/>
+DSIR is an open-source R package that simplifies access to global health
+data, supports consistent data processing, and provides reusable tools
+for analysis and visualization.
 
-## Installation
+[Explore Features](#core-capabilities) [Get Started](#getting-started)
 
-Version **0.11.0** is available on
-[CRAN](https://CRAN.R-project.org/package=DSIR), published on **12
-October 2026**.
+[Technical Documentation
+→](https://shanlong-who.github.io/DSIR/articles/DSIR.md) [GitHub
+→](https://github.com/shanlong-who/DSIR)
+
+Open source · Available on CRAN · MIT licence
+
+1.  01
+    **Access**WHO GHO · WHO GHE · UN SDG
+2.  02
+    **Prepare**Clean tables, country codes and data context
+3.  03
+    **Analyse**Health indicators, mortality and progress
+4.  04
+    **Present**Consistent charts and analytical tables
+
+Reusable tools for each stage of your analysis.
+
+A consistent R workflow
+
+The everyday challenge
+
+## Why DSIR?
+
+Health data are spread across platforms, with different table structures
+and geographical identifiers. Analysts repeatedly retrieve, clean and
+format data, while keeping their work reproducible and their reports
+consistent.
+
+DSIR brings commonly used global health data sources and analytical
+utilities into a consistent R workflow, reducing repetitive data
+preparation and supporting reproducible analyses.
+
+For technical teams preparing country comparisons, monitoring indicators
+and producing public health reports.
+
+What you can do
+
+## Core capabilities
+
+01 / ACCESS
+
+### Access Global Health Data
+
+Retrieve observations from WHO Global Health Observatory (GHO), WHO
+Global Health Estimates (GHE), and UN Sustainable Development Goals
+(SDG) services. Select countries, years and population breakdowns.
+
+[Explore WHO data access
+→](https://shanlong-who.github.io/DSIR/articles/ghe-xmart.md)
+
+02 / PREPARE
+
+### Harmonize Data
+
+Work with a consistent cleaned table structure, WHO Member State
+metadata and country identifiers. Keep additional dimensions and source
+information when needed.
+
+[See data preparation tools
+→](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
+
+03 / ANALYSE
+
+### Analyse Health Indicators
+
+Use life tables, direct age standardization and measures of annual
+progress to support mortality analysis and indicator monitoring.
+
+[Explore analytical methods
+→](https://shanlong-who.github.io/DSIR/reference/index.html#demographic-methods)
+
+04 / PRESENT
+
+### Visualize and Present Results
+
+Apply reusable ggplot2 themes and flextable formatting to create
+consistent charts and analytical tables for technical reports.
+
+[View visualization examples
+→](https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.md)
+
+A common table structure does not make indicator definitions or
+estimation methods comparable. Check source methods, population
+breakdowns and units before comparing results.
+
+From tools to tasks
+
+## Practical applications
+
+For WHO technical teams and public health researchers working with
+international health data.
+
+- ### Monitor health indicators
+
+  Explore observations across countries and years, keeping population
+  groups and data sources visible.
+
+- ### Explore mortality and disease burden
+
+  Examine WHO estimates by cause, age, sex, country and year.
+
+- ### Assess progress towards SDG targets
+
+  Retrieve health-related SDG series and analyse changes over time.
+
+- ### Prepare reproducible reports
+
+  Reuse data preparation steps, charts and table styles across
+  analytical outputs.
+
+These are potential uses of the package, not claims of official adoption
+by WHO.
+
+Ongoing development
+
+## Development roadmap
+
+DSIR continues to evolve in response to practical needs in global health
+data analysis. Future development is planned to include GIS-related
+functions to support geospatial data processing, mapping and spatial
+analysis.
+
+GIS capabilities are a future direction and are not part of the current
+release.
+
+The person behind the project
+
+## Developed and maintained by Shanlong Ding
+
+Technical Officer (Data Analyst)  
+WHO Regional Office for the Western Pacific
+
+[View GitHub profile →](https://github.com/shanlong-who)
+
+DSIR is a personally maintained open-source project. It is not an
+official WHO software product and is not endorsed or published by WHO.
+
+Start with the package
+
+## Getting started
+
+Install DSIR from CRAN, then follow the technical guide for data access,
+analysis and presentation.
 
 ``` r
 
-# from CRAN
 install.packages("DSIR")
-
-# or the development version from GitHub
-# install.packages("remotes")
-remotes::install_github("shanlong-who/DSIR")
-```
-
-## What’s new in 0.11.0
-
-- **Global Health Estimates:** retrieve deaths, rates and disease-burden
-  measures by country, year, sex, age and cause; explore codes and
-  coverage.
-- **GHO backend choice:** select `backend = "legacy"` or `"xmart"` for
-  each request. Legacy remains the compatibility default when no session
-  option is set; there is no automatic fallback between providers.
-- **More data context:** optionally retain named xMart dimensions, units
-  and provider information. The default cleaned output still has 15
-  columns.
-- **WHO 2026 Standard Population:** `who_std_pop` now has 18 age groups
-  from `0-4` to `85+`. Align input age groups before rerunning age
-  standardization.
-- **Reliable package builds:** live API examples are displayed without
-  execution during default vignette builds.
-
-See the [release
-notes](https://shanlong-who.github.io/DSIR/news/index.html) and [WHO
-xMart and GHE
-guide](https://shanlong-who.github.io/DSIR/articles/ghe-xmart.html) for
-examples and migration details.
-
-## Features
-
-### Country metadata
-
-**`who_countries`** — a tibble of all 194 WHO Member States with ISO3,
-ISO2, UN M49 codes, official and short names, WHO region, and a `is_pic`
-flag for Pacific Island Countries.
-
-``` r
-
 library(DSIR)
-library(dplyr)
-
-who_countries
-
-# Filter Member States in the Western Pacific Region
-who_countries |>
-  filter(who_region == "WPR") |>
-  select(iso3, name_short, is_pic)
 ```
 
-**Regional ISO3 vectors** — convenience character vectors for each WHO
-region, derived from `who_countries`:
-
-``` r
-
-wpro_cty   # 28 Western Pacific Member States (since May 2025)
-afro_cty   # 47 African Region Member States
-amro_cty   # 35 Region of the Americas Member States
-searo_cty  # 10 South-East Asia Region Member States
-euro_cty   # 53 European Region Member States
-emro_cty   # 21 Eastern Mediterranean Region Member States
-pic_cty    # 14 Pacific Island Country Member States (subset of WPR)
-```
-
-**[`iso3_to_region()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_region.md)**
-— quick lookup from ISO3 codes to WHO regions. Vectorized; returns `NA`
-for codes not matching a Member State.
-
-``` r
-
-iso3_to_region("PHL")                          # "WPR"
-iso3_to_region(c("PHL", "FRA", "ZAF", "XYZ"))  # "WPR" "EUR" "AFR" NA
-```
-
-**[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
-/
-[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)**
-— convert between ISO3 codes and UN M49 numeric codes in either
-direction. Useful for moving between GHO (ISO3) and SDG (M49) workflows.
-Case-insensitive on the ISO3 side; both accept zero-padded or bare M49
-input on the M49 side; non-Member areas return `NA`.
-
-``` r
-
-iso3_to_m49("PHL")                             # "608"
-iso3_to_m49(c("PHL", "FRA", "JPN"))            # "608" "250" "392"
-iso3_to_m49(c("PRI", "PHL"))                   # NA "608"
-
-m49_to_iso3(c("608", "250", "392"))            # "PHL" "FRA" "JPN"
-m49_to_iso3(c("076", "76"))                    # "BRA" "BRA"
-m49_to_iso3("900")                             # NA  (world aggregate)
-```
-
-In practice you rarely need to call these directly:
-[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
-and
-[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-accept ISO3 codes for their `area` argument and convert via
-[`iso3_to_m49()`](https://shanlong-who.github.io/DSIR/reference/iso3_to_m49.md)
-internally, and
-[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-populates its `iso3` column via
-[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md).
-
-### Visualization
-
-**[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
-and
-[`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md)**
-— publication-ready `ggplot2` themes. Use
-[`theme_dsi()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi.md)
-for single-panel charts and
-[`theme_dsi_facet()`](https://shanlong-who.github.io/DSIR/reference/theme_dsi_facet.md)
-for faceted plots; the facet variant adds panel borders, light strip
-backgrounds, and panel spacing tuned for multi-panel layouts.
-
-``` r
-
-library(ggplot2)
-library(dplyr)
-
-# Single panel — theme_dsi()
-who_countries |>
-  count(who_region) |>
-  ggplot(aes(reorder(who_region, n), n)) +
-  geom_col(fill = "#0093D5") +
-  coord_flip() +
-  scale_y_dsi_col() +
-  theme_dsi() +
-  labs(title = "WHO Member States by region", x = NULL, y = NULL)
-
-# Faceted — theme_dsi_facet()
-who_countries |>
-  count(who_region, is_pic) |>
-  ggplot(aes(reorder(who_region, n), n, fill = is_pic)) +
-  geom_col() +
-  coord_flip() +
-  scale_y_dsi_col() +
-  facet_wrap(~ is_pic, labeller = as_labeller(
-    c(`TRUE` = "Pacific Island Countries", `FALSE` = "Other Member States")
-  )) +
-  scale_fill_manual(values = c(`TRUE` = "#0093D5", `FALSE` = "grey70"),
-                    guide = "none") +
-  theme_dsi_facet() +
-  labs(title = "WHO Member States by region and PIC status",
-       x = NULL, y = NULL)
-```
-
-**[`scale_y_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
-and
-[`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)**
-— drop-in replacements for
-[`scale_y_continuous()`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
-and
-[`scale_x_continuous()`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
-that remove the default lower expansion, so columns in bar charts sit
-flush with the axis instead of floating above it. Pick the one that
-matches where you mapped the value:
-[`scale_y_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
-when `value` is the `y` aesthetic (including horizontal bars made with
-[`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
-— the aesthetic is still `y`), and
-[`scale_x_dsi_col()`](https://shanlong-who.github.io/DSIR/reference/scale_dsi_col.md)
-when `value` is the `x` aesthetic (e.g.
-`geom_col(aes(value, category))`). Both accept any argument that
-`scale_*_continuous()` accepts.
-
-``` r
-
-# Vertical bars
-ggplot(mtcars, aes(factor(cyl))) +
-  geom_bar(fill = "#0093D5") +
-  scale_y_dsi_col() +
-  theme_dsi() +
-  labs(title = "Cars by cylinder count", x = "Cylinders", y = NULL)
-```
-
-**[`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)**
-— one-line setup for `flextable` formatting (booktabs style, bold
-headers, paddings).
-
-``` r
-
-dsi_flextable_defaults()
-```
-
-**[`ggpie()`](https://shanlong-who.github.io/DSIR/reference/ggpie.md)**
-— quick pie charts with automatic percentage labels.
-
-``` r
-
-df <- data.frame(
-  region = c("AFR", "AMR", "EUR", "WPR", "SEAR", "EMR"),
-  countries = c(47, 35, 53, 28, 10, 21)
-)
-ggpie(df, "region", "countries", .offset = 1.2)
-```
-
-### Utilities
-
-**[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)**
-— geometric mean, with optional weights. Useful for aggregating
-ratio-based health indicators where the composite is multiplicative —
-e.g. UHC service-coverage tracers.
-
-``` r
-
-geomean(c(0.6, 0.8, 0.95))                      # ~0.772
-geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))      # weighted version
-```
-
-**[`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md)** —
-average annual rate of reduction, the standard WHO / UNICEF metric for
-tracking progress in declining indicators (maternal / child mortality,
-premature NCD mortality, stunting). Fits an OLS line to `log(value)`
-against `year` (the UNICEF-standard method; an endpoint-only method is
-also available). Positive values mean the indicator is declining;
-multiply by 100 to compare with published tables.
-
-``` r
-
-years  <- 2000:2015
-values <- 100 * (1 - 0.024) ^ (years - 2000)
-aarr(years, values)                             # 0.024 = 2.4%/yr decline
-aarr(years, values, method = "endpoint")        # first/last years only
-
-# Slots into a grouped summarise() on cleaned indicator data
-gho_data("NCDMORT3070", area = wpro_cty, dim1 = "SEX_BTSX") |>
-  gho_clean() |>
-  dplyr::summarise(aarr = aarr(year, value_num), .by = iso3)
-```
-
-### WHO GHO API
-
-**Check availability before downloading.** The public GHO directory
-contains many indicators but any one of them may not cover the countries
-or years you need. Three lightweight helpers ask the server what is
-available without transferring observations:
-
-``` r
-
-# Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)
-gho_has_data("WHOSIS_000001", area = "FRA")
-
-# Row count the same filter would return — useful for sizing a download
-gho_count("WHOSIS_000001", area = wpro_cty)
-
-# Per-country year coverage and observation counts
-gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
-```
-
-**Fetch and clean.** The typical workflow is **search → fetch → clean**:
-
-``` r
-
-# Search indicators by keyword
-gho_indicators("mortality")
-
-# Discover available dimensions for an indicator
-gho_dimensions("NCDMORT3070")
-gho_dimensions("NCDMORT3070", dimension = "Dim1")
-
-# Fetch country-level data
-gho_data("NCDMORT3070", spatial_type = "country")
-
-# Fetch with area and year filters
-gho_data(
-  indicator = "WHOSIS_000001",
-  area      = wpro_cty,
-  year_from = 2015
-)
-
-# Filter breakdown dimensions server-side — e.g. keep only the
-# both-sexes rows instead of downloading every stratum. Use
-# gho_dimensions() to discover the values available for an indicator.
-gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
-
-# Tidy the raw GHO response
-raw <- gho_data("NCDMORT3070", spatial_type = "country", area = wpro_cty)
-gho_clean(raw)
-```
-
-By default,
-[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-produces the **unified DSIR cleaned-indicator schema** — the same
-15-column shape produced by
-[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),
-so GHO and SDG output can be combined directly with
-[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
-(see below). Output columns: `source`, `id`, `indicator`, `location`,
-`iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
-`series`, `dim1`–`dim3`. Source columns missing from the raw response
-(e.g. `Low` / `High` for indicators without confidence intervals) are
-filled with typed `NA`.
-
-To show what each GHO dimension means, set `keep_dimensions = TRUE`. The
-additional `dim1_type`, `dim2_type`, and `dim3_type` columns come
-directly from each observation. Their meaning can vary between rows: for
-financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
-`FINANCIALHARDSHIPCOMPONENT`, or `DEMOGRAPHIC`, among others.
-
-``` r
-
-raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL",
-                backend = "legacy")
-gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
-gho_detailed |>
-  dplyr::select(provider, iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
-```
-
-As verified on 2026-10-06, this financial-hardship code is absent from
-the public xMart directory. The example explicitly selects the legacy
-provider; there is no automatic fallback. The UN SDG workflow below
-remains separate.
-
-`keep_metadata = TRUE` also preserves the retrieval `provider`,
-observation identifier, source code and type, spatial/time types, parent
-location, update timestamp, time interval, and comments. Comments are
-stored in the `footnotes` list-column. No dimension type or unit is
-inferred from an indicator name or code prefix. Both options default to
-`FALSE`.
-
-### UN SDG API
-
-Same pattern as GHO: **search → fetch → clean**.
-
-``` r
-
-# Browse goals, targets, indicators, and geographic areas
-sdg_goals()
-sdg_targets()
-sdg_indicators()
-sdg_areas()
-
-# Search indicators by keyword — AND semantics, case-insensitive
-# substring match on the indicator description (client-side filter)
-sdg_indicators("mortality")
-sdg_indicators("mortality cancer")
-sdg_indicators(c("maternal", "mortality"))
-
-# Fetch indicator data — `area` accepts ISO3 codes (converted internally)
-# or UN M49 numeric codes. ISO3 lets DSIR's regional vectors be passed
-# directly, the same way they work with the GHO client.
-sdg_data("3.2.1", area = "PHL", year_from = 2015, year_to = 2023)
-sdg_data("3.4.1", area = wpro_cty)
-
-# M49 also works (e.g. when copy-pasting codes from sdg_areas())
-sdg_data("3.2.1", area = "608", year_from = 2015, year_to = 2023)
-
-# Tidy the SDG response
-raw <- sdg_data("3.2.1", area = "PHL")
-sdg_clean(raw)
-```
-
-By default,
-[`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-produces the same **unified 15-column schema** as
-[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md):
-`source`, `id`, `indicator`, `location`, `iso3`, `location_name`,
-`year`, `value`, `value_num`, `low`, `high`, `series`, `dim1`–`dim3`.
-SDG-side fields populate `id` (the indicator code, e.g. `"3.4.1"`),
-`indicator` (the human-readable series description), `location` (UN M49
-numeric code), `iso3` (via
-[`m49_to_iso3()`](https://shanlong-who.github.io/DSIR/reference/m49_to_iso3.md)
-— `NA` for region / world aggregates and non-Member areas),
-`location_name`, and `series`. The GHO-only `dim1`–`dim3` columns are
-`NA` for SDG rows. `value` is kept as character to preserve non-numeric
-entries (`"<0.1"`, aggregate notes); `value_num` is the numeric coercion
-(`NA` where coercion fails).
-
-**Preserving SDG dimensions.**
-[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
-retains named breakdowns inside `raw$dimensions`. They do not map to
-GHO’s three dimension positions. Use `keep_dimensions = TRUE` to append
-all observed SDG dimensions as character columns such as `dim_age`,
-`dim_sex`, and `dim_quantile`. Missing values remain `NA`. The default
-15-column output omits these breakdowns, so select the required strata
-first when using the compact format. Use `keep_metadata = TRUE` to also
-retain units, nature, and other attributes as `attr_*` columns.
-
-``` r
-
-raw <- sdg_data("3.8.2", area = "PHL")
-unique(raw$dimensions) # Inspect actual dimension names and codes
-financial_hardship <- sdg_clean(
-  raw, keep_dimensions = TRUE, keep_metadata = TRUE
-)
-
-# National total: use the exact UN names and codes, not GHO codes.
-# Series and dimension filters run locally after all pages are fetched.
-national <- sdg_data(
-  "3.8.2", area = "PHL",
-  series = "SH_OOP_XPD_EARNNET40",
-  dimensions = list(
-    Age = "ALLAGE", Location = "ALLAREA", Sex = "BOTHSEX",
-    Quantile = "_T", Type_of_household = "_T"
-  )
-) |>
-  sdg_clean(keep_dimensions = TRUE)
-```
-
-**Discovering dimension codes and labels.** This reads official series
-metadata without downloading the observation table:
-
-``` r
-
-codebook <- sdg_dimensions("3.8.2", include_attributes = TRUE)
-codebook |>
-  dplyr::select(series, kind, dimension, code, label, sdmx)
-```
-
-The codebook keeps series separate and distinguishes dimensions from
-attributes such as units. Use `code`, not the alternative `sdmx` code,
-in `dimensions` filters. A listed category does not guarantee that it
-occurs in every country’s observations.
-
-**Keeping source context.** With `keep_metadata = TRUE`, the SDG cleaner
-appends attributes (e.g. `attr_units`, `attr_nature`), `data_source`,
-time detail/coverage, base period, value type, and the geographic
-information URL. All footnotes and linked indicator, goal, and target
-codes are preserved in list-columns. This makes no additional network
-requests. For example:
-
-``` r
-
-financial_hardship |>
-  dplyr::select(dplyr::any_of(c(
-    "iso3", "year", "value_num", "attr_units", "attr_nature", "data_source"
-  )))
-head(financial_hardship$footnotes, 1L) # Every note for the first observation
-```
-
-Use [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) (or
-[`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md))
-to preserve these list-columns when saving results. CSV requires an
-explicit choice of how to represent multiple notes or links in one cell.
-
-**Complete downloads.**
-[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
-checks declared page numbers, page counts, and total row counts before
-applying local filters. Inconsistent counts, an unexpected empty page,
-or a later request failure produce a warning and no rows; partial
-observations are not returned. Counts not supplied by the API cannot be
-checked.
-[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-retains these warnings and accepts the same `series` and `dimensions`
-filters. Without filters, its counts include all population strata
-within each location and series.
-
-For SDG 3.8.2, the UN catalogue checked on 2026-09-30 publishes the
-2025-definition series `SH_OOP_XPD_EARNNET40`. GHO’s
-`FINANCIALHARDSHIP_PROPORTIONOFPOP` also contains total, large, and
-impoverishing expenditure components in `Dim1`; these components are not
-separate series in that UN catalogue. Do not treat every GHO row as the
-SDG national total or infer missing UN component rows. See the [WHO
-definition and
-components](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/376)
-and the [UN series
-catalogue](https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/3.8.2/Series/List).
-
-### Combining GHO and SDG output
-
-Because both cleaners produce the same schema, you can stack their
-output with
-[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
-and use the `source` column to keep track of where each row came from:
-
-``` r
-
-gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
-sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
-bind_indicators(gho, sdg)
-```
-
-Additional columns, including the named dimensions retained by
-`keep_dimensions = TRUE`, are preserved by
-[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md).
-Inputs without a given column receive typed missing values. Binding does
-not harmonise dimension codes or indicator definitions across the two
-sources.
-
-**Exploring series.** A single SDG indicator often contains several
-series — for example different vaccines, sex strata, or causes of death
-— each with its own country / year coverage.
-[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
-summarises the year range and observation count per `(location, series)`
-so you can see what is available before deciding which series to
-analyse.
-
-``` r
-
-# 3.b.1 (vaccine coverage) is published as four separate series
-sdg_coverage("3.b.1", area = c("156", "608"))
-#>   location series      year_min year_max n_obs
-#> 1 156      SH_ACS_DTP3     2000     2023    24
-#> 2 156      SH_ACS_HPV      2018     2023     6
-#> 3 156      SH_ACS_MCV2     2000     2023    24
-#> 4 156      SH_ACS_PCV3     2017     2023     7
-#> 5 608      SH_ACS_DTP3     2000     2023    24
-#> 6 608      SH_ACS_HPV      2017     2023     7
-#> 7 608      SH_ACS_MCV2     2000     2023    24
-#> 8 608      SH_ACS_PCV3     2014     2023    10
-```
-
-GHO-style `has_data()` /
-[`count()`](https://dplyr.tidyverse.org/reference/count.html) helpers
-are intentionally not provided for SDG because SDG data is generally
-complete enough that pre-flight checks add little value.
-
-## License
-
-MIT — © 2026 Shanlong Ding
-
-### WHO xMart migration (0.11.0)
-
-GHO keeps the legacy OData API as its compatibility default. Select
-`backend = "xmart"` to use `https://xmart-api-public.who.int` for one
-call. Its official directory supplies public download routes; DSIR maps
-them into its familiar observation fields. The 15-column default of
-[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-remains unchanged. Public codes and published vintages can differ
-between providers. Use the same backend for discovery and retrieval.
-
-``` r
-
-gho_indicators('mortality', backend = 'xmart')
-gho_dimensions('NCDMORT3070', 'DIM_SEX', backend = 'xmart')
-ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
-                year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'),
-                backend = 'xmart')
-gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
-```
-
-Named dimensions carry their meaning directly (`dim_sex`, `dim_age`,
-etc.). For wide xMart tables, `Dim1`-`Dim3` follow the source table
-dimension schema, ordered by sex, age, then other names. This may differ
-from old positional breakdowns. The legacy sex codes and `AGEGROUP_` age
-namespace remain supported in positional filters. Named filters retain
-exact native source codes. Prefer named filters when updating analyses.
-
-Migration checks on 2026-10-06 matched 18 observations per indicator
-across France, Japan and the Philippines in 2020-2021. `NCDMORT3070`
-values and bounds agreed exactly. `WHOSIS_000001` and `MDG_0000000001`
-values and bounds differed after matching dimension codes; rounding
-alone did not explain all differences. DSIR preserves each provider’s
-published estimates. Record the provider and retrieval date when
-comparing historical analyses. Raw observations have a `Provider` column
-and a `who_provenance` attribute. `gho_clean(keep_metadata = TRUE)`
-retains row-level origin as `provider`, which survives
-[`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md).
-Unknown imported origins remain `NA`. Missing indicator labels are
-resolved with the recorded backend, even when the session option has
-changed since retrieval.
-
-Failures warn and return empty results without switching providers.
-Reference lookups use a ten-minute memory cache. No keys, startup
-requests or disk cache are required. Selection follows: explicit
-`backend` argument, then the `DSIR.who_backend` option, then `"legacy"`.
-An argument never changes the session option. To choose a session
-default once, use `options(DSIR.who_backend = "xmart")`. Other advanced
-settings are `DSIR.who_base_url` (xMart HTTPS origin),
-`DSIR.who_page_size` and `DSIR.who_max_rows`. Use
-[`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
-to save a reproducible pull explicitly.
-
-An absent xMart directory code produces a warning. For legacy HTTP 404
-responses, DSIR checks the exact code in its directory before reporting
-absence. Successful observation queries with no matching rows give an
-informational message:
-[`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
-returns `FALSE`,
-[`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md)
-returns `0L`, and data/coverage queries return empty tables. Failed
-requests or malformed responses warn; availability and count queries
-return `NA`, never `FALSE` or zero.
-
-If xMart redirects a query to an HTML error page, DSIR retries within
-its three-attempt limit and warns if the service still does not return
-JSON. An empty result accompanied by this warning is a failed request,
-not evidence that no matching indicators or observations exist. Retry
-later. To use the separate legacy GHO service explicitly for a
-comparison or temporary workaround:
-
-``` r
-
-mortality_indicators <- gho_indicators('mortality', backend = 'legacy')
-```
-
-The legacy catalog and estimates can differ from xMart. Backend
-selection applies to GHO functions; GHE continues to use its xMart
-source.
-
-### Global Health Estimates
-
-Explore exact codes, then select a country, year, sex, age, cause and
-measure. GHE is a separate module backed by `DEX_CMS/GHE_FULL`. It
-returns long data with one row per measure. A download needs at least
-one filter and is limited to one million source rows by default.
-
-``` r
-
-ghe_dimensions('sex')
-ghe_dimensions('age')
-ghe_dimensions('measure')
-ghe_causes('diabetes')
-ghe_causes('stroke')
-
-# All published ages, sexes and causes for one country/year
-phl_all_causes <- ghe_data(area = 'PHL', year = 2023, measure = 'deaths')
-
-# Philippine all-age, both-sex deaths, all causes, 2023
-phl_deaths <- ghe_data(area = 'PHL', year = 2023, sex = 'TOTAL',
-                       age = 'TOTAL', cause = 0, measure = 'deaths')
-
-# Age-specific death rates by sex
-phl_rates <- ghe_data(area = 'PHL', year = 2023,
-                      sex = c('FEMALE', 'MALE'), age = 'Y40T44',
-                      cause = 0, measure = 'death_rate')
-ghe_coverage(area = 'PHL', sex = 'TOTAL', age = 'TOTAL', cause = 0)
-ghe_clean(phl_rates, keep_dimensions = TRUE)
-```
-
-Counts are persons or years; rates are per 100,000; shares are
-percentages. Count uncertainty bounds are retained. Bounds for rates and
-shares are absent in the provider and remain missing. All-age rates are
-crude rates. Do not sum overlapping ages or cause-hierarchy totals.
-`cause_group` is a published group, not an invented parent code.
-Discovery lists describe the latest release; verify a selection with
-[`ghe_coverage()`](https://shanlong-who.github.io/DSIR/reference/ghe_coverage.md).
-New releases can revise earlier years.
-
-### WHO 2026 standard population
-
-Beginning with DSIR 0.11.0, `who_std_pop` uses the WHO 2026 Standard
-Population. Its 18 groups end at `85+`. WHO’s rounded Table 1
-percentages sum to 100.02; DSIR normalizes them to 100 and derives a
-numeric standard million summing to 1,000,000. No finer split of `0-4`
-or `85+` is fabricated.
-
-``` r
-
-who_std_pop
-count <- seq_len(nrow(who_std_pop))
-population <- rep(10000, nrow(who_std_pop))
-age_standardize(count, population, who_std_pop$weight)
-```
-
-See the [WHO technical
-report](https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf),
-Table 1, page 6 (September 2026). The former 21-row object is replaced;
-align observed age groups explicitly before computing a standardized
-rate.
+[CRAN Package →](https://CRAN.R-project.org/package=DSIR) [Function
+Reference →](https://shanlong-who.github.io/DSIR/reference/index.md)
+[Tutorials / Articles
+→](https://shanlong-who.github.io/DSIR/articles/index.md) [Full
+Technical Documentation
+→](https://shanlong-who.github.io/DSIR/articles/DSIR.md) [GitHub
+Repository & Technical README
+→](https://github.com/shanlong-who/DSIR#readme) [Release Notes
+→](https://shanlong-who.github.io/DSIR/news/index.md)
 
 # Package index
 

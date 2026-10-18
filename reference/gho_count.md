@@ -105,10 +105,10 @@ gho_count("WHOSIS_000001", area = "FRA")
 gho_count("NCDMORT3070", spatial_type = "country")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27&$top=0&$count=true>
-#> [1] 12210
+#> [1] 13320
 gho_count("NCDMORT3070", spatial_type = "region")
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27REGION%27&$top=0&$count=true>
-#> [1] 396
+#> [1] 432
 # }
 ```

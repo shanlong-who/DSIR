@@ -120,20 +120,20 @@ gho_data("NCDMORT3070", spatial_type = "country") |>
   gho_clean()
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> # A tibble: 12,210 × 15
+#> # A tibble: 13,320 × 15
 #>    source id        indicator location iso3  location_name  year value value_num
 #>    <chr>  <chr>     <chr>     <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 43.2…      43.2
-#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 40.0…      40  
-#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 46.7…      46.7
-#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 46.8…      46.8
-#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 40.5…      40.5
-#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 43.5…      43.5
-#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.1…      43.1
-#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 46.0…      46  
-#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 40.3…      40.3
-#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 40.0…      40  
-#> # ℹ 12,200 more rows
+#>  1 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 45.4…      45.4
+#>  2 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 45.6…      45.6
+#>  3 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2000 45.1…      45.1
+#>  4 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 44.8…      44.8
+#>  5 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 45.2…      45.2
+#>  6 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2001 44.5…      44.5
+#>  7 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.3…      43.3
+#>  8 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 43.6…      43.6
+#>  9 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2002 42.8…      42.8
+#> 10 gho    NCDMORT3… Probabil… AFG      AFG   Afghanistan    2003 42.6…      42.6
+#> # ℹ 13,310 more rows
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
 # }
