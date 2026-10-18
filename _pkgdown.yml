@@ -12,15 +12,16 @@ template:
 home:
   title: DSIR — Data Science Infrastructure for Global Health
   description: |
-    An R package for global-health data work: WHO Member State metadata,
-    GHO queries with legacy and xMart backends, Global Health Estimates,
-    UN SDG indicators, demographic methods, and reusable WHO-style
-    ggplot2 and flextable themes.
+    DSIR is an open-source R package for accessing global health data,
+    preparing consistent tables, analysing health indicators, and producing
+    reusable charts and tables for public health reporting.
+  sidebar: false
   exclude:
     - CLAUDE.md
 navbar:
   structure:
     left:
+    - home
     - intro
     - reference
     - articles
@@ -28,6 +29,28 @@ navbar:
     right:
     - search
     - github
+  components:
+    home:
+      text: Home
+      href: index.html
+    intro:
+      text: Technical Guide
+      href: articles/DSIR.html
+    reference:
+      text: Function Reference
+      href: reference/index.html
+    articles:
+      text: Tutorials
+      menu:
+      - text: WHO xMart and Global Health Estimates
+        href: articles/ghe-xmart.html
+      - text: Visualizing indicators
+        href: articles/visualizing-indicators.html
+      - text: All tutorials
+        href: articles/index.html
+    news:
+      text: Updates
+      href: news/index.html
 reference:
 - title: WHO country metadata
   desc: Datasets and helpers for WHO Member States and regional groupings.
