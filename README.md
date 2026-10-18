@@ -1,4 +1,4 @@
-# DSIR <a href="https://shanlong-who.github.io/DSIR/"><img src="man/figures/logo.jpg" align="right" height="120" alt="DSIR website" /></a>
+# DSIR <a href="https://shanlong-who.github.io/DSIR/"><img src="man/figures/logo.png" align="right" height="120" alt="DSIR website" /></a>
 
 > Data Science Infrastructure for Global Health
 

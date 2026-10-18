@@ -34,14 +34,16 @@ navbar:
       text: Home
       href: index.html
     intro:
-      text: Technical Guide
-      href: articles/DSIR.html
+      text: Technical Overview
+      href: articles/technical-overview.html
     reference:
       text: Function Reference
       href: reference/index.html
     articles:
       text: Tutorials
       menu:
+      - text: Getting started with DSIR
+        href: articles/DSIR.html
       - text: WHO xMart and Global Health Estimates
         href: articles/ghe-xmart.html
       - text: Visualizing indicators

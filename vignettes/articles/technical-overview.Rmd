@@ -1,0 +1,19 @@
+---
+title: "Technical Overview"
+description: "The complete DSIR technical README, including installation, features and examples."
+output: rmarkdown::html_document
+---
+
+```{r technical-readme, echo=FALSE, results='asis'}
+# Keep the complete technical content in sync with the GitHub README.
+article_path <- normalizePath(knitr::current_input(dir = TRUE), mustWork = TRUE)
+package_path <- normalizePath(file.path(dirname(article_path), "..", ".."))
+readme_lines <- readLines(file.path(package_path, "README.md"), warn = FALSE)
+
+# The article header supplies the title and PNG logo; retain the package name.
+stopifnot(startsWith(readme_lines[1], "# DSIR "))
+readme_lines[1] <- "**DSIR**"
+readme_lines <- gsub('src="man/figures/', 'src="../man/figures/',
+                     readme_lines, fixed = TRUE)
+cat(paste(readme_lines, collapse = "\n"), "\n")
+```

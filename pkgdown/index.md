@@ -2,16 +2,27 @@
 
 <section class="dsi-hero" aria-labelledby="dsi-title">
 <div class="dsi-hero-copy">
+<div class="dsi-brand-lockup">
+<img class="dsi-logo" src="man/figures/logo.png" alt="DSIR logo" width="88" height="88">
+<div>
 <p class="dsi-brand">DSIR</p>
 <p class="dsi-brand-name">Data Science Infrastructure for Global Health</p>
+</div>
+</div>
 <h1 id="dsi-title">From Global Health Data to Clear Insights</h1>
 <p class="dsi-lead">DSIR is an open-source R package that simplifies access to global health data, supports consistent data processing, and provides reusable tools for analysis and visualization.</p>
+<div class="dsi-status-badges" role="group" aria-label="Package status">
+<a href="https://CRAN.R-project.org/package=DSIR"><img src="https://www.r-pkg.org/badges/version/DSIR" alt="CRAN version" height="20"></a>
+<a href="https://cran.r-project.org/package=DSIR"><img src="https://cranlogs.r-pkg.org/badges/grand-total/DSIR" alt="Total CRAN downloads" height="20"></a>
+<a href="https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R CMD check status" height="20"></a>
+<a href="https://lifecycle.r-lib.org/articles/stages.html#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing" height="20"></a>
+</div>
 <div class="dsi-actions">
 <a class="dsi-button dsi-button-primary" href="#core-capabilities">Explore Features</a>
 <a class="dsi-button dsi-button-secondary" href="#getting-started">Get Started</a>
 </div>
 <div class="dsi-hero-links">
-<a href="articles/DSIR.html">Technical Documentation <span aria-hidden="true">&rarr;</span></a>
+<a href="articles/technical-overview.html">Technical Overview <span aria-hidden="true">&rarr;</span></a>
 <a href="https://github.com/shanlong-who/DSIR">GitHub <span aria-hidden="true">&rarr;</span></a>
 </div>
 <p class="dsi-project-note">Open source &middot; Available on CRAN &middot; MIT licence</p>
@@ -124,7 +135,7 @@ library(DSIR)
 <a href="https://CRAN.R-project.org/package=DSIR">CRAN Package <span aria-hidden="true">&rarr;</span></a>
 <a href="reference/index.html">Function Reference <span aria-hidden="true">&rarr;</span></a>
 <a href="articles/index.html">Tutorials / Articles <span aria-hidden="true">&rarr;</span></a>
-<a href="articles/DSIR.html">Full Technical Documentation <span aria-hidden="true">&rarr;</span></a>
+<a href="articles/technical-overview.html">Full Technical Overview <span aria-hidden="true">&rarr;</span></a>
 <a href="https://github.com/shanlong-who/DSIR#readme">GitHub Repository &amp; Technical README <span aria-hidden="true">&rarr;</span></a>
 <a href="news/index.html">Release Notes <span aria-hidden="true">&rarr;</span></a>
 </nav>
