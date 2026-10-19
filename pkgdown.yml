@@ -4,8 +4,9 @@ pkgdown_sha: ~
 articles:
   DSIR: DSIR.html
   ghe-xmart: ghe-xmart.html
+  articles/technical-overview: technical-overview.html
   visualizing-indicators: visualizing-indicators.html
-last_built: 2026-10-18T23:41Z
+last_built: 2026-10-19T00:00Z
 urls:
   reference: https://shanlong-who.github.io/DSIR/reference
   article: https://shanlong-who.github.io/DSIR/articles

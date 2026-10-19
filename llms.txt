@@ -1,5 +1,7 @@
 # From Global Health Data to Clear Insights
 
+![DSIR logo](reference/figures/logo.png)
+
 DSIR
 
 Data Science Infrastructure for Global Health
@@ -8,11 +10,20 @@ DSIR is an open-source R package that simplifies access to global health
 data, supports consistent data processing, and provides reusable tools
 for analysis and visualization.
 
+[![CRAN
+version](https://www.r-pkg.org/badges/version/DSIR)](https://CRAN.R-project.org/package=DSIR)
+[![Total CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/DSIR)](https://cran.r-project.org/package=DSIR)
+[![R CMD check
+status](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/shanlong-who/DSIR/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
+
 [Explore Features](#core-capabilities) [Get Started](#getting-started)
 
-[Technical Documentation
-→](https://shanlong-who.github.io/DSIR/articles/DSIR.md) [GitHub
-→](https://github.com/shanlong-who/DSIR)
+[Technical Overview
+→](https://shanlong-who.github.io/DSIR/articles/technical-overview.md)
+[GitHub →](https://github.com/shanlong-who/DSIR)
 
 Open source · Available on CRAN · MIT licence
 
@@ -164,9 +175,9 @@ library(DSIR)
 Reference →](https://shanlong-who.github.io/DSIR/reference/index.md)
 [Tutorials / Articles
 →](https://shanlong-who.github.io/DSIR/articles/index.md) [Full
-Technical Documentation
-→](https://shanlong-who.github.io/DSIR/articles/DSIR.md) [GitHub
-Repository & Technical README
+Technical Overview
+→](https://shanlong-who.github.io/DSIR/articles/technical-overview.md)
+[GitHub Repository & Technical README
 →](https://github.com/shanlong-who/DSIR#readme) [Release Notes
 →](https://shanlong-who.github.io/DSIR/news/index.md)
 
@@ -296,7 +307,15 @@ Small mathematical and data helpers.
 ### All vignettes
 
 - [DSIR](https://shanlong-who.github.io/DSIR/articles/DSIR.md):
+
 - [WHO xMart and Global Health
   Estimates](https://shanlong-who.github.io/DSIR/articles/ghe-xmart.md):
+
+- [Technical
+  Overview](https://shanlong-who.github.io/DSIR/articles/technical-overview.md):
+
+  The complete DSIR technical README, including installation, features
+  and examples.
+
 - [Visualizing
   indicators](https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.md):
