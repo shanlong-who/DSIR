@@ -35,7 +35,11 @@ jobs:
           needs: website
 
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        run: source("pkgdown/build-site.R"); build_multilingual_site()
+        shell: Rscript {0}
+
+      - name: Validate multilingual site
+        run: source("pkgdown/validate-site.R"); validate_multilingual_site()
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀

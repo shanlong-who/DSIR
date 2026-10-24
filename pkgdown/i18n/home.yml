@@ -1,0 +1,237 @@
+- en: DSIR logo
+  zh: DSIR 标识
+  fr: Logo DSIR
+- en: Data Science Infrastructure for Global Health
+  zh: 全球卫生数据科学基础工具
+  fr: Infrastructure de science des données pour la santé mondiale
+- en: From Global Health Data to Clear Insights
+  zh: 从全球卫生数据到清晰的分析结果
+  fr: Des données de santé mondiale aux résultats clairs
+- en: DSIR is an open-source R package that simplifies access to global health data, supports consistent data processing, and provides reusable tools for analysis and visualization.
+  zh: DSIR 是一个开源 R 包，帮助你获取全球卫生数据、规范数据处理流程，并复用分析和可视化工具。
+  fr: DSIR est un package R libre qui facilite l'accès aux données de santé mondiale, leur traitement cohérent, ainsi que leur analyse et leur visualisation.
+- en: Package status
+  zh: R 包状态
+  fr: État du package
+- en: CRAN version
+  zh: CRAN 版本
+  fr: Version CRAN
+- en: Total CRAN downloads
+  zh: CRAN 累计下载量
+  fr: Nombre total de téléchargements sur CRAN
+- en: R CMD check status
+  zh: R CMD check 检查状态
+  fr: Résultat de R CMD check
+- en: 'Lifecycle: maturing'
+  zh: 生命周期：逐步成熟
+  fr: 'Cycle de vie : en maturation'
+- en: Explore Features
+  zh: 了解主要功能
+  fr: Découvrir les fonctions
+- en: Get Started
+  zh: 开始使用
+  fr: Commencer
+- en: Full Technical Overview
+  zh: 完整技术概览
+  fr: Présentation technique complète
+- en: Technical Overview
+  zh: 技术概览
+  fr: Présentation technique
+- en: Open source &middot; Available on CRAN &middot; MIT licence
+  zh: 开源 &middot; 已发布于 CRAN &middot; MIT 许可证
+  fr: Code ouvert &middot; Disponible sur CRAN &middot; Licence MIT
+- en: A consistent R workflow
+  zh: 一套连贯的 R 工作流程
+  fr: Un flux de travail cohérent avec R
+- en: Clean tables, country codes and data context
+  zh: 整理数据表、国家代码与来源信息
+  fr: Tables nettoyées, codes pays et contexte des données
+- en: Health indicators, mortality and progress
+  zh: 分析卫生指标、死亡水平与变化趋势
+  fr: Indicateurs de santé, mortalité et progrès
+- en: Consistent charts and analytical tables
+  zh: 制作风格一致的图表与分析表格
+  fr: Graphiques et tableaux analytiques cohérents
+- en: Reusable tools for each stage of your analysis.
+  zh: 在分析的每个环节复用工具。
+  fr: Des outils réutilisables à chaque étape de votre analyse.
+- en: The everyday challenge
+  zh: 日常工作中的挑战
+  fr: Le défi au quotidien
+- en: Why DSIR?
+  zh: 为什么使用 DSIR？
+  fr: Pourquoi DSIR ?
+- en: Health data are spread across platforms, with different table structures and geographical identifiers. Analysts repeatedly retrieve, clean and format data, while keeping their work reproducible and their reports consistent.
+  zh: 卫生数据分散在不同平台，表格结构和地理编码也各不相同。分析人员需要反复下载、清洗和格式化数据，同时保证分析可复现、报告风格一致。
+  fr: Les données de santé sont réparties entre plusieurs plateformes, avec des structures de tables et des identifiants géographiques différents. Les analystes répètent les étapes de collecte, de nettoyage et de mise en forme, tout en veillant à la reproductibilité des analyses et à la cohérence des rapports.
+- en: DSIR brings commonly used global health data sources and analytical utilities into a consistent R workflow, reducing repetitive data preparation and supporting reproducible analyses.
+  zh: DSIR 将常用的全球卫生数据源与分析工具整合到一套连贯的 R 工作流程中，减少重复的数据准备工作，支持可复现的分析。
+  fr: DSIR réunit les sources courantes de données de santé mondiale et les outils d'analyse dans un flux de travail R cohérent. Il réduit les tâches répétitives de préparation et facilite les analyses reproductibles.
+- en: For technical teams preparing country comparisons, monitoring indicators and producing public health reports.
+  zh: 适用于开展国家间比较、监测指标和编写公共卫生报告的技术团队。
+  fr: Pour les équipes techniques qui comparent les pays, suivent les indicateurs et préparent des rapports de santé publique.
+- en: What you can do
+  zh: 你可以做什么
+  fr: Ce que vous pouvez faire
+- en: Core capabilities
+  zh: 主要功能
+  fr: Fonctions principales
+- en: 01 / ACCESS
+  zh: 01 / 获取
+  fr: 01 / ACCÉDER
+- en: 02 / PREPARE
+  zh: 02 / 整理
+  fr: 02 / PRÉPARER
+- en: 03 / ANALYSE
+  zh: 03 / 分析
+  fr: 03 / ANALYSER
+- en: 04 / PRESENT
+  zh: 04 / 呈现
+  fr: 04 / PRÉSENTER
+- en: Access Global Health Data
+  zh: 获取全球卫生数据
+  fr: Accéder aux données de santé mondiale
+- en: Retrieve observations from WHO Global Health Observatory (GHO), WHO Global Health Estimates (GHE), and UN Sustainable Development Goals (SDG) services. Select countries, years and population breakdowns.
+  zh: 从世界卫生组织全球卫生观察站（GHO）、全球卫生估计（GHE）以及联合国可持续发展目标（SDG）服务获取观测数据，按国家、年份和人群分层筛选。
+  fr: Obtenir des observations auprès de l'Observatoire mondial de la santé de l'OMS (GHO), des estimations sanitaires mondiales de l'OMS (GHE) et des services des Nations Unies pour les objectifs de développement durable (ODD, ou SDG dans le code). Sélectionner les pays, les années et les sous-groupes de population.
+- en: Explore WHO data access
+  zh: 了解 WHO 数据获取方法
+  fr: Découvrir l'accès aux données de l'OMS
+- en: Harmonize Data
+  zh: 统一数据结构
+  fr: Harmoniser la structure des données
+- en: Work with a consistent cleaned table structure, WHO Member State metadata and country identifiers. Keep additional dimensions and source information when needed.
+  zh: 使用结构一致的清洗结果、WHO 会员国元数据与国家标识；需要时保留额外维度和来源信息。
+  fr: Utiliser une structure de table nettoyée cohérente, les métadonnées des États Membres de l'OMS et les identifiants des pays. Conserver les dimensions supplémentaires et les informations de source si nécessaire.
+- en: See data preparation tools
+  zh: 查看数据整理工具
+  fr: Voir les outils de préparation
+- en: Analyse Health Indicators
+  zh: 分析卫生指标
+  fr: Analyser les indicateurs de santé
+- en: Use life tables, direct age standardization and measures of annual progress to support mortality analysis and indicator monitoring.
+  zh: 使用寿命表、直接年龄标准化和年度变化指标，开展死亡分析与卫生指标监测。
+  fr: Utiliser les tables de mortalité, la standardisation directe sur l'âge et les mesures de progrès annuel pour analyser la mortalité et suivre les indicateurs.
+- en: Explore analytical methods
+  zh: 了解分析方法
+  fr: Découvrir les méthodes d'analyse
+- en: Visualize and Present Results
+  zh: 可视化并呈现结果
+  fr: Visualiser et présenter les résultats
+- en: Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables for technical reports.
+  zh: 复用 ggplot2 主题和 flextable 格式，为技术报告制作风格一致的图形与分析表格。
+  fr: Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents dans les rapports techniques.
+- en: View visualization examples
+  zh: 查看可视化示例
+  fr: Voir les exemples de visualisation
+- en: A common table structure does not make indicator definitions or estimation methods comparable. Check source methods, population breakdowns and units before comparing results.
+  zh: 表格结构相同，并不意味着指标定义或估计方法可比。比较结果前，请核对来源方法、人群分层和单位。
+  fr: Une structure de table commune ne rend pas les définitions des indicateurs ni les méthodes d'estimation comparables. Vérifiez les méthodes des sources, les sous-groupes de population et les unités avant de comparer les résultats.
+- en: From tools to tasks
+  zh: 从工具到实际任务
+  fr: Des outils aux tâches concrètes
+- en: Practical applications
+  zh: 实际应用
+  fr: Applications pratiques
+- en: For WHO technical teams and public health researchers working with international health data.
+  zh: 面向使用国际卫生数据的 WHO 技术团队和公共卫生研究人员。
+  fr: Pour les équipes techniques de l'OMS et les chercheurs en santé publique qui utilisent des données sanitaires internationales.
+- en: Monitor health indicators
+  zh: 监测卫生指标
+  fr: Suivre les indicateurs de santé
+- en: Explore observations across countries and years, keeping population groups and data sources visible.
+  zh: 查看不同国家和年份的观测结果，同时保留人群分组与数据来源信息。
+  fr: Explorer les observations par pays et par année, en conservant les informations sur les groupes de population et les sources.
+- en: Explore mortality and disease burden
+  zh: 分析死亡与疾病负担
+  fr: Explorer la mortalité et la charge de morbidité
+- en: Examine WHO estimates by cause, age, sex, country and year.
+  zh: 按死因、年龄、性别、国家和年份查看 WHO 估计值。
+  fr: Examiner les estimations de l'OMS par cause, âge, sexe, pays et année.
+- en: Assess progress towards SDG targets
+  zh: 评估 SDG 目标进展
+  fr: Évaluer les progrès vers les cibles des ODD
+- en: Retrieve health-related SDG series and analyse changes over time.
+  zh: 获取与卫生相关的 SDG 序列，分析其随时间的变化。
+  fr: Obtenir les séries des ODD liées à la santé et analyser leur évolution dans le temps.
+- en: Prepare reproducible reports
+  zh: 编写可复现报告
+  fr: Préparer des rapports reproductibles
+- en: Reuse data preparation steps, charts and table styles across analytical outputs.
+  zh: 在不同分析成果中复用数据准备步骤、图形与表格样式。
+  fr: Réutiliser les étapes de préparation, les graphiques et les styles de tableaux dans plusieurs analyses.
+- en: These are potential uses of the package, not claims of official adoption by WHO.
+  zh: 这些是本包可能的应用场景，不表示 WHO 已正式采用本包。
+  fr: Il s'agit d'utilisations possibles du package, sans affirmation d'une adoption officielle par l'OMS.
+- en: Ongoing development
+  zh: 持续开发
+  fr: Développement en cours
+- en: Development roadmap
+  zh: 开发方向
+  fr: Feuille de route
+- en: DSIR continues to evolve in response to practical needs in global health data analysis. Future development is planned to include GIS-related functions to support geospatial data processing, mapping and spatial analysis.
+  zh: DSIR 根据全球卫生数据分析的实际需求持续改进。未来计划加入地理信息系统（GIS）相关功能，支持地理空间数据处理、制图和空间分析。
+  fr: DSIR évolue selon les besoins pratiques de l'analyse des données de santé mondiale. Le développement prévu comprend des fonctions de systèmes d'information géographique (SIG) pour le traitement des données géospatiales, la cartographie et l'analyse spatiale.
+- en: GIS capabilities are a future direction and are not part of the current release.
+  zh: GIS 功能属于未来开发方向，当前版本尚未提供。
+  fr: Les fonctions SIG constituent une orientation future et ne sont pas incluses dans la version actuelle.
+- en: The person behind the project
+  zh: 项目维护者
+  fr: La personne à l'origine du projet
+- en: Developed and maintained by Shanlong Ding
+  zh: 由丁善龙开发和维护
+  fr: Développé et maintenu par Shanlong Ding
+- en: Technical Officer (Data Analyst)
+  zh: 技术官员（数据分析师）
+  fr: Cadre technique (analyste de données)
+- en: WHO Regional Office for the Western Pacific
+  zh: 世界卫生组织西太平洋区域办事处
+  fr: Bureau régional de l'OMS pour le Pacifique occidental
+- en: View GitHub profile
+  zh: 查看 GitHub 个人主页
+  fr: Voir le profil GitHub
+- en: DSIR is a personally maintained open-source project. It is not an official WHO software product and is not endorsed or published by WHO.
+  zh: DSIR 是由个人维护的开源项目，并非 WHO 官方软件产品，也未经 WHO 认可或由 WHO 发布。
+  fr: DSIR est un projet libre maintenu à titre personnel. Ce n'est pas un logiciel officiel de l'OMS ; il n'est ni approuvé ni publié par l'OMS.
+- en: Start with the package
+  zh: 开始使用 R 包
+  fr: Prendre le package en main
+- en: Getting started
+  zh: 快速入门
+  fr: Premiers pas
+- en: Install DSIR from CRAN, then follow the technical guide for data access, analysis and presentation.
+  zh: 从 CRAN 安装 DSIR，然后跟随教程获取数据、开展分析并呈现结果。
+  fr: Installez DSIR depuis CRAN, puis suivez les tutoriels pour accéder aux données, les analyser et présenter les résultats.
+- en: R installation commands
+  zh: R 安装命令
+  fr: Commandes d'installation dans R
+- en: Documentation and package resources
+  zh: 文档与 R 包资源
+  fr: Documentation et ressources du package
+- en: CRAN Package
+  zh: CRAN 页面
+  fr: Package sur CRAN
+- en: Function Reference
+  zh: 函数参考
+  fr: Référence des fonctions
+- en: Tutorials / Articles
+  zh: 教程与文章
+  fr: Tutoriels et articles
+- en: GitHub Repository &amp; Technical README
+  zh: GitHub 仓库与技术 README
+  fr: Dépôt GitHub et README technique
+- en: Release Notes
+  zh: 版本更新记录
+  fr: Notes de version
+- en: <strong>Access</strong>
+  zh: <strong>获取</strong>
+  fr: <strong>Accéder</strong>
+- en: <strong>Prepare</strong>
+  zh: <strong>整理</strong>
+  fr: <strong>Préparer</strong>
+- en: <strong>Analyse</strong>
+  zh: <strong>分析</strong>
+  fr: <strong>Analyser</strong>
+- en: <strong>Present</strong>
+  zh: <strong>呈现</strong>
+  fr: <strong>Présenter</strong>

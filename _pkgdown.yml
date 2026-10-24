@@ -27,9 +27,19 @@ navbar:
     - articles
     - news
     right:
+    - language
     - search
     - github
   components:
+    language:
+      text: Language
+      menu:
+      - text: English
+        href: index.html
+      - text: 简体中文
+        href: zh/index.html
+      - text: Français
+        href: fr/index.html
     home:
       text: Home
       href: index.html

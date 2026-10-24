@@ -1,0 +1,36 @@
+en:
+  html_lang: en
+zh:
+  html_lang: zh-CN
+  pkgdown_lang: zh_CN
+  title: DSIR — 全球卫生数据科学工具
+  description: 使用 R 获取全球卫生数据、整理指标、开展分析，并制作可复用的图表。
+  home: 首页
+  overview: 技术概览（英文）
+  reference: 函数参考（英文）
+  news: 更新记录（英文）
+  language: 语言
+  tutorials: 教程
+  english: 英文
+  articles:
+  - DSIR 入门
+  - WHO xMart 与全球卫生估计
+  - 卫生指标可视化
+  - 全部教程
+fr:
+  html_lang: fr
+  pkgdown_lang: fr
+  title: DSIR — Outils de science des données pour la santé mondiale
+  description: Accéder aux données de santé mondiale, préparer les indicateurs, les analyser et créer des graphiques réutilisables avec R.
+  home: Accueil
+  overview: Présentation technique (anglais)
+  reference: Fonctions (anglais)
+  news: Actualités (anglais)
+  language: Langue
+  tutorials: Tutoriels
+  english: anglais
+  articles:
+  - Premiers pas avec DSIR
+  - WHO xMart et estimations sanitaires mondiales
+  - Visualiser les indicateurs
+  - Tous les tutoriels
