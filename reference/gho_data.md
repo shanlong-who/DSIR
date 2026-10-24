@@ -141,18 +141,18 @@ gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
 #> Fetching:
 #> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
 #> # A tibble: 54 × 26
-#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
-#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  2 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  3 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  4 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  5 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  6 1.25e6 WHOSIS_000001 COUNTRY        FRA        YEAR        EUR               
-#>  7 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  8 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#>  9 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
-#> 10 1.25e6 WHOSIS_000001 COUNTRY        DEU        YEAR        EUR               
+#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
+#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
+#>  1 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  2 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  3 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  4 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  5 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  6 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
+#>  7 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  8 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#>  9 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
+#> 10 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
 #> # ℹ 44 more rows
 #> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
 #> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,

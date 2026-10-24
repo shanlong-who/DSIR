@@ -47,8 +47,8 @@ ghe_dimensions('age')
 #> # A tibble: 22 × 2
 #>    code   label         
 #>    <chr>  <chr>         
-#>  1 D0T27  NA            
-#>  2 M1T11  NA            
+#>  1 D0T27  0 to 27 days  
+#>  2 M1T11  1 to 11 months
 #>  3 TOTAL  All ages      
 #>  4 Y0T1   Under 1 year  
 #>  5 Y10T14 10 to 14 years

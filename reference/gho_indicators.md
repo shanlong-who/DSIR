@@ -66,9 +66,9 @@ gho_indicators("mortality")
 #>  5 MDG_0000000001 Infant mortality rate (probability of dying between … EN      
 #>  6 MDG_0000000026 Maternal mortality ratio (per 100 000 live births)    EN      
 #>  7 MDG_0000000032 Maternal mortality ratio (per 100 000 live births) -… EN      
-#>  8 GHE_YLLNUM     Years of life lost from mortality (YLLs)              EN      
-#>  9 GHE_YLLRATE    Years of life lost from mortality (YLLs) (per 100 00… EN      
-#> 10 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
+#>  8 nmr            Neonatal mortality rate (deaths per 1000 live births) EN      
+#>  9 SA_0000001473  Alcohol-related disease mortality, per 100,000 (15+ … EN      
+#> 10 SA_0000001472  Alcohol-related injury mortality, per 1,000           EN      
 #> # ℹ 21 more rows
 
 # Multiple keywords from one string (AND): both terms must appear
