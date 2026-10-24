@@ -1,0 +1,62 @@
+name: API health
+
+on:
+  schedule:
+    # Monday 09:17 in Manila (UTC+8); avoid the busy start of the hour.
+    - cron: '17 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-health-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  api-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      DSIR_HEALTH_OUTPUT: ${{ runner.temp }}/dsir-api-health
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"hard"'
+          install-pandoc: 'false'
+          install-quarto: 'false'
+
+      - name: Install this checkout
+        run: R CMD INSTALL .
+
+      - name: Check four live data queries
+        timeout-minutes: 10
+        env:
+          DSIR_RUN_LIVE_TESTS: 'true'
+        run: Rscript --vanilla .github/scripts/api-health.R
+
+      - name: Publish result summary
+        if: always()
+        shell: Rscript {0}
+        run: |
+          path <- file.path(Sys.getenv("DSIR_HEALTH_OUTPUT"), "summary.md")
+          lines <- if (file.exists(path)) readLines(path) else
+            c("# DSIR API health", "", "No health report was produced. Setup or execution did not complete.")
+          cat(paste(lines, collapse = "\n"), "\n", file = Sys.getenv("GITHUB_STEP_SUMMARY"), append = TRUE)
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-health-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.DSIR_HEALTH_OUTPUT }}/
+          retention-days: 14
+          if-no-files-found: warn
