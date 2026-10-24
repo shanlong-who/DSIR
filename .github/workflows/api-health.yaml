@@ -19,9 +19,11 @@ jobs:
     timeout-minutes: 15
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      DSIR_HEALTH_OUTPUT: ${{ runner.temp }}/dsir-api-health
 
     steps:
+      - name: Set report directory
+        run: echo "DSIR_HEALTH_OUTPUT=${RUNNER_TEMP}/dsir-api-health" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v6
 
       - uses: r-lib/actions/setup-r@v2
