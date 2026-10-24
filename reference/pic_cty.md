@@ -33,7 +33,5 @@ Guinea, Samoa, Solomon Islands, Tonga, Tuvalu, and Vanuatu.
 
 ``` r
 length(pic_cty)              # 14
-#> [1] 14
 all(pic_cty %in% wpro_cty)   # TRUE
-#> [1] TRUE
 ```

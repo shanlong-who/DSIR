@@ -48,16 +48,13 @@ Input accepts either the zero-padded form (`"076"`) or the bare form
 
 ``` r
 m49_to_iso3(c("608", "250", "392"))
-#> [1] "PHL" "FRA" "JPN"
 # "PHL" "FRA" "JPN"
 
 # Zero-padded and bare forms both accepted
 m49_to_iso3(c("076", "76"))
-#> [1] "BRA" "BRA"
 # "BRA" "BRA"
 
 # Non-Member areas / aggregates return NA
 m49_to_iso3(c("900", "608"))
-#> [1] NA    "PHL"
 # NA "PHL"
 ```

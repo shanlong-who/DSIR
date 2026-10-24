@@ -38,18 +38,5 @@ A tibble in the unified schema, with `source = "ghe"`.
 # \donttest{
 ghe_data('PHL', year = 2023, age = 'TOTAL', sex = 'TOTAL', cause = 0,
          measure = 'deaths') |> ghe_clean(keep_dimensions = TRUE)
-#> Fetching WHO: "DEX_CMS/REF_SEX_COD"
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> Fetching WHO: "DEX_CMS/REF_AGE_COD"
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> # A tibble: 1 × 23
-#>   source id    indicator      location iso3  location_name  year value value_num
-#>   <chr>  <chr> <chr>          <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#> 1 ghe    0     All Causes: d… PHL      PHL   Philippines    2023 6928…   692891.
-#> # ℹ 14 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>, dim_sex <chr>, dim_age <chr>, cause_name <chr>,
-#> #   cause_group <chr>, cause_level <int>, rankable <lgl>, unit <chr>,
-#> #   population <dbl>
 # }
 ```

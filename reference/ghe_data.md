@@ -96,22 +96,7 @@ age-standardized rates. Published GHE vintages can revise earlier years.
 # \donttest{
 ghe_data(area = 'PHL', year = 2023, age = 'TOTAL', sex = 'TOTAL',
          cause = 0, measure = 'deaths')
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> # A tibble: 1 × 16
-#>   iso3  location_name  year sex   age   cause_code cause_name measure   value
-#>   <chr> <chr>         <int> <chr> <chr> <chr>      <chr>      <chr>     <dbl>
-#> 1 PHL   Philippines    2023 TOTAL TOTAL 0          All Causes deaths  692891.
-#> # ℹ 7 more variables: low <dbl>, high <dbl>, population <dbl>, unit <chr>,
-#> #   level <int>, cause_group <chr>, rankable <lgl>
 ghe_data(area = 'PHL', year = 2023, age = 'Y40T44',
          sex = c('FEMALE', 'MALE'), cause = 0, measure = 'death_rate')
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> # A tibble: 2 × 16
-#>   iso3  location_name  year sex    age    cause_code cause_name measure    value
-#>   <chr> <chr>         <int> <chr>  <chr>  <chr>      <chr>      <chr>      <dbl>
-#> 1 PHL   Philippines    2023 FEMALE Y40T44 0          All Causes death_rate  236.
-#> 2 PHL   Philippines    2023 MALE   Y40T44 0          All Causes death_rate  488.
-#> # ℹ 7 more variables: low <dbl>, high <dbl>, population <dbl>, unit <chr>,
-#> #   level <int>, cause_group <chr>, rankable <lgl>
 # }
 ```

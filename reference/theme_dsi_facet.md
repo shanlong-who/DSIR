@@ -103,5 +103,4 @@ ggplot(mtcars, aes(wt, mpg)) +
   theme_dsi_facet() +
   labs(title = "Fuel efficiency by cylinder count",
        x = "Weight (1000 lbs)", y = "Miles per gallon")
-
 ```

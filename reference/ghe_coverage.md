@@ -59,10 +59,5 @@ A tibble with `location`, `year_min`, `year_max`, `n_years`, and
 ``` r
 # \donttest{
 ghe_coverage(area = 'PHL', age = 'TOTAL', sex = 'TOTAL', cause = 0)
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> # A tibble: 1 × 5
-#>   location year_min year_max n_years n_obs
-#>   <chr>       <int>    <int>   <int> <int>
-#> 1 PHL          2000     2023      24    24
 # }
 ```

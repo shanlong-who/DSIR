@@ -110,18 +110,13 @@ pop    <- c(12000, 11000, 9000, 7000, 3000)
 w      <- c(0.35, 0.25, 0.20, 0.12, 0.08)   # standard weights
 
 age_standardize(deaths, pop, w)             # per 100,000
-#> [1] 922.2655
 age_standardize(deaths, pop, w, per = 1000) # per 1,000
-#> [1] 9.222655
 
 # With a 95% confidence interval
 age_standardize(deaths, pop, w, ci = TRUE)
-#>      rate     lower     upper 
-#>  922.2655  831.1569 1021.1368 
 
 # Using all 18 WHO 2026 groups, aligned with the observed data.
 deaths18 <- seq_len(nrow(who_std_pop))
 pop18 <- rep(10000, nrow(who_std_pop))
 age_standardize(deaths18, pop18, who_std_pop$std_million)
-#> [1] 79.68206
 ```

@@ -204,3 +204,22 @@
   .dsi-hero, .dsi-capability, .dsi-applications { break-inside: avoid; }
   .dsi-landing { font-size: 10pt; }
 }
+
+/* Allow translated navigation and longer French labels to wrap on small screens. */
+#dropdown-language { white-space: nowrap; }
+.dsi-english-label { font-size: 0.85em; font-weight: normal; }
+html[lang="zh-CN"] body {
+  font-family: "Source Sans Pro", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+}
+html[lang="zh-CN"] .dsi-landing { line-height: 1.8; }
+html[lang="zh-CN"] .dsi-landing h1,
+html[lang="zh-CN"] .dsi-landing h2,
+html[lang="zh-CN"] .dsi-landing h3 { line-height: 1.35; letter-spacing: 0; }
+.navbar .dropdown-menu { max-width: calc(100vw - 2rem); }
+.navbar .dropdown-item { white-space: normal; }
+.navbar [aria-current="true"] { font-weight: 700; }
+.template-article aside { min-width: 0; max-width: 100%; }
+.template-article #toc a { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 767.98px) {
+  .template-article aside { width: 100%; margin-left: 0; margin-right: 0; }
+}

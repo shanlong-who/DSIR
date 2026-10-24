@@ -92,20 +92,15 @@ for ratio-based indicator aggregation.
 years  <- 2000:2015
 values <- 100 * (1 - 0.024) ^ (years - 2000)
 aarr(years, values)                       # 0.024
-#> [1] 0.024
 100 * aarr(years, values)                 # 2.4 — as printed in reports
-#> [1] 2.4
 
 # Endpoint method uses only the earliest and latest years
 aarr(years, values, method = "endpoint")  # also 0.024 here
-#> [1] 0.024
 
 # An increasing indicator gives a negative AARR
 aarr(2010:2020, 50 * 1.01 ^ (0:10))       # about -0.01
-#> [1] -0.01
 
 # Back-of-envelope projection to 2030 at the observed AARR
 r <- aarr(years, values)
 values[length(values)] * (1 - r) ^ (2030 - 2015)
-#> [1] 48.24969
 ```

@@ -119,27 +119,10 @@ and Niue are WHO Member States but not World Bank economies and are
 wpr <- who_countries[who_countries$who_region == "WPR", ]
 wpr <- wpr[order(wpr$name_short), c("iso3", "name_short")]
 head(wpr)
-#> # A tibble: 6 × 2
-#>   iso3  name_short       
-#>   <chr> <chr>            
-#> 1 AUS   Australia        
-#> 2 BRN   Brunei Darussalam
-#> 3 KHM   Cambodia         
-#> 4 CHN   China            
-#> 5 COK   Cook Islands     
-#> 6 FJI   Fiji             
 
 # Filter a data frame to PIC member states
 # df_pic <- subset(my_data, country_iso3 %in% who_countries$iso3[who_countries$is_pic])
 
 # Income-group composition of each WHO region
 table(who_countries$who_region, who_countries$wb_income_group)
-#>       
-#>        High income Low income Lower middle income Upper middle income
-#>   AFR            1         19                  20                   7
-#>   AMR           12          0                   5                  18
-#>   EMR            6          5                   6                   4
-#>   EUR           36          0                   3                  14
-#>   SEAR           0          1                   6                   3
-#>   WPR            8          0                   6                  12
 ```

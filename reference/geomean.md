@@ -47,21 +47,13 @@ Pass `w` to compute a weighted geometric mean, defined as
 ``` r
 # Unweighted
 geomean(c(1, 4, 16))                # 4
-#> [1] 4
 geomean(c(0.6, 0.8, 0.95))          # ~0.772 — typical UHC tracer aggregation
-#> [1] 0.7697002
 geomean(c(1, NA, 4))                # 2
-#> [1] 2
 geomean(c(1, NA, 4), na.rm = FALSE) # NA_real_
-#> [1] NA
 geomean(c(1, 0, 4))                 # 0
-#> [1] 0
 
 # Weighted
 geomean(c(1, 4, 16), w = c(1, 1, 1))     # 4 (equal weights = unweighted)
-#> [1] 4
 geomean(c(1, 4, 16), w = c(1, 2, 1))     # weighted toward 4
-#> [1] 4
 geomean(c(0.6, 0.8, 0.95), w = c(2, 1, 1))
-#> [1] 0.7232343
 ```

@@ -50,16 +50,13 @@ conversion yourself.
 
 ``` r
 iso3_to_m49(c("PHL", "FRA", "JPN"))
-#> [1] "608" "250" "392"
 # "608" "250" "392"
 
 # Case-insensitive
 iso3_to_m49("phl")
-#> [1] "608"
 # "608"
 
 # Non-Member areas return NA
 iso3_to_m49(c("PRI", "PHL"))
-#> [1] NA    "608"
 # NA "608"
 ```

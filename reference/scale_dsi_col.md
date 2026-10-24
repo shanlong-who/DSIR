@@ -52,5 +52,4 @@ ggplot(mtcars, aes(factor(cyl))) +
   geom_bar(fill = "#0093D5") +
   scale_y_dsi_col() +
   theme_dsi()
-
 ```

@@ -79,11 +79,9 @@ ggplot(mtcars, aes(wt, mpg, color = factor(cyl))) +
        x = "Weight (1000 lbs)", y = "Miles per gallon",
        color = "Cylinders")
 
-
 # Minimal look — only horizontal grid lines
 ggplot(mtcars, aes(wt, mpg)) +
   geom_point(size = 3, color = "#0093D5") +
   theme_dsi(grid = "y") +
   labs(x = "Weight (1000 lbs)", y = "Miles per gallon")
-
 ```

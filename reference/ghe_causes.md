@@ -35,20 +35,6 @@ A tibble with `cause_code`, `cause_name`, `level`, `cause_group`,
 ``` r
 # \donttest{
 ghe_causes('diabetes')
-#> Fetching WHO: "DEX_CMS/REF_YEAR_COD"
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> Fetching WHO: "DEX_CMS/GHE_FULL"
-#> # A tibble: 2 × 6
-#>   cause_code cause_name                  level cause_group rankable single_cause
-#>   <chr>      <chr>                       <int> <chr>       <lgl>    <lgl>       
-#> 1 800        Diabetes mellitus               2 2           TRUE     TRUE        
-#> 2 1272       Chronic kidney disease due…     4 2           FALSE    TRUE        
 ghe_causes('stroke')
-#> # A tibble: 3 × 6
-#>   cause_code cause_name          level cause_group rankable single_cause
-#>   <chr>      <chr>               <int> <chr>       <lgl>    <lgl>       
-#> 1 1140       Stroke                  3 2           TRUE     FALSE       
-#> 2 1141       Ischaemic stroke        4 2           FALSE    TRUE        
-#> 3 1142       Haemorrhagic stroke     4 2           FALSE    TRUE        
 # }
 ```

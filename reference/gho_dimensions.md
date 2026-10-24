@@ -58,11 +58,6 @@ character vector.
 ``` r
 # \donttest{
 gho_dimensions("NCDMORT3070")
-#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=SpatialDimType>
-#> [1] "COUNTRY"              "GLOBAL"               "REGION"              
-#> [4] "WORLDBANKINCOMEGROUP"
 gho_dimensions("NCDMORT3070", dimension = "Dim1")
-#> Fetching: <https://ghoapi.azureedge.net/api/NCDMORT3070?$select=Dim1>
-#> [1] "SEX_BTSX" "SEX_FMLE" "SEX_MLE" 
 # }
 ```

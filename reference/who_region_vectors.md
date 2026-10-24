@@ -80,7 +80,5 @@ vectors regenerate from the master table.
 
 ``` r
 length(wpro_cty)        # 28
-#> [1] 28
 "IDN" %in% wpro_cty     # TRUE — Indonesia in WPR since May 2025
-#> [1] TRUE
 ```

@@ -45,15 +45,12 @@ areas that some indicator data sets cover.
 
 ``` r
 iso3_to_region(c("PHL", "FRA", "USA", "COK"))
-#> [1] "WPR" "EUR" "AMR" "WPR"
 # "WPR" "EUR" "AMR" "WPR"
 
 iso3_to_region(c("IDN", "JPN"), long = TRUE)
-#> [1] "Western Pacific" "Western Pacific"
 # "Western Pacific" "Western Pacific"  (Indonesia in WPR since May 2025)
 
 # Non-Member areas return NA
 iso3_to_region(c("PRI", "TKL", "PHL"))
-#> [1] NA    NA    "WPR"
 # NA NA "WPR"
 ```

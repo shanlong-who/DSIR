@@ -111,100 +111,15 @@ or startup requests are required.
 # \donttest{
 # Country-level data for one indicator
 gho_data("NCDMORT3070", spatial_type = "country")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27>
-#> # A tibble: 13,320 × 26
-#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
-#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  2 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  3 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  4 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  5 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  6 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  7 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  8 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  9 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#> 10 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#> # ℹ 13,310 more rows
-#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
-#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
-#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
-#> #   Provider <chr>
 
 # Specific countries and years
 gho_data("WHOSIS_000001", area = c("FRA", "DEU"), year_from = 2015)
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> ℹ Pass `spatial_type` explicitly to silence this message.
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/WHOSIS_000001?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20SpatialDim%20in%20%28%27FRA%27%2C%27DEU%27%29%20and%20TimeDim%20ge%202015>
-#> # A tibble: 54 × 26
-#>        Id IndicatorCode SpatialDimType SpatialDim ParentLocationCode TimeDimType
-#>     <int> <chr>         <chr>          <chr>      <chr>              <chr>      
-#>  1 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  2 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  3 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  4 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  5 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  6 1.25e6 WHOSIS_000001 COUNTRY        FRA        EUR                YEAR       
-#>  7 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  8 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#>  9 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#> 10 1.25e6 WHOSIS_000001 COUNTRY        DEU        EUR                YEAR       
-#> # ℹ 44 more rows
-#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, Dim1 <chr>,
-#> #   TimeDim <int>, Dim2Type <lgl>, Dim2 <lgl>, Dim3Type <lgl>, Dim3 <lgl>,
-#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
-#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
-#> #   Provider <chr>
 
 # Keep only the both-sexes breakdown, filtered server-side
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
-#> Fetching:
-#> <https://ghoapi.azureedge.net/api/NCDMORT3070?$filter=SpatialDimType%20eq%20%27COUNTRY%27%20and%20Dim1%20in%20%28%27SEX_BTSX%27%29>
-#> # A tibble: 4,440 × 26
-#>        Id IndicatorCode SpatialDimType SpatialDim TimeDimType ParentLocationCode
-#>     <int> <chr>         <chr>          <chr>      <chr>       <chr>             
-#>  1 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  2 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  3 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  4 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  5 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  6 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  7 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  8 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#>  9 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#> 10 1.41e6 NCDMORT3070   COUNTRY        AFG        YEAR        EMR               
-#> # ℹ 4,430 more rows
-#> # ℹ 20 more variables: ParentLocation <chr>, Dim1Type <chr>, TimeDim <int>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <lgl>, Dim3 <lgl>,
-#> #   DataSourceDimType <lgl>, DataSourceDim <lgl>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Comments <lgl>, Date <chr>,
-#> #   TimeDimensionValue <chr>, TimeDimensionBegin <chr>, TimeDimensionEnd <chr>,
-#> #   Provider <chr>
 
 # Select xMart for one call without changing the session default
 gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,
          dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
-#> Assuming `spatial_type` = "country" since `area` was given.
-#> Fetching WHO: "DATA_/IND_DIRECTORY_WIDE"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> Fetching WHO: "DATA_/REF_GEO"
-#> Fetching WHO: "DATA_/RELAY_WHS"
-#> # A tibble: 2 × 50
-#>   Id                       IndicatorCode IndicatorName SpatialDim SpatialDimType
-#>   <chr>                    <chr>         <chr>         <chr>      <chr>         
-#> 1 8409c30b-3c53-81d3-8e23… NCDMORT3070   Probability … PHL        COUNTRY       
-#> 2 800448d6-5025-8bd8-9264… NCDMORT3070   Probability … PHL        COUNTRY       
-#> # ℹ 45 more variables: SpatialDimTypeOriginal <chr>, SpatialName <chr>,
-#> #   TimeDim <int>, TimeDimType <chr>, TimeDimensionValue <chr>, Value <chr>,
-#> #   NumericValue <dbl>, Low <dbl>, High <dbl>, Date <chr>, Unit <chr>,
-#> #   MeasureField <chr>, DataSourceDim <chr>, Comments <chr>, Dim1Type <chr>,
-#> #   Dim1 <chr>, Dim2Type <chr>, Dim2 <chr>, Dim3Type <chr>, Dim3 <chr>,
-#> #   DIM_SEX <chr>, DIM_AGE <chr>, DIM_AMR_GLASS_AWARE <chr>,
-#> #   DIM_ASSISTIVETECHBARRIER <chr>, DIM_ASSISTIVETECHFUNDING <chr>, …
 # }
 ```

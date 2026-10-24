@@ -111,24 +111,5 @@ the required strata before using it for analysis.
 # \donttest{
 sdg_data("3.2.1", area = "156", year_from = 2015) |>
   sdg_clean(keep_dimensions = TRUE)
-#> Fetching:
-#> <https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/Indicator/Data?indicator=3.2.1&pageSize=1000&areaCode=156&page=1>
-#> # A tibble: 120 × 18
-#>    source id    indicator     location iso3  location_name  year value value_num
-#>    <chr>  <chr> <chr>         <chr>    <chr> <chr>         <int> <chr>     <dbl>
-#>  1 sdg    3.2.1 Infant death… 156      CHN   China          2015 84118  84118   
-#>  2 sdg    3.2.1 Infant death… 156      CHN   China          2015 64505  64505   
-#>  3 sdg    3.2.1 Infant death… 156      CHN   China          2015 1486… 148623   
-#>  4 sdg    3.2.1 Under-five m… 156      CHN   China          2015 11.3…     11.3 
-#>  5 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.0…     10.1 
-#>  6 sdg    3.2.1 Under-five m… 156      CHN   China          2015 10.7…     10.7 
-#>  7 sdg    3.2.1 Infant morta… 156      CHN   China          2015 7.68…      7.69
-#>  8 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.69…      8.70
-#>  9 sdg    3.2.1 Infant morta… 156      CHN   China          2015 8.20…      8.21
-#> 10 sdg    3.2.1 Under-five d… 156      CHN   China          2015 1100… 110048   
-#> # ℹ 110 more rows
-#> # ℹ 9 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
-#> #   dim2 <chr>, dim3 <chr>, dim_age <chr>, dim_sex <chr>,
-#> #   dim_reporting_type <chr>
 # }
 ```
