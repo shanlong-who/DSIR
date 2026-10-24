@@ -34,6 +34,9 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
+      - name: Install website locales
+        run: sudo locale-gen zh_CN.UTF-8 fr_FR.UTF-8
+
       - name: Build site
         run: source("pkgdown/build-site.R"); build_multilingual_site()
         shell: Rscript {0}

@@ -19,6 +19,10 @@ Pandoc is required. GitHub Actions supplies it with `setup-pandoc`. Locally,
 use the Pandoc installation bundled with RStudio, locating it on your machine
 and setting `RSTUDIO_PANDOC` for that session if it is not discovered.
 The configured web fonts may require an internet connection on the first build.
+On Linux, install `zh_CN.UTF-8` and `fr_FR.UTF-8` with `locale-gen` first.
+The workflow does this automatically; the renderer sets the message locale
+and the language inherited by article subprocesses. Merely setting `LANGUAGE`
+under a C message locale does not translate the generated interface.
 
 ## Maintaining content
 

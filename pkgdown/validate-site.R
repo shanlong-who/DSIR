@@ -5,6 +5,7 @@ source("pkgdown/build-site.R")
 validate_multilingual_site <- function(destination = "docs") {
   check_translations()
   destination <- path_abs(destination)
+  labels <- read_yaml("pkgdown/i18n/navigation.yml")
   failures <- character()
   check <- function(condition, message) {
     if (!isTRUE(condition)) failures <<- c(failures, message)
@@ -23,6 +24,9 @@ validate_multilingual_site <- function(destination = "docs") {
       expected.lang <- c(en = "en", zh = "zh-CN", fr = "fr")[[language]]
       check(identical(xml_attr(xml_find_first(document, "//html"), "lang"), expected.lang),
             paste("Incorrect document language:", relative))
+      skip.label <- xml_text(xml_find_first(document, "//a[@class='visually-hidden-focusable']"))
+      check(identical(skip.label, labels[[language]]$skip),
+            paste("Untranslated interface; check the system message locale:", relative))
       check(!grepl("<!-- chunk:", paste(read_utf8(file), collapse = "\n"), fixed = TRUE),
             paste("Unresolved code marker:", relative))
       alternates <- xml_find_all(document, "//link[@rel='alternate']")

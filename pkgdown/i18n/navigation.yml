@@ -1,8 +1,11 @@
 en:
   html_lang: en
+  skip: Skip to contents
 zh:
   html_lang: zh-CN
   pkgdown_lang: zh_CN
+  locale: zh_CN.UTF-8
+  skip: 跳到正文
   title: DSIR — 全球卫生数据科学工具
   description: 使用 R 获取全球卫生数据、整理指标、开展分析，并制作可复用的图表。
   home: 首页
@@ -20,6 +23,8 @@ zh:
 fr:
   html_lang: fr
   pkgdown_lang: fr
+  locale: fr_FR.UTF-8
+  skip: Passer au contenu
   title: DSIR — Outils de science des données pour la santé mondiale
   description: Accéder aux données de santé mondiale, préparer les indicateurs, les analyser et créer des graphiques réutilisables avec R.
   home: Accueil

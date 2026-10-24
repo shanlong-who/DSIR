@@ -220,13 +220,23 @@ build_multilingual_site <- function(root = ".", destination = "docs", build.engl
                                       navbar = NULL,
                                       contents = c("DSIR", "ghe-xmart", "visualizing-indicators")))
     write_yaml(local.config, path(stage, "_pkgdown.yml"))
-    with_envvar(c(LANGUAGE = local.labels$pkgdown_lang), {
+    render_locale <- function() {
       init_site(stage)
       dir_copy(path(root, "man/figures"), path(destination, language, "reference/figures"), overwrite = TRUE)
       build_home_index(stage)
       build_articles(stage, lazy = FALSE)
       build_search(stage)
-    })
+    }
+    if (.Platform$OS.type == "windows") {
+      with_envvar(c(LANGUAGE = local.labels$pkgdown_lang), render_locale())
+    } else {
+      # GNU gettext ignores LANGUAGE under the C message locale. The CI job
+      # installs these UTF-8 locales before rendering the translated templates.
+      with_envvar(c(LC_ALL = NA, LANG = local.labels$locale,
+                    LC_MESSAGES = local.labels$locale, LANGUAGE = local.labels$pkgdown_lang), {
+        with_locale(c(LC_MESSAGES = local.labels$locale), render_locale())
+      })
+    }
     finish_language_pages(destination, language, local.labels, base.url)
   }
   file_create(path(destination, ".nojekyll"))
