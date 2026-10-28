@@ -18,6 +18,7 @@ export(gho_data)
 export(gho_dimensions)
 export(gho_has_data)
 export(gho_indicators)
+export(gho_last_updated)
 export(iso3_to_m49)
 export(iso3_to_region)
 export(life_table)
@@ -31,15 +32,12 @@ export(sdg_data)
 export(sdg_dimensions)
 export(sdg_goals)
 export(sdg_indicators)
+export(sdg_last_updated)
 export(sdg_targets)
 export(snapshot)
 export(theme_dsi)
 export(theme_dsi_facet)
-importFrom(rlang,
-  "%||%",
-  .data
-)
-importFrom(tibble,
-  as_tibble,
-  tibble
-)
+importFrom(rlang,"%||%")
+importFrom(rlang,.data)
+importFrom(tibble,as_tibble)
+importFrom(tibble,tibble)

@@ -36,6 +36,13 @@ install.packages("DSIR")
 remotes::install_github("shanlong-who/DSIR")
 ```
 
+## What's new in 0.12.0 (GitHub)
+
+- **Source update timestamps:** use `gho_last_updated()` for one GHO indicator
+  with the existing legacy/xMart backend rules, and `sdg_last_updated()` for
+  the whole UN SDG database. Results preserve the original time string and
+  distinguish successful, unavailable and failed timestamp queries.
+
 ## What's new in 0.11.0
 
 - **Global Health Estimates:** retrieve deaths, rates and disease-burden
@@ -239,6 +246,31 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 ```
 
+**Check an indicator's update timestamp.** `gho_last_updated()` requests
+the latest non-missing observation timestamp across all locations, years
+and dimensions. It follows the same backend selection rules as `gho_data()`:
+an explicit `backend` overrides `DSIR.who_backend`, with legacy as the
+default when neither is set. It never switches providers after a failure.
+
+```r
+gho_last_updated("WHS4_100")
+gho_last_updated("WHS4_100", backend = "xmart")
+
+# Optional sequential queries for a small set of indicators.
+codes <- c("WHS4_100", "NCDMORT3070")
+updates <- lapply(codes, gho_last_updated, backend = "legacy")
+do.call(rbind, updates)
+```
+
+The `updated` character column preserves the source timestamp, including
+any offset or unspecified time zone. `timestamp_field` identifies `Date`
+(legacy) or `Sys_CommitDateUtc` (xMart); neither is a formal publication
+date or the latest observation year. Each result has one row, with
+`status = "ok"`, `"not_available"` (no timestamp supplied), or `"failed"`
+(lookup, request or response validation failed). `checked_at` is the UTC
+query start time. Whole-catalog queries can take considerable time because
+each indicator needs a date request and transient failures are retried.
+
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
 
 ```r
@@ -305,6 +337,19 @@ an indicator name or code prefix. Both options default to `FALSE`.
 ### UN SDG API
 
 Same pattern as GHO: **search → fetch → clean**.
+
+`sdg_last_updated()` queries the update timestamp of the **whole database**:
+
+```r
+sdg_last_updated()
+```
+
+It returns the same columns and status values as `gho_last_updated()`, with
+`scope = "database"` and missing `indicator` and `backend` fields. The UN
+endpoint accepts no indicator or series filter, so this date does not mean
+that every indicator changed then. Series release codes and metadata-document
+update dates are not data update timestamps. Source time zones are preserved;
+an unspecified time zone is not assumed to be UTC.
 
 ```r
 # Browse goals, targets, indicators, and geographic areas

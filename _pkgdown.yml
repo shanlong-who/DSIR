@@ -94,6 +94,7 @@ reference:
   - gho_count
   - gho_coverage
   - gho_has_data
+  - gho_last_updated
   - bind_indicators
 - title: GHE estimates
   desc: Current WHO Global Health Estimates with exact cause, age, sex and measure filters.
@@ -114,6 +115,7 @@ reference:
   - sdg_data
   - sdg_clean
   - sdg_coverage
+  - sdg_last_updated
 - title: Visual themes
   desc: ggplot2 and flextable styling helpers for WHO-style outputs.
   contents:
