@@ -16,6 +16,8 @@ home:
     preparing consistent tables, analysing health indicators, and producing
     reusable charts and tables for public health reporting.
   sidebar: false
+  exclude:
+    - AGENTS.md
 navbar:
   structure:
     left:

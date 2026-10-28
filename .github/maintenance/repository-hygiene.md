@@ -13,7 +13,7 @@ it does not remove files already tracked.
 | Reusable scripts that rebuild bundled data | `data-raw/` |
 | User documentation and examples | `README.md`, `man/`, `vignettes/` |
 | Lasting development decisions | `.github/maintenance/design-notes.md` |
-| Shared agent development rules | `AGENTS.md` |
+| Local agent development rules | Ignored local `AGENTS.md` |
 | Local probes, handoffs, raw AI conversations | Untracked local files |
 | Generated pkgdown website | Ignored `docs/`; published by the existing workflow |
 
@@ -23,7 +23,7 @@ output. `.github/` is already excluded from package builds.
 Keep assistant-specific skill bundles, duplicate agent guidance, local test
 data, generated check output and one-time analytical exports outside the
 maintained source tree. Retain Git metadata, CI workflows, data preparation,
-website sources and shared working rules needed for package maintenance.
+website sources and local working rules needed for package maintenance.
 The DSIR badge and cat-only icons use PNG sources and PNG exports only.
 
 ## Before publishing future changes

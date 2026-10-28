@@ -5,6 +5,7 @@
 *.Rproj
 .DS_Store
 # Keep local assistant state out of the package repository.
+/AGENTS.md
 .claude/
 .claude-plugin/
 .github/skills/
