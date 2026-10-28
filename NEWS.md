@@ -2,6 +2,18 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR (development version)
+
+* Add `data_snapshot()` for offline RDS snapshots of already retrieved GHO
+  observations, preserving complete input rows, dimension identity, declared
+  or recorded query scope, provider provenance and distinct creation/retrieval
+  times. Existing `snapshot()` caching behavior is unchanged.
+* Add `compare_snapshots()` for offline added, removed, modified and unchanged
+  observations. Full semantic keys, backend/query/units compatibility checks,
+  explicit metadata-only changes, original old/new rows, numeric deltas and
+  an exact-by-default tolerance protect against misleading comparisons.
+  Provider timestamps do not establish an official revision date.
+
 # DSIR 0.12.0 (2026-10-28)
 
 * Add `gho_last_updated()` for the latest non-missing observation timestamp
