@@ -11,11 +11,11 @@
 #' geometric mean helper for indicator aggregation ([geomean()]),
 #' clients for the WHO Global Health Observatory legacy and public xMart APIs
 #' ([gho_indicators()], [gho_data()], [gho_dimensions()],
-#' [gho_has_data()], [gho_count()], [gho_coverage()]), Global Health Estimates
+#' [gho_has_data()], [gho_count()], [gho_coverage()], [gho_last_updated()]), Global Health Estimates
 #' ([ghe_data()], [ghe_causes()], [ghe_dimensions()], [ghe_coverage()]) and the UN
 #' Sustainable Development Goals API ([sdg_goals()], [sdg_targets()],
 #' [sdg_indicators()], [sdg_areas()], [sdg_dimensions()], [sdg_data()],
-#' [sdg_coverage()]),
+#' [sdg_coverage()], [sdg_last_updated()]),
 #' plus a unified cleaning / binding pipeline ([gho_clean()],
 #' [sdg_clean()], [ghe_clean()], [bind_indicators()]) that puts GHO, SDG and GHE output
 #' into the same 15-column core schema, with optional dimension types,
