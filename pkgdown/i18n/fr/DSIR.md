@@ -69,19 +69,35 @@ Elle renvoie `TRUE`, `FALSE` ou `NA`. Les échecs de requête, y compris un code
 
 <!-- chunk:10 -->
 
+## Consulter les dates de mise à jour des sources
+
+`gho_last_updated()` recherche l'horodatage non manquant le plus récent parmi les observations actuelles d'un indicateur, pour tous les lieux, années et dimensions. Un argument `backend` explicite prime sur `DSIR.who_backend`. Si aucun des deux n'est défini, la fonction utilise legacy.
+
+<!-- chunk:11 -->
+
+Les champs sources sont `Date` pour legacy et `Sys_CommitDateUtc` pour xMart. Ce sont des horodatages des observations, pas des années d'observation ni des dates officielles de publication. Chaque requête de date renvoie au plus une ligne. xMart utilise aussi le répertoire et les informations de champs mis en cache. Il n'y a pas de basculement automatique entre les backends. Interroger tous les indicateurs à la suite peut prendre beaucoup de temps.
+
+L'API ODD des Nations Unies fournit un horodatage pour toute la base, sans champ équivalent pour les données de chaque indicateur :
+
+<!-- chunk:12 -->
+
+Les deux fonctions renvoient une ligne avec `source`, `backend`, `scope`, `indicator`, `updated`, `timestamp_field`, `checked_at` et `status`. `updated` conserve la chaîne et les informations de fuseau horaire d'origine. Un fuseau non précisé n'est pas supposé être UTC. `checked_at` est l'heure de début de la requête en UTC.
+
+`status` distingue `"ok"`, `"not_available"` (aucun horodatage fourni) et `"failed"` (échec de recherche, de requête ou de validation de la réponse). Un horodatage manquant ne prouve pas l'absence d'observations. Pour les ODD, `scope` vaut `"database"`, tandis que `backend` et `indicator` sont manquants. Cet horodatage ne signifie pas que toutes les séries ont changé au même moment. Les codes de version des séries et les dates de mise à jour des documents de métadonnées ne remplacent pas les dates de mise à jour des données.
+
 ## Obtenir des indicateurs du GHO
 
 Le parcours habituel comporte trois étapes : rechercher le code, obtenir les données, puis nettoyer la réponse. `area` accepte un long vecteur ISO3 ; une seule requête peut donc couvrir une région entière.
 
 ### Étape 1 : rechercher un indicateur
 
-<!-- chunk:11 -->
+<!-- chunk:13 -->
 
 Choisissez un `IndicatorCode` dans le résultat et transmettez-le à `gho_data()` à l'étape suivante.
 
 ### Étape 2 : obtenir les données
 
-<!-- chunk:12 -->
+<!-- chunk:14 -->
 
 Cet exemple demande les données des 28 États Membres de la Région du Pacifique occidental en une seule fois.
 
@@ -89,13 +105,13 @@ Cet exemple demande les données des 28 États Membres de la Région du Pacifiqu
 
 `gho_clean()` produit la **structure commune de DSIR à 15 colonnes**, également utilisée par défaut par `sdg_clean()`. Les colonnes sont `source` (`"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`, `series` et les trois dimensions GHO `dim1`–`dim3`. Les lieux connus reçoivent leur libellé ; les colonnes absentes de la réponse sont remplies avec des `NA` du type approprié.
 
-<!-- chunk:13 -->
+<!-- chunk:15 -->
 
 ## Agréger des indicateurs avec geomean()
 
 Certains indicateurs sont construits à partir de la moyenne géométrique de leurs composantes, plutôt que de leur moyenne arithmétique. Par exemple, l'indice de couverture des services de santé universelle (UHC) agrège 14 indicateurs traceurs par des moyennes géométriques imbriquées. DSIR fournit `geomean()` :
 
-<!-- chunk:14 -->
+<!-- chunk:16 -->
 
 `geomean()` applique des règles définies aux valeurs manquantes, nulles et négatives ; consultez `?geomean`. Cette fonction réduit les erreurs courantes lors du calcul d'un indice à partir de ses composantes.
 
@@ -109,27 +125,27 @@ En règle générale, utilisez **`theme_dsi()` pour un seul panneau et `theme_ds
 
 `theme_dsi()` utilise un cadre partiel, des grilles légères et des axes dans le bleu de l'OMS. Les grilles sont présentes dans les deux directions par défaut ; `grid = "y"` conserve uniquement les lignes horizontales.
 
-<!-- chunk:15 -->
+<!-- chunk:17 -->
 
 Pour les diagrammes en colonnes, ajoutez `scale_y_dsi_col()`, ou `scale_x_dsi_col()` lorsque les valeurs sont associées à `x`. Ces fonctions encapsulent `scale_*_continuous()` et retirent l'espace ajouté à la base de l'axe, afin que les colonnes touchent celui-ci.
 
-<!-- chunk:16 -->
+<!-- chunk:18 -->
 
 ### Plusieurs facettes : `theme_dsi_facet()`
 
 La répétition d'axes accentués peut surcharger un graphique à plusieurs panneaux. `theme_dsi_facet()` utilise des bordures complètes, des bandeaux gris clair et un espacement entre les panneaux pour mieux distinguer les groupes.
 
-<!-- chunk:17 -->
+<!-- chunk:19 -->
 
 `strip_fill` permet de modifier le fond des bandeaux, par exemple avec un bleu clair dérivé de la couleur d'accent de l'OMS.
 
-<!-- chunk:18 -->
+<!-- chunk:20 -->
 
 ## Créer des tableaux avec dsi_flextable_defaults()
 
 `dsi_flextable_defaults()` définit globalement les valeurs par défaut de `flextable` dans le style de l'OMS : thème booktabs, en-têtes en gras et marges intérieures modérées. Appelez-la une fois au début du rapport ; les tableaux suivants reprendront ces réglages.
 
-<!-- chunk:19 -->
+<!-- chunk:21 -->
 
 ## Utiliser les indicateurs des ODD
 
@@ -137,13 +153,13 @@ La répétition d'axes accentués peut surcharger un graphique à plusieurs pann
 
 Le paramètre facultatif `search` de `sdg_indicators()` fonctionne comme celui de `gho_indicators()` : les mots-clés sont combinés par ET et recherchés dans la description sans distinction de casse. Le filtrage s'effectue côté client, car la liste est courte, environ 250 lignes, et le service n'utilise pas OData.
 
-<!-- chunk:20 -->
+<!-- chunk:22 -->
 
 Le paramètre `area` de `sdg_data()` et `sdg_coverage()` accepte soit des codes ISO3, convertis en interne avec `iso3_to_m49()`, soit des codes M49. Les vecteurs régionaux tels que `wpro_cty` et `afro_cty` sont donc utilisables directement. Ne mélangez pas les deux formats dans un même appel.
 
-<!-- chunk:21 -->
+<!-- chunk:23 -->
 
-<!-- chunk:22 -->
+<!-- chunk:24 -->
 
 Par défaut, `sdg_clean()` et `gho_clean()` produisent la même structure à 15 colonnes, combinable avec `bind_indicators()`. Les lignes ODD renseignent `series` et, pour les États Membres, `iso3` via `m49_to_iso3()`. Les colonnes GHO `dim1`–`dim3` restent à `NA`.
 
@@ -151,13 +167,13 @@ Par défaut, `sdg_clean()` et `gho_clean()` produisent la même structure à 15 
 
 Les dimensions ODD sont des champs nommés dans `sdg$dimensions`, distincts des dimensions positionnelles du GHO. La sortie compacte à 15 colonnes les omet. Conservez-les explicitement pour une analyse désagrégée :
 
-<!-- chunk:23 -->
+<!-- chunk:25 -->
 
 Des colonnes de caractères sont ajoutées, par exemple `dim_age`, `dim_location`, `dim_sex`, `dim_reporting_type`, `dim_quantile` et `dim_type_of_household`. Les noms dépendent des dimensions réellement renvoyées. Les codes restent inchangés ; une catégorie absente n'est pas remplacée par un code de population totale. `keep_metadata = TRUE` conserve aussi les unités et les autres attributs.
 
 Sélectionnez la série et les strates avec les noms et codes exacts de la source :
 
-<!-- chunk:24 -->
+<!-- chunk:26 -->
 
 Ces filtres sont appliqués localement après la pagination. Plusieurs valeurs d'une même dimension sont combinées par OU ; différentes dimensions, par ET. Si une dimension demandée est absente, la fonction avertit et renvoie zéro ligne, au lieu d'ignorer la restriction de population.
 
@@ -167,19 +183,19 @@ Le catalogue des Nations Unies pour l'indicateur 3.8.2, vérifié le 30 septembr
 
 `sdg_dimensions()` présente les catégories et libellés officiels de chaque série, sans télécharger les observations. Les catégories répertoriées ne sont pas forcément observées dans chaque pays.
 
-<!-- chunk:25 -->
+<!-- chunk:27 -->
 
 `code` contient les codes de l'API JSON utilisés pour filtrer ; `sdmx` est une autre représentation. `kind` distingue les dimensions des attributs, tels que les unités et la nature des données.
 
 Pour conserver à la fois le contexte et les dimensions de population :
 
-<!-- chunk:26 -->
+<!-- chunk:28 -->
 
 `keep_metadata` conserve les attributs dans des colonnes `attr_*`, ainsi que la source, les détails ou la couverture temporelle, la période de base, le type de valeur et l'URL d'information géographique. Les notes et les codes associés d'indicateurs, d'objectifs et de cibles sont des colonnes de listes qui préservent plusieurs éléments. Utilisez RDS pour enregistrer cette structure.
 
 Pour le GHO, affichez directement le type de chaque dimension positionnelle. Le code de difficultés financières ci-dessous était absent du répertoire public xMart au 6 octobre 2026 ; l'exemple choisit donc explicitement le service `legacy`.
 
-<!-- chunk:27 -->
+<!-- chunk:29 -->
 
 Les types proviennent de `Dim1Type`–`Dim3Type` pour chaque observation. Ils ne sont ni déduits d'un préfixe ni supposés constants pour l'ensemble d'un indicateur. Les métadonnées GHO comprennent `provider`, les codes de source, les identifiants d'observation, les commentaires dans `footnotes`, les types géographiques et temporels, les lieux parents, les dates de mise à jour et les intervalles temporels. Les deux options laissent la sortie par défaut à 15 colonnes inchangée.
 
@@ -191,7 +207,7 @@ Les types proviennent de `Dim1Type`–`Dim3Type` pour chaque observation. Ils ne
 
 Les colonnes supplémentaires, y compris les dimensions ODD nommées, sont conservées. Les entrées qui ne les possèdent pas reçoivent des valeurs manquantes du type approprié. L'empilement n'harmonise pas les codes ni les définitions entre sources.
 
-<!-- chunk:28 -->
+<!-- chunk:30 -->
 
 ### Examiner les séries avec sdg_coverage()
 
@@ -199,7 +215,7 @@ Un indicateur ODD peut contenir plusieurs **séries**, par exemple des vaccins, 
 
 `sdg_coverage()` résume les années et le nombre d'observations par `(location, series)`, afin d'examiner les séries disponibles avant de choisir l'analyse.
 
-<!-- chunk:29 -->
+<!-- chunk:31 -->
 
 DSIR ne fournit pas d'équivalents ODD de `gho_has_data()` et `gho_count()`. Sa conception privilégie l'examen des séries et de leur couverture avec `sdg_coverage()`, plutôt que des vérifications simples avant le téléchargement.
 
