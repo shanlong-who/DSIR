@@ -137,6 +137,46 @@ are requested from the server.
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 ```
 
+## Querying source update timestamps
+
+`gho_last_updated()` asks for the latest non-missing timestamp among one
+indicator's current observations across all locations, years and dimensions.
+It follows the existing backend rules: an explicit argument overrides
+`DSIR.who_backend`, and the default is legacy when neither is set.
+
+```{r, eval = FALSE}
+gho_last_updated("WHS4_100")
+gho_last_updated("WHS4_100", backend = "xmart")
+
+updates <- lapply(c("WHS4_100", "NCDMORT3070"), gho_last_updated,
+                  backend = "legacy")
+do.call(rbind, updates)
+```
+
+The source fields are `Date` for legacy and `Sys_CommitDateUtc` for xMart.
+These are observation timestamps, not observation years or formal publication
+dates. Each date request retrieves at most one row. xMart also uses cached
+directory and table-field lookups; there is no automatic backend fallback.
+Sequential requests for every indicator can take considerable time.
+
+The UN SDG API provides a database-level timestamp rather than an equivalent
+indicator-level field:
+
+```{r, eval = FALSE}
+sdg_last_updated()
+```
+
+Both helpers return one row with `source`, `backend`, `scope`, `indicator`,
+`updated`, `timestamp_field`, `checked_at` and `status`. `updated` retains the
+original string and its time-zone information; an unspecified source zone is
+not assumed to be UTC. `checked_at` is the query start time in UTC.
+`status` distinguishes `"ok"`, `"not_available"` (no timestamp provided) and
+`"failed"` (lookup, request or response validation failed). A missing timestamp
+does not prove that observations are absent. The SDG `scope` is `"database"`,
+with missing `backend` and `indicator`. Its timestamp does not mean that every
+series changed then; series release codes and metadata-document update dates
+are not substituted for data update timestamps.
+
 ## Fetching indicator data from GHO
 
 To fetch indicators from GHO, the typical workflow is three steps:
