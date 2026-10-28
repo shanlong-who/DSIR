@@ -4,7 +4,7 @@
 \alias{gho_last_updated}
 \title{Query the Latest GHO Indicator Timestamp}
 \usage{
-gho_last_updated(indicator, backend = NULL)
+gho_last_updated(indicator, backend = NULL, diagnostics = FALSE)
 }
 \arguments{
 \item{indicator}{A single, non-empty GHO indicator code.}
@@ -12,6 +12,9 @@ gho_last_updated(indicator, backend = NULL)
 \item{backend}{Optional WHO backend: \code{"legacy"} or \code{"xmart"}. An explicit
 value overrides \code{getOption("DSIR.who_backend")} for this call only.
 When neither is set, the compatibility default is \code{"legacy"}.}
+
+\item{diagnostics}{Logical; default \code{FALSE}. If \code{TRUE}, append diagnostic
+columns without making additional requests or changing backend selection.}
 }
 \value{
 A one-row tibble with columns:
@@ -29,6 +32,27 @@ no timestamp), or \code{"failed"} (lookup, request, parsing or response
 validation failed). A missing timestamp does not establish that no
 observations exist. Failures warn and retain the same one-row schema.}
 }
+With \code{diagnostics = TRUE}, six additional columns are appended:
+\describe{
+\item{reason}{\code{"timestamp_available"}, \code{"directory_not_listed"},
+\code{"http_error"} (an HTTP error response), \code{"request_failed"} (no HTTP
+response), \code{"timestamp_field_missing"}, \code{"timestamp_missing"} (no
+non-missing timestamp returned), \code{"unsupported_route"},
+\code{"lookup_failed"}, \code{"unexpected_content"} (HTML instead of JSON),
+\code{"invalid_json"}, \code{"invalid_response"}, or \code{"invalid_timestamp"}.
+These explain \code{status}; they do not replace its existing three values.}
+\item{stage}{\code{"directory"}, \code{"schema"}, or \code{"timestamp"}: the stage
+associated with the result.}
+\item{http_status}{Integer HTTP status captured in that stage, or \code{NA}
+if unavailable, including a cached lookup or a transport failure.
+HTTP 200 alone does not establish a valid response.}
+\item{timestamp_kind}{\code{"legacy_observation_date"} or
+\code{"xmart_system_commit"}; neither guarantees an official revision date.}
+\item{provider_route}{The selected observation table path, when known.
+This contains no hostname, query string or credentials.}
+\item{provider_indicator}{The exact selected provider identifier: the
+legacy GHO code or xMart \code{IND_ID}, when known.}
+}
 }
 \description{
 Queries the latest non-missing timestamp among the current observations
@@ -36,6 +60,10 @@ for one Global Health Observatory (GHO) indicator, without downloading
 its full observation table.
 }
 \details{
+This function is \strong{experimental}. Availability and timestamp semantics
+differ between providers; the result is evidence about the selected API
+response, not proof of an official WHO data revision.
+
 The legacy backend orders observations by \code{Date}; xMart uses
 \code{Sys_CommitDateUtc} in the same indicator route selected by \code{\link[=gho_data]{gho_data()}}.
 Each date query requests only the latest non-missing value. xMart also
@@ -47,11 +75,26 @@ all locations, years and dimensions. It is not the latest observation
 year, a formal publication date, or the update time of the whole GHO.
 In particular, an xMart system commit can reflect data processing.
 Backend timestamps need not describe the same release or event.
+DSIR has not established that legacy \code{Date} is an official modification
+or publication date. Several indicators can share the same system commit
+time without evidence that their published values changed together.
+
+\code{checked_at} is when DSIR started this check, not a source modification
+time or data retrieval time. The latest observation year describes the
+period measured. Neither is substituted for a source timestamp. To detect
+actual differences between retrieved observations, use \code{\link[=data_snapshot]{data_snapshot()}}
+and \code{\link[=compare_snapshots]{compare_snapshots()}}.
+
+A code absent from the public xMart directory can still be a valid legacy
+GHO code. A successful directory request does not establish that observation
+requests work. An HTTP failure does not establish that an indicator is
+absent. No indicator or backend is silently substituted.
 }
 \examples{
 \dontrun{
 gho_last_updated("WHS4_100")
 gho_last_updated("WHS4_100", backend = "xmart")
+gho_last_updated("WHS4_100", backend = "xmart", diagnostics = TRUE)
 
 # Query several indicators sequentially using the same backend.
 codes <- c("WHS4_100", "NCDMORT3070")

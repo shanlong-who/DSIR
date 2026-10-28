@@ -33,6 +33,9 @@ validate_multilingual_site <- function(destination = "docs") {
       check(length(alternates) == 4L, paste("Missing language alternates:", relative))
       canonical <- xml_attr(xml_find_first(document, "//link[@rel='canonical']"), "href")
       check(endsWith(canonical, relative), paste("Incorrect canonical URL:", relative))
+      icons <- xml_find_all(document, "//link[@rel='icon' or @rel='shortcut icon' or @rel='apple-touch-icon']")
+      check(length(icons) > 0L && all(grepl("\\.png$", xml_attr(icons, "href"))),
+            paste("Brand icons must use PNG:", relative))
 
       links <- xml_find_all(document, "//a[@href]")
       for (link in links) {
@@ -52,7 +55,8 @@ validate_multilingual_site <- function(destination = "docs") {
         }
       }
 
-      assets <- xml_find_all(document, "//img[@src] | //script[@src] | //link[@rel='stylesheet']")
+      assets <- xml_find_all(document, paste0("//img[@src] | //script[@src] | ",
+        "//link[@rel='stylesheet' or @rel='icon' or @rel='apple-touch-icon' or @rel='manifest']"))
       for (asset in assets) {
         href <- xml_attr(asset, if (xml_name(asset) == "link") "href" else "src")
         if (grepl("^([a-zA-Z][a-zA-Z0-9+.-]*:|//)", href)) next

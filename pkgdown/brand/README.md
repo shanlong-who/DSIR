@@ -14,21 +14,22 @@ of the original, not a pixel-identical enlargement.
 ## Rebuild
 
 From the repository root, run `Rscript pkgdown/build-icons.R`. This uses the
-existing maintenance packages `magick`, `base64enc` and `jsonlite`; it adds no
+existing maintenance packages `magick` and `jsonlite`; it adds no
 package runtime dependencies and does not call a remote image service.
 
 - `man/figures/logo.png`: transparent 768-pixel package logo.
-- `man/figures/logo.jpg`: white-background compatibility export of the badge.
-- `pkgdown/favicon/favicon.ico`: transparent 16-, 32- and 48-pixel cat icons.
 - `pkgdown/favicon/favicon-96x96.png`: transparent browser icon.
-- `pkgdown/favicon/favicon.svg`: an SVG wrapper embedding the transparent
-  256-pixel cat PNG; it is not a vector illustration.
 - Mobile icons: the cat with extra margins on a cream background. The manifest
   uses `purpose: any`; these exports do not claim maskable safe-zone support.
 
-pkgdown copies the favicon set during the existing multilingual site build.
+Both identities use PNG only. pkgdown copies the favicon set during the
+existing multilingual site build, which explicitly links the PNG browser icon.
 Do not regenerate it with `pkgdown::build_favicons(overwrite = TRUE)`, which
 would derive the browser icons from the hexagonal package logo instead.
+
+The pkgdown sitrep expects `favicon.ico` and can report outdated favicons for
+this PNG-only set. Run `Rscript pkgdown/validate-site.R` after building;
+it checks the PNG icon links and their actual files.
 
 ## Image prompts
 

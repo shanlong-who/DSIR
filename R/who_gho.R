@@ -21,14 +21,22 @@
 .xmart_gho_last_updated <- function(indicator) {
   field <- "Sys_CommitDateUtc"
   out <- .dsi_update_result("gho", "xmart", "indicator", indicator, field)
+  .dsi_update_note(stage = "directory", reason = "lookup_failed",
+                   http_status = NA_integer_)
   route <- .xmart_gho_route(indicator)
   if (is.null(route)) return(out)
+  .dsi_update_note(stage = "schema", reason = "lookup_failed",
+                   http_status = NA_integer_, provider_route = route$path,
+                   provider_indicator = as.character(route$id))
   fields <- .xmart_fields(route$path)
   if (!length(fields)) return(out)
   if (!field %in% fields) {
     out$status <- "not_available"
+    .dsi_update_note(reason = "timestamp_field_missing")
     return(out)
   }
+  .dsi_update_note(stage = "timestamp", reason = "lookup_failed",
+                   http_status = NA_integer_)
   body <- .who_query(route$path, list(
     "$filter" = .who_and(.who_in("IND_ID", route$id),
                          paste(field, "ne null")),
@@ -47,6 +55,7 @@
     required <- c('IND_ID', 'IND_PER_CODE', 'IND_CODE_GHO', 'IND_NAME_FULL',
                   'IND_NAME', 'TERM_LANG', 'IND_UNIT', 'IND_PUBLISH_TABLE', 'DWNL_QUERY')
     if (!is.null(df) && nrow(df) && !all(required %in% names(df))) {
+      .dsi_update_note(reason = "invalid_response")
       cli::cli_warn('Malformed WHO indicator directory; no codes returned.')
       return(NULL)
     }
@@ -81,8 +90,9 @@
   }
   rows <- df[!is.na(df$IND_CODE_GHO) & df$IND_CODE_GHO == indicator, , drop = FALSE]
   if (!nrow(rows)) {
-    cli::cli_warn(c('Unknown GHO code in the public xMart directory: {.val {indicator}}.',
-      'i' = 'The code is absent from this directory, not a valid empty observation selection. Use {.fn gho_indicators} with {.code backend = "xmart"} to inspect current codes.'))
+    .dsi_update_note(reason = "directory_not_listed")
+    cli::cli_warn(c('GHO code is not listed in the public xMart directory: {.val {indicator}}.',
+      'i' = 'This does not establish that the GHO code is invalid or absent from legacy. Use {.fn gho_indicators} with {.code backend = "xmart"} to inspect current directory codes.'))
     return(NULL)
   }
   downloadable <- !is.na(rows$DWNL_QUERY) & nzchar(rows$DWNL_QUERY)
@@ -109,6 +119,7 @@
                   download_dimensions = dimension_fields))
     }
   }
+  .dsi_update_note(reason = "unsupported_route")
   cli::cli_warn('The public WHO directory has no supported download route for {.val {indicator}}.')
   NULL
 }
@@ -118,6 +129,7 @@
     body <- .who_query(path, list('$top' = 1L))
     if (is.null(body)) return(NULL)
     if (!is.list(body) || !is.data.frame(body$value)) {
+      .dsi_update_note(reason = "invalid_response")
       cli::cli_warn('Malformed WHO table schema response; no fields returned.')
       return(NULL)
     }

@@ -71,11 +71,13 @@ Elle renvoie `TRUE`, `FALSE` ou `NA`. Les échecs de requête, y compris un code
 
 ## Consulter les dates de mise à jour des sources
 
-`gho_last_updated()` recherche l'horodatage non manquant le plus récent parmi les observations actuelles d'un indicateur, pour tous les lieux, années et dimensions. Un argument `backend` explicite prime sur `DSIR.who_backend`. Si aucun des deux n'est défini, la fonction utilise legacy.
+La fonction expérimentale `gho_last_updated()` recherche l'horodatage non manquant le plus récent parmi les observations actuelles d'un indicateur, pour tous les lieux, années et dimensions. Un argument `backend` explicite prime sur `DSIR.who_backend`. Si aucun des deux n'est défini, la fonction utilise legacy.
 
 <!-- chunk:11 -->
 
-Les champs sources sont `Date` pour legacy et `Sys_CommitDateUtc` pour xMart. Ce sont des horodatages des observations, pas des années d'observation ni des dates officielles de publication. Chaque requête de date renvoie au plus une ligne. xMart utilise aussi le répertoire et les informations de champs mis en cache. Il n'y a pas de basculement automatique entre les backends. Interroger tous les indicateurs à la suite peut prendre beaucoup de temps.
+Les champs sources sont `Date` pour legacy et `Sys_CommitDateUtc` pour xMart. DSIR n'a pas établi que `Date` désigne une modification ou publication officielle ; un commit système xMart peut refléter un traitement. Aucun des deux champs n'est la dernière année d'observation. Chaque requête de date renvoie au plus une ligne. xMart utilise aussi le répertoire et les informations de champs mis en cache. Il n'y a pas de basculement automatique entre les backends. Interroger tous les indicateurs à la suite peut prendre beaucoup de temps.
+
+Les huit colonnes par défaut restent inchangées. `diagnostics = TRUE` ajoute `reason`, `stage`, `http_status`, `timestamp_kind`, `provider_route` et `provider_indicator`, sans requête supplémentaire. `directory_not_listed` indique un code absent du répertoire lu avec succès, sans prouver que le code GHO est invalide. `http_error` et `request_failed` distinguent une erreur HTTP d'un échec de connexion. `timestamp_field_missing` et `timestamp_missing` distinguent un champ absent d'une réponse sans horodatage non manquant. Un répertoire accessible ne prouve pas que les requêtes d'observations fonctionnent. `checked_at` est le début du contrôle, pas une date de récupération ou de modification des données. Des horodatages système identiques ne prouvent pas que les valeurs ont changé ensemble ; utilisez les instantanés pour comparer les valeurs récupérées.
 
 L'API ODD des Nations Unies fournit un horodatage pour toute la base, sans champ équivalent pour les données de chaque indicateur :
 

@@ -17,7 +17,7 @@ home:
     reusable charts and tables for public health reporting.
   sidebar: false
   exclude:
-    - CLAUDE.md
+    - AGENTS.md
 navbar:
   structure:
     left:

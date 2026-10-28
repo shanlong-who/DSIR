@@ -162,7 +162,7 @@ test_that("xMart unknown codes warn without querying another provider", {
     .xmart_catalog = function() tibble::tibble(IND_CODE_GHO = "KNOWN"),
     .dsi_request = function(...) stop("network called"), .package = "DSIR"
   )
-  expect_warning(out <- gho_last_updated("UNKNOWN", backend = "xmart"), "Unknown GHO code")
+  expect_warning(out <- gho_last_updated("UNKNOWN", backend = "xmart"), "not listed in the public xMart directory")
   expect_identical(out$status, "failed")
   expect_identical(out$backend, "xmart")
   expect_identical(out$updated, NA_character_)

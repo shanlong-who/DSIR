@@ -150,9 +150,10 @@ finish_language_pages <- function(destination, language, labels, base.url) {
       }
     }
     head <- xml_find_first(document, "//head")
-    # Some pkgdown templates emit curly quotes in the SVG favicon MIME type.
-    svg.icons <- xml_find_all(head, "link[@rel='icon' and contains(@href, 'favicon.svg')]")
-    xml_set_attr(svg.icons, "type", "image/svg+xml")
+    # Keep both brand identities PNG-only, including template-generated links.
+    xml_remove(xml_find_all(head, "link[@rel='icon' or @rel='shortcut icon']"))
+    xml_add_child(head, "link", rel = "icon", type = "image/png", sizes = "96x96",
+                  href = relative_link(paste0(prefix, "favicon-96x96.png"), relative))
     xml_remove(xml_find_all(head, "link[@rel='canonical' or @rel='alternate']"))
     xml_add_child(head, "link", rel = "canonical", href = paste0(base.url, relative))
     if (page %in% translated_pages) {
