@@ -31,13 +31,13 @@ Depends:
     R (>= 4.1.0)
 Imports:
     cli,
-    flextable (>= 0.9.0),
     ggplot2 (>= 3.4.0),
     httr2 (>= 1.0.0),
     rlang,
     tibble (>= 3.0.0),
     vctrs
 Suggests:
+    flextable (>= 0.9.0),
     patchwork,
     officer,
     testthat (>= 3.0.0),
