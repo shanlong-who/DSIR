@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Query the SDG Database Update Timestamp — sdg_last_updated • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -24,6 +21,7 @@ Development Goals (SDG) database by the current V5 API.">
 <meta property="og:description" content="Retrieves the update timestamp reported for the whole UN Sustainable
 Development Goals (SDG) database by the current V5 API.">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/reference/sdg_last_updated.html">
 </head>
 <body>
@@ -97,8 +95,8 @@ Development Goals (SDG) database by the current V5 API.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
-    <p>A one-row tibble with the same column names and types as
-<code><a href="gho_last_updated.html">gho_last_updated()</a></code>. Here <code>source</code> is <code>"sdg"</code>, <code>scope</code> is <code>"database"</code>,
+    <p>A one-row tibble with the same default eight column names and types
+as <code><a href="gho_last_updated.html">gho_last_updated()</a></code>. Here <code>source</code> is <code>"sdg"</code>, <code>scope</code> is <code>"database"</code>,
 <code>backend</code> and <code>indicator</code> are <code>NA_character_</code>, and <code>timestamp_field</code>
 is <code>"Series/LastUpdated"</code>. <code>updated</code> preserves the original timestamp
 string, including an unspecified time zone. <code>checked_at</code> is a UTC

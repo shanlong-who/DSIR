@@ -189,6 +189,7 @@ gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 
 ## Querying source update timestamps
 
+The experimental
 [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
 asks for the latest non-missing timestamp among one indicator’s current
 observations across all locations, years and dimensions. It follows the
@@ -199,6 +200,7 @@ existing backend rules: an explicit argument overrides
 
 gho_last_updated("WHS4_100")
 gho_last_updated("WHS4_100", backend = "xmart")
+gho_last_updated("WHS4_100", backend = "xmart", diagnostics = TRUE)
 
 updates <- lapply(c("WHS4_100", "NCDMORT3070"), gho_last_updated,
                   backend = "legacy")
@@ -206,11 +208,25 @@ do.call(rbind, updates)
 ```
 
 The source fields are `Date` for legacy and `Sys_CommitDateUtc` for
-xMart. These are observation timestamps, not observation years or formal
-publication dates. Each date request retrieves at most one row. xMart
-also uses cached directory and table-field lookups; there is no
-automatic backend fallback. Sequential requests for every indicator can
-take considerable time.
+xMart. DSIR has not established that legacy `Date` records an official
+modification or publication date; an xMart system commit can reflect
+processing. Neither field is the latest observation year. Each date
+request retrieves at most one row. xMart also uses cached directory and
+table-field lookups; there is no automatic backend fallback. Sequential
+requests for every indicator can take considerable time.
+
+The default eight columns are unchanged. `diagnostics = TRUE` adds
+`reason`, `stage`, `http_status`, `timestamp_kind`, `provider_route` and
+`provider_indicator`, with no extra requests. `directory_not_listed`
+reports a code absent from a successfully read directory; it does not
+prove the GHO code invalid. `http_error` and `request_failed` identify
+HTTP and connection failures. `timestamp_field_missing` and
+`timestamp_missing` distinguish a missing field from a response with no
+non-missing timestamp. A successful directory request does not prove
+that observation requests work. `checked_at` is the check start, not
+data retrieval or source modification time. Shared system timestamps do
+not prove that indicator values changed together; use snapshots to
+compare retrieved values.
 
 The UN SDG API provides a database-level timestamp rather than an
 equivalent indicator-level field:

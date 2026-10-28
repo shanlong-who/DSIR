@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Changelog • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -20,6 +17,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Changelog">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/news/index.html">
 </head>
 <body>
@@ -82,8 +80,10 @@
 <h2 class="pkg-version" data-toc-text="development version" id="dsir-development-version">DSIR (development version)<a class="anchor" aria-label="anchor" href="#dsir-development-version"></a>
 </h2>
 <ul>
-<li>Add <code><a href="../reference/data_snapshot.html">data_snapshot()</a></code> for offline RDS snapshots of already retrieved GHO observations, preserving complete input rows, dimension identity, declared or recorded query scope, provider provenance and distinct creation/retrieval times. Existing <code><a href="../reference/snapshot.html">snapshot()</a></code> caching behavior is unchanged.</li>
-<li>Add <code><a href="../reference/compare_snapshots.html">compare_snapshots()</a></code> for offline added, removed, modified and unchanged observations. Full semantic keys, backend/query/units compatibility checks, explicit metadata-only changes, original old/new rows, numeric deltas and an exact-by-default tolerance protect against misleading comparisons. Provider timestamps do not establish an official revision date.</li>
+<li><p>Mark <code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code> experimental and add opt-in structured diagnostics for directory omissions, HTTP/transport failures and unavailable timestamps. Preserve its default eight columns, backend precedence and fail-soft behavior. Clarify system commit, legacy observation, query and publication times.</p></li>
+<li><p>Keep the hexagonal DSIR logo and sleeping-cat icons in PNG only, update website icon links, and remove assistant skill bundles and local artifacts that are not needed to maintain the package.</p></li>
+<li><p>Add <code><a href="../reference/data_snapshot.html">data_snapshot()</a></code> for offline RDS snapshots of already retrieved GHO observations, preserving complete input rows, dimension identity, declared or recorded query scope, provider provenance and distinct creation/retrieval times. Existing <code><a href="../reference/snapshot.html">snapshot()</a></code> caching behavior is unchanged.</p></li>
+<li><p>Add <code><a href="../reference/compare_snapshots.html">compare_snapshots()</a></code> for offline added, removed, modified and unchanged observations. Full semantic keys, backend/query/units compatibility checks, explicit metadata-only changes, original old/new rows, numeric deltas and an exact-by-default tolerance protect against misleading comparisons. Provider timestamps do not establish an official revision date.</p></li>
 </ul>
 </div>
     <div class="section level2">

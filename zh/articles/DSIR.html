@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>DSIR 入门 • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -19,6 +16,7 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="DSIR 入门">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/zh/articles/DSIR.html">
 <link rel="alternate" hreflang="en" href="https://shanlong-who.github.io/DSIR/articles/DSIR.html">
 <link rel="alternate" hreflang="zh-CN" href="https://shanlong-who.github.io/DSIR/zh/articles/DSIR.html">
@@ -233,21 +231,34 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <div class="section level2">
 <h2 id="查询数据源的更新时间">查询数据源的更新时间<a class="anchor" aria-label="anchor" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E6%BA%90%E7%9A%84%E6%9B%B4%E6%96%B0%E6%97%B6%E9%97%B4"></a>
 </h2>
-<p><code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code>
+<p>实验性的 <code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code>
 查询一个指标在所有地区、年份和维度的现有观测记录中，最新的非缺失时间戳。显式
 <code>backend</code> 参数优先于
 <code>DSIR.who_backend</code>；两者都未设置时使用 legacy。</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span>, diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">updates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span>, <span class="va">gho_last_updated</span>,</span>
 <span>                  backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">updates</span><span class="op">)</span></span></code></pre></div>
 <p>legacy 使用 <code>Date</code> 字段，xMart 使用
-<code>Sys_CommitDateUtc</code>。它们是观测记录的时间戳，不是观测年份或正式发布日期。每次日期查询最多返回一行；xMart
+<code>Sys_CommitDateUtc</code>。DSIR 尚未确认 legacy 的
+<code>Date</code> 是官方修改或发布日期；xMart
+的系统提交时间可能反映数据处理。两者都不是最新观测年份。每次日期查询最多返回一行；xMart
 还使用已缓存的指标目录和表字段信息。请求失败时不会自动切换
 backend。顺序查询全部指标可能需要较长时间。</p>
+<p>默认仍为原来的八列。<code>diagnostics = TRUE</code> 额外返回
+<code>reason</code>、<code>stage</code>、<code>http_status</code>、<code>timestamp_kind</code>、<code>provider_route</code>
+和
+<code>provider_indicator</code>，不增加请求。<code>directory_not_listed</code>
+表示成功读取的目录未列出该代码，不等于 GHO
+代码无效。<code>http_error</code> 和 <code>request_failed</code> 区分
+HTTP 错误与连接失败；<code>timestamp_field_missing</code> 和
+<code>timestamp_missing</code>
+区分没有时间字段与没有非缺失时间戳。目录请求成功不表示观测请求可用。<code>checked_at</code>
+是检查开始时间，不是数据获取或源数据修改时间。多个指标共用系统时间戳不能证明数值同时改变；实际数值差异应通过快照比较。</p>
 <p>联合国 SDG API
 提供整个数据库的更新时间，没有对应的指标级数据更新时间字段：</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

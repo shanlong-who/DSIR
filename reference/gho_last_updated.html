@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Query the Latest GHO Indicator Timestamp — gho_last_updated • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -26,6 +23,7 @@ its full observation table.">
 for one Global Health Observatory (GHO) indicator, without downloading
 its full observation table.">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/reference/gho_last_updated.html">
 </head>
 <body>
@@ -94,7 +92,7 @@ its full observation table.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gho_last_updated</span><span class="op">(</span><span class="va">indicator</span>, backend <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gho_last_updated</span><span class="op">(</span><span class="va">indicator</span>, backend <span class="op">=</span> <span class="cn">NULL</span>, diagnostics <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -113,6 +111,12 @@ its full observation table.</p>
 <dd><p>Optional WHO backend: <code>"legacy"</code> or <code>"xmart"</code>. An explicit
 value overrides <code>getOption("DSIR.who_backend")</code> for this call only.
 When neither is set, the compatibility default is <code>"legacy"</code>.</p></dd>
+
+
+<dt id="arg-diagnostics">diagnostics<a class="anchor" aria-label="anchor" href="#arg-diagnostics"></a>
+</dt>
+<dd><p>Logical; default <code>FALSE</code>. If <code>TRUE</code>, append diagnostic
+columns without making additional requests or changing backend selection.</p></dd>
 
 </dl>
 </div>
@@ -151,11 +155,48 @@ observations exist. Failures warn and retain the same one-row schema.</p></dd>
 
 
 </dl>
+<p>With <code>diagnostics = TRUE</code>, six additional columns are appended:</p>
+<dl>
+<dt>reason</dt>
+<dd><p><code>"timestamp_available"</code>, <code>"directory_not_listed"</code>,
+<code>"http_error"</code> (an HTTP error response), <code>"request_failed"</code> (no HTTP
+response), <code>"timestamp_field_missing"</code>, <code>"timestamp_missing"</code> (no
+non-missing timestamp returned), <code>"unsupported_route"</code>,
+<code>"lookup_failed"</code>, <code>"unexpected_content"</code> (HTML instead of JSON),
+<code>"invalid_json"</code>, <code>"invalid_response"</code>, or <code>"invalid_timestamp"</code>.
+These explain <code>status</code>; they do not replace its existing three values.</p></dd>
+
+<dt>stage</dt>
+<dd><p><code>"directory"</code>, <code>"schema"</code>, or <code>"timestamp"</code>: the stage
+associated with the result.</p></dd>
+
+<dt>http_status</dt>
+<dd><p>Integer HTTP status captured in that stage, or <code>NA</code>
+if unavailable, including a cached lookup or a transport failure.
+HTTP 200 alone does not establish a valid response.</p></dd>
+
+<dt>timestamp_kind</dt>
+<dd><p><code>"legacy_observation_date"</code> or
+<code>"xmart_system_commit"</code>; neither guarantees an official revision date.</p></dd>
+
+<dt>provider_route</dt>
+<dd><p>The selected observation table path, when known.
+This contains no hostname, query string or credentials.</p></dd>
+
+<dt>provider_indicator</dt>
+<dd><p>The exact selected provider identifier: the
+legacy GHO code or xMart <code>IND_ID</code>, when known.</p></dd>
+
+
+</dl>
 </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
 </h2>
-    <p>The legacy backend orders observations by <code>Date</code>; xMart uses
+    <p>This function is <strong>experimental</strong>. Availability and timestamp semantics
+differ between providers; the result is evidence about the selected API
+response, not proof of an official WHO data revision.</p>
+<p>The legacy backend orders observations by <code>Date</code>; xMart uses
 <code>Sys_CommitDateUtc</code> in the same indicator route selected by <code><a href="gho_data.html">gho_data()</a></code>.
 Each date query requests only the latest non-missing value. xMart also
 consults the existing, session-cached indicator directory and table fields.
@@ -164,7 +205,19 @@ Requests never fall back to the other backend.</p>
 all locations, years and dimensions. It is not the latest observation
 year, a formal publication date, or the update time of the whole GHO.
 In particular, an xMart system commit can reflect data processing.
-Backend timestamps need not describe the same release or event.</p>
+Backend timestamps need not describe the same release or event.
+DSIR has not established that legacy <code>Date</code> is an official modification
+or publication date. Several indicators can share the same system commit
+time without evidence that their published values changed together.</p>
+<p><code>checked_at</code> is when DSIR started this check, not a source modification
+time or data retrieval time. The latest observation year describes the
+period measured. Neither is substituted for a source timestamp. To detect
+actual differences between retrieved observations, use <code><a href="data_snapshot.html">data_snapshot()</a></code>
+and <code><a href="compare_snapshots.html">compare_snapshots()</a></code>.</p>
+<p>A code absent from the public xMart directory can still be a valid legacy
+GHO code. A successful directory request does not establish that observation
+requests work. An HTTP failure does not establish that an indicator is
+absent. No indicator or backend is silently substituted.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
@@ -178,6 +231,7 @@ Backend timestamps need not describe the same release or event.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
 <span><span class="fu">gho_last_updated</span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu">gho_last_updated</span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span><span class="fu">gho_last_updated</span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span>, diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Query several indicators sequentially using the same backend.</span></span>
 <span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span></span>

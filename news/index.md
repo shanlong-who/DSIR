@@ -2,6 +2,18 @@
 
 ## DSIR (development version)
 
+- Mark
+  [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
+  experimental and add opt-in structured diagnostics for directory
+  omissions, HTTP/transport failures and unavailable timestamps.
+  Preserve its default eight columns, backend precedence and fail-soft
+  behavior. Clarify system commit, legacy observation, query and
+  publication times.
+
+- Keep the hexagonal DSIR logo and sleeping-cat icons in PNG only,
+  update website icon links, and remove assistant skill bundles and
+  local artifacts that are not needed to maintain the package.
+
 - Add
   [`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
   for offline RDS snapshots of already retrieved GHO observations,
@@ -10,6 +22,7 @@
   creation/retrieval times. Existing
   [`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
   caching behavior is unchanged.
+
 - Add
   [`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md)
   for offline added, removed, modified and unchanged observations. Full

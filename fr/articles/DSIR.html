@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Premiers pas avec DSIR • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -19,6 +16,7 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Premiers pas avec DSIR">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/fr/articles/DSIR.html">
 <link rel="alternate" hreflang="en" href="https://shanlong-who.github.io/DSIR/articles/DSIR.html">
 <link rel="alternate" hreflang="zh-CN" href="https://shanlong-who.github.io/DSIR/zh/articles/DSIR.html">
@@ -254,25 +252,45 @@ d’observations par pays. Elle ne demande que <code>SpatialDim</code> et
 <div class="section level2">
 <h2 id="consulter-les-dates-de-mise-à-jour-des-sources">Consulter les dates de mise à jour des sources<a class="anchor" aria-label="anchor" href="#consulter-les-dates-de-mise-%C3%A0-jour-des-sources"></a>
 </h2>
-<p><code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code> recherche l’horodatage non manquant
-le plus récent parmi les observations actuelles d’un indicateur, pour
-tous les lieux, années et dimensions. Un argument <code>backend</code>
-explicite prime sur <code>DSIR.who_backend</code>. Si aucun des deux
-n’est défini, la fonction utilise legacy.</p>
+<p>La fonction expérimentale <code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code> recherche
+l’horodatage non manquant le plus récent parmi les observations
+actuelles d’un indicateur, pour tous les lieux, années et dimensions. Un
+argument <code>backend</code> explicite prime sur
+<code>DSIR.who_backend</code>. Si aucun des deux n’est défini, la
+fonction utilise legacy.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span>, diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">updates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span>, <span class="va">gho_last_updated</span>,</span>
 <span>                  backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">updates</span><span class="op">)</span></span></code></pre></div>
 <p>Les champs sources sont <code>Date</code> pour legacy et
-<code>Sys_CommitDateUtc</code> pour xMart. Ce sont des horodatages des
-observations, pas des années d’observation ni des dates officielles de
-publication. Chaque requête de date renvoie au plus une ligne. xMart
-utilise aussi le répertoire et les informations de champs mis en cache.
-Il n’y a pas de basculement automatique entre les backends. Interroger
-tous les indicateurs à la suite peut prendre beaucoup de temps.</p>
+<code>Sys_CommitDateUtc</code> pour xMart. DSIR n’a pas établi que
+<code>Date</code> désigne une modification ou publication officielle ;
+un commit système xMart peut refléter un traitement. Aucun des deux
+champs n’est la dernière année d’observation. Chaque requête de date
+renvoie au plus une ligne. xMart utilise aussi le répertoire et les
+informations de champs mis en cache. Il n’y a pas de basculement
+automatique entre les backends. Interroger tous les indicateurs à la
+suite peut prendre beaucoup de temps.</p>
+<p>Les huit colonnes par défaut restent inchangées.
+<code>diagnostics = TRUE</code> ajoute <code>reason</code>,
+<code>stage</code>, <code>http_status</code>,
+<code>timestamp_kind</code>, <code>provider_route</code> et
+<code>provider_indicator</code>, sans requête supplémentaire.
+<code>directory_not_listed</code> indique un code absent du répertoire
+lu avec succès, sans prouver que le code GHO est invalide.
+<code>http_error</code> et <code>request_failed</code> distinguent une
+erreur HTTP d’un échec de connexion.
+<code>timestamp_field_missing</code> et <code>timestamp_missing</code>
+distinguent un champ absent d’une réponse sans horodatage non manquant.
+Un répertoire accessible ne prouve pas que les requêtes d’observations
+fonctionnent. <code>checked_at</code> est le début du contrôle, pas une
+date de récupération ou de modification des données. Des horodatages
+système identiques ne prouvent pas que les valeurs ont changé ensemble ;
+utilisez les instantanés pour comparer les valeurs récupérées.</p>
 <p>L’API ODD des Nations Unies fournit un horodatage pour toute la base,
 sans champ équivalent pour les données de chaque indicateur :</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

@@ -6,10 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Technical Overview • DSIR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" sizes="any" href="../favicon.ico">
+<!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -22,6 +19,7 @@
 <meta name="description" content="The complete DSIR technical README, including installation, features and examples.">
 <meta property="og:description" content="The complete DSIR technical README, including installation, features and examples.">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="canonical" href="https://shanlong-who.github.io/DSIR/articles/technical-overview.html">
 </head>
 <body>
@@ -358,7 +356,7 @@ server what is available without transferring observations:</p>
 <span></span>
 <span><span class="co"># Per-country year coverage and observation counts</span></span>
 <span><span class="fu"><a href="../reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Check an indicator’s update timestamp.</strong>
+<p><strong>Check an indicator’s timestamp (experimental).</strong>
 <code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code> requests the latest non-missing
 observation timestamp across all locations, years and dimensions. It
 follows the same backend selection rules as <code><a href="../reference/gho_data.html">gho_data()</a></code>: an
@@ -368,6 +366,7 @@ providers after a failure.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span>, diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Optional sequential queries for a small set of indicators.</span></span>
 <span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span></span>
@@ -383,6 +382,25 @@ supplied), or <code>"failed"</code> (lookup, request or response
 validation failed). <code>checked_at</code> is the UTC query start time.
 Whole-catalog queries can take considerable time because each indicator
 needs a date request and transient failures are retried.</p>
+<p><code>diagnostics = TRUE</code> appends <code>reason</code>,
+<code>stage</code>, <code>http_status</code>,
+<code>timestamp_kind</code>, <code>provider_route</code> and
+<code>provider_indicator</code>; the default eight columns stay
+unchanged. <code>directory_not_listed</code> means a successfully read
+directory does not list the code, rather than proving it invalid.
+<code>http_error</code> and <code>request_failed</code> identify HTTP
+and connection failures; <code>timestamp_field_missing</code> and
+<code>timestamp_missing</code> identify a missing field and a response
+with no non-missing timestamp. Diagnostics make no extra requests and do
+not suppress warnings or switch backends.</p>
+<p>xMart’s <code>Sys_CommitDateUtc</code> records a system commit that
+can reflect data processing. DSIR has not established that legacy
+<code>Date</code> records an official modification or publication date.
+Shared timestamps do not prove that several indicators’ values changed
+together. <code>checked_at</code> is the UTC check start, not a source
+modification or observation retrieval time. Use
+<code><a href="../reference/data_snapshot.html">data_snapshot()</a></code> and <code><a href="../reference/compare_snapshots.html">compare_snapshots()</a></code> to
+detect actual differences between retrieved observations.</p>
 <p><strong>Fetch and clean.</strong> The typical workflow is
 <strong>search → fetch → clean</strong>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">

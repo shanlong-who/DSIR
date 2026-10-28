@@ -11,7 +11,7 @@ sdg_last_updated()
 
 ## Value
 
-A one-row tibble with the same column names and types as
+A one-row tibble with the same default eight column names and types as
 [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md).
 Here `source` is `"sdg"`, `scope` is `"database"`, `backend` and
 `indicator` are `NA_character_`, and `timestamp_field` is

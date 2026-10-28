@@ -330,7 +330,7 @@ gho_count("WHOSIS_000001", area = wpro_cty)
 gho_coverage("WHOSIS_000001", area = c("FRA", "DEU", "JPN"))
 ```
 
-**Check an indicator’s update timestamp.**
+**Check an indicator’s timestamp (experimental).**
 [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
 requests the latest non-missing observation timestamp across all
 locations, years and dimensions. It follows the same backend selection
@@ -344,6 +344,7 @@ failure.
 
 gho_last_updated("WHS4_100")
 gho_last_updated("WHS4_100", backend = "xmart")
+gho_last_updated("WHS4_100", backend = "xmart", diagnostics = TRUE)
 
 # Optional sequential queries for a small set of indicators.
 codes <- c("WHS4_100", "NCDMORT3070")
@@ -360,6 +361,27 @@ date or the latest observation year. Each result has one row, with
 is the UTC query start time. Whole-catalog queries can take considerable
 time because each indicator needs a date request and transient failures
 are retried.
+
+`diagnostics = TRUE` appends `reason`, `stage`, `http_status`,
+`timestamp_kind`, `provider_route` and `provider_indicator`; the default
+eight columns stay unchanged. `directory_not_listed` means a
+successfully read directory does not list the code, rather than proving
+it invalid. `http_error` and `request_failed` identify HTTP and
+connection failures; `timestamp_field_missing` and `timestamp_missing`
+identify a missing field and a response with no non-missing timestamp.
+Diagnostics make no extra requests and do not suppress warnings or
+switch backends.
+
+xMart’s `Sys_CommitDateUtc` records a system commit that can reflect
+data processing. DSIR has not established that legacy `Date` records an
+official modification or publication date. Shared timestamps do not
+prove that several indicators’ values changed together. `checked_at` is
+the UTC check start, not a source modification or observation retrieval
+time. Use
+[`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
+and
+[`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md)
+to detect actual differences between retrieved observations.
 
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
 
