@@ -244,6 +244,41 @@ ggpie(df, "region", "countries", .offset = 1.2)
 
 ### Utilities
 
+**[`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
+/
+[`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md)
+(development)** — save complete GHO observations and query context to a
+local RDS file, then compare two extracts offline. Matching uses the
+full geographical, temporal and dimension key. Incompatible backends,
+query scopes or unit/measure definitions stop the comparison; value
+changes and metadata-only changes are reported separately.
+
+``` r
+
+# Repeat exactly the same query later, using the same backend.
+old_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart")
+data_snapshot(old_data, file = "snapshots/gho_old.rds")
+
+new_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart")
+data_snapshot(new_data, file = "snapshots/gho_new.rds")
+
+result <- compare_snapshots("snapshots/gho_old.rds", "snapshots/gho_new.rds")
+result$summary
+result$modified
+```
+
+Existing files are protected by default. For locally filtered or
+imported data, declare the complete `scope`; raw GHO data are preferred
+to the default 15-column cleaned output. A provider timestamp, retrieval
+time, UTC snapshot creation time and latest observation year are
+different concepts. Differences between extracts do not establish when
+or why WHO revised data. See the [offline snapshot
+tutorial](https://shanlong-who.github.io/DSIR/articles/vignettes/data-snapshots.Rmd)
+for a reproducible simulation and the full comparison contract. The
+existing
+[`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
+expression cache remains available.
+
 **[`geomean()`](https://shanlong-who.github.io/DSIR/reference/geomean.md)**
 — geometric mean, with optional weights. Useful for aggregating
 ratio-based health indicators where the composite is multiplicative —

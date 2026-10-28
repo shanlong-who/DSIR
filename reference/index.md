@@ -122,3 +122,7 @@ Small mathematical and data helpers.
   Average Annual Rate of Reduction (AARR)
 - [`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
   : Snapshot an Expensive Expression to a Local File
+- [`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
+  : Save GHO Observations as an Auditable Data Snapshot
+- [`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md)
+  : Compare Two Local GHO Data Snapshots

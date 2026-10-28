@@ -2,6 +2,9 @@
 
 ### All vignettes
 
+- [Auditable GHO data
+  snapshots](https://shanlong-who.github.io/DSIR/articles/data-snapshots.md):
+
 - [DSIR](https://shanlong-who.github.io/DSIR/articles/DSIR.md):
 
 - [WHO xMart and Global Health

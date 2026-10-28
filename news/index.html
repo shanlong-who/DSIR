@@ -75,9 +75,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.12.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="dsir-development-version">DSIR (development version)<a class="anchor" aria-label="anchor" href="#dsir-development-version"></a>
+</h2>
+<ul>
+<li>Add <code><a href="../reference/data_snapshot.html">data_snapshot()</a></code> for offline RDS snapshots of already retrieved GHO observations, preserving complete input rows, dimension identity, declared or recorded query scope, provider provenance and distinct creation/retrieval times. Existing <code><a href="../reference/snapshot.html">snapshot()</a></code> caching behavior is unchanged.</li>
+<li>Add <code><a href="../reference/compare_snapshots.html">compare_snapshots()</a></code> for offline added, removed, modified and unchanged observations. Full semantic keys, backend/query/units compatibility checks, explicit metadata-only changes, original old/new rows, numeric deltas and an exact-by-default tolerance protect against misleading comparisons. Provider timestamps do not establish an official revision date.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.12.0" id="dsir-0120-2026-10-28">DSIR 0.12.0 (2026-10-28)<a class="anchor" aria-label="anchor" href="#dsir-0120-2026-10-28"></a>
 </h2>

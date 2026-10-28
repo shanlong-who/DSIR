@@ -49,6 +49,11 @@ plus a unified cleaning / binding pipeline
 [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md))
 that puts GHO, SDG and GHE output into the same 15-column core schema,
 with optional dimension types, named dimensions, and source metadata.
+Auditable local GHO extracts can be saved with
+[`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
+and compared offline with
+[`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md),
+preserving their full observation keys and query context.
 
 ## See also
 

@@ -2,11 +2,12 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  data-snapshots: data-snapshots.html
   DSIR: DSIR.html
   ghe-xmart: ghe-xmart.html
   articles/technical-overview: technical-overview.html
   visualizing-indicators: visualizing-indicators.html
-last_built: 2026-10-28T02:18Z
+last_built: 2026-10-28T03:56Z
 urls:
   reference: https://shanlong-who.github.io/DSIR/reference
   article: https://shanlong-who.github.io/DSIR/articles

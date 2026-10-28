@@ -1,5 +1,23 @@
 # Changelog
 
+## DSIR (development version)
+
+- Add
+  [`data_snapshot()`](https://shanlong-who.github.io/DSIR/reference/data_snapshot.md)
+  for offline RDS snapshots of already retrieved GHO observations,
+  preserving complete input rows, dimension identity, declared or
+  recorded query scope, provider provenance and distinct
+  creation/retrieval times. Existing
+  [`snapshot()`](https://shanlong-who.github.io/DSIR/reference/snapshot.md)
+  caching behavior is unchanged.
+- Add
+  [`compare_snapshots()`](https://shanlong-who.github.io/DSIR/reference/compare_snapshots.md)
+  for offline added, removed, modified and unchanged observations. Full
+  semantic keys, backend/query/units compatibility checks, explicit
+  metadata-only changes, original old/new rows, numeric deltas and an
+  exact-by-default tolerance protect against misleading comparisons.
+  Provider timestamps do not establish an official revision date.
+
 ## DSIR 0.12.0 (2026-10-28)
 
 - Add
