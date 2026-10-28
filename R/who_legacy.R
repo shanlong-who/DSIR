@@ -1,5 +1,17 @@
 # Legacy GHO adapter is the compatibility default.
 # Backend selection is explicit; requests never fall back between providers.
+.legacy_gho_last_updated <- function(indicator) {
+    out <- .dsi_update_result("gho", "legacy", "indicator", indicator, "Date")
+    url <- .gho_build_url(utils::URLencode(indicator, reserved = TRUE),
+                          top = 1L, select = "Date")
+    url <- paste0(url, "&$filter=Date%20ne%20null&$orderby=Date%20desc")
+    resp <- .legacy_gho_request(url, indicator)
+    if (is.null(resp)) return(out)
+    parsed <- .dsi_update_json(resp, "GHO")
+    if (is.null(parsed)) return(out)
+    .dsi_update_row(out, parsed$value)
+}
+
 .legacy_gho_indicators <- function(search = NULL) {
     url <- .gho_indicators_build_url(search)
     res <- .gho_get(url)

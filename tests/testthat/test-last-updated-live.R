@@ -1,0 +1,20 @@
+test_that("the live SDG V5 API provides a database update timestamp", {
+  skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
+  skip_if_offline()
+  out <- sdg_last_updated()
+  expect_identical(out$status, "ok")
+  expect_identical(out$scope, "database")
+  expect_false(is.na(out$updated))
+})
+
+test_that("the live xMart route provides an indicator update timestamp", {
+  skip_on_cran()
+  skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
+  skip_if_offline()
+  out <- gho_last_updated("WHS4_100", backend = "xmart")
+  expect_identical(out$status, "ok")
+  expect_identical(out$backend, "xmart")
+  expect_identical(out$scope, "indicator")
+  expect_false(is.na(out$updated))
+})

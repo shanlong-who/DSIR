@@ -2,6 +2,18 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
+# DSIR 0.12.0 (2026-10-28)
+
+* Add `gho_last_updated()` for the latest non-missing observation timestamp
+  of one GHO indicator. It supports legacy (`Date`) and xMart
+  (`Sys_CommitDateUtc`), follows the existing backend selection rules,
+  and requests one ordered date row rather than all observations.
+* Add `sdg_last_updated()` for the database-level timestamp reported by
+  the UN SDG V5 API. Both helpers return one row with the original time
+  string, query scope, timestamp field, query time and an explicit status.
+  Missing timestamps and failed requests remain distinct. These timestamps
+  are not observation years or interchangeable publication dates.
+
 # DSIR 0.11.0 (2026-10-12)
 
 ## WHO data infrastructure

@@ -18,6 +18,26 @@
   cli::cli_inform('No GHO observations match the requested filters on {.val {backend}}.')
 }
 
+.xmart_gho_last_updated <- function(indicator) {
+  field <- "Sys_CommitDateUtc"
+  out <- .dsi_update_result("gho", "xmart", "indicator", indicator, field)
+  route <- .xmart_gho_route(indicator)
+  if (is.null(route)) return(out)
+  fields <- .xmart_fields(route$path)
+  if (!length(fields)) return(out)
+  if (!field %in% fields) {
+    out$status <- "not_available"
+    return(out)
+  }
+  body <- .who_query(route$path, list(
+    "$filter" = .who_and(.who_in("IND_ID", route$id),
+                         paste(field, "ne null")),
+    "$select" = field, "$orderby" = paste(field, "desc"), "$top" = 1L
+  ))
+  if (is.null(body)) return(out)
+  .dsi_update_row(out, body)
+}
+
 .xmart_catalog <- function() {
   .who_cached('gho_directory', function() {
     df <- .who_odata('DATA_/IND_DIRECTORY_WIDE', filter = "TERM_LANG eq 'en'",
