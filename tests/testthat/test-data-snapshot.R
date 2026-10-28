@@ -205,3 +205,14 @@ test_that("snapshot arguments are validated before writing", {
   x$NumericValue <- as.character(x$NumericValue)
   expect_error(snapshot_test_wrap(x), "must be numeric")
 })
+
+test_that("ordinary basic health terminology is preserved without allowing Basic credentials", {
+  x <- snapshot_test_data()
+  x$IndicatorName <- "Population using basic sanitation services"
+  x$Comments <- "Basic immunization"
+  expect_identical(snapshot_test_wrap(x)$data, x)
+  for (credential in c("Basic dXNlcjpwYXNz", "Basic dTpw")) {
+    x$Comments[1] <- credential
+    expect_error(snapshot_test_wrap(x), "Credential")
+  }
+})

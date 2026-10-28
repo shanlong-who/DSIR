@@ -226,8 +226,9 @@ data_snapshot <- function(data, file = NULL, source = NULL, indicator = NULL,
   if (is.character(x)) {
     pattern <- paste0("https?://[^[:space:]/]+@|",
       "[?&](api[_-]?key|access[_-]?token|token|password|secret|authorization)=|",
-      "(^|[[:space:]])(Bearer|Basic)[[:space:]]+[A-Za-z0-9+/_.=-]{8,}")
-    if (any(grepl(pattern, x[!is.na(x)], ignore.case = TRUE))) {
+      "(^|[[:space:]])Bearer[[:space:]]+[A-Za-z0-9+/_.=-]{8,}")
+    if (any(grepl(pattern, x[!is.na(x)], ignore.case = TRUE)) ||
+        .dsi_snapshot_basic_auth(x[!is.na(x)])) {
       cli::cli_abort("Credential-like content or an authenticated URL was found; remove it before saving.")
     }
   }
@@ -240,6 +241,32 @@ data_snapshot <- function(data, file = NULL, source = NULL, indicator = NULL,
     for (item in attrs) .dsi_snapshot_safe(item, depth + 1L)
   }
   invisible(NULL)
+}
+
+
+.dsi_snapshot_basic_auth <- function(x) {
+  # Ordinary health labels contain phrases such as "basic sanitation".
+  # A Basic credential must instead decode to a printable user:password pair.
+  tokens <- unlist(regmatches(x, gregexpr(
+    "(^|[[:space:]])Basic[[:space:]]+[A-Za-z0-9+/]+={0,2}",
+    x, ignore.case = TRUE)), use.names = FALSE)
+  if (!length(tokens)) return(FALSE)
+  alphabet <- strsplit("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", "", fixed = TRUE)[[1L]]
+  any(vapply(tokens, function(token) {
+    token <- sub("^[[:space:]]*Basic[[:space:]]+", "", token, ignore.case = TRUE)
+    valid <- grepl("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$", token)
+    if (!valid || nchar(token) < 4L) return(FALSE)
+    padding <- nchar(token) - nchar(sub("=+$", "", token))
+    chars <- strsplit(gsub("=", "A", token, fixed = TRUE), "", fixed = TRUE)[[1L]]
+    values <- matrix(match(chars, alphabet) - 1L, nrow = 4L)
+    bytes <- as.vector(rbind(
+      bitwOr(bitwShiftL(values[1L, ], 2L), bitwShiftR(values[2L, ], 4L)),
+      bitwOr(bitwShiftL(bitwAnd(values[2L, ], 15L), 4L), bitwShiftR(values[3L, ], 2L)),
+      bitwOr(bitwShiftL(bitwAnd(values[3L, ], 3L), 6L), values[4L, ])
+    ))
+    bytes <- bytes[seq_len(length(bytes) - padding)]
+    any(bytes == 58L) && all(bytes >= 32L & bytes != 127L)
+  }, logical(1)))
 }
 
 
