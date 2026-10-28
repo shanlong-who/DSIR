@@ -26,6 +26,9 @@ plus a unified cleaning / binding pipeline (\code{\link[=gho_clean]{gho_clean()}
 \code{\link[=sdg_clean]{sdg_clean()}}, \code{\link[=ghe_clean]{ghe_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}}) that puts GHO, SDG and GHE output
 into the same 15-column core schema, with optional dimension types,
 named dimensions, and source metadata.
+Auditable local GHO extracts can be saved with \code{\link[=data_snapshot]{data_snapshot()}} and
+compared offline with \code{\link[=compare_snapshots]{compare_snapshots()}}, preserving their full
+observation keys and query context.
 }
 \seealso{
 Useful links:

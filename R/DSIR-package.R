@@ -20,6 +20,9 @@
 #' [sdg_clean()], [ghe_clean()], [bind_indicators()]) that puts GHO, SDG and GHE output
 #' into the same 15-column core schema, with optional dimension types,
 #' named dimensions, and source metadata.
+#' Auditable local GHO extracts can be saved with [data_snapshot()] and
+#' compared offline with [compare_snapshots()], preserving their full
+#' observation keys and query context.
 #'
 #' @keywords internal
 "_PACKAGE"

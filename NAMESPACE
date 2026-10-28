@@ -3,6 +3,8 @@
 export(aarr)
 export(age_standardize)
 export(bind_indicators)
+export(compare_snapshots)
+export(data_snapshot)
 export(dsi_flextable_defaults)
 export(geomean)
 export(ggpie)

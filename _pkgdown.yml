@@ -131,6 +131,8 @@ reference:
   - geomean
   - aarr
   - snapshot
+  - data_snapshot
+  - compare_snapshots
 authors:
   Shanlong Ding:
     href: https://github.com/shanlong-who
