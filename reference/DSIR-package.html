@@ -30,11 +30,11 @@ datasets (wpro_cty) with WHO region and UN M49 lookups
 geometric mean helper for indicator aggregation (geomean()),
 clients for the WHO Global Health Observatory legacy and public xMart APIs
 (gho_indicators(), gho_data(), gho_dimensions(),
-gho_has_data(), gho_count(), gho_coverage()), Global Health Estimates
+gho_has_data(), gho_count(), gho_coverage(), gho_last_updated()), Global Health Estimates
 (ghe_data(), ghe_causes(), ghe_dimensions(), ghe_coverage()) and the UN
 Sustainable Development Goals API (sdg_goals(), sdg_targets(),
 sdg_indicators(), sdg_areas(), sdg_dimensions(), sdg_data(),
-sdg_coverage()),
+sdg_coverage(), sdg_last_updated()),
 plus a unified cleaning / binding pipeline (gho_clean(),
 sdg_clean(), ghe_clean(), bind_indicators()) that puts GHO, SDG and GHE output
 into the same 15-column core schema, with optional dimension types,
@@ -50,11 +50,11 @@ datasets (wpro_cty) with WHO region and UN M49 lookups
 geometric mean helper for indicator aggregation (geomean()),
 clients for the WHO Global Health Observatory legacy and public xMart APIs
 (gho_indicators(), gho_data(), gho_dimensions(),
-gho_has_data(), gho_count(), gho_coverage()), Global Health Estimates
+gho_has_data(), gho_count(), gho_coverage(), gho_last_updated()), Global Health Estimates
 (ghe_data(), ghe_causes(), ghe_dimensions(), ghe_coverage()) and the UN
 Sustainable Development Goals API (sdg_goals(), sdg_targets(),
 sdg_indicators(), sdg_areas(), sdg_dimensions(), sdg_data(),
-sdg_coverage()),
+sdg_coverage(), sdg_last_updated()),
 plus a unified cleaning / binding pipeline (gho_clean(),
 sdg_clean(), ghe_clean(), bind_indicators()) that puts GHO, SDG and GHE output
 into the same 15-column core schema, with optional dimension types,
@@ -70,7 +70,7 @@ named dimensions, and source metadata.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,11 +131,11 @@ datasets (<a href="who_region_vectors.html">wpro_cty</a>) with WHO region and UN
 geometric mean helper for indicator aggregation (<code><a href="geomean.html">geomean()</a></code>),
 clients for the WHO Global Health Observatory legacy and public xMart APIs
 (<code><a href="gho_indicators.html">gho_indicators()</a></code>, <code><a href="gho_data.html">gho_data()</a></code>, <code><a href="gho_dimensions.html">gho_dimensions()</a></code>,
-<code><a href="gho_has_data.html">gho_has_data()</a></code>, <code><a href="gho_count.html">gho_count()</a></code>, <code><a href="gho_coverage.html">gho_coverage()</a></code>), Global Health Estimates
+<code><a href="gho_has_data.html">gho_has_data()</a></code>, <code><a href="gho_count.html">gho_count()</a></code>, <code><a href="gho_coverage.html">gho_coverage()</a></code>, <code><a href="gho_last_updated.html">gho_last_updated()</a></code>), Global Health Estimates
 (<code><a href="ghe_data.html">ghe_data()</a></code>, <code><a href="ghe_causes.html">ghe_causes()</a></code>, <code><a href="ghe_dimensions.html">ghe_dimensions()</a></code>, <code><a href="ghe_coverage.html">ghe_coverage()</a></code>) and the UN
 Sustainable Development Goals API (<code><a href="sdg_goals.html">sdg_goals()</a></code>, <code><a href="sdg_targets.html">sdg_targets()</a></code>,
 <code><a href="sdg_indicators.html">sdg_indicators()</a></code>, <code><a href="sdg_areas.html">sdg_areas()</a></code>, <code><a href="sdg_dimensions.html">sdg_dimensions()</a></code>, <code><a href="sdg_data.html">sdg_data()</a></code>,
-<code><a href="sdg_coverage.html">sdg_coverage()</a></code>),
+<code><a href="sdg_coverage.html">sdg_coverage()</a></code>, <code><a href="sdg_last_updated.html">sdg_last_updated()</a></code>),
 plus a unified cleaning / binding pipeline (<code><a href="gho_clean.html">gho_clean()</a></code>,
 <code><a href="sdg_clean.html">sdg_clean()</a></code>, <code><a href="ghe_clean.html">ghe_clean()</a></code>, <code><a href="bind_indicators.html">bind_indicators()</a></code>) that puts GHO, SDG and GHE output
 into the same 15-column core schema, with optional dimension types,

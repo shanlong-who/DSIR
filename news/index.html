@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,14 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.12.0" id="dsir-0120-2026-10-28">DSIR 0.12.0 (2026-10-28)<a class="anchor" aria-label="anchor" href="#dsir-0120-2026-10-28"></a>
+</h2>
+<ul>
+<li>Add <code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code> for the latest non-missing observation timestamp of one GHO indicator. It supports legacy (<code>Date</code>) and xMart (<code>Sys_CommitDateUtc</code>), follows the existing backend selection rules, and requests one ordered date row rather than all observations.</li>
+<li>Add <code><a href="../reference/sdg_last_updated.html">sdg_last_updated()</a></code> for the database-level timestamp reported by the UN SDG V5 API. Both helpers return one row with the original time string, query scope, timestamp field, query time and an explicit status. Missing timestamps and failed requests remain distinct. These timestamps are not observation years or interchangeable publication dates.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.0" id="dsir-0110-2026-10-12">DSIR 0.11.0 (2026-10-12)<a class="anchor" aria-label="anchor" href="#dsir-0110-2026-10-12"></a>
 </h2>

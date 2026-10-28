@@ -26,7 +26,8 @@ APIs
 [`gho_dimensions()`](https://shanlong-who.github.io/DSIR/reference/gho_dimensions.md),
 [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md),
 [`gho_count()`](https://shanlong-who.github.io/DSIR/reference/gho_count.md),
-[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md)),
+[`gho_coverage()`](https://shanlong-who.github.io/DSIR/reference/gho_coverage.md),
+[`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)),
 Global Health Estimates
 ([`ghe_data()`](https://shanlong-who.github.io/DSIR/reference/ghe_data.md),
 [`ghe_causes()`](https://shanlong-who.github.io/DSIR/reference/ghe_causes.md),
@@ -39,7 +40,8 @@ and the UN Sustainable Development Goals API
 [`sdg_areas()`](https://shanlong-who.github.io/DSIR/reference/sdg_areas.md),
 [`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md),
 [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md),
-[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)),
+[`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md),
+[`sdg_last_updated()`](https://shanlong-who.github.io/DSIR/reference/sdg_last_updated.md)),
 plus a unified cleaning / binding pipeline
 ([`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md),

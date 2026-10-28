@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -236,6 +236,48 @@ server.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_coverage.html">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="querying-source-update-timestamps">Querying source update timestamps<a class="anchor" aria-label="anchor" href="#querying-source-update-timestamps"></a>
+</h2>
+<p><code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code> asks for the latest non-missing
+timestamp among one indicator’s current observations across all
+locations, years and dimensions. It follows the existing backend rules:
+an explicit argument overrides <code>DSIR.who_backend</code>, and the
+default is legacy when neither is set.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">updates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span>, <span class="va">gho_last_updated</span>,</span>
+<span>                  backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">updates</span><span class="op">)</span></span></code></pre></div>
+<p>The source fields are <code>Date</code> for legacy and
+<code>Sys_CommitDateUtc</code> for xMart. These are observation
+timestamps, not observation years or formal publication dates. Each date
+request retrieves at most one row. xMart also uses cached directory and
+table-field lookups; there is no automatic backend fallback. Sequential
+requests for every indicator can take considerable time.</p>
+<p>The UN SDG API provides a database-level timestamp rather than an
+equivalent indicator-level field:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_last_updated.html">sdg_last_updated</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Both helpers return one row with <code>source</code>,
+<code>backend</code>, <code>scope</code>, <code>indicator</code>,
+<code>updated</code>, <code>timestamp_field</code>,
+<code>checked_at</code> and <code>status</code>. <code>updated</code>
+retains the original string and its time-zone information; an
+unspecified source zone is not assumed to be UTC.
+<code>checked_at</code> is the query start time in UTC.
+<code>status</code> distinguishes <code>"ok"</code>,
+<code>"not_available"</code> (no timestamp provided) and
+<code>"failed"</code> (lookup, request or response validation failed). A
+missing timestamp does not prove that observations are absent. The SDG
+<code>scope</code> is <code>"database"</code>, with missing
+<code>backend</code> and <code>indicator</code>. Its timestamp does not
+mean that every series changed then; series release codes and
+metadata-document update dates are not substituted for data update
+timestamps.</p>
+</div>
+<div class="section level2">
 <h2 id="fetching-indicator-data-from-gho">Fetching indicator data from GHO<a class="anchor" aria-label="anchor" href="#fetching-indicator-data-from-gho"></a>
 </h2>
 <p>To fetch indicators from GHO, the typical workflow is three steps:
@@ -245,7 +287,7 @@ region can be pulled in one call.</p>
 <div class="section level3">
 <h3 id="step-1-search-for-an-indicator">Step 1: Search for an indicator<a class="anchor" aria-label="anchor" href="#step-1-search-for-an-indicator"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Pick an <code>IndicatorCode</code> from the result — this is the
 value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></code> in the next step.</p>
@@ -253,7 +295,7 @@ value you pass to <code><a href="../reference/gho_data.html">gho_data()</a></cod
 <div class="section level3">
 <h3 id="step-2-fetch-the-data">Step 2: Fetch the data<a class="anchor" aria-label="anchor" href="#step-2-fetch-the-data"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span></span>
 <span>  indicator    <span class="op">=</span> <span class="st">"UHC_INDEX_REPORTED"</span>,</span>
 <span>  spatial_type <span class="op">=</span> <span class="st">"country"</span>,</span>
@@ -278,7 +320,7 @@ cleaned-indicator schema</strong> — the same 15-column shape as
 <code>series</code> (resolved for known locations), and the three
 optional GHO dimensions <code>dim1</code>–<code>dim3</code>. Columns
 absent from the raw response are filled with typed <code>NA</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">uhc</span><span class="op">)</span></span>
 <span><span class="va">uhc_clean</span></span></code></pre></div>
 </div>
@@ -291,7 +333,7 @@ component values rather than the arithmetic mean. The UHC Service
 Coverage Index, for example, aggregates 14 tracer indicators using
 nested geometric means. DSIR provides <code><a href="../reference/geomean.html">geomean()</a></code> for
 this:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Unweighted geometric mean</span></span>
 <span><span class="fu"><a href="../reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.7697002</span></span>
@@ -328,7 +370,7 @@ single-panel chart.</p>
 half-frame axis, light grid lines, and the WHO-blue accent on the axis
 line. By default the grid runs in both directions; pass
 <code>grid = "y"</code> for the minimalist horizontal-only look.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">iso3</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUS"</span>, <span class="st">"CHN"</span>, <span class="st">"PHL"</span>, <span class="st">"FJI"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -347,7 +389,7 @@ line. By default the grid runs in both directions; pass
 wrappers around <code>scale_*_continuous()</code> that remove the lower
 axis expansion, so columns sit flush with the axis instead of floating
 above it.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -373,7 +415,7 @@ every facet. <code><a href="../reference/theme_dsi_facet.html">theme_dsi_facet()
 border, adds a light grey strip background to clearly mark each facet’s
 label, and introduces panel spacing so adjacent panels don’t run
 together.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_pic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -391,7 +433,7 @@ together.</p>
 background colour for emphasis — for example, a light-blue tone derived
 from the WHO accent for a deliverable where the strips themselves carry
 meaning:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_pic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -410,7 +452,7 @@ meaning:</p>
 <code>flextable</code> globally — booktabs theme, bold headers, modest
 padding. Call it once near the top of your report and every subsequent
 <code><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable()</a></code> picks up the formatting.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dsi_flextable_defaults.html">dsi_flextable_defaults</a></span><span class="op">(</span>font_family <span class="op">=</span> <span class="st">"Geogria"</span><span class="op">)</span></span>
 <span></span>
@@ -440,7 +482,7 @@ multiple keywords are AND-ed together and matched case-insensitively
 against the indicator description. The filter runs client-side because
 the UN SDG indicator list is short (~250 rows) and the endpoint is not
 OData.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All indicators that mention both mortality and cancer</span></span>
 <span><span class="fu"><a href="../reference/sdg_indicators.html">sdg_indicators</a></span><span class="op">(</span><span class="st">"mortality cancer"</span><span class="op">)</span></span>
 <span></span>
@@ -452,7 +494,7 @@ internally via <code><a href="../reference/iso3_to_m49.html">iso3_to_m49()</a></
 DSIR’s regional vectors (<code>wpro_cty</code>, <code>afro_cty</code>,
 etc.) work directly, the same way they do with the GHO client. Do not
 mix the two formats in a single call.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ISO3 — regional vector passed straight through</span></span>
 <span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span></span>
 <span>  indicator <span class="op">=</span> <span class="st">"3.4.1"</span>,</span>
@@ -462,7 +504,7 @@ mix the two formats in a single call.</p>
 <span></span>
 <span><span class="co"># M49 also works (e.g. when copy-pasting codes from sdg_areas())</span></span>
 <span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"608"</span>, <span class="st">"250"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> produces the same 15-column
 schema as <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, so the two outputs can be combined
@@ -477,7 +519,7 @@ GHO-only <code>dim1</code>–<code>dim3</code> columns as
 <p>SDG dimensions are named fields in <code>sdg$dimensions</code>, not
 positional GHO dimensions. The compact 15-column output omits them. For
 disaggregated analysis, retain them explicitly:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -490,7 +532,7 @@ not assigned total-population codes. Use
 <code>keep_metadata = TRUE</code> to also retain units and other
 attributes in the cleaned table.</p>
 <p>Select a series and strata with the exact source names and codes:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span></span>
 <span>  <span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
 <span>  series <span class="op">=</span> <span class="st">"SH_OOP_XPD_EARNNET40"</span>,</span>
@@ -518,14 +560,14 @@ definition and components</a>.</p>
 <p>Use <code><a href="../reference/sdg_dimensions.html">sdg_dimensions()</a></code> to see the official categories and
 labels for each series. This does not download observations, and the
 listed categories need not occur in every country:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_dimensions.html">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>code</code> column contains the JSON API codes used for
 filtering; the <code>sdmx</code> column is an alternative
 representation. <code>kind</code> distinguishes dimensions from
 attributes such as units and nature.</p>
 <p>To preserve source context as well as population dimensions:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"year"</span>, <span class="st">"value_num"</span>, <span class="st">"attr_units"</span>, <span class="st">"attr_nature"</span>, <span class="st">"data_source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -540,7 +582,7 @@ structure.</p>
 <p>This financial-hardship code is not in the public xMart directory as
 of 2026-10-06. Select the legacy provider explicitly for this
 example.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
 <span>                         backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -572,7 +614,7 @@ remembering which frame came from which API.</p>
 <p>Additional columns, including named SDG dimensions, are retained;
 inputs without those columns receive typed missing values. Binding rows
 does not harmonise codes or definitions across the sources.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two indicators on the same topic from different APIs:</span></span>
 <span><span class="co">#   GHO NCDMORT3070 (probability of premature NCD mortality)</span></span>
 <span><span class="co">#   SDG 3.4.1       (mortality rate from NCDs)</span></span>
@@ -593,7 +635,7 @@ vaccines is much shorter than that of DTP3.</p>
 count per <code>(location, series)</code>, so you can inspect what
 series exist and how each is covered before deciding which one to
 analyse.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
 <span><span class="co">#&gt; 1 156      SH_ACS_DTP3     2000     2023    24</span></span>

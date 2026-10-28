@@ -52,6 +52,8 @@ per-call xMart selection.
   : Summarise Per-Location Data Coverage of a GHO Indicator
 - [`gho_has_data()`](https://shanlong-who.github.io/DSIR/reference/gho_has_data.md)
   : Check Whether a GHO Indicator Has Data for a Filter
+- [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
+  : Query the Latest GHO Indicator Timestamp
 - [`bind_indicators()`](https://shanlong-who.github.io/DSIR/reference/bind_indicators.md)
   : Bind Cleaned Indicator Tibbles
 
@@ -91,6 +93,8 @@ Functions for fetching and cleaning data from the UN SDG API.
   : Tidy an SDG Data Frame
 - [`sdg_coverage()`](https://shanlong-who.github.io/DSIR/reference/sdg_coverage.md)
   : Explore Series Coverage of an SDG Indicator
+- [`sdg_last_updated()`](https://shanlong-who.github.io/DSIR/reference/sdg_last_updated.md)
+  : Query the SDG Database Update Timestamp
 
 ## Visual themes
 

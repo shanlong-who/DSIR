@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -231,6 +231,40 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_coverage.html" hreflang="en">gho_coverage</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FRA"</span>, <span class="st">"DEU"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="查询数据源的更新时间">查询数据源的更新时间<a class="anchor" aria-label="anchor" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E6%BA%90%E7%9A%84%E6%9B%B4%E6%96%B0%E6%97%B6%E9%97%B4"></a>
+</h2>
+<p><code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code>
+查询一个指标在所有地区、年份和维度的现有观测记录中，最新的非缺失时间戳。显式
+<code>backend</code> 参数优先于
+<code>DSIR.who_backend</code>；两者都未设置时使用 legacy。</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">updates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, <span class="st">"NCDMORT3070"</span><span class="op">)</span>, <span class="va">gho_last_updated</span>,</span>
+<span>                  backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">updates</span><span class="op">)</span></span></code></pre></div>
+<p>legacy 使用 <code>Date</code> 字段，xMart 使用
+<code>Sys_CommitDateUtc</code>。它们是观测记录的时间戳，不是观测年份或正式发布日期。每次日期查询最多返回一行；xMart
+还使用已缓存的指标目录和表字段信息。请求失败时不会自动切换
+backend。顺序查询全部指标可能需要较长时间。</p>
+<p>联合国 SDG API
+提供整个数据库的更新时间，没有对应的指标级数据更新时间字段：</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/sdg_last_updated.html" hreflang="en">sdg_last_updated</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>两个函数都返回一行，包含
+<code>source</code>、<code>backend</code>、<code>scope</code>、<code>indicator</code>、<code>updated</code>、<code>timestamp_field</code>、<code>checked_at</code>
+和 <code>status</code>。<code>updated</code>
+保留原始字符串和时区信息；未注明的时区不会被假定为
+UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
+<p><code>status</code> 区分
+<code>"ok"</code>、<code>"not_available"</code>（未提供时间戳）和
+<code>"failed"</code>（查询映射、请求或响应验证失败）。缺少时间戳不代表没有观测数据。SDG
+的 <code>scope</code> 为 <code>"database"</code>，<code>backend</code>
+和 <code>indicator</code>
+为缺失值。整库时间不表示所有序列都在该时刻改变；序列发布批次代码和元数据文档更新日期不能替代数据更新时间。</p>
+</div>
+<div class="section level2">
 <h2 id="从-gho-获取指标数据">从 GHO 获取指标数据<a class="anchor" aria-label="anchor" href="#%E4%BB%8E-gho-%E8%8E%B7%E5%8F%96%E6%8C%87%E6%A0%87%E6%95%B0%E6%8D%AE"></a>
 </h2>
 <p>通常分三步：搜索指标代码、获取数据、清洗响应。<code>area</code>
@@ -238,7 +272,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <div class="section level3">
 <h3 id="第一步搜索指标">第一步：搜索指标<a class="anchor" aria-label="anchor" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E6%90%9C%E7%B4%A2%E6%8C%87%E6%A0%87"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_indicators.html" hreflang="en">gho_indicators</a></span><span class="op">(</span><span class="st">"UHC"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>从结果中选择 <code>IndicatorCode</code>，将它传给下一步的
 <code><a href="../../reference/gho_data.html" hreflang="en">gho_data()</a></code>。</p>
@@ -246,7 +280,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <div class="section level3">
 <h3 id="第二步获取数据">第二步：获取数据<a class="anchor" aria-label="anchor" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span></span>
 <span>  indicator    <span class="op">=</span> <span class="st">"UHC_INDEX_REPORTED"</span>,</span>
 <span>  spatial_type <span class="op">=</span> <span class="st">"country"</span>,</span>
@@ -267,7 +301,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 以及三个 GHO 维度字段
 <code>dim1</code>–<code>dim3</code>。已知地理位置会补充相应名称；原始响应中缺少的字段用相应类型的
 <code>NA</code> 填充。</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span><span class="va">uhc</span><span class="op">)</span></span>
 <span><span class="va">uhc_clean</span></span></code></pre></div>
 </div>
@@ -277,7 +311,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 </h2>
 <p>部分卫生指标使用分项值的几何平均数，而非算术平均数。例如，全民健康覆盖（UHC）服务覆盖指数通过嵌套几何平均汇总
 14 个示踪指标。DSIR 提供 <code><a href="../../reference/geomean.html" hreflang="en">geomean()</a></code>：</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Unweighted geometric mean</span></span>
 <span><span class="fu"><a href="../../reference/geomean.html" hreflang="en">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.7697002</span></span>
@@ -305,7 +339,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <p><code><a href="../../reference/theme_dsi.html" hreflang="en">theme_dsi()</a></code> 使用半框坐标轴、浅色网格和 WHO
 蓝色的轴线。默认显示两个方向的网格；<code>grid = "y"</code>
 可只保留水平网格。</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">iso3</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUS"</span>, <span class="st">"CHN"</span>, <span class="st">"PHL"</span>, <span class="st">"FJI"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -321,7 +355,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <p>柱形图可搭配 <code><a href="../../reference/scale_dsi_col.html" hreflang="en">scale_y_dsi_col()</a></code>；若数值映射到
 <code>x</code>，则使用 <code><a href="../../reference/scale_dsi_col.html" hreflang="en">scale_x_dsi_col()</a></code>。它们封装
 <code>scale_*_continuous()</code>，去掉数值轴下端的扩展，使柱形贴合坐标轴。</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -343,7 +377,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 </h3>
 <p>多个面板重复使用强调色轴线时，画面容易显得繁杂。<code><a href="../../reference/theme_dsi_facet.html" hreflang="en">theme_dsi_facet()</a></code>
 改用完整面板边框、浅灰分面标题背景和面板间距，使各组数据更清晰。</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_pic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -359,7 +393,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><code>strip_fill</code> 可调整分面标题背景色，例如用基于 WHO
 强调色的浅蓝色突出分组。</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uhc_clean</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">who_countries</span>, by <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_pic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -378,7 +412,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <code>flextable</code> 默认格式，包括 booktabs
 风格、粗体表头和适度的内边距。在报告开头调用一次，后续
 <code><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable()</a></code> 就会沿用这些设置。</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ardata-fr.github.io/flextable-book/" class="external-link">flextable</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/dsi_flextable_defaults.html" hreflang="en">dsi_flextable_defaults</a></span><span class="op">(</span>font_family <span class="op">=</span> <span class="st">"Geogria"</span><span class="op">)</span></span>
 <span></span>
@@ -404,7 +438,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <code><a href="../../reference/gho_indicators.html" hreflang="en">gho_indicators()</a></code>
 类似：多个关键词按“且”组合，在指标说明中进行不区分大小写的匹配。SDG
 指标列表较短（约 250 行），且接口不是 OData，因此筛选在客户端执行。</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All indicators that mention both mortality and cancer</span></span>
 <span><span class="fu"><a href="../../reference/sdg_indicators.html" hreflang="en">sdg_indicators</a></span><span class="op">(</span><span class="st">"mortality cancer"</span><span class="op">)</span></span>
 <span></span>
@@ -415,7 +449,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 转换）或联合国 M49 数字代码。因此
 <code>wpro_cty</code>、<code>afro_cty</code>
 等区域向量可直接使用。一次调用中不要混用两种格式。</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ISO3 — regional vector passed straight through</span></span>
 <span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span></span>
 <span>  indicator <span class="op">=</span> <span class="st">"3.4.1"</span>,</span>
@@ -425,7 +459,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <span></span>
 <span><span class="co"># M49 also works (e.g. when copy-pasting codes from sdg_areas())</span></span>
 <span><span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"608"</span>, <span class="st">"250"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span><span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
 <p>默认情况下，<code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code> 与 <code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code>
 都生成 15 列结构，可通过 <code><a href="../../reference/bind_indicators.html" hreflang="en">bind_indicators()</a></code> 合并。SDG
@@ -437,7 +471,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 </h3>
 <p>SDG 维度位于 <code>sdg$dimensions</code> 的命名字段中，并非 GHO
 的位置维度。默认 15 列结果省略这些字段；分析分层数据时应显式保留：</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -447,7 +481,7 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 返回的维度。代码保持原样，不会给缺失类别擅自赋予总人群代码。<code>keep_metadata = TRUE</code>
 还可保留单位和其他属性。</p>
 <p>使用数据源中的准确名称和代码选择序列与人群分层：</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span></span>
 <span>  <span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
 <span>  series <span class="op">=</span> <span class="st">"SH_OOP_XPD_EARNNET40"</span>,</span>
@@ -470,13 +504,13 @@ SDG 维度来重建。参见 <a href="https://www.who.int/data/gho/indicator-met
 </h3>
 <p><code><a href="../../reference/sdg_dimensions.html" hreflang="en">sdg_dimensions()</a></code>
 可查询各序列的官方类别和标签，无需下载观测数据。列出的类别不一定在每个国家都有观测值。</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/sdg_dimensions.html" hreflang="en">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><code>code</code> 列是筛选所用的 JSON API 代码，<code>sdmx</code>
 是另一种表示方式。<code>kind</code>
 区分维度与属性，例如单位和数据性质。</p>
 <p>同时保留来源信息与人群维度：</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"year"</span>, <span class="st">"value_num"</span>, <span class="st">"attr_units"</span>, <span class="st">"attr_nature"</span>, <span class="st">"data_source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -487,7 +521,7 @@ RDS 保存这种结构。</p>
 <p>GHO 可以直接显示各位置维度的类型。以下经济困难指标代码截至 2026 年 10
 月 6 日不在公共 xMart 目录中，因此示例显式选择 <code>legacy</code>
 数据服务。</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
 <span>                         backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -512,7 +546,7 @@ RDS 保存这种结构。</p>
 或 <code>"sdg"</code>）便于按来源筛选或分面。</p>
 <p>额外字段（包括命名的 SDG
 维度）会保留；缺少相应字段的输入补入对应类型的缺失值。合并数据行不会统一不同来源的代码或指标定义。</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Two indicators on the same topic from different APIs:</span></span>
 <span><span class="co">#   GHO NCDMORT3070 (probability of premature NCD mortality)</span></span>
 <span><span class="co">#   SDG 3.4.1       (mortality rate from NCDs)</span></span>
@@ -529,7 +563,7 @@ RDS 保存这种结构。</p>
 四个序列，较新疫苗的时间覆盖范围比 DTP3 短。</p>
 <p><code><a href="../../reference/sdg_coverage.html" hreflang="en">sdg_coverage()</a></code> 按 <code>(location, series)</code>
 汇总年份范围和观测数，便于在分析前确认有哪些序列以及各自的覆盖情况。</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/sdg_coverage.html" hreflang="en">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
 <span><span class="co">#&gt; 1 156      SH_ACS_DTP3     2000     2023    24</span></span>
