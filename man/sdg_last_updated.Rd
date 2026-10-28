@@ -7,8 +7,8 @@
 sdg_last_updated()
 }
 \value{
-A one-row tibble with the same column names and types as
-\code{\link[=gho_last_updated]{gho_last_updated()}}. Here \code{source} is \code{"sdg"}, \code{scope} is \code{"database"},
+A one-row tibble with the same default eight column names and types
+as \code{\link[=gho_last_updated]{gho_last_updated()}}. Here \code{source} is \code{"sdg"}, \code{scope} is \code{"database"},
 \code{backend} and \code{indicator} are \code{NA_character_}, and \code{timestamp_field}
 is \code{"Series/LastUpdated"}. \code{updated} preserves the original timestamp
 string, including an unspecified time zone. \code{checked_at} is a UTC

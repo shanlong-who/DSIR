@@ -71,5 +71,5 @@ index if a requested feature changes the public API.
 Follow [repository hygiene](.github/maintenance/repository-hygiene.md).
 Keep reusable tests in `tests/testthat/` and reusable data preparation in
 `data-raw/`. Keep local probes and raw AI conversation exports untracked.
-The distributable country-profile skills under `.claude/skills/` and
-`.github/skills/` are intentional public assets.
+Keep package maintenance rules here. Assistant-specific skill bundles and
+generated development artifacts do not belong in the maintained source tree.

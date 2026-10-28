@@ -71,11 +71,13 @@ GHO 公共目录有许多指标，但单个指标未必覆盖需要的国家或�
 
 ## 查询数据源的更新时间
 
-`gho_last_updated()` 查询一个指标在所有地区、年份和维度的现有观测记录中，最新的非缺失时间戳。显式 `backend` 参数优先于 `DSIR.who_backend`；两者都未设置时使用 legacy。
+实验性的 `gho_last_updated()` 查询一个指标在所有地区、年份和维度的现有观测记录中，最新的非缺失时间戳。显式 `backend` 参数优先于 `DSIR.who_backend`；两者都未设置时使用 legacy。
 
 <!-- chunk:11 -->
 
-legacy 使用 `Date` 字段，xMart 使用 `Sys_CommitDateUtc`。它们是观测记录的时间戳，不是观测年份或正式发布日期。每次日期查询最多返回一行；xMart 还使用已缓存的指标目录和表字段信息。请求失败时不会自动切换 backend。顺序查询全部指标可能需要较长时间。
+legacy 使用 `Date` 字段，xMart 使用 `Sys_CommitDateUtc`。DSIR 尚未确认 legacy 的 `Date` 是官方修改或发布日期；xMart 的系统提交时间可能反映数据处理。两者都不是最新观测年份。每次日期查询最多返回一行；xMart 还使用已缓存的指标目录和表字段信息。请求失败时不会自动切换 backend。顺序查询全部指标可能需要较长时间。
+
+默认仍为原来的八列。`diagnostics = TRUE` 额外返回 `reason`、`stage`、`http_status`、`timestamp_kind`、`provider_route` 和 `provider_indicator`，不增加请求。`directory_not_listed` 表示成功读取的目录未列出该代码，不等于 GHO 代码无效。`http_error` 和 `request_failed` 区分 HTTP 错误与连接失败；`timestamp_field_missing` 和 `timestamp_missing` 区分没有时间字段与没有非缺失时间戳。目录请求成功不表示观测请求可用。`checked_at` 是检查开始时间，不是数据获取或源数据修改时间。多个指标共用系统时间戳不能证明数值同时改变；实际数值差异应通过快照比较。
 
 联合国 SDG API 提供整个数据库的更新时间，没有对应的指标级数据更新时间字段：
 

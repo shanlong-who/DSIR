@@ -13,40 +13,18 @@ it does not remove files already tracked.
 | Reusable scripts that rebuild bundled data | `data-raw/` |
 | User documentation and examples | `README.md`, `man/`, `vignettes/` |
 | Lasting development decisions | `.github/maintenance/design-notes.md` |
-| Shared agent development rules | `AGENTS.md`; `CLAUDE.md` points there |
-| Distributable country-profile skills | `.claude/skills/`, `.github/skills/` |
+| Shared agent development rules | `AGENTS.md` |
 | Local probes, handoffs, raw AI conversations | Untracked local files |
 | Generated pkgdown website | Ignored `docs/`; published by the existing workflow |
 
 Maintenance documents live here because `docs/` is generated website
 output. `.github/` is already excluded from package builds.
 
-## 2026-10-04 cleanup record
-
-Audited the tracked tree at `634c2bf` (DSIR 0.10.0).
-The following files were temporary development artifacts:
-
-| Removed path | Finding and retained value |
-| --- | --- |
-| `conversation-export.md` | Raw AI GHO design discussion with tool/thinking markup and a copied source preview. Useful conclusions are reconciled in the design notes; optimization and shared HTTP policy are already implemented. |
-| `development_proposals.md` | Old 0.7.1 brainstorming with local file links and hypothetical code. Implemented, declined, and deferred ideas are retained in the design notes. |
-| `scratch/probe_m49.R` | One-time data-column exploration; uses the obsolete `un_m49` name. Current identifier behavior is covered by `test-who_countries.R`, `test-iso3-to-m49.R`, and `test-m49_to_iso3.R`. |
-| `scratch/probe_sdg.R` | One-time live API response exploration. Current contracts are covered by the SDG indicator, cleaning, metadata, and pagination tests. |
-| `scratch/sanity_3b1.R` | Printed multi-series coverage for a live example. The `3.b.1` example remains in README and the main vignette; formal coverage tests protect behavior. |
-| `scratch/sanity_check.R` | Manual search/coverage checks that print results. Formal `test-sdg-indicators.R` and `test-sdg-coverage.R` already cover these behaviors. |
-| `scratch/sanity_iso3_m49.R` | Manual code-conversion and live-fetch checks. Formal conversion and area-resolution tests cover these behaviors. |
-| `scratch/sanity_year_filter.R` | One-time live timing/year-range probes. Formal `test-sdg-year-filter.R` remains; its live tests keep their existing guards. |
-
-No package build, test, vignette, workflow, or distributable skill depends
-on these scripts. They are not reusable data preparation or missing
-regression fixtures, so they were not moved into `data-raw/` or `tests/`.
-The review also removed outdated session status and machine-specific
-paths from the two agent guidance files while preserving lasting rules.
-
-Content review and a scan for common credentials/private-key patterns
-found no material requiring destructive history removal. This was a
-current-tree cleanup. Existing commits and release tags were retained;
-the removed originals remain retrievable from the pre-cleanup commit.
+Keep assistant-specific skill bundles, duplicate agent guidance, local test
+data, generated check output and one-time analytical exports outside the
+maintained source tree. Retain Git metadata, CI workflows, data preparation,
+website sources and shared working rules needed for package maintenance.
+The DSIR badge and cat-only icons use PNG sources and PNG exports only.
 
 ## Before publishing future changes
 

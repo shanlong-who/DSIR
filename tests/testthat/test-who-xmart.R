@@ -141,7 +141,7 @@ test_that('GHO unknown codes never trigger legacy fallback', {
   withr::local_options(DSIR.who_backend = 'xmart')
   testthat::local_mocked_bindings(.xmart_catalog = function() tibble::tibble(IND_CODE_GHO = 'known'),
     .legacy_gho_data = function(...) stop('legacy called'), .package = 'DSIR')
-  expect_warning(out <- gho_data('unknown'), 'Unknown GHO')
+  expect_warning(out <- gho_data('unknown'), 'not listed in the public xMart directory')
   expect_equal(nrow(out), 0L)
 })
 
