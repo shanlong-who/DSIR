@@ -7,7 +7,7 @@ library(ggplot2)
 
 has_patchwork <- requireNamespace("patchwork", quietly = TRUE)
 has_flextable <- requireNamespace("flextable", quietly = TRUE) &&
-  getNamespaceVersion("flextable") >= "0.9.0"
+  package_version(getNamespaceVersion("flextable")) >= "0.9.0"
 
 # ------------------------------------------------------------
 # 1. theme_dsi() \u2014 ggplot2 theme showcase

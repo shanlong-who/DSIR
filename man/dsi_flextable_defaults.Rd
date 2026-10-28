@@ -47,7 +47,7 @@ version causes an error with installation guidance.
 }
 \examples{
 if (requireNamespace("flextable", quietly = TRUE) &&
-    getNamespaceVersion("flextable") >= "0.9.0") {
+    package_version(getNamespaceVersion("flextable")) >= "0.9.0") {
   dsi_flextable_defaults()
 }
 }

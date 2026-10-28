@@ -37,7 +37,7 @@ flextable_dependency_case <- function(available, version = "0.9.0") {
   helper <- dsi_flextable_defaults
   environment(helper) <- list2env(list(
     requireNamespace = function(...) available,
-    getNamespaceVersion = function(...) package_version(version)
+    getNamespaceVersion = function(...) version
   ), parent = environment(helper))
   helper
 }
@@ -54,4 +54,12 @@ test_that("the table helper retains the minimum supported flextable version", {
   error <- expect_error(helper(), class = "dsir_flextable_unavailable")
   expect_match(conditionMessage(error), ">= 0.9.0", fixed = TRUE)
   expect_match(conditionMessage(error), 'install.packages("flextable")', fixed = TRUE)
+})
+
+test_that("flextable versions after 0.9.x satisfy the minimum version", {
+  skip_if_not_installed("flextable", minimum_version = "0.9.0")
+  old <- flextable::get_flextable_defaults()
+  on.exit(do.call(flextable::set_flextable_defaults, old), add = TRUE)
+  helper <- flextable_dependency_case(TRUE, "0.10.0")
+  expect_null(helper())
 })

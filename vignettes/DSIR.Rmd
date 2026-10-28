@@ -10,7 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 run_live <- identical(Sys.getenv('DSIR_BUILD_LIVE_VIGNETTE'), 'true')
 run_tables <- run_live && requireNamespace("flextable", quietly = TRUE) &&
-  getNamespaceVersion("flextable") >= "0.9.0"
+  package_version(getNamespaceVersion("flextable")) >= "0.9.0"
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment  = "#>", 

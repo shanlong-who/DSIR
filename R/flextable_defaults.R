@@ -29,7 +29,7 @@
 #'
 #' @examples
 #' if (requireNamespace("flextable", quietly = TRUE) &&
-#'     getNamespaceVersion("flextable") >= "0.9.0") {
+#'     package_version(getNamespaceVersion("flextable")) >= "0.9.0") {
 #'   dsi_flextable_defaults()
 #' }
 dsi_flextable_defaults <- function(font_size = 12,
@@ -38,7 +38,7 @@ dsi_flextable_defaults <- function(font_size = 12,
                                    border_color = "black",
                                    padding = c(3, 3, 4, 4)) {
   if (!requireNamespace("flextable", quietly = TRUE) ||
-      getNamespaceVersion("flextable") < "0.9.0") {
+      package_version(getNamespaceVersion("flextable")) < "0.9.0") {
     cli::cli_abort(c(
       "Package {.pkg flextable} (>= 0.9.0) is required to use {.fn dsi_flextable_defaults}.",
       "i" = 'Install it with {.code install.packages("flextable")}.'
