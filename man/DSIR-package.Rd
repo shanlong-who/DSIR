@@ -17,11 +17,11 @@ datasets (\link{wpro_cty}) with WHO region and UN M49 lookups
 geometric mean helper for indicator aggregation (\code{\link[=geomean]{geomean()}}),
 clients for the WHO Global Health Observatory legacy and public xMart APIs
 (\code{\link[=gho_indicators]{gho_indicators()}}, \code{\link[=gho_data]{gho_data()}}, \code{\link[=gho_dimensions]{gho_dimensions()}},
-\code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}}, \code{\link[=gho_coverage]{gho_coverage()}}), Global Health Estimates
+\code{\link[=gho_has_data]{gho_has_data()}}, \code{\link[=gho_count]{gho_count()}}, \code{\link[=gho_coverage]{gho_coverage()}}, \code{\link[=gho_last_updated]{gho_last_updated()}}), Global Health Estimates
 (\code{\link[=ghe_data]{ghe_data()}}, \code{\link[=ghe_causes]{ghe_causes()}}, \code{\link[=ghe_dimensions]{ghe_dimensions()}}, \code{\link[=ghe_coverage]{ghe_coverage()}}) and the UN
 Sustainable Development Goals API (\code{\link[=sdg_goals]{sdg_goals()}}, \code{\link[=sdg_targets]{sdg_targets()}},
 \code{\link[=sdg_indicators]{sdg_indicators()}}, \code{\link[=sdg_areas]{sdg_areas()}}, \code{\link[=sdg_dimensions]{sdg_dimensions()}}, \code{\link[=sdg_data]{sdg_data()}},
-\code{\link[=sdg_coverage]{sdg_coverage()}}),
+\code{\link[=sdg_coverage]{sdg_coverage()}}, \code{\link[=sdg_last_updated]{sdg_last_updated()}}),
 plus a unified cleaning / binding pipeline (\code{\link[=gho_clean]{gho_clean()}},
 \code{\link[=sdg_clean]{sdg_clean()}}, \code{\link[=ghe_clean]{ghe_clean()}}, \code{\link[=bind_indicators]{bind_indicators()}}) that puts GHO, SDG and GHE output
 into the same 15-column core schema, with optional dimension types,
