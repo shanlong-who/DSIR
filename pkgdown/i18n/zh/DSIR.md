@@ -147,6 +147,8 @@ DSIR 提供两个相配的 `ggplot2` 主题，用于 WHO 风格图形：简洁�
 
 `dsi_flextable_defaults()` 全局设置 WHO 风格的 `flextable` 默认格式，包括 booktabs 风格、粗体表头和适度的内边距。在报告开头调用一次，后续 `flextable()` 就会沿用这些设置。
 
+`flextable`（>= 0.9.0）是可选依赖。运行表格示例前，请用 `install.packages("flextable")` 安装。
+
 <!-- chunk:21 -->
 
 ## 使用 SDG 指标

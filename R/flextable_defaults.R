@@ -6,6 +6,12 @@
 #' `flextable` default in place so the call is safe on systems where
 #' Cambria is not installed.
 #'
+#' @details
+#' The suggested package `flextable` (>= 0.9.0) is required only when calling
+#' this helper. Install it with `install.packages("flextable")` if needed.
+#' DSIR can be installed and loaded without it. A missing or unsupported
+#' version causes an error with installation guidance.
+#'
 #' @param font_size Font size in points. Default `12`.
 #' @param font_family Font family name. Default `""` keeps the
 #'   existing `flextable` default; try `"Cambria"` for the original
@@ -22,12 +28,22 @@
 #' @export
 #'
 #' @examples
-#' dsi_flextable_defaults()
+#' if (requireNamespace("flextable", quietly = TRUE) &&
+#'     package_version(getNamespaceVersion("flextable")) >= "0.9.0") {
+#'   dsi_flextable_defaults()
+#' }
 dsi_flextable_defaults <- function(font_size = 12,
                                    font_family = "",
                                    font_color = "#333333",
                                    border_color = "black",
                                    padding = c(3, 3, 4, 4)) {
+  if (!requireNamespace("flextable", quietly = TRUE) ||
+      package_version(getNamespaceVersion("flextable")) < "0.9.0") {
+    cli::cli_abort(c(
+      "Package {.pkg flextable} (>= 0.9.0) is required to use {.fn dsi_flextable_defaults}.",
+      "i" = 'Install it with {.code install.packages("flextable")}.'
+    ), class = "dsir_flextable_unavailable")
+  }
   if (length(padding) == 1) padding <- rep(padding, 4)
 
   args <- list(

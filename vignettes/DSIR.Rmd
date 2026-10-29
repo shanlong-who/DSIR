@@ -9,6 +9,8 @@ vignette: >
 
 ```{r, include = FALSE}
 run_live <- identical(Sys.getenv('DSIR_BUILD_LIVE_VIGNETTE'), 'true')
+run_tables <- run_live && requireNamespace("flextable", quietly = TRUE) &&
+  package_version(getNamespaceVersion("flextable")) >= "0.9.0"
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment  = "#>", 
@@ -362,7 +364,10 @@ globally — booktabs theme, bold headers, modest padding. Call it once
 near the top of your report and every subsequent `flextable()` picks 
 up the formatting.
 
-```{r, eval = run_live}
+`flextable` (>= 0.9.0) is a suggested package. Install it with
+`install.packages("flextable")` before running the table examples.
+
+```{r, eval = run_tables}
 library(flextable)
 dsi_flextable_defaults(font_family = "Geogria")
 

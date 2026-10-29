@@ -39,6 +39,15 @@ padding). Pick any font you like — the default \code{""} leaves the
 \code{flextable} default in place so the call is safe on systems where
 Cambria is not installed.
 }
+\details{
+The suggested package \code{flextable} (>= 0.9.0) is required only when calling
+this helper. Install it with \code{install.packages("flextable")} if needed.
+DSIR can be installed and loaded without it. A missing or unsupported
+version causes an error with installation guidance.
+}
 \examples{
-dsi_flextable_defaults()
+if (requireNamespace("flextable", quietly = TRUE) &&
+    package_version(getNamespaceVersion("flextable")) >= "0.9.0") {
+  dsi_flextable_defaults()
+}
 }

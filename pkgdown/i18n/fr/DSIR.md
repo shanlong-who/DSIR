@@ -147,6 +147,8 @@ La répétition d'axes accentués peut surcharger un graphique à plusieurs pann
 
 `dsi_flextable_defaults()` définit globalement les valeurs par défaut de `flextable` dans le style de l'OMS : thème booktabs, en-têtes en gras et marges intérieures modérées. Appelez-la une fois au début du rapport ; les tableaux suivants reprendront ces réglages.
 
+`flextable` (>= 0.9.0) est une dépendance facultative. Installez-le avec `install.packages("flextable")` avant d'exécuter les exemples de tableaux.
+
 <!-- chunk:21 -->
 
 ## Utiliser les indicateurs des ODD

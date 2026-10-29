@@ -4,10 +4,10 @@
 
 library(DSIR)
 library(ggplot2)
-library(flextable)
 
 has_patchwork <- requireNamespace("patchwork", quietly = TRUE)
-has_officer   <- requireNamespace("officer",   quietly = TRUE)
+has_flextable <- requireNamespace("flextable", quietly = TRUE) &&
+  package_version(getNamespaceVersion("flextable")) >= "0.9.0"
 
 # ------------------------------------------------------------
 # 1. theme_dsi() \u2014 ggplot2 theme showcase
@@ -84,35 +84,40 @@ if (has_patchwork) {
 # 2. dsi_flextable_defaults() \u2014 flextable theme showcase
 # ------------------------------------------------------------
 
-dsi_flextable_defaults()
+if (has_flextable) {
+  library(flextable)
+  dsi_flextable_defaults()
 
-ft1 <- data.frame(
-  Region   = c("AFRO", "AMRO", "EMRO", "EURO", "SEARO", "WPRO"),
-  Members  = c(47, 35, 22, 53, 10, 28),
-  Example  = c("Nigeria", "Brazil", "Egypt", "Germany", "India", "China")
-) |>
-  flextable() |>
-  set_caption("WHO Regional Offices Overview") |>
-  autofit()
+  ft1 <- data.frame(
+    Region   = c("AFRO", "AMRO", "EMRO", "EURO", "SEARO", "WPRO"),
+    Members  = c(47, 35, 22, 53, 10, 28),
+    Example  = c("Nigeria", "Brazil", "Egypt", "Germany", "India", "China")
+  ) |>
+    flextable() |>
+    set_caption("WHO Regional Offices Overview") |>
+    autofit()
 
-print(ft1)
+  print(ft1)
 
-ft2 <- head(mtcars[, c("mpg", "cyl", "hp", "wt", "qsec")], 8) |>
-  flextable() |>
-  set_caption("Motor Trend Car Data (Top 8)") |>
-  colformat_double(digits = 1) |>
-  autofit()
+  ft2 <- head(mtcars[, c("mpg", "cyl", "hp", "wt", "qsec")], 8) |>
+    flextable() |>
+    set_caption("Motor Trend Car Data (Top 8)") |>
+    colformat_double(digits = 1) |>
+    autofit()
 
-print(ft2)
+  print(ft2)
 
-if (has_officer) {
-  doc <- officer::read_docx()
-  doc <- flextable::body_add_flextable(doc, ft1)
-  doc <- officer::body_add_par(doc, "")
-  doc <- flextable::body_add_flextable(doc, ft2)
-  out <- tempfile(fileext = ".docx")
-  print(doc, target = out)
-  message("Demo complete. Word file written to: ", out)
+  if (requireNamespace("officer", quietly = TRUE)) {
+    doc <- officer::read_docx()
+    doc <- flextable::body_add_flextable(doc, ft1)
+    doc <- officer::body_add_par(doc, "")
+    doc <- flextable::body_add_flextable(doc, ft2)
+    out <- tempfile(fileext = ".docx")
+    print(doc, target = out)
+    message("Demo complete. Word file written to: ", out)
+  } else {
+    message("Install 'officer' to export tables to Word.")
+  }
 } else {
-  message("Install 'officer' to export tables to Word.")
+  message("Install 'flextable' (>= 0.9.0) to run the table examples.")
 }
