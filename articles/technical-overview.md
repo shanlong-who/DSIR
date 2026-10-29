@@ -223,7 +223,8 @@ ggplot(mtcars, aes(factor(cyl))) +
 
 **[`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)**
 — one-line setup for `flextable` formatting (booktabs style, bold
-headers, paddings).
+headers, paddings). `flextable` (\>= 0.9.0) is optional; install it with
+`install.packages("flextable")` before using this helper.
 
 ``` r
 

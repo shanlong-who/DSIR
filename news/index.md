@@ -2,6 +2,12 @@
 
 ## DSIR (development version)
 
+- Move `flextable` (\>= 0.9.0) from Imports to Suggests. Only
+  [`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)
+  requires it at runtime and now provides installation guidance when it
+  is missing or too old. Examples, demos and tests handle the optional
+  dependency.
+
 - Mark
   [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
   experimental and add opt-in structured diagnostics for directory

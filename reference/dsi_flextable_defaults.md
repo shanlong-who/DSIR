@@ -47,8 +47,18 @@ Invisibly returns `NULL`. Called for its side effect of mutating the
 `flextable` global defaults via
 [`flextable::set_flextable_defaults()`](https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html).
 
+## Details
+
+The suggested package `flextable` (\>= 0.9.0) is required only when
+calling this helper. Install it with `install.packages("flextable")` if
+needed. DSIR can be installed and loaded without it. A missing or
+unsupported version causes an error with installation guidance.
+
 ## Examples
 
 ``` r
-dsi_flextable_defaults()
+if (requireNamespace("flextable", quietly = TRUE) &&
+    package_version(getNamespaceVersion("flextable")) >= "0.9.0") {
+  dsi_flextable_defaults()
+}
 ```

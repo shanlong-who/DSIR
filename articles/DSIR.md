@@ -453,6 +453,9 @@ every subsequent
 [`flextable()`](https://davidgohel.github.io/flextable/reference/flextable.html)
 picks up the formatting.
 
+`flextable` (\>= 0.9.0) is a suggested package. Install it with
+`install.packages("flextable")` before running the table examples.
+
 ``` r
 
 library(flextable)
