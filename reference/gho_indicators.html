@@ -127,8 +127,26 @@ changing it. Use the same backend for discovery and retrieval.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
     <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> with columns <code>IndicatorCode</code>,
-<code>IndicatorName</code> and <code>Language</code>. Returns an empty tibble (with
-a warning) when the service is unreachable.</p>
+<code>IndicatorName</code> and <code>Language</code>. On a legacy request or parsing failure,
+searches a bundled catalog snapshot and warns with its collection date.
+The <code>catalog_snapshot</code> attribute records its <code>backend</code>, <code>source</code> URL and
+<code>retrieved</code> UTC time. The xMart backend still returns an empty tibble
+with a warning when its service is unreachable.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+</h2>
+    <p>Online results are preferred. The bundled legacy catalog is refreshed with
+package releases and may omit new indicators or contain outdated names and
+codes. It is used only after a failed or malformed response, not after a
+successful search with no matches. Fallback searches preserve literal,
+case-insensitive AND matching on indicator names; abbreviations such as
+<code>"SCI"</code> are not expanded to <code>"Service Coverage Index"</code>.</p>
+<p>The snapshot is not used for xMart or to verify observation availability.
+Downloading observations still requires a working online service. Snapshot
+results are not cached as a successful online catalog, so later calls can
+retry. Rebuild the snapshot using <code>data-raw/gho_indicators.R</code> in the source
+repository before a package release.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>

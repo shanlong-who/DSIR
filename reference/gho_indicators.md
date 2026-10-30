@@ -36,8 +36,29 @@ gho_indicators(search = NULL, backend = NULL)
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with
-columns `IndicatorCode`, `IndicatorName` and `Language`. Returns an
-empty tibble (with a warning) when the service is unreachable.
+columns `IndicatorCode`, `IndicatorName` and `Language`. On a legacy
+request or parsing failure, searches a bundled catalog snapshot and
+warns with its collection date. The `catalog_snapshot` attribute records
+its `backend`, `source` URL and `retrieved` UTC time. The xMart backend
+still returns an empty tibble with a warning when its service is
+unreachable.
+
+## Details
+
+Online results are preferred. The bundled legacy catalog is refreshed
+with package releases and may omit new indicators or contain outdated
+names and codes. It is used only after a failed or malformed response,
+not after a successful search with no matches. Fallback searches
+preserve literal, case-insensitive AND matching on indicator names;
+abbreviations such as `"SCI"` are not expanded to
+`"Service Coverage Index"`.
+
+The snapshot is not used for xMart or to verify observation
+availability. Downloading observations still requires a working online
+service. Snapshot results are not cached as a successful online catalog,
+so later calls can retry. Rebuild the snapshot using
+`data-raw/gho_indicators.R` in the source repository before a package
+release.
 
 ## See also
 

@@ -186,8 +186,9 @@ For such input, on the first call within an R session,
 <code>gho_clean()</code> fetches the catalog once and caches it for the rest of
 the session, so the <code>indicator</code> column carries the full
 human-readable indicator name. If the catalog cannot be fetched
-(e.g. no network), <code><a href="gho_indicators.html">gho_indicators()</a></code> emits a warning and the
-<code>indicator</code> column falls back to <code>NA</code>.</p>
+(e.g. no network), <code><a href="gho_indicators.html">gho_indicators()</a></code> warns and legacy labels use its
+bundled snapshot without caching it as live data. Codes absent from that
+snapshot, or unavailable xMart labels, remain <code>NA</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>

@@ -2,6 +2,13 @@
 
 ## DSIR (development version)
 
+- Bundle a dated legacy GHO indicator catalog for
+  [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
+  to search when online requests or parsing fail. Fallback warns with
+  the collection date and records snapshot provenance without caching it
+  as a live catalog. Successful empty searches and the xMart backend
+  keep their existing behavior.
+
 - Move `flextable` (\>= 0.9.0) from Imports to Suggests. Only
   [`dsi_flextable_defaults()`](https://shanlong-who.github.io/DSIR/reference/dsi_flextable_defaults.md)
   requires it at runtime and now provides installation guidance when it

@@ -104,7 +104,9 @@ label lookup. For such input, on the first call within an R session,
 session, so the `indicator` column carries the full human-readable
 indicator name. If the catalog cannot be fetched (e.g. no network),
 [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
-emits a warning and the `indicator` column falls back to `NA`.
+warns and legacy labels use its bundled snapshot without caching it as
+live data. Codes absent from that snapshot, or unavailable xMart labels,
+remain `NA`.
 
 ## See also
 
