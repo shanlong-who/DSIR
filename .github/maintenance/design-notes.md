@@ -59,11 +59,16 @@ tests, help pages, and [release notes](../../NEWS.md).
   [cache regressions](../../tests/testthat/test-gho-catalog-cache.R)
   protect recovery after an offline first call. Since 0.11.0, xMart reference
   caches expire after ten minutes and are scoped to backend and origin.
+  Legacy indicator discovery now falls back to a dated bundled catalog after
+  request or parsing failures. Snapshot results carry `catalog_snapshot`
+  metadata and must not be cached as live results. Successful empty searches
+  do not trigger fallback. Rebuild through `data-raw/gho_indicators.R`.
 - **Backend selection:** GHO retains the legacy compatibility default.
   All six query functions accept `backend`; an explicit argument overrides
   the session option without changing it. GHE always uses xMart. Recorded
   raw provenance controls cleaner label lookups; optional `provider` columns
-  distinguish origins when binding observations. No automatic fallback occurs.
+  distinguish origins when binding observations. No automatic fallback between
+  backends occurs; the bundled catalog is limited to legacy discovery and labels.
 - **Paging:** since 0.11.0, the optional WHO xMart adapter validates row counts,
   stable identifiers and page consistency; incomplete downloads are discarded.
   The legacy GHO adapter follows OData next links. SDG validates page

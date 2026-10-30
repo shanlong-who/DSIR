@@ -85,7 +85,7 @@ test_that("gho_data returns an empty tibble on request failure", {
   )
 })
 
-test_that("gho_indicators returns an empty 3-col tibble on request failure", {
+test_that("gho_indicators returns a bundled 3-col tibble on request failure", {
   withr::local_options(DSIR.who_backend = "legacy")
   httr2::with_mocked_responses(
     mock_json('{"error":"oops"}', status = 404L),
@@ -93,7 +93,9 @@ test_that("gho_indicators returns an empty 3-col tibble on request failure", {
       out <- suppressWarnings(gho_indicators("mortality"))
       expect_s3_class(out, "tbl_df")
       expect_named(out, c("IndicatorCode", "IndicatorName", "Language"))
-      expect_equal(nrow(out), 0L)
+      expect_gt(nrow(out), 0L)
+      expect_equal(attr(out, "catalog_snapshot")$backend, "legacy")
+      expect_true(all(grepl("mortality", out$IndicatorName, ignore.case = TRUE)))
     }
   )
 })

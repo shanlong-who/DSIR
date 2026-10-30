@@ -321,6 +321,15 @@ between retrieved observations.
 
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
 
+`gho_indicators()` queries the selected online backend first. If a legacy GHO
+request fails, it searches the bundled legacy catalog and warns with its
+collection date. `attr(result, "catalog_snapshot")` records the snapshot's
+source and UTC collection time. The snapshot may omit new codes or contain
+outdated names; it does not confirm that observations are available. Successful
+empty searches do not trigger fallback. xMart never uses the legacy snapshot.
+Search matches names literally: use `"UHC service coverage"`, not the abbreviation
+`"UHC SCI"`, to find names containing those words.
+
 ```r
 # Search indicators by keyword
 gho_indicators("mortality")

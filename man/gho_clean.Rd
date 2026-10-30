@@ -83,8 +83,9 @@ For such input, on the first call within an R session,
 \code{gho_clean()} fetches the catalog once and caches it for the rest of
 the session, so the \code{indicator} column carries the full
 human-readable indicator name. If the catalog cannot be fetched
-(e.g. no network), \code{\link[=gho_indicators]{gho_indicators()}} emits a warning and the
-\code{indicator} column falls back to \code{NA}.
+(e.g. no network), \code{\link[=gho_indicators]{gho_indicators()}} warns and legacy labels use its
+bundled snapshot without caching it as live data. Codes absent from that
+snapshot, or unavailable xMart labels, remain \code{NA}.
 }
 \examples{
 \donttest{

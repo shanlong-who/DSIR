@@ -39,7 +39,11 @@ export(sdg_targets)
 export(snapshot)
 export(theme_dsi)
 export(theme_dsi_facet)
-importFrom(rlang,"%||%")
-importFrom(rlang,.data)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tibble)
+importFrom(rlang,
+  "%||%",
+  .data
+)
+importFrom(tibble,
+  as_tibble,
+  tibble
+)

@@ -1,6 +1,6 @@
 # Regression tests for .gho_indicator_catalog(): a failed catalog
-# fetch (gho_indicators() fails soft with an EMPTY tibble, never NULL)
-# must not be cached, so the next call can retry once the network is
+# fetch now returns a bundled snapshot, which must not be cached as live
+# data, so the next call can retry once the network is
 # back. Before the 0.8.0 fix, one offline first call poisoned the
 # session cache and gho_clean()'s indicator column stayed NA for the
 # rest of the session.
@@ -26,7 +26,7 @@ test_that("a failed catalog fetch is not cached and is retried on the next call"
   on.exit(.dsi_cache$gho_indicator_catalog <- old)
   .dsi_cache$gho_indicator_catalog <- NULL
 
-  # First call: HTTP failure -> empty catalog, which must NOT be cached.
+  # First call: HTTP failure -> bundled catalog, which must NOT be cached.
   # 404 is not retried by req_retry, so a single mocked response is enough.
   suppressWarnings(
     httr2::with_mocked_responses(
@@ -34,7 +34,8 @@ test_that("a failed catalog fetch is not cached and is retried on the next call"
       out1 <- DSIR:::.gho_indicator_catalog()
     )
   )
-  expect_equal(nrow(out1), 0L)
+  expect_gt(nrow(out1), 0L)
+  expect_equal(attr(out1, "catalog_snapshot")$backend, "legacy")
   expect_null(.dsi_cache$gho_indicator_catalog)
 
   # Second call: the fetch succeeds -> cached and returned.

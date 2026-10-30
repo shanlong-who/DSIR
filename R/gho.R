@@ -21,8 +21,24 @@
 #' @inheritParams gho_data
 #'
 #' @return A [tibble][tibble::tibble] with columns `IndicatorCode`,
-#'   `IndicatorName` and `Language`. Returns an empty tibble (with
-#'   a warning) when the service is unreachable.
+#'   `IndicatorName` and `Language`. On a legacy request or parsing failure,
+#'   searches a bundled catalog snapshot and warns with its collection date.
+#'   The `catalog_snapshot` attribute records its `backend`, `source` URL and
+#'   `retrieved` UTC time. The xMart backend still returns an empty tibble
+#'   with a warning when its service is unreachable.
+#' @details
+#' Online results are preferred. The bundled legacy catalog is refreshed with
+#' package releases and may omit new indicators or contain outdated names and
+#' codes. It is used only after a failed or malformed response, not after a
+#' successful search with no matches. Fallback searches preserve literal,
+#' case-insensitive AND matching on indicator names; abbreviations such as
+#' `"SCI"` are not expanded to `"Service Coverage Index"`.
+#'
+#' The snapshot is not used for xMart or to verify observation availability.
+#' Downloading observations still requires a working online service. Snapshot
+#' results are not cached as a successful online catalog, so later calls can
+#' retry. Rebuild the snapshot using `data-raw/gho_indicators.R` in the source
+#' repository before a package release.
 #' @seealso [gho_data()], [gho_dimensions()].
 #' @export
 #'
@@ -286,11 +302,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
   }
   if (is.null(.dsi_cache$gho_indicator_catalog)) {
     catalog <- gho_indicators(backend = config$backend)
-    # A failed fetch returns an empty tibble (fail-soft), which must
-    # NOT be cached: caching it would pin `indicator = NA` for the
-    # rest of the session even after connectivity returns. The real
-    # catalog is never empty, so nrow > 0 is a safe cache condition.
-    if (nrow(catalog) == 0L) return(catalog)
+    # Empty results and bundled snapshots must not prevent a later online
+    # retry. Cache only a successful, non-empty live catalog.
+    if (nrow(catalog) == 0L || !is.null(attr(catalog, "catalog_snapshot"))) return(catalog)
     .dsi_cache$gho_indicator_catalog <- catalog
   }
   .dsi_cache$gho_indicator_catalog
@@ -398,8 +412,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
 #' `gho_clean()` fetches the catalog once and caches it for the rest of
 #' the session, so the `indicator` column carries the full
 #' human-readable indicator name. If the catalog cannot be fetched
-#' (e.g. no network), [gho_indicators()] emits a warning and the
-#' `indicator` column falls back to `NA`.
+#' (e.g. no network), [gho_indicators()] warns and legacy labels use its
+#' bundled snapshot without caching it as live data. Codes absent from that
+#' snapshot, or unavailable xMart labels, remain `NA`.
 #'
 #' @param df A data frame returned by [gho_data()].
 #' @param keep_dimensions Logical. Append `dim1_type`, `dim2_type`, and

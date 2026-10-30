@@ -18,10 +18,27 @@
 .legacy_gho_indicators <- function(search = NULL) {
     url <- .gho_indicators_build_url(search)
     res <- .gho_get(url)
-    if (is.null(res) || nrow(res) == 0L) {
+    if (is.null(res)) return(.gho_bundled_catalog(search))
+    if (nrow(res) == 0L) {
         return(tibble::tibble(IndicatorCode = character(), IndicatorName = character(), Language = character()))
     }
+    if (!all(c("IndicatorCode", "IndicatorName", "Language") %in% names(res))) {
+        cli::cli_warn("Malformed GHO indicator catalog received.")
+        return(.gho_bundled_catalog(search))
+    }
     res[, c("IndicatorCode", "IndicatorName", "Language")]
+}
+
+.gho_bundled_catalog <- function(search = NULL) {
+    snapshot <- readRDS(system.file("extdata", "gho-indicators.rds", package = "DSIR"))
+    date <- substr(snapshot$retrieved, 1L, 10L)
+    cli::cli_warn(c(
+        "Using the bundled legacy GHO indicator catalog collected on {date} (UTC).",
+        "i" = "Names and codes may be outdated. This snapshot does not establish current data availability."
+    ))
+    out <- .who_search(snapshot$catalog, "IndicatorName", search)
+    attr(out, "catalog_snapshot") <- snapshot[c("backend", "source", "retrieved")]
+    out
 }
 
 .legacy_gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL,
