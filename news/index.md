@@ -2,6 +2,10 @@
 
 ## DSIR 0.13.0 (2026-10-30)
 
+- Reference WHO’s official GHO API documentation in DESCRIPTION instead
+  of the unavailable legacy API root URL. Retrieval behavior is
+  unchanged.
+
 - **Default backend change:** GHO queries now use `backend = "auto"`
   unless overridden by an argument or `DSIR.who_backend`. Automatic
   selection prefers xMart and tries legacy only when a successful
