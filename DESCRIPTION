@@ -16,7 +16,8 @@ Description: Supports global health data analysis, including a
     construction, a snapshot helper for reproducible data pulls, and
     convenience clients for the World Health Organization Global Health
     Observatory (GHO) through its legacy OData API
-    <https://ghoapi.azureedge.net/api/> or the public WHO xMart OData API
+    <https://www.who.int/data/gho/info/gho-odata-api>
+    or the public WHO xMart OData API
     <https://xmart-api-public.who.int/DATA_>, Global Health Estimates (GHE)
     through WHO xMart, and
     the United Nations Sustainable Development Goals (SDG) API
