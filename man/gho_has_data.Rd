@@ -49,10 +49,11 @@ Canonical sex codes and the \code{AGEGROUP_} namespace remain supported in
 positional filters. Named filters use the provider's exact native codes.}
 
 \item{dimensions}{Optional named list of exact xMart dimension fields and
-values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires the xMart backend.}
+values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires xMart; automatic
+selection never translates these filters to legacy.}
 
-\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
-uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+\item{backend}{Character scalar. \code{"auto"}, \code{"xmart"} or \code{"legacy"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"auto"} when that option is
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.}
 }

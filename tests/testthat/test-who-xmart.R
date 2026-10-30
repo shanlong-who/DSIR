@@ -1,6 +1,6 @@
-test_that('legacy is the compatibility default and configuration is validated', {
+test_that('auto is the default and configuration is validated', {
   withr::local_options(DSIR.who_backend = NULL, DSIR.who_base_url = NULL)
-  expect_equal(.who_config()$backend, 'legacy')
+  expect_equal(.who_config()$backend, 'auto')
   expect_equal(.who_config()$base, 'https://xmart-api-public.who.int')
   withr::local_options(DSIR.who_backend = 'other')
   expect_error(.who_config(), 'backend')

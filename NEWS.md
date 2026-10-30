@@ -2,7 +2,20 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
-# DSIR (development version)
+# DSIR 0.13.0 (2026-10-30)
+
+* **Default backend change:** GHO queries now use `backend = "auto"` unless
+  overridden by an argument or `DSIR.who_backend`. Automatic selection prefers
+  xMart and tries legacy only when a successful directory omits the exact code
+  or a bounded whole-indicator query verifies zero observations. HTTP, parsing
+  and schema failures, empty filtered selections and partial coverage do not
+  trigger fallback. Explicit `"legacy"` and `"xmart"` retain fixed-provider behavior.
+* Automatic selection is shared by data, count, availability, coverage,
+  dimension and timestamp queries. Fallback warns, records the actual provider
+  and reason, and never combines releases. Named/positional dimension filters,
+  native/M49 areas and provider-specific dimension columns block fallback.
+  Keyword discovery in auto mode uses xMart only; legacy discovery remains
+  explicit. GHE stays on xMart. Use explicit providers for reproducible analyses.
 
 * Bundle a dated legacy GHO indicator catalog for `gho_indicators()` to search
   when online requests or parsing fail. Fallback warns with the collection

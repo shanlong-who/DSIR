@@ -1,11 +1,11 @@
 # WHO provider configuration and read-only OData transport. No disk cache.
 .who_config <- function(backend = NULL) {
   from_option <- is.null(backend)
-  if (from_option) backend <- getOption('DSIR.who_backend', 'legacy')
+  if (from_option) backend <- getOption('DSIR.who_backend', 'auto')
   if (!is.character(backend) || length(backend) != 1L || is.na(backend) ||
-      !backend %in% c('xmart', 'legacy')) {
-    if (from_option) cli::cli_abort('Option {.code DSIR.who_backend} must be "xmart" or "legacy".')
-    cli::cli_abort('{.arg backend} must be "xmart" or "legacy".')
+      !backend %in% c('auto', 'xmart', 'legacy')) {
+    if (from_option) cli::cli_abort('Option {.code DSIR.who_backend} must be "auto", "xmart" or "legacy".')
+    cli::cli_abort('{.arg backend} must be "auto", "xmart" or "legacy".')
   }
   base <- getOption('DSIR.who_base_url', 'https://xmart-api-public.who.int')
   if (!is.character(base) || length(base) != 1L || is.na(base) ||

@@ -9,9 +9,9 @@
 #' response, not proof of an official WHO data revision.
 #'
 #' @param indicator A single, non-empty GHO indicator code.
-#' @param backend Optional WHO backend: `"legacy"` or `"xmart"`. An explicit
+#' @param backend Optional WHO backend: `"auto"`, `"legacy"` or `"xmart"`. An explicit
 #'   value overrides `getOption("DSIR.who_backend")` for this call only.
-#'   When neither is set, the compatibility default is `"legacy"`.
+#'   When neither is set, the default is `"auto"`, as in [gho_data()].
 #' @param diagnostics Logical; default `FALSE`. If `TRUE`, append diagnostic
 #'   columns without making additional requests or changing backend selection.
 #'
@@ -20,7 +20,11 @@
 #' `Sys_CommitDateUtc` in the same indicator route selected by [gho_data()].
 #' Each date query requests only the latest non-missing value. xMart also
 #' consults the existing, session-cached indicator directory and table fields.
-#' Requests never fall back to the other backend.
+#' Automatic selection follows [gho_data()]: a verified absent or completely
+#' empty xMart indicator can fall back to legacy, with a warning. Missing
+#' timestamps never trigger fallback. Explicit backends never switch.
+#' The `who_provenance` attribute records automatic selection and its reason;
+#' the `backend` column and timestamp field describe the actual provider.
 #'
 #' The result describes the selected backend's current observations across
 #' all locations, years and dimensions. It is not the latest observation
@@ -64,9 +68,11 @@
 #'     response), `"timestamp_field_missing"`, `"timestamp_missing"` (no
 #'     non-missing timestamp returned), `"unsupported_route"`,
 #'     `"lookup_failed"`, `"unexpected_content"` (HTML instead of JSON),
-#'     `"invalid_json"`, `"invalid_response"`, or `"invalid_timestamp"`.
+#'     `"invalid_json"`, `"invalid_response"`, `"invalid_timestamp"`, or
+#'     `"fallback_incompatible"`.
 #'     These explain `status`; they do not replace its existing three values.}
-#'   \item{stage}{`"directory"`, `"schema"`, or `"timestamp"`: the stage
+#'   \item{stage}{`"directory"`, `"availability"` (automatic selection),
+#'     `"schema"`, or `"timestamp"`: the stage
 #'     associated with the result.}
 #'   \item{http_status}{Integer HTTP status captured in that stage, or `NA`
 #'     if unavailable, including a cached lookup or a transport failure.

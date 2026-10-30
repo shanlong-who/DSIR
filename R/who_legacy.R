@@ -1,5 +1,5 @@
-# Legacy GHO adapter is the compatibility default.
-# Backend selection is explicit; requests never fall back between providers.
+# Legacy GHO adapter. Automatic selection is handled by the shared dispatcher;
+# an explicit legacy request always stays on this provider.
 .legacy_gho_last_updated <- function(indicator) {
     out <- .dsi_update_result("gho", "legacy", "indicator", indicator, "Date")
     .dsi_update_note(stage = "timestamp", reason = "lookup_failed",

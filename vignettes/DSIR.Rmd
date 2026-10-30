@@ -145,7 +145,9 @@ The experimental `gho_last_updated()` asks for the latest non-missing
 timestamp among one indicator's current observations across all locations,
 years and dimensions.
 It follows the existing backend rules: an explicit argument overrides
-`DSIR.who_backend`, and the default is legacy when neither is set.
+`DSIR.who_backend`, and the default is `"auto"` when neither is set. Auto prefers
+xMart and only tries legacy for a verified absent or completely empty indicator.
+Missing timestamps do not trigger fallback. The result records its actual backend.
 
 ```{r, eval = FALSE}
 gho_last_updated("WHS4_100")
@@ -161,8 +163,9 @@ The source fields are `Date` for legacy and `Sys_CommitDateUtc` for xMart.
 DSIR has not established that legacy `Date` records an official modification
 or publication date; an xMart system commit can reflect processing. Neither
 field is the latest observation year. Each date request retrieves at most
-one row. xMart also uses cached directory and table-field lookups; there is
-no automatic backend fallback.
+one row. xMart also uses cached directory and table-field lookups. Auto adds
+a small whole-indicator availability request before the date query; request
+failures and missing timestamps never trigger fallback.
 Sequential requests for every indicator can take considerable time.
 
 The default eight columns are unchanged. `diagnostics = TRUE` adds `reason`,

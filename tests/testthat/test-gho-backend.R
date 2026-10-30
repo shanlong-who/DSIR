@@ -11,7 +11,7 @@ test_that('GHO backend arguments override session options without changing them'
     .package = 'DSIR'
   )
   httr2::with_mocked_responses(mock, {
-    expect_equal(gho_indicators()$IndicatorName, 'Legacy')
+    expect_equal(gho_indicators()$IndicatorName, 'xMart')
     expect_null(getOption('DSIR.who_backend'))
     expect_equal(gho_indicators(backend = 'xmart')$IndicatorName, 'xMart')
     expect_null(getOption('DSIR.who_backend'))
@@ -24,7 +24,7 @@ test_that('GHO backend arguments override session options without changing them'
     expect_equal(gho_indicators(backend = 'legacy')$IndicatorName, 'Legacy')
     expect_equal(getOption('DSIR.who_backend'), 'invalid')
   })
-  expect_length(urls, 3L)
+  expect_length(urls, 2L)
   expect_true(all(startsWith(urls, 'https://ghoapi.azureedge.net/api/Indicator')))
 })
 
@@ -96,7 +96,7 @@ test_that('invalid backend arguments fail before any request and preserve option
     list(fun = gho_dimensions, args = list('X'))
   )
   for (query in queries) {
-    for (backend in list('auto', 'XMart', '', NA_character_, character(), c('legacy', 'xmart'), 1L)) {
+    for (backend in list('other', 'XMart', '', NA_character_, character(), c('legacy', 'xmart'), 1L)) {
       expect_error(do.call(query$fun, c(query$args, list(backend = backend))), 'backend')
     }
   }

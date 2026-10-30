@@ -35,7 +35,7 @@ test_that("legacy update queries request only the latest non-missing date", {
   httr2::with_mocked_responses(function(req) {
     urls <<- c(urls, utils::URLdecode(req$url))
     who_response('{"value":[{"Date":"2026-05-18T12:07:03.230+02:00"}]}')
-  }, out <- gho_last_updated("WHS4_100"))
+  }, out <- gho_last_updated("WHS4_100", backend = "legacy"))
   expect_identical(out$source, "gho")
   expect_identical(out$backend, "legacy")
   expect_identical(out$scope, "indicator")
@@ -118,7 +118,7 @@ test_that("invalid update arguments fail before network calls", {
                         c("X", "Y"), 1L, list("X"))) {
     expect_error(gho_last_updated(indicator), "indicator")
   }
-  for (backend in list("auto", "XMart", "", NA_character_, character(),
+  for (backend in list("other", "XMart", "", NA_character_, character(),
                       c("legacy", "xmart"), 1L)) {
     expect_error(gho_last_updated("X", backend = backend), "backend")
   }

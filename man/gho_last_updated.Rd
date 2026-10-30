@@ -9,9 +9,9 @@ gho_last_updated(indicator, backend = NULL, diagnostics = FALSE)
 \arguments{
 \item{indicator}{A single, non-empty GHO indicator code.}
 
-\item{backend}{Optional WHO backend: \code{"legacy"} or \code{"xmart"}. An explicit
+\item{backend}{Optional WHO backend: \code{"auto"}, \code{"legacy"} or \code{"xmart"}. An explicit
 value overrides \code{getOption("DSIR.who_backend")} for this call only.
-When neither is set, the compatibility default is \code{"legacy"}.}
+When neither is set, the default is \code{"auto"}, as in \code{\link[=gho_data]{gho_data()}}.}
 
 \item{diagnostics}{Logical; default \code{FALSE}. If \code{TRUE}, append diagnostic
 columns without making additional requests or changing backend selection.}
@@ -39,9 +39,11 @@ With \code{diagnostics = TRUE}, six additional columns are appended:
 response), \code{"timestamp_field_missing"}, \code{"timestamp_missing"} (no
 non-missing timestamp returned), \code{"unsupported_route"},
 \code{"lookup_failed"}, \code{"unexpected_content"} (HTML instead of JSON),
-\code{"invalid_json"}, \code{"invalid_response"}, or \code{"invalid_timestamp"}.
+\code{"invalid_json"}, \code{"invalid_response"}, \code{"invalid_timestamp"}, or
+\code{"fallback_incompatible"}.
 These explain \code{status}; they do not replace its existing three values.}
-\item{stage}{\code{"directory"}, \code{"schema"}, or \code{"timestamp"}: the stage
+\item{stage}{\code{"directory"}, \code{"availability"} (automatic selection),
+\code{"schema"}, or \code{"timestamp"}: the stage
 associated with the result.}
 \item{http_status}{Integer HTTP status captured in that stage, or \code{NA}
 if unavailable, including a cached lookup or a transport failure.
@@ -68,7 +70,11 @@ The legacy backend orders observations by \code{Date}; xMart uses
 \code{Sys_CommitDateUtc} in the same indicator route selected by \code{\link[=gho_data]{gho_data()}}.
 Each date query requests only the latest non-missing value. xMart also
 consults the existing, session-cached indicator directory and table fields.
-Requests never fall back to the other backend.
+Automatic selection follows \code{\link[=gho_data]{gho_data()}}: a verified absent or completely
+empty xMart indicator can fall back to legacy, with a warning. Missing
+timestamps never trigger fallback. Explicit backends never switch.
+The \code{who_provenance} attribute records automatic selection and its reason;
+the \code{backend} column and timestamp field describe the actual provider.
 
 The result describes the selected backend's current observations across
 all locations, years and dimensions. It is not the latest observation

@@ -63,12 +63,19 @@ tests, help pages, and [release notes](../../NEWS.md).
   request or parsing failures. Snapshot results carry `catalog_snapshot`
   metadata and must not be cached as live results. Successful empty searches
   do not trigger fallback. Rebuild through `data-raw/gho_indicators.R`.
-- **Backend selection:** GHO retains the legacy compatibility default.
-  All six query functions accept `backend`; an explicit argument overrides
-  the session option without changing it. GHE always uses xMart. Recorded
-  raw provenance controls cleaner label lookups; optional `provider` columns
-  distinguish origins when binding observations. No automatic fallback between
-  backends occurs; the bundled catalog is limited to legacy discovery and labels.
+- **Backend selection:** since 0.13.0, GHO defaults to `auto`, preferring xMart.
+  A shared selector checks the directory and whole-indicator availability before
+  user filters. Only a missing directory code or a verified zero-row indicator
+  permits legacy fallback. Failed/malformed requests, invalid routes/schemas,
+  filtered emptiness and partial coverage do not. Geography/year restrictions
+  are preserved; native/M49 geography and named/positional dimensions block
+  fallback. No cross-provider combination or inferred dimension translation occurs.
+  All indicator queries, including timestamps, share this policy. Auto keyword
+  discovery searches xMart only. Explicit backends stay fixed and override the
+  session option. Selection is not cached; results record the actual backend,
+  requested mode and fallback reason. Cleaner lookups follow recorded origins.
+  GHE always uses xMart; the bundled catalog stays limited to legacy discovery
+  and labels. Snapshot identity records the actual backend, never `auto`.
 - **Paging:** since 0.11.0, the optional WHO xMart adapter validates row counts,
   stable identifiers and page consistency; incomplete downloads are discarded.
   The legacy GHO adapter follows OData next links. SDG validates page

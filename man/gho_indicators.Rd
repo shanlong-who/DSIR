@@ -20,8 +20,8 @@ gho_indicators(search = NULL, backend = NULL)
 
 Search terms are matched literally; they are not download identifiers.}
 
-\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
-uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+\item{backend}{Character scalar. \code{"auto"}, \code{"xmart"} or \code{"legacy"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"auto"} when that option is
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.}
 }
@@ -38,6 +38,12 @@ Fetches the catalog of indicators from the WHO Global Health
 Observatory (GHO) OData API.
 }
 \details{
+With \code{backend = "auto"}, discovery searches the xMart directory only.
+A keyword search cannot prove that an individual indicator is absent.
+Use \code{backend = "legacy"} to inspect legacy-only codes or use the bundled
+legacy catalog during an outage. Neither an empty xMart search nor an
+xMart request failure switches the catalog source.
+
 Online results are preferred. The bundled legacy catalog is refreshed with
 package releases and may omit new indicators or contain outdated names and
 codes. It is used only after a failed or malformed response, not after a

@@ -2,13 +2,29 @@
 .who_gho <- function(operation, ..., backend = NULL) {
   args <- list(...)
   config <- .who_config(backend)
-  out <- do.call(get(paste0('.', config$backend, '_gho_', operation), mode = 'function'), args)
+  started <- if (operation == 'last_updated' && config$backend == 'auto') Sys.time() else NULL
+  selection <- list(backend = config$backend, ready = TRUE, fallback_reason = NULL)
+  if (config$backend == 'auto') selection <- .who_auto_select(operation, args)
+  actual <- selection$backend
+  out <- if (selection$ready) {
+    do.call(get(paste0('.', actual, '_gho_', operation), mode = 'function'), args)
+  } else .who_gho_unavailable(operation, args$indicator)
+  if (!is.null(started)) {
+    attr(started, 'tzone') <- 'UTC'
+    out$checked_at <- started
+  }
   if (operation == 'data') {
     # Keep row-level origin when raw observations from both providers are bound.
-    out$Provider <- rep(config$backend, nrow(out))
+    out$Provider <- rep(actual, nrow(out))
+  }
+  if (operation == 'data' || config$backend == 'auto') {
     provenance <- attr(out, 'who_provenance')
     if (is.null(provenance)) provenance <- list()
-    provenance$backend <- config$backend
+    provenance$backend <- actual
+    if (config$backend == 'auto') {
+      provenance$requested_backend <- 'auto'
+      provenance$fallback_reason <- selection$fallback_reason
+    }
     attr(out, 'who_provenance') <- provenance
   }
   out

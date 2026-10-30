@@ -17,8 +17,8 @@ indicator data. Common values include \code{"SpatialDim"},
 \verb{$select} field name). xMart also accepts exact named fields such as
 \code{"DIM_SEX"} or \code{"DIM_AGE"}. Default \code{"SpatialDimType"}.}
 
-\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
-uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+\item{backend}{Character scalar. \code{"auto"}, \code{"xmart"} or \code{"legacy"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"auto"} when that option is
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.}
 }

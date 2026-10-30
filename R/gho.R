@@ -27,6 +27,12 @@
 #'   `retrieved` UTC time. The xMart backend still returns an empty tibble
 #'   with a warning when its service is unreachable.
 #' @details
+#' With `backend = "auto"`, discovery searches the xMart directory only.
+#' A keyword search cannot prove that an individual indicator is absent.
+#' Use `backend = "legacy"` to inspect legacy-only codes or use the bundled
+#' legacy catalog during an outage. Neither an empty xMart search nor an
+#' xMart request failure switches the catalog source.
+#'
 #' Online results are preferred. The bundled legacy catalog is refreshed with
 #' package releases and may omit new indicators or contain outdated names and
 #' codes. It is used only after a failed or malformed response, not after a
@@ -94,17 +100,37 @@ gho_indicators <- function(search = NULL, backend = NULL) {
 #'   Canonical sex codes and the `AGEGROUP_` namespace remain supported in
 #'   positional filters. Named filters use the provider's exact native codes.
 #' @param dimensions Optional named list of exact xMart dimension fields and
-#'   values, e.g. `list(DIM_SEX = 'TOTAL')`. Requires the xMart backend.
-#' @param backend Character scalar. `"legacy"` or `"xmart"`. Default `NULL`
-#'   uses the `DSIR.who_backend` option, or `"legacy"` when that option is
+#'   values, e.g. `list(DIM_SEX = 'TOTAL')`. Requires xMart; automatic
+#'   selection never translates these filters to legacy.
+#' @param backend Character scalar. `"auto"`, `"xmart"` or `"legacy"`. Default `NULL`
+#'   uses the `DSIR.who_backend` option, or `"auto"` when that option is
 #'   unset. An explicit argument overrides the option for this call without
 #'   changing it. Use the same backend for discovery and retrieval.
 #' @details
-#' Uses the legacy GHO OData backend by default for compatibility. Select
-#' `backend = "xmart"` to use the public production WHO xMart service, or
-#' set `options(DSIR.who_backend = "xmart")` as a session default.
-#' `DSIR.who_base_url` selects another compatible HTTPS xMart origin. Failures never
-#' trigger a silent fallback. Public directory coverage differs from the
+#' Since 0.13.0, automatic selection prefers the public WHO xMart service.
+#' It first checks the directory and, for a listed code, requests at most one
+#' observation with a row count for the entire indicator, before applying user
+#' filters. Only a code absent from a successfully read, non-empty directory
+#' or a verified zero-row indicator can trigger legacy fallback. This adds a
+#' small availability request to each automatic indicator query; that decision
+#' is not cached. An HTTP/transport/parsing failure, unsupported schema/route,
+#' or a valid empty filtered result never triggers fallback. Partial xMart
+#' coverage is not filled from legacy. Each call uses a single provider.
+#'
+#' Fallback warns and preserves country/region and year filters. It requires
+#' known WHO ISO3 or region codes. M49/native area codes, named dimensions and
+#' positional `dim1`-`dim3` filters block automatic fallback because equivalent
+#' interpretation cannot be guaranteed. For dimension discovery, only
+#' `SpatialDim`, `SpatialDimType`, `TimeDim` and `TimeDimType` allow fallback.
+#' Incompatible fallback warns and returns the operation's failed empty/NA
+#' result without dropping any filters. Select a provider explicitly to use
+#' its own dimension and geography conventions.
+#'
+#' Explicit `backend = "xmart"` or `"legacy"` fixes the provider and avoids
+#' the automatic availability request. `gho_indicators(backend = "auto")`
+#' searches the xMart catalog only. GHE always uses xMart.
+#' `DSIR.who_base_url` selects another compatible HTTPS xMart origin.
+#' Public directory coverage differs from the
 #' legacy catalog, and published estimates can differ. Unknown xMart directory
 #' codes warn; legacy HTTP 404 responses are checked against its directory
 #' before being classified as absent codes. A successful query with no
@@ -118,6 +144,11 @@ gho_indicators <- function(search = NULL, backend = NULL) {
 #'   The raw `Provider` column records `"legacy"` or `"xmart"` per row.
 #'   A `who_provenance` attribute records the selected backend and, for
 #'   successful downloads, the request context and retrieval time.
+#'   Automatic queries also record `requested_backend = "auto"` and, when
+#'   fallback is attempted, `fallback_reason` (`"directory_not_listed"` or
+#'   `"indicator_empty"`). The same selection metadata is attached to automatic
+#'   counts, availability, coverage, dimension and timestamp results, including
+#'   scalar results. Failed selection records the attempted xMart backend.
 #' @seealso [gho_indicators()], [gho_dimensions()].
 #' @export
 #'

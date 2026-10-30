@@ -49,10 +49,11 @@ Canonical sex codes and the \code{AGEGROUP_} namespace remain supported in
 positional filters. Named filters use the provider's exact native codes.}
 
 \item{dimensions}{Optional named list of exact xMart dimension fields and
-values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires the xMart backend.}
+values, e.g. \code{list(DIM_SEX = 'TOTAL')}. Requires xMart; automatic
+selection never translates these filters to legacy.}
 
-\item{backend}{Character scalar. \code{"legacy"} or \code{"xmart"}. Default \code{NULL}
-uses the \code{DSIR.who_backend} option, or \code{"legacy"} when that option is
+\item{backend}{Character scalar. \code{"auto"}, \code{"xmart"} or \code{"legacy"}. Default \code{NULL}
+uses the \code{DSIR.who_backend} option, or \code{"auto"} when that option is
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.}
 }
@@ -62,6 +63,11 @@ an empty tibble when the service is unreachable or no observations match.
 The raw \code{Provider} column records \code{"legacy"} or \code{"xmart"} per row.
 A \code{who_provenance} attribute records the selected backend and, for
 successful downloads, the request context and retrieval time.
+Automatic queries also record \code{requested_backend = "auto"} and, when
+fallback is attempted, \code{fallback_reason} (\code{"directory_not_listed"} or
+\code{"indicator_empty"}). The same selection metadata is attached to automatic
+counts, availability, coverage, dimension and timestamp results, including
+scalar results. Failed selection records the attempted xMart backend.
 }
 \description{
 Retrieves observations for a specific indicator from the WHO GHO
@@ -69,11 +75,30 @@ OData API, with optional filters by spatial level, country /
 region and year range.
 }
 \details{
-Uses the legacy GHO OData backend by default for compatibility. Select
-\code{backend = "xmart"} to use the public production WHO xMart service, or
-set \code{options(DSIR.who_backend = "xmart")} as a session default.
-\code{DSIR.who_base_url} selects another compatible HTTPS xMart origin. Failures never
-trigger a silent fallback. Public directory coverage differs from the
+Since 0.13.0, automatic selection prefers the public WHO xMart service.
+It first checks the directory and, for a listed code, requests at most one
+observation with a row count for the entire indicator, before applying user
+filters. Only a code absent from a successfully read, non-empty directory
+or a verified zero-row indicator can trigger legacy fallback. This adds a
+small availability request to each automatic indicator query; that decision
+is not cached. An HTTP/transport/parsing failure, unsupported schema/route,
+or a valid empty filtered result never triggers fallback. Partial xMart
+coverage is not filled from legacy. Each call uses a single provider.
+
+Fallback warns and preserves country/region and year filters. It requires
+known WHO ISO3 or region codes. M49/native area codes, named dimensions and
+positional \code{dim1}-\code{dim3} filters block automatic fallback because equivalent
+interpretation cannot be guaranteed. For dimension discovery, only
+\code{SpatialDim}, \code{SpatialDimType}, \code{TimeDim} and \code{TimeDimType} allow fallback.
+Incompatible fallback warns and returns the operation's failed empty/NA
+result without dropping any filters. Select a provider explicitly to use
+its own dimension and geography conventions.
+
+Explicit \code{backend = "xmart"} or \code{"legacy"} fixes the provider and avoids
+the automatic availability request. \code{gho_indicators(backend = "auto")}
+searches the xMart catalog only. GHE always uses xMart.
+\code{DSIR.who_base_url} selects another compatible HTTPS xMart origin.
+Public directory coverage differs from the
 legacy catalog, and published estimates can differ. Unknown xMart directory
 codes warn; legacy HTTP 404 responses are checked against its directory
 before being classified as absent codes. A successful query with no
