@@ -1,0 +1,37 @@
+name: CRAN preflight 0.13.0
+
+on:
+  push:
+    branches: [codex/cran-preflight-0130]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: 'yes'
+      NOT_CRAN: 'false'
+      DSIR_RUN_LIVE_TESTS: 'false'
+      DSIR_BUILD_LIVE_VIGNETTE: 'false'
+      _R_CHECK_FORCE_SUGGESTS_: 'true'
+      _R_CHECK_LIMIT_CORES_: 'true'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: devel
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"warning"'
+          upload-results: true
+          artifact-name: cran-0130-r-devel
