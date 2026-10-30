@@ -33,7 +33,7 @@ its full observation table.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,9 +107,9 @@ its full observation table.</p>
 
 <dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a>
 </dt>
-<dd><p>Optional WHO backend: <code>"legacy"</code> or <code>"xmart"</code>. An explicit
+<dd><p>Optional WHO backend: <code>"auto"</code>, <code>"legacy"</code> or <code>"xmart"</code>. An explicit
 value overrides <code>getOption("DSIR.who_backend")</code> for this call only.
-When neither is set, the compatibility default is <code>"legacy"</code>.</p></dd>
+When neither is set, the default is <code>"auto"</code>, as in <code><a href="gho_data.html">gho_data()</a></code>.</p></dd>
 
 
 <dt id="arg-diagnostics">diagnostics<a class="anchor" aria-label="anchor" href="#arg-diagnostics"></a>
@@ -162,11 +162,13 @@ observations exist. Failures warn and retain the same one-row schema.</p></dd>
 response), <code>"timestamp_field_missing"</code>, <code>"timestamp_missing"</code> (no
 non-missing timestamp returned), <code>"unsupported_route"</code>,
 <code>"lookup_failed"</code>, <code>"unexpected_content"</code> (HTML instead of JSON),
-<code>"invalid_json"</code>, <code>"invalid_response"</code>, or <code>"invalid_timestamp"</code>.
+<code>"invalid_json"</code>, <code>"invalid_response"</code>, <code>"invalid_timestamp"</code>, or
+<code>"fallback_incompatible"</code>.
 These explain <code>status</code>; they do not replace its existing three values.</p></dd>
 
 <dt>stage</dt>
-<dd><p><code>"directory"</code>, <code>"schema"</code>, or <code>"timestamp"</code>: the stage
+<dd><p><code>"directory"</code>, <code>"availability"</code> (automatic selection),
+<code>"schema"</code>, or <code>"timestamp"</code>: the stage
 associated with the result.</p></dd>
 
 <dt>http_status</dt>
@@ -199,7 +201,11 @@ response, not proof of an official WHO data revision.</p>
 <code>Sys_CommitDateUtc</code> in the same indicator route selected by <code><a href="gho_data.html">gho_data()</a></code>.
 Each date query requests only the latest non-missing value. xMart also
 consults the existing, session-cached indicator directory and table fields.
-Requests never fall back to the other backend.</p>
+Automatic selection follows <code><a href="gho_data.html">gho_data()</a></code>: a verified absent or completely
+empty xMart indicator can fall back to legacy, with a warning. Missing
+timestamps never trigger fallback. Explicit backends never switch.
+The <code>who_provenance</code> attribute records automatic selection and its reason;
+the <code>backend</code> column and timestamp field describe the actual provider.</p>
 <p>The result describes the selected backend's current observations across
 all locations, years and dimensions. It is not the latest observation
 year, a formal publication date, or the update time of the whole GHO.

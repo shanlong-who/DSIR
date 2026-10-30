@@ -28,10 +28,10 @@ gho_indicators(search = NULL, backend = NULL)
 
 - backend:
 
-  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
-  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
-  explicit argument overrides the option for this call without changing
-  it. Use the same backend for discovery and retrieval.
+  Character scalar. `"auto"`, `"xmart"` or `"legacy"`. Default `NULL`
+  uses the `DSIR.who_backend` option, or `"auto"` when that option is
+  unset. An explicit argument overrides the option for this call without
+  changing it. Use the same backend for discovery and retrieval.
 
 ## Value
 
@@ -44,6 +44,12 @@ still returns an empty tibble with a warning when its service is
 unreachable.
 
 ## Details
+
+With `backend = "auto"`, discovery searches the xMart directory only. A
+keyword search cannot prove that an individual indicator is absent. Use
+`backend = "legacy"` to inspect legacy-only codes or use the bundled
+legacy catalog during an outage. Neither an empty xMart search nor an
+xMart request failure switches the catalog source.
 
 Online results are preferred. The bundled legacy catalog is refreshed
 with package releases and may omit new indicators or contain outdated

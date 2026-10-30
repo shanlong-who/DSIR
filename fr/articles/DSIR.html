@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Activer la navigation">
@@ -256,7 +256,10 @@ l’horodatage non manquant le plus récent parmi les observations
 actuelles d’un indicateur, pour tous les lieux, années et dimensions. Un
 argument <code>backend</code> explicite prime sur
 <code>DSIR.who_backend</code>. Si aucun des deux n’est défini, la
-fonction utilise legacy.</p>
+fonction utilise <code>auto</code>. Ce mode privilégie xMart et essaie
+legacy uniquement pour un indicateur confirmé absent ou entièrement
+vide. Un horodatage manquant ne déclenche pas de basculement. Le
+résultat indique le backend utilisé.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
@@ -271,9 +274,11 @@ fonction utilise legacy.</p>
 un commit système xMart peut refléter un traitement. Aucun des deux
 champs n’est la dernière année d’observation. Chaque requête de date
 renvoie au plus une ligne. xMart utilise aussi le répertoire et les
-informations de champs mis en cache. Il n’y a pas de basculement
-automatique entre les backends. Interroger tous les indicateurs à la
-suite peut prendre beaucoup de temps.</p>
+informations de champs mis en cache. Le mode auto ajoute une petite
+requête de disponibilité pour l’indicateur entier avant la requête de
+date. Les échecs de requête et les horodatages manquants ne déclenchent
+jamais de basculement. Interroger tous les indicateurs à la suite peut
+prendre beaucoup de temps.</p>
 <p>Les huit colonnes par défaut restent inchangées.
 <code>diagnostics = TRUE</code> ajoute <code>reason</code>,
 <code>stage</code>, <code>http_status</code>,

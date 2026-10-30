@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,9 +114,10 @@ execution:</p>
 <span><span class="va">result</span><span class="op">$</span><span class="va">summary</span></span>
 <span><span class="va">result</span><span class="op">$</span><span class="va">modified</span></span></code></pre></div>
 <p>The legacy backend is also supported; choose it explicitly in both
-queries. There is no automatic fallback. A failed or incomplete
-retrieval cannot silently replace a good file. Existing paths cause an
-error unless <code>overwrite = TRUE</code> is explicitly requested.</p>
+queries. Explicit backends do not switch providers. A failed or
+incomplete retrieval cannot silently replace a good file. Existing paths
+cause an error unless <code>overwrite = TRUE</code> is explicitly
+requested.</p>
 <p>For cleaned data, use
 <code>gho_clean(data, keep_dimensions = TRUE, keep_metadata = TRUE)</code>.
 The default 15-column cleaned schema does not retain all identity

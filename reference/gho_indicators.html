@@ -31,7 +31,7 @@ Observatory (GHO) OData API.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,8 +116,8 @@ Observatory (GHO) OData API.</p>
 
 <dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a>
 </dt>
-<dd><p>Character scalar. <code>"legacy"</code> or <code>"xmart"</code>. Default <code>NULL</code>
-uses the <code>DSIR.who_backend</code> option, or <code>"legacy"</code> when that option is
+<dd><p>Character scalar. <code>"auto"</code>, <code>"xmart"</code> or <code>"legacy"</code>. Default <code>NULL</code>
+uses the <code>DSIR.who_backend</code> option, or <code>"auto"</code> when that option is
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.</p></dd>
 
@@ -136,7 +136,12 @@ with a warning when its service is unreachable.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
 </h2>
-    <p>Online results are preferred. The bundled legacy catalog is refreshed with
+    <p>With <code>backend = "auto"</code>, discovery searches the xMart directory only.
+A keyword search cannot prove that an individual indicator is absent.
+Use <code>backend = "legacy"</code> to inspect legacy-only codes or use the bundled
+legacy catalog during an outage. Neither an empty xMart search nor an
+xMart request failure switches the catalog source.</p>
+<p>Online results are preferred. The bundled legacy catalog is refreshed with
 package releases and may omit new indicators or contain outdated names and
 codes. It is used only after a failed or malformed response, not after a
 successful search with no matches. Fallback searches preserve literal,

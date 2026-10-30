@@ -1,10 +1,14 @@
 # WHO xMart and Global Health Estimates
 
-DSIR 0.11.0 keeps the legacy GHO OData service as its compatibility
-default and supports WHO’s public production xMart service through
-`backend = 'xmart'`. GHE always uses xMart. Downloads never switch
-providers after a failure. Network examples below are shown without
-running during vignette builds.
+DSIR 0.13.0 defaults to `backend = 'auto'`, preferring WHO’s public
+xMart service. It tries legacy only for an exact code absent from a
+successfully read directory or a verified whole-indicator zero count. A
+bounded query checks indicator availability before applying country,
+year or dimension filters. Filtered empty results and partial coverage
+do not trigger fallback or combine releases. Explicit
+`backend = 'xmart'` and `backend = 'legacy'` always fix the provider.
+GHE always uses xMart. Downloads never switch providers after a failure.
+Network examples below are shown without running during vignette builds.
 
 ## Discover GHO codes and preserve named dimensions
 
@@ -32,10 +36,24 @@ Positions can differ from legacy `Dim1`-`Dim3`. Prefer named filters.
 
 The xMart directory and old catalog cover different codes and
 publication vintages. An unknown code warns; it is never replaced by a
-similar code. All six GHO query functions accept `backend`. An explicit
-argument overrides `DSIR.who_backend` without changing that option; an
-unset option uses legacy. Use the same backend for code discovery,
+similar code. GHO query functions, including update timestamps, accept
+`backend`. An explicit argument overrides `DSIR.who_backend` without
+changing that option; an unset option uses auto. Keyword discovery in
+auto mode searches xMart only. Use `gho_indicators(backend = 'legacy')`
+to inspect legacy-only codes and access the dated bundled legacy catalog
+when its online request fails. Use the same backend for code discovery,
 dimensions, counts, coverage and data.
+
+Automatic fallback warns and records `requested_backend`, actual
+`backend` and `fallback_reason` in the result’s `who_provenance`
+attribute, including scalar counts and availability results. It
+preserves known WHO ISO3/region codes and year filters, but does not
+translate named or positional dimensions or M49/native area codes. Such
+filters block fallback rather than being dropped. Dimension discovery
+only permits fallback for `SpatialDim`, `SpatialDimType`, `TimeDim` and
+`TimeDimType`. Pin a provider when using its specific conventions.
+Missing timestamps do not cause a switch. Selection is checked anew on
+each call.
 
 ``` r
 
@@ -56,7 +74,7 @@ returns `0L` in that case. Requests or parsing failures warn and return
 empty tables or `NA`. An unknown xMart directory code warns. Legacy HTTP
 404 responses trigger a small directory check before an indicator is
 reported absent. A failed directory check cannot establish absence.
-There is no automatic fallback.
+Request and parsing failures never trigger automatic fallback.
 
 ## Discover GHE selections
 

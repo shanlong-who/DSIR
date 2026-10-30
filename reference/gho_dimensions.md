@@ -28,10 +28,10 @@ gho_dimensions(indicator, dimension = "SpatialDimType", backend = NULL)
 
 - backend:
 
-  Character scalar. `"legacy"` or `"xmart"`. Default `NULL` uses the
-  `DSIR.who_backend` option, or `"legacy"` when that option is unset. An
-  explicit argument overrides the option for this call without changing
-  it. Use the same backend for discovery and retrieval.
+  Character scalar. `"auto"`, `"xmart"` or `"legacy"`. Default `NULL`
+  uses the `DSIR.who_backend` option, or `"auto"` when that option is
+  unset. An explicit argument overrides the option for this call without
+  changing it. Use the same backend for discovery and retrieval.
 
 ## Value
 

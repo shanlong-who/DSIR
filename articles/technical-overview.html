@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,26 @@ tables produced from this data look consistent across reports.</p>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="whats-new-in-0-12-0-github">What’s new in 0.12.0 (GitHub)<a class="anchor" aria-label="anchor" href="#whats-new-in-0-12-0-github"></a>
+<h2 id="whats-new-in-0-13-0-github">What’s new in 0.13.0 (GitHub)<a class="anchor" aria-label="anchor" href="#whats-new-in-0-13-0-github"></a>
+</h2>
+<ul>
+<li>
+<strong>xMart-first GHO queries:</strong> the default
+<code>backend = "auto"</code> tries legacy only for codes missing from
+the xMart directory or indicators verified to have no observations at
+all. Filtered empty results and request failures do not switch
+providers. Fallback warns and records the actual provider and
+reason.</li>
+<li>
+<strong>Explicit provider controls:</strong> pin
+<code>backend = "xmart"</code> or <code>"legacy"</code> for reproducible
+analysis. Automatic selection never combines data releases or translates
+provider-specific dimension filters. Legacy discovery has a dated
+bundled catalog available when its online requests fail.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="added-in-0-12-0-github">Added in 0.12.0 (GitHub)<a class="anchor" aria-label="anchor" href="#added-in-0-12-0-github"></a>
 </h2>
 <ul>
 <li>
@@ -137,8 +156,8 @@ codes and coverage.</li>
 <li>
 <strong>GHO backend choice:</strong> select
 <code>backend = "legacy"</code> or <code>"xmart"</code> for each
-request. Legacy remains the compatibility default when no session option
-is set; there is no automatic fallback between providers.</li>
+request. In 0.11.0, legacy was the compatibility default; 0.13.0 adds
+the automatic selection described below.</li>
 <li>
 <strong>More data context:</strong> optionally retain named xMart
 dimensions, units and provider information. The default cleaned output
@@ -362,8 +381,9 @@ server what is available without transferring observations:</p>
 observation timestamp across all locations, years and dimensions. It
 follows the same backend selection rules as <code><a href="../reference/gho_data.html">gho_data()</a></code>: an
 explicit <code>backend</code> overrides <code>DSIR.who_backend</code>,
-with legacy as the default when neither is set. It never switches
-providers after a failure.</p>
+with <code>"auto"</code> as the default when neither is set. Missing
+timestamps or failed requests do not trigger fallback; automatic
+selection checks observation availability first.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
@@ -404,13 +424,15 @@ modification or observation retrieval time. Use
 detect actual differences between retrieved observations.</p>
 <p><strong>Fetch and clean.</strong> The typical workflow is
 <strong>search → fetch → clean</strong>:</p>
-<p><code><a href="../reference/gho_indicators.html">gho_indicators()</a></code> queries the selected online backend
-first. If a legacy GHO request fails, it searches the bundled legacy
-catalog and warns with its collection date.
-<code>attr(result, "catalog_snapshot")</code> records the snapshot’s
-source and UTC collection time. The snapshot may omit new codes or
-contain outdated names; it does not confirm that observations are
-available. Successful empty searches do not trigger fallback. xMart
+<p><code><a href="../reference/gho_indicators.html">gho_indicators()</a></code> searches xMart when
+<code>backend = "auto"</code>. Keyword searches cannot establish that an
+individual indicator is absent, so they do not switch catalogs. Select
+<code>backend = "legacy"</code> for legacy-only codes. If a legacy GHO
+request fails, it searches the bundled legacy catalog and warns with its
+collection date. <code>attr(result, "catalog_snapshot")</code> records
+the snapshot’s source and UTC collection time. The snapshot may omit new
+codes or contain outdated names; it does not confirm that observations
+are available. Successful empty searches do not trigger fallback. xMart
 never uses the legacy snapshot. Search matches names literally: use
 <code>"UHC service coverage"</code>, not the abbreviation
 <code>"UHC SCI"</code>, to find names containing those words.</p>
@@ -467,9 +489,8 @@ among others.</p>
 <span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">provider</span>, <span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
 <p>As verified on 2026-10-06, this financial-hardship code is absent
-from the public xMart directory. The example explicitly selects the
-legacy provider; there is no automatic fallback. The UN SDG workflow
-below remains separate.</p>
+from the public xMart directory. The example fixes the legacy provider
+explicitly. The UN SDG workflow below remains separate.</p>
 <p><code>keep_metadata = TRUE</code> also preserves the retrieval
 <code>provider</code>, observation identifier, source code and type,
 spatial/time types, parent location, update timestamp, time interval,
@@ -653,16 +674,63 @@ complete enough that pre-flight checks add little value.</p>
 </h2>
 <p>MIT — © 2026 Shanlong Ding</p>
 <div class="section level3">
-<h3 id="who-xmart-migration-0-11-0">WHO xMart migration (0.11.0)<a class="anchor" aria-label="anchor" href="#who-xmart-migration-0-11-0"></a>
+<h3 id="who-backend-selection-0-13-0">WHO backend selection (0.13.0)<a class="anchor" aria-label="anchor" href="#who-backend-selection-0-13-0"></a>
 </h3>
-<p>GHO keeps the legacy OData API as its compatibility default. Select
-<code>backend = "xmart"</code> to use
-<code>https://xmart-api-public.who.int</code> for one call. Its official
-directory supplies public download routes; DSIR maps them into its
-familiar observation fields. The 15-column default of
-<code><a href="../reference/gho_clean.html">gho_clean()</a></code> remains unchanged. Public codes and published
-vintages can differ between providers. Use the same backend for
-discovery and retrieval.</p>
+<p>GHO defaults to <code>backend = "auto"</code>, preferring the public
+xMart API at <code>https://xmart-api-public.who.int</code>. Before
+filtering, automatic indicator queries read its directory and make a
+bounded availability request (at most one row) for the entire indicator.
+The same selection rules apply to data, counts, availability, coverage,
+dimension discovery and update timestamps:</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>xMart result</th>
+<th>Automatic behavior</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Exact code absent from a successfully read, non-empty directory</td>
+<td>Try legacy, with a warning</td>
+</tr>
+<tr class="even">
+<td>Verified zero observations for the entire indicator</td>
+<td>Try legacy, with a warning</td>
+</tr>
+<tr class="odd">
+<td>Indicator has observations, but requested filters match none</td>
+<td>Keep the valid empty xMart result</td>
+</tr>
+<tr class="even">
+<td>HTTP, transport, parsing, schema or route failure</td>
+<td>Report failure; do not switch</td>
+</tr>
+<tr class="odd">
+<td>Only some countries or years are available</td>
+<td>Return xMart coverage; do not fill gaps from legacy</td>
+</tr>
+</tbody>
+</table>
+<p>Fallback preserves known WHO ISO3/region codes and year filters.
+Named dimensions, positional <code>dim1</code>-<code>dim3</code> filters
+and M49/native geography codes block fallback because equivalent filters
+have not been established. Dimension discovery can fall back only for
+<code>SpatialDim</code>, <code>SpatialDimType</code>,
+<code>TimeDim</code> and <code>TimeDimType</code>. Blocked fallback
+warns and returns empty/NA without dropping filters. Use an explicit
+backend with its native conventions in these cases.</p>
+<p>Each automatic result records the actual backend,
+<code>requested_backend = "auto"</code> and any
+<code>fallback_reason</code> in
+<code>attr(result, "who_provenance")</code>; this also applies to scalar
+counts and availability results. Raw observations retain
+<code>Provider</code>. No result combines providers. Decisions are
+checked afresh on subsequent calls. Pin a backend for repeated analysis,
+since provider coverage and published estimates may change. The
+15-column default of <code><a href="../reference/gho_clean.html">gho_clean()</a></code> is unchanged.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_dimensions.html">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
@@ -696,8 +764,8 @@ option has changed since retrieval.</p>
 Reference lookups use a ten-minute memory cache. No keys, startup
 requests or disk cache are required. Selection follows: explicit
 <code>backend</code> argument, then the <code>DSIR.who_backend</code>
-option, then <code>"legacy"</code>. An argument never changes the
-session option. To choose a session default once, use
+option, then <code>"auto"</code>. An argument never changes the session
+option. To choose a session default once, use
 <code>options(DSIR.who_backend = "xmart")</code>. Other advanced
 settings are <code>DSIR.who_base_url</code> (xMart HTTPS origin),
 <code>DSIR.who_page_size</code> and <code>DSIR.who_max_rows</code>. Use

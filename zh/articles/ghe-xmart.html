@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -87,10 +87,12 @@
 
     
     
-<p>DSIR 0.11.0 保留旧版 GHO OData 服务作为兼容性默认选项，同时通过
-<code>backend = 'xmart'</code> 支持 WHO 公共生产环境的 xMart
-服务。全球卫生估计（GHE）始终使用
-xMart。下载失败后不会自动切换数据服务。构建教程时，下列联网示例仅展示代码，不执行。</p>
+<p>DSIR 0.13.0 默认使用 <code>backend = 'auto'</code>，优先查询 WHO 公共
+xMart
+服务。仅当成功读取的目录未列出该确切代码，或确认整个指标的观测数为零时，才尝试旧版服务。在应用国家、年份或维度筛选前，系统通过一个小型请求核实指标是否有数据。筛选后没有结果或覆盖不完整不会触发回退，也不会合并不同发布版本。显式设置
+<code>backend = 'xmart'</code> 或 <code>backend = 'legacy'</code>
+始终固定数据服务。全球卫生估计（GHE）始终使用
+xMart。下载失败后不会切换服务。构建教程时，下列联网示例仅展示代码，不执行。</p>
 <p>本文代码与英文版共用；数据源的代码、字段名和返回标签保持原样。首次使用请先阅读
 <a href="DSIR.html">DSIR 入门</a>。</p>
 <div class="section level2">
@@ -113,9 +115,20 @@ xMart。下载失败后不会自动切换数据服务。构建教程时，下列
 <code>NA</code>。维度位置可能不同于旧版
 <code>Dim1</code>–<code>Dim3</code>，建议使用命名筛选条件。</p>
 <p>xMart
-目录与旧版目录包含的代码和发布版本可能不同。未知代码会触发警告，不会替换成相似代码。六个
-GHO 查询函数均接受 <code>backend</code>；显式参数优先于
-<code>DSIR.who_backend</code>，但不会修改该选项。未设置选项时使用旧版服务。查询代码、维度、行数、覆盖范围和数据时，应使用同一个后端。</p>
+目录与旧版目录包含的代码和发布版本可能不同。未知代码会触发警告，不会替换成相似代码。GHO
+查询函数（包括更新时间查询）均接受 <code>backend</code>；显式参数优先于
+<code>DSIR.who_backend</code>，但不会修改该选项。未设置选项时使用
+auto。auto 模式的关键词检索只查询 xMart。使用
+<code>gho_indicators(backend = 'legacy')</code>
+可以查看旧版独有代码；旧版在线目录请求失败时会使用带有采集日期的内置目录。查询代码、维度、行数、覆盖范围和数据时，应使用同一个后端。</p>
+<p>自动回退会发出警告，并在结果的 <code>who_provenance</code> 属性中记录
+<code>requested_backend</code>、实际 <code>backend</code> 和
+<code>fallback_reason</code>，行数和有无数据的标量结果也包含这些信息。回退保留已知
+WHO ISO3／区域代码及年份筛选，但不会转换命名或位置维度，也不会转换
+M49／原生地区代码。这些筛选会阻止回退，不会被丢弃。维度查询仅允许
+<code>SpatialDim</code>、<code>SpatialDimType</code>、<code>TimeDim</code>
+和 <code>TimeDimType</code>
+自动回退。使用服务特有的约定时，请显式固定后端。缺少时间戳不会触发切换。每次调用都会重新检查选择条件。</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">financial</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">'FINANCIALHARDSHIP_PROPORTIONOFPOP'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>,</span>
 <span>                       backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
@@ -129,7 +142,7 @@ GHO 查询函数均接受 <code>backend</code>；显式参数优先于
 <code>FALSE</code>，<code><a href="../../reference/gho_count.html" hreflang="en">gho_count()</a></code> 返回
 <code>0L</code>。请求或解析失败时会警告，返回空表或
 <code>NA</code>。xMart 目录中的未知代码会触发警告。旧版服务返回 HTTP 404
-时，会先小规模查询目录，再判断指标是否不存在；目录查询失败不能证明指标不存在。系统不会自动回退到另一个服务。</p>
+时，会先小规模查询目录，再判断指标是否不存在；目录查询失败不能证明指标不存在。请求和解析失败均不会触发自动回退。</p>
 </div>
 <div class="section level2">
 <h2 id="查询-ghe-可选值">查询 GHE 可选值<a class="anchor" aria-label="anchor" href="#%E6%9F%A5%E8%AF%A2-ghe-%E5%8F%AF%E9%80%89%E5%80%BC"></a>

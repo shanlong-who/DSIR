@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Activer la navigation">
@@ -87,13 +87,19 @@
 
     
     
-<p>DSIR 0.11.0 conserve l’ancien service OData du GHO comme option par
-défaut pour la compatibilité, et prend en charge le service public de
-production xMart de l’OMS avec <code>backend = 'xmart'</code>. Les
+<p>DSIR 0.13.0 utilise <code>backend = 'auto'</code> par défaut et
+privilégie le service public xMart de l’OMS. Il essaie legacy uniquement
+si le code exact est absent d’un répertoire lu avec succès ou si le
+nombre d’observations de l’indicateur entier est confirmé comme nul. Une
+petite requête vérifie cette disponibilité avant les filtres de pays,
+d’année ou de dimension. Un résultat filtré vide ou une couverture
+partielle ne déclenche aucun basculement et ne combine pas les versions.
+Les valeurs explicites <code>backend = 'xmart'</code> et
+<code>backend = 'legacy'</code> fixent toujours le service. Les
 estimations sanitaires mondiales (GHE) utilisent toujours xMart. Un
-échec de téléchargement ne provoque jamais de changement automatique de
-service. Les exemples nécessitant le réseau sont affichés sans exécution
-lors de la construction du tutoriel.</p>
+échec de téléchargement ne provoque jamais de changement de service. Les
+exemples nécessitant le réseau sont affichés sans exécution lors de la
+construction du tutoriel.</p>
 <p>Le code est commun à la version anglaise. Les codes, les noms de
 champs et les libellés des sources restent inchangés. Pour commencer,
 consultez les <a href="DSIR.html">premiers pas avec DSIR</a>.</p>
@@ -124,12 +130,30 @@ changé. Les origines inconnues de données importées restent à
 <code>Dim1</code>–<code>Dim3</code> ; préférez les filtres nommés.</p>
 <p>Le répertoire xMart et l’ancien catalogue peuvent couvrir des codes
 et des versions de publication différents. Un code inconnu provoque un
-avertissement ; il n’est jamais remplacé par un code similaire. Les six
-fonctions de requête GHO acceptent <code>backend</code>. Un argument
-explicite est prioritaire sur <code>DSIR.who_backend</code>, sans
-modifier cette option. Si l’option n’est pas définie, l’ancien service
-est utilisé. Employez le même service pour rechercher les codes, les
+avertissement ; il n’est jamais remplacé par un code similaire. Les
+fonctions de requête GHO, y compris les horodatages, acceptent
+<code>backend</code>. Un argument explicite est prioritaire sur
+<code>DSIR.who_backend</code>, sans modifier cette option. Si l’option
+n’est pas définie, auto est utilisé. La recherche par mots-clés en mode
+auto consulte uniquement xMart. Utilisez
+<code>gho_indicators(backend = 'legacy')</code> pour explorer les codes
+propres à legacy et accéder au catalogue intégré daté si sa requête en
+ligne échoue. Employez le même backend pour rechercher les codes, les
 dimensions, les comptes, la couverture et les données.</p>
+<p>Un basculement automatique émet un avertissement et enregistre
+<code>requested_backend</code>, le <code>backend</code> utilisé et
+<code>fallback_reason</code> dans l’attribut
+<code>who_provenance</code>, y compris pour les résultats scalaires de
+comptage et de disponibilité. Il conserve les codes ISO3 ou régionaux
+connus de l’OMS et les filtres d’année, mais ne traduit ni les
+dimensions nommées ou positionnelles, ni les codes de zone M49 ou
+natifs. Ces filtres empêchent le basculement ; ils ne sont jamais
+supprimés. Pour la recherche de dimensions, seuls
+<code>SpatialDim</code>, <code>SpatialDimType</code>,
+<code>TimeDim</code> et <code>TimeDimType</code> permettent un
+basculement. Fixez le service pour utiliser ses conventions propres. Un
+horodatage manquant ne provoque pas de changement. La sélection est
+vérifiée à chaque appel.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">financial</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">'FINANCIALHARDSHIP_PROPORTIONOFPOP'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>,</span>
 <span>                       backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
@@ -145,8 +169,9 @@ Les échecs de requête ou de lecture produisent un avertissement et une
 table vide ou <code>NA</code>. Un code inconnu du répertoire xMart
 produit un avertissement. Après une réponse HTTP 404 de l’ancien
 service, DSIR vérifie le catalogue avant de signaler l’absence d’un
-indicateur. L’échec de cette vérification ne prouve pas l’absence. Aucun
-basculement automatique n’a lieu.</p>
+indicateur. L’échec de cette vérification ne prouve pas l’absence. Les
+échecs de requête et de lecture ne déclenchent jamais de basculement
+automatique.</p>
 </div>
 <div class="section level2">
 <h2 id="explorer-les-choix-disponibles-dans-les-ghe">Explorer les choix disponibles dans les GHE<a class="anchor" aria-label="anchor" href="#explorer-les-choix-disponibles-dans-les-ghe"></a>

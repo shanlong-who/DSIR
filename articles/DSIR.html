@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -239,7 +239,10 @@ server.</p>
 non-missing timestamp among one indicator’s current observations across
 all locations, years and dimensions. It follows the existing backend
 rules: an explicit argument overrides <code>DSIR.who_backend</code>, and
-the default is legacy when neither is set.</p>
+the default is <code>"auto"</code> when neither is set. Auto prefers
+xMart and only tries legacy for a verified absent or completely empty
+indicator. Missing timestamps do not trigger fallback. The result
+records its actual backend.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
@@ -253,9 +256,10 @@ the default is legacy when neither is set.</p>
 legacy <code>Date</code> records an official modification or publication
 date; an xMart system commit can reflect processing. Neither field is
 the latest observation year. Each date request retrieves at most one
-row. xMart also uses cached directory and table-field lookups; there is
-no automatic backend fallback. Sequential requests for every indicator
-can take considerable time.</p>
+row. xMart also uses cached directory and table-field lookups. Auto adds
+a small whole-indicator availability request before the date query;
+request failures and missing timestamps never trigger fallback.
+Sequential requests for every indicator can take considerable time.</p>
 <p>The default eight columns are unchanged.
 <code>diagnostics = TRUE</code> adds <code>reason</code>,
 <code>stage</code>, <code>http_status</code>,

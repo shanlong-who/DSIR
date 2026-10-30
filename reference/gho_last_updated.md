@@ -18,9 +18,10 @@ gho_last_updated(indicator, backend = NULL, diagnostics = FALSE)
 
 - backend:
 
-  Optional WHO backend: `"legacy"` or `"xmart"`. An explicit value
-  overrides `getOption("DSIR.who_backend")` for this call only. When
-  neither is set, the compatibility default is `"legacy"`.
+  Optional WHO backend: `"auto"`, `"legacy"` or `"xmart"`. An explicit
+  value overrides `getOption("DSIR.who_backend")` for this call only.
+  When neither is set, the default is `"auto"`, as in
+  [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md).
 
 - diagnostics:
 
@@ -76,13 +77,14 @@ With `diagnostics = TRUE`, six additional columns are appended:
   `"timestamp_field_missing"`, `"timestamp_missing"` (no non-missing
   timestamp returned), `"unsupported_route"`, `"lookup_failed"`,
   `"unexpected_content"` (HTML instead of JSON), `"invalid_json"`,
-  `"invalid_response"`, or `"invalid_timestamp"`. These explain
-  `status`; they do not replace its existing three values.
+  `"invalid_response"`, `"invalid_timestamp"`, or
+  `"fallback_incompatible"`. These explain `status`; they do not replace
+  its existing three values.
 
 - stage:
 
-  `"directory"`, `"schema"`, or `"timestamp"`: the stage associated with
-  the result.
+  `"directory"`, `"availability"` (automatic selection), `"schema"`, or
+  `"timestamp"`: the stage associated with the result.
 
 - http_status:
 
@@ -116,7 +118,13 @@ The legacy backend orders observations by `Date`; xMart uses
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md).
 Each date query requests only the latest non-missing value. xMart also
 consults the existing, session-cached indicator directory and table
-fields. Requests never fall back to the other backend.
+fields. Automatic selection follows
+[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md):
+a verified absent or completely empty xMart indicator can fall back to
+legacy, with a warning. Missing timestamps never trigger fallback.
+Explicit backends never switch. The `who_provenance` attribute records
+automatic selection and its reason; the `backend` column and timestamp
+field describe the actual provider.
 
 The result describes the selected backend's current observations across
 all locations, years and dimensions. It is not the latest observation

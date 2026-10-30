@@ -39,7 +39,20 @@ install.packages("DSIR")
 remotes::install_github("shanlong-who/DSIR")
 ```
 
-## What’s new in 0.12.0 (GitHub)
+## What’s new in 0.13.0 (GitHub)
+
+- **xMart-first GHO queries:** the default `backend = "auto"` tries
+  legacy only for codes missing from the xMart directory or indicators
+  verified to have no observations at all. Filtered empty results and
+  request failures do not switch providers. Fallback warns and records
+  the actual provider and reason.
+- **Explicit provider controls:** pin `backend = "xmart"` or `"legacy"`
+  for reproducible analysis. Automatic selection never combines data
+  releases or translates provider-specific dimension filters. Legacy
+  discovery has a dated bundled catalog available when its online
+  requests fail.
+
+## Added in 0.12.0 (GitHub)
 
 - **Source update timestamps:** use
   [`gho_last_updated()`](https://shanlong-who.github.io/DSIR/reference/gho_last_updated.md)
@@ -56,8 +69,8 @@ remotes::install_github("shanlong-who/DSIR")
   measures by country, year, sex, age and cause; explore codes and
   coverage.
 - **GHO backend choice:** select `backend = "legacy"` or `"xmart"` for
-  each request. Legacy remains the compatibility default when no session
-  option is set; there is no automatic fallback between providers.
+  each request. In 0.11.0, legacy was the compatibility default; 0.13.0
+  adds the automatic selection described below.
 - **More data context:** optionally retain named xMart dimensions, units
   and provider information. The default cleaned output still has 15
   columns.
@@ -337,9 +350,10 @@ requests the latest non-missing observation timestamp across all
 locations, years and dimensions. It follows the same backend selection
 rules as
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md):
-an explicit `backend` overrides `DSIR.who_backend`, with legacy as the
-default when neither is set. It never switches providers after a
-failure.
+an explicit `backend` overrides `DSIR.who_backend`, with `"auto"` as the
+default when neither is set. Missing timestamps or failed requests do
+not trigger fallback; automatic selection checks observation
+availability first.
 
 ``` r
 
@@ -387,9 +401,11 @@ to detect actual differences between retrieved observations.
 **Fetch and clean.** The typical workflow is **search → fetch → clean**:
 
 [`gho_indicators()`](https://shanlong-who.github.io/DSIR/reference/gho_indicators.md)
-queries the selected online backend first. If a legacy GHO request
-fails, it searches the bundled legacy catalog and warns with its
-collection date. `attr(result, "catalog_snapshot")` records the
+searches xMart when `backend = "auto"`. Keyword searches cannot
+establish that an individual indicator is absent, so they do not switch
+catalogs. Select `backend = "legacy"` for legacy-only codes. If a legacy
+GHO request fails, it searches the bundled legacy catalog and warns with
+its collection date. `attr(result, "catalog_snapshot")` records the
 snapshot’s source and UTC collection time. The snapshot may omit new
 codes or contain outdated names; it does not confirm that observations
 are available. Successful empty searches do not trigger fallback. xMart
@@ -455,9 +471,8 @@ gho_detailed |>
 ```
 
 As verified on 2026-10-06, this financial-hardship code is absent from
-the public xMart directory. The example explicitly selects the legacy
-provider; there is no automatic fallback. The UN SDG workflow below
-remains separate.
+the public xMart directory. The example fixes the legacy provider
+explicitly. The UN SDG workflow below remains separate.
 
 `keep_metadata = TRUE` also preserves the retrieval `provider`,
 observation identifier, source code and type, spatial/time types, parent
@@ -674,15 +689,40 @@ complete enough that pre-flight checks add little value.
 
 MIT — © 2026 Shanlong Ding
 
-### WHO xMart migration (0.11.0)
+### WHO backend selection (0.13.0)
 
-GHO keeps the legacy OData API as its compatibility default. Select
-`backend = "xmart"` to use `https://xmart-api-public.who.int` for one
-call. Its official directory supplies public download routes; DSIR maps
-them into its familiar observation fields. The 15-column default of
+GHO defaults to `backend = "auto"`, preferring the public xMart API at
+`https://xmart-api-public.who.int`. Before filtering, automatic
+indicator queries read its directory and make a bounded availability
+request (at most one row) for the entire indicator. The same selection
+rules apply to data, counts, availability, coverage, dimension discovery
+and update timestamps:
+
+| xMart result | Automatic behavior |
+|----|----|
+| Exact code absent from a successfully read, non-empty directory | Try legacy, with a warning |
+| Verified zero observations for the entire indicator | Try legacy, with a warning |
+| Indicator has observations, but requested filters match none | Keep the valid empty xMart result |
+| HTTP, transport, parsing, schema or route failure | Report failure; do not switch |
+| Only some countries or years are available | Return xMart coverage; do not fill gaps from legacy |
+
+Fallback preserves known WHO ISO3/region codes and year filters. Named
+dimensions, positional `dim1`-`dim3` filters and M49/native geography
+codes block fallback because equivalent filters have not been
+established. Dimension discovery can fall back only for `SpatialDim`,
+`SpatialDimType`, `TimeDim` and `TimeDimType`. Blocked fallback warns
+and returns empty/NA without dropping filters. Use an explicit backend
+with its native conventions in these cases.
+
+Each automatic result records the actual backend,
+`requested_backend = "auto"` and any `fallback_reason` in
+`attr(result, "who_provenance")`; this also applies to scalar counts and
+availability results. Raw observations retain `Provider`. No result
+combines providers. Decisions are checked afresh on subsequent calls.
+Pin a backend for repeated analysis, since provider coverage and
+published estimates may change. The 15-column default of
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-remains unchanged. Public codes and published vintages can differ
-between providers. Use the same backend for discovery and retrieval.
+is unchanged.
 
 ``` r
 
@@ -718,7 +758,7 @@ changed since retrieval.
 Failures warn and return empty results without switching providers.
 Reference lookups use a ten-minute memory cache. No keys, startup
 requests or disk cache are required. Selection follows: explicit
-`backend` argument, then the `DSIR.who_backend` option, then `"legacy"`.
+`backend` argument, then the `DSIR.who_backend` option, then `"auto"`.
 An argument never changes the session option. To choose a session
 default once, use `options(DSIR.who_backend = "xmart")`. Other advanced
 settings are `DSIR.who_base_url` (xMart HTTPS origin),

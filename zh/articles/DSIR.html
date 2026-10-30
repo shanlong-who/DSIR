@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -233,7 +233,10 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <p>实验性的 <code><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated()</a></code>
 查询一个指标在所有地区、年份和维度的现有观测记录中，最新的非缺失时间戳。显式
 <code>backend</code> 参数优先于
-<code>DSIR.who_backend</code>；两者都未设置时使用 legacy。</p>
+<code>DSIR.who_backend</code>；两者都未设置时使用
+<code>auto</code>。auto 优先查询
+xMart，仅在确认指标未列出或整个指标没有观测时尝试
+legacy。缺少时间戳不会触发回退。结果记录实际使用的后端。</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_last_updated.html" hreflang="en">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
@@ -246,8 +249,8 @@ ISO3、ISO2、联合国 M49 代码、正式名称、简称和 WHO
 <code>Sys_CommitDateUtc</code>。DSIR 尚未确认 legacy 的
 <code>Date</code> 是官方修改或发布日期；xMart
 的系统提交时间可能反映数据处理。两者都不是最新观测年份。每次日期查询最多返回一行；xMart
-还使用已缓存的指标目录和表字段信息。请求失败时不会自动切换
-backend。顺序查询全部指标可能需要较长时间。</p>
+还使用已缓存的指标目录和表字段信息。auto
+在日期查询前增加一个小型请求，核实整个指标是否有观测。请求失败和缺少时间戳均不会触发回退。顺序查询全部指标可能需要较长时间。</p>
 <p>默认仍为原来的八列。<code>diagnostics = TRUE</code> 额外返回
 <code>reason</code>、<code>stage</code>、<code>http_status</code>、<code>timestamp_kind</code>、<code>provider_route</code>
 和

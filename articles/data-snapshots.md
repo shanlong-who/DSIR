@@ -39,9 +39,9 @@ result$modified
 ```
 
 The legacy backend is also supported; choose it explicitly in both
-queries. There is no automatic fallback. A failed or incomplete
-retrieval cannot silently replace a good file. Existing paths cause an
-error unless `overwrite = TRUE` is explicitly requested.
+queries. Explicit backends do not switch providers. A failed or
+incomplete retrieval cannot silently replace a good file. Existing paths
+cause an error unless `overwrite = TRUE` is explicitly requested.
 
 For cleaned data, use
 `gho_clean(data, keep_dimensions = TRUE, keep_metadata = TRUE)`. The

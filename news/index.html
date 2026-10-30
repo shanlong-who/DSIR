@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,9 +76,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="dsir-development-version">DSIR (development version)<a class="anchor" aria-label="anchor" href="#dsir-development-version"></a>
+<h2 class="pkg-version" data-toc-text="0.13.0" id="dsir-0130-2026-10-30">DSIR 0.13.0 (2026-10-30)<a class="anchor" aria-label="anchor" href="#dsir-0130-2026-10-30"></a>
 </h2>
 <ul>
+<li><p><strong>Default backend change:</strong> GHO queries now use <code>backend = "auto"</code> unless overridden by an argument or <code>DSIR.who_backend</code>. Automatic selection prefers xMart and tries legacy only when a successful directory omits the exact code or a bounded whole-indicator query verifies zero observations. HTTP, parsing and schema failures, empty filtered selections and partial coverage do not trigger fallback. Explicit <code>"legacy"</code> and <code>"xmart"</code> retain fixed-provider behavior.</p></li>
+<li><p>Automatic selection is shared by data, count, availability, coverage, dimension and timestamp queries. Fallback warns, records the actual provider and reason, and never combines releases. Named/positional dimension filters, native/M49 areas and provider-specific dimension columns block fallback. Keyword discovery in auto mode uses xMart only; legacy discovery remains explicit. GHE stays on xMart. Use explicit providers for reproducible analyses.</p></li>
 <li><p>Bundle a dated legacy GHO indicator catalog for <code><a href="../reference/gho_indicators.html">gho_indicators()</a></code> to search when online requests or parsing fail. Fallback warns with the collection date and records snapshot provenance without caching it as a live catalog. Successful empty searches and the xMart backend keep their existing behavior.</p></li>
 <li><p>Move <code>flextable</code> (&gt;= 0.9.0) from Imports to Suggests. Only <code><a href="../reference/dsi_flextable_defaults.html">dsi_flextable_defaults()</a></code> requires it at runtime and now provides installation guidance when it is missing or too old. Examples, demos and tests handle the optional dependency.</p></li>
 <li><p>Mark <code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code> experimental and add opt-in structured diagnostics for directory omissions, HTTP/transport failures and unavailable timestamps. Preserve its default eight columns, backend precedence and fail-soft behavior. Clarify system commit, legacy observation, query and publication times.</p></li>
