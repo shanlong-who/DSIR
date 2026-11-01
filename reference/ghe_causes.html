@@ -35,7 +35,7 @@ download identifiers; selection coverage still needs ghe_coverage().">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,6 +116,39 @@ All terms must match; a single string is split on whitespace.</p></dd>
     <p>A tibble with <code>cause_code</code>, <code>cause_name</code>, <code>level</code>, <code>cause_group</code>,
 <code>rankable</code>, and <code>single_cause</code>. The provider has no parent-code field;
 <code>cause_group</code> is retained as published and is not a parent identifier.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="retrieval-metadata">Retrieval metadata<a class="anchor" aria-label="anchor" href="#retrieval-metadata"></a>
+</h2>
+
+
+<p>Downloads and directories retain their existing classes and columns.
+<code>dsir_metadata(x)$sources</code> records the actual backend, endpoint, UTC
+<code>retrieved_at</code>, retrieval status, cache use, source record count, reported
+API version and release. Unknown versions and times remain <code>NA</code>.
+Each source row includes its own server query. <code>query</code> records the public
+selection, including local filters and reference-country/year restrictions.
+<code>result</code> describes the function's original return; <code>current</code> is computed
+from the supplied object. Source counts precede local filtering and GHE
+measure pivoting, so they can differ from returned row counts.</p>
+<p>Result status distinguishes <code>success</code>, <code>empty</code>, <code>failed</code>, <code>incomplete</code>,
+<code>invalid</code>, <code>partial</code> and <code>unverified</code>. Completeness concerns the requested
+retrieval, not global indicator coverage. It is <code>NA</code> when the response
+lacks sufficient completeness information. A successful HTTP response
+alone does not establish completeness of an observation download.</p>
+<p>Cached records retain their original retrieval time and set <code>cache_hit</code>.
+A historical fallback uses <code>retrieval_status = "bundled_snapshot"</code> and
+retains the original collection date. It does not prove live availability.
+Failed SDG list requests still return <code>NULL</code> with a warning; <code>NULL</code> cannot
+carry metadata. Other empty failure results record no successful retrieval
+time. Existing WHO <code>who_provenance</code> and <code>catalog_snapshot</code> attributes remain
+available for compatibility.</p>
+<p>Cleaners preserve acquisition metadata even for empty input. This is
+independent of <code>keep_metadata</code>, which controls optional data columns.
+<code><a href="as_dsir_data.html">as_dsir_data()</a></code> also retains <code>sources</code>, <code>query</code> and <code>result</code>. These are
+historical acquisition records, not an audit of arbitrary changes to a
+plain tibble. Use the S3 object's processing status to track supported
+transformations. <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> preserves attributes; CSV does not.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>

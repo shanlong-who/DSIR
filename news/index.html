@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,15 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.13.0.9001" id="dsir-01309001-development">DSIR 0.13.0.9001 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309001-development"></a>
+</h2>
+<ul>
+<li>Unify acquisition metadata for GHO, GHE and SDG observations and discovery results through <code><a href="../reference/dsir_metadata.html">dsir_metadata()</a></code>, without changing their default classes or columns. Record actual backends, endpoints, original UTC retrieval times, cache use, source counts, query scope and reported versions. Historical catalog fallback retains its original date. Existing WHO provenance remains available for compatibility.</li>
+<li>Add SDG pagination and local-filter provenance. Empty, failed, invalid and incomplete results are distinguishable; missing completeness information remains unknown. SDG list failures keep their existing <code>NULL</code> return.</li>
+<li>Preserve acquisition records through all three cleaners, including empty results, and explicit S3 conversion. GHE source-row counts remain separate from long-format measure counts. Directory searches retain the original catalog scope, and GHE cause discovery records its reference selection.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.13.0.9000" id="dsir-01309000-development">DSIR 0.13.0.9000 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309000-development"></a>
 </h2>

@@ -9,7 +9,7 @@ Explicit tibble subclasses and versioned offline discovery snapshots.
   [`summary(`*`<dsir_data>`*`)`](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
   : Explicitly Create an Experimental DSIR Data Object
 - [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md)
-  : Inspect DSIR Object or Catalog Metadata
+  : Inspect DSIR Data, Catalog and Retrieval Metadata
 - [`gho_catalog`](https://shanlong-who.github.io/DSIR/reference/gho_catalog.md)
   : Bundled GHO Indicator Catalog from Both Backends
 - [`sdg_catalog`](https://shanlong-who.github.io/DSIR/reference/sdg_catalog.md)

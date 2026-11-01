@@ -44,6 +44,32 @@ remotes::install_github("shanlong-who/DSIR")
 The development version provides explicit S3 conversion after cleaning.
 Existing downloads and cleaners retain their default tibble behavior.
 
+Downloads and discovery results carry acquisition metadata by default:
+
+``` r
+
+# Inspect an already retrieved table; these calls do not access the network.
+dsir_metadata(data.raw)$sources
+dsir_metadata(data.raw)$query
+dsir_metadata(data.raw)$result
+```
+
+This covers GHO, GHE and SDG downloads, their indicator/cause/dimension
+directories, and SDG goals, targets and areas. Source records keep the
+actual backend, endpoint, UTC retrieval time, cache use, original record
+count and reported versions. Cached and bundled records retain their
+original dates. The result status distinguishes valid emptiness from
+failure or incomplete retrieval. SDG list failures still return `NULL`
+with a warning.
+
+All three cleaners retain these attributes, independently of optional
+metadata columns. Counts in `sources` precede local filtering and GHE
+measure pivoting; `result` describes the original function return and
+`current` describes the supplied table. Acquisition metadata is
+historical and does not certify later edits to a plain tibble. Use
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) to preserve it when
+saving data.
+
 ``` r
 
 library(DSIR)
@@ -54,6 +80,7 @@ data.clean <- gho_clean(data.raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 data.s3 <- as_dsir_data(data.clean)
 summary(data.s3)
 dsir_metadata(data.s3)$provenance
+dsir_metadata(data.s3)$sources
 
 data.flagged <- data.s3 %>% mutate(flag.high = value_num > 20)
 data.changed <- data.s3 %>% mutate(value_num = value_num / 100)

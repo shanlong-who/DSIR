@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Inspect DSIR Object or Catalog Metadata — dsir_metadata • DSIR</title>
+<title>Inspect DSIR Data, Catalog and Retrieval Metadata — dsir_metadata • DSIR</title>
 <!-- favicons --><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,7 +14,7 @@
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Inspect DSIR Object or Catalog Metadata — dsir_metadata">
+<meta property="og:title" content="Inspect DSIR Data, Catalog and Retrieval Metadata — dsir_metadata">
 <meta name="description" content="Reads metadata without network requests. For dsir_data, indicator
 identities, dimension values and coverage describe the current rows;
 provenance and input counts describe the original conversion input.">
@@ -33,7 +33,7 @@ provenance and input counts describe the original conversion input.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ provenance and input counts describe the original conversion input.">
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Inspect DSIR Object or Catalog Metadata</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Inspect DSIR Data, Catalog and Retrieval Metadata</h1>
       <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/dsir_data.R" class="external-link"><code>R/dsir_data.R</code></a></small>
       <div class="d-none name"><code>dsir_metadata.Rd</code></div>
     </div>
@@ -102,7 +102,8 @@ provenance and input counts describe the original conversion input.</p>
 <dl>
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a>
 </dt>
-<dd><p>A <a href="as_dsir_data.html">dsir_data</a> object or one of the bundled
+<dd><p>A download, directory or cleaned result carrying DSIR metadata,
+a <a href="as_dsir_data.html">dsir_data</a> object, or one of the bundled
 <a href="gho_catalog.html">gho_catalog</a>, <a href="sdg_catalog.html">sdg_catalog</a> and <a href="ghe_catalog.html">ghe_catalog</a> datasets.</p></dd>
 
 </dl>
@@ -118,6 +119,39 @@ definitions. Read <code>processing$semantics</code> before interpreting them.
 Catalog metadata includes its snapshot version, package build version
 and source-specific retrieval records. <code>current</code> describes the supplied
 table; source record counts describe the complete bundled snapshot.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="retrieval-metadata">Retrieval metadata<a class="anchor" aria-label="anchor" href="#retrieval-metadata"></a>
+</h2>
+
+
+<p>Downloads and directories retain their existing classes and columns.
+<code>dsir_metadata(x)$sources</code> records the actual backend, endpoint, UTC
+<code>retrieved_at</code>, retrieval status, cache use, source record count, reported
+API version and release. Unknown versions and times remain <code>NA</code>.
+Each source row includes its own server query. <code>query</code> records the public
+selection, including local filters and reference-country/year restrictions.
+<code>result</code> describes the function's original return; <code>current</code> is computed
+from the supplied object. Source counts precede local filtering and GHE
+measure pivoting, so they can differ from returned row counts.</p>
+<p>Result status distinguishes <code>success</code>, <code>empty</code>, <code>failed</code>, <code>incomplete</code>,
+<code>invalid</code>, <code>partial</code> and <code>unverified</code>. Completeness concerns the requested
+retrieval, not global indicator coverage. It is <code>NA</code> when the response
+lacks sufficient completeness information. A successful HTTP response
+alone does not establish completeness of an observation download.</p>
+<p>Cached records retain their original retrieval time and set <code>cache_hit</code>.
+A historical fallback uses <code>retrieval_status = "bundled_snapshot"</code> and
+retains the original collection date. It does not prove live availability.
+Failed SDG list requests still return <code>NULL</code> with a warning; <code>NULL</code> cannot
+carry metadata. Other empty failure results record no successful retrieval
+time. Existing WHO <code>who_provenance</code> and <code>catalog_snapshot</code> attributes remain
+available for compatibility.</p>
+<p>Cleaners preserve acquisition metadata even for empty input. This is
+independent of <code>keep_metadata</code>, which controls optional data columns.
+<code><a href="as_dsir_data.html">as_dsir_data()</a></code> also retains <code>sources</code>, <code>query</code> and <code>result</code>. These are
+historical acquisition records, not an audit of arbitrary changes to a
+plain tibble. Use the S3 object's processing status to track supported
+transformations. <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> preserves attributes; CSV does not.</p>
     </div>
 
     <div class="section level2">

@@ -1,5 +1,25 @@
 # Changelog
 
+## DSIR 0.13.0.9001 (development)
+
+- Unify acquisition metadata for GHO, GHE and SDG observations and
+  discovery results through
+  [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md),
+  without changing their default classes or columns. Record actual
+  backends, endpoints, original UTC retrieval times, cache use, source
+  counts, query scope and reported versions. Historical catalog fallback
+  retains its original date. Existing WHO provenance remains available
+  for compatibility.
+- Add SDG pagination and local-filter provenance. Empty, failed, invalid
+  and incomplete results are distinguishable; missing completeness
+  information remains unknown. SDG list failures keep their existing
+  `NULL` return.
+- Preserve acquisition records through all three cleaners, including
+  empty results, and explicit S3 conversion. GHE source-row counts
+  remain separate from long-format measure counts. Directory searches
+  retain the original catalog scope, and GHE cause discovery records its
+  reference selection.
+
 ## DSIR 0.13.0.9000 (development)
 
 - Add experimental
