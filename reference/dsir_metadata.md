@@ -82,6 +82,17 @@ dimensions. Cleaning time never substitutes for retrieval time. These
 records describe the cleaning input; current coverage and subsequent
 field status remain separate.
 
+## Map metadata
+
+[`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
+records `layout = "map"`, creation time, selected keys and value/year
+columns, input metadata and boundary provenance. Downloaded boundaries
+record per-country endpoints, queries, original retrieval times, item
+modification times, source terms, checksums and cache use. Supplied
+boundaries are labelled `user_supplied`, with no invented retrieval
+history. This describes map creation, not later ggplot edits or
+additional layers.
+
 ## Examples
 
 ``` r

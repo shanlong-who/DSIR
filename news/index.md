@@ -1,5 +1,29 @@
 # Changelog
 
+## DSIR 0.13.0.9003 (development)
+
+- Add experimental
+  [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
+  for `dsir_data`, ordinary analysis tables and `sf` input. Return a
+  standard ggplot with a continuous viridis scale and DSIR theme.
+  Support custom area/value columns and supplied polygons. Require one
+  observation per area and a common year when recorded; check known
+  indicator, unit and population context without aggregating.
+- Download public WHO ADM0 boundaries only for requested ISO3 countries,
+  with interactive permission or explicit `download = "allow"` in
+  scripts. Cache validated polygons outside the package for offline
+  reuse; `download = "never"` prohibits requests. Explicit refresh
+  retains the previous country cache if retrieval or validation fails.
+  `sf` is optional.
+- Record map creation, input metadata and per-country boundary
+  provenance through
+  [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md),
+  including queries, retrieval dates, item modification dates and
+  download checksums. Reject missing, empty or invalid polygons without
+  repair, simplification or substitution. The tested WHO ADM0 service
+  still returns empty Philippine geometry; a map including it requires
+  corrected official data or complete user-supplied boundaries.
+
 ## DSIR 0.13.0.9002 (development)
 
 - **Experimental default change:**

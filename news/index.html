@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,15 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.13.0.9003" id="dsir-01309003-development">DSIR 0.13.0.9003 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309003-development"></a>
+</h2>
+<ul>
+<li>Add experimental <code><a href="../reference/dsir_map.html">dsir_map()</a></code> for <code>dsir_data</code>, ordinary analysis tables and <code>sf</code> input. Return a standard ggplot with a continuous viridis scale and DSIR theme. Support custom area/value columns and supplied polygons. Require one observation per area and a common year when recorded; check known indicator, unit and population context without aggregating.</li>
+<li>Download public WHO ADM0 boundaries only for requested ISO3 countries, with interactive permission or explicit <code>download = "allow"</code> in scripts. Cache validated polygons outside the package for offline reuse; <code>download = "never"</code> prohibits requests. Explicit refresh retains the previous country cache if retrieval or validation fails. <code>sf</code> is optional.</li>
+<li>Record map creation, input metadata and per-country boundary provenance through <code><a href="../reference/dsir_metadata.html">dsir_metadata()</a></code>, including queries, retrieval dates, item modification dates and download checksums. Reject missing, empty or invalid polygons without repair, simplification or substitution. The tested WHO ADM0 service still returns empty Philippine geometry; a map including it requires corrected official data or complete user-supplied boundaries.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.13.0.9002" id="dsir-01309002-development">DSIR 0.13.0.9002 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309002-development"></a>
 </h2>

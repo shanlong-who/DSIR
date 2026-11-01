@@ -116,6 +116,14 @@ Functions for fetching and cleaning data from the UN SDG API.
 - [`sdg_last_updated()`](https://shanlong-who.github.io/DSIR/reference/sdg_last_updated.md)
   : Query the SDG Database Update Timestamp
 
+## Experimental maps
+
+Checked choropleths with user-supplied polygons or explicitly downloaded
+WHO ADM0 boundaries.
+
+- [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
+  : Map an Indicator with Recorded or User-Supplied Boundaries
+
 ## Visual themes
 
 ggplot2 and flextable styling helpers for WHO-style outputs.
