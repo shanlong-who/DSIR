@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -205,7 +205,7 @@ DSIR 将常用的全球卫生数据源与分析工具整合到一套连贯的 R 
 可视化并呈现结果
 </h3>
 <p>
-复用 ggplot2 主题和 flextable 格式，为技术报告制作风格一致的图形与分析表格。
+复用 ggplot2 主题和 flextable 格式，制作风格一致的图形与分析表格。GitHub 0.14.0 版本还提供带有数据检查的指标图和实验性地图功能。
 </p>
 <a href="articles/visualizing-indicators.html">查看可视化示例 <span aria-hidden="true">→</span></a>
 </article>
@@ -269,10 +269,10 @@ DSIR 将常用的全球卫生数据源与分析工具整合到一套连贯的 R 
 开发方向
 </h2>
 <p>
-DSIR 根据全球卫生数据分析的实际需求持续改进。未来计划加入地理信息系统（GIS）相关功能，支持地理空间数据处理、制图和空间分析。
+GitHub 0.14.0 版本新增实验性的 dsir_map() 指标地图，可使用用户提供的 sf 多边形或经明确许可下载的 WHO ADM0 边界。数据对象保留获取与清洗 metadata。
 </p>
 <p class="dsi-small">
-GIS 功能属于未来开发方向，当前版本尚未提供。
+制图需要可选依赖 sf。WHO 边界按需下载并缓存在本地；缺失或无效几何不会自动修补。
 </p>
 </section><section class="dsi-developer" aria-labelledby="developer"><p class="dsi-eyebrow">
 项目维护者
@@ -297,11 +297,19 @@ DSIR 是由个人维护的开源项目，并非 WHO 官方软件产品，也未�
 快速入门
 </h2>
 <p>
-从 CRAN 安装 DSIR，然后跟随教程获取数据、开展分析并呈现结果。
+CRAN 提供 2026 年 10 月 30 日发布的 0.13.0 版本。若需使用实验性数据对象、metadata、指标图和地图功能，请从 GitHub 安装 0.14.0 版本。
 </p>
 <div class="dsi-install" aria-label="R 安装命令">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># CRAN: 0.13.0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or GitHub: 0.14.0</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optional dependency for dsir_map()</span></span>
+<span><span class="co"># install.packages("sf")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

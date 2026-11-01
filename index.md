@@ -97,7 +97,8 @@ progress to support mortality analysis and indicator monitoring.
 ### Visualize and Present Results
 
 Apply reusable ggplot2 themes and flextable formatting to create
-consistent charts and analytical tables for technical reports.
+consistent charts and analytical tables. GitHub version 0.14.0 also
+provides checked indicator plots and experimental maps.
 
 [View visualization examples
 →](https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.md)
@@ -138,13 +139,13 @@ Ongoing development
 
 ## Development roadmap
 
-DSIR continues to evolve in response to practical needs in global health
-data analysis. Future development is planned to include GIS-related
-functions to support geospatial data processing, mapping and spatial
-analysis.
+GitHub version 0.14.0 introduces experimental indicator maps with
+dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0
+boundaries. Data objects retain acquisition and cleaning metadata.
 
-GIS capabilities are a future direction and are not part of the current
-release.
+Maps require the optional sf package. WHO boundaries are downloaded on
+demand and cached locally; missing or invalid geometries are not
+repaired automatically.
 
 The person behind the project
 
@@ -162,12 +163,21 @@ Start with the package
 
 ## Getting started
 
-Install DSIR from CRAN, then follow the technical guide for data access,
-analysis and presentation.
+CRAN provides version 0.13.0, published on 30 October 2026. Install
+version 0.14.0 from GitHub for the experimental data objects, metadata,
+plots and maps.
 
 ``` r
 
+# CRAN: 0.13.0
 install.packages("DSIR")
+
+# Or GitHub: 0.14.0
+# install.packages("remotes")
+remotes::install_github("shanlong-who/DSIR")
+
+# Optional dependency for dsir_map()
+# install.packages("sf")
 library(DSIR)
 ```
 

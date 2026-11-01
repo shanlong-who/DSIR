@@ -25,23 +25,24 @@ Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
-Version **0.11.0** is available on
-[CRAN](https://CRAN.R-project.org/package=DSIR), published on **12
-October 2026**.
+Version **0.13.0** is available on
+[CRAN](https://CRAN.R-project.org/package=DSIR), published on **30
+October 2026**. Version **0.14.0** is available on GitHub, including
+experimental data objects, metadata, plots and maps.
 
 ``` r
 
-# from CRAN
+# CRAN: 0.13.0
 install.packages("DSIR")
 
-# or the development version from GitHub
+# Or GitHub: 0.14.0, including dsir_map()
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```
 
 ## Experimental data objects and offline catalogs
 
-The development version returns a `dsir_data` tibble subclass from
+Version 0.14.0 returns a `dsir_data` tibble subclass from
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`ghe_clean()`](https://shanlong-who.github.io/DSIR/reference/ghe_clean.md)
 and
@@ -171,19 +172,57 @@ Select one indicator, unit and population stratum, with one observation
 per area and a common year. Known semantic fields are checked; no
 aggregation or latest-year selection occurs.
 
+This complete example maps the 2021 probability of premature mortality
+from four major NCDs in Lao PDR and Viet Nam, for both sexes. It fixes
+the GHO backend to xMart and retains the reported age group and units.
+
 ``` r
 
 library(DSIR)
 library(dplyr)
+library(ggplot2)
+library(sf)
 
-# data.clean is an already cleaned, comparable indicator table.
-data.map <- data.clean %>% filter(iso3 %in% c("LAO", "VNM"))
-map <- dsir_map(data.map, year = 2023, download = "allow")
-map
-dsir_metadata(map)$boundaries$sources
+country.codes <- c("LAO", "VNM")
+map.year <- 2021L
+cache.dir <- file.path("data-raw", "who-adm0-cache")
+
+data.raw <- gho_data(
+  indicator = "NCDMORT3070",
+  spatial_type = "country",
+  area = country.codes,
+  year_from = map.year,
+  year_to = map.year,
+  dimensions = list(DIM_SEX = "TOTAL", DIM_AGE = "YEARS30-69"),
+  backend = "xmart"
+)
+if (nrow(data.raw) == 0L) stop("No observations returned; inspect the GHO request warnings.")
+
+data.clean <- gho_clean(data.raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+data.map <- data.clean %>% filter(year == map.year, iso3 %in% country.codes)
+stopifnot(inherits(data.map, "dsir_data"), nrow(data.map) == 2L,
+  setequal(data.map$iso3, country.codes), !anyDuplicated(data.map$iso3),
+  all(is.finite(data.map$value_num)))
+
+map.ncd <- dsir_map(data.map, year = map.year,
+  download = "allow", cache_dir = cache.dir) +
+  labs(title = "Premature mortality from four major NCDs",
+    subtitle = "Lao PDR and Viet Nam | 2021 | Both sexes | Ages 30 to 69") +
+  guides(fill = guide_colourbar(title = "Probability (%)"))
+print(map.ncd)
+
+map.metadata <- dsir_metadata(map.ncd)
+map.metadata$selection
+map.metadata$data$sources
+map.metadata$data$cleaning
+map.metadata$boundaries$sources
 
 # Later calls reuse the cache without contacting WHO.
-map <- dsir_map(data.map, year = 2023, download = "never")
+map.cached <- dsir_map(data.map, year = map.year,
+  download = "never", cache_dir = cache.dir)
+```
+
+``` r
 
 # Ordinary tables can use any character/factor area key and supplied sf polygons.
 # analysis has columns area_code, rate and unit; borders has area_code and geometry.
@@ -210,7 +249,7 @@ cause an error. Map metadata describes creation and retains input and
 boundary records, including original retrieval times; it does not track
 later ggplot edits.
 
-## What’s new in 0.13.0 (GitHub)
+## Added in 0.13.0
 
 - **xMart-first GHO queries:** the default `backend = "auto"` tries
   legacy only for codes missing from the xMart directory or indicators

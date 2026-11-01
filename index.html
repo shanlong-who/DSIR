@@ -39,7 +39,7 @@ reusable charts and tables for public health reporting.
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,7 +211,7 @@ Use life tables, direct age standardization and measures of annual progress to s
 Visualize and Present Results
 </h3>
 <p>
-Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables for technical reports.
+Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables. GitHub version 0.14.0 also provides checked indicator plots and experimental maps.
 </p>
 <a href="articles/visualizing-indicators.html">View visualization examples <span aria-hidden="true">→</span></a>
 </article>
@@ -275,10 +275,10 @@ Ongoing development
 Development roadmap
 </h2>
 <p>
-DSIR continues to evolve in response to practical needs in global health data analysis. Future development is planned to include GIS-related functions to support geospatial data processing, mapping and spatial analysis.
+GitHub version 0.14.0 introduces experimental indicator maps with dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0 boundaries. Data objects retain acquisition and cleaning metadata.
 </p>
 <p class="dsi-small">
-GIS capabilities are a future direction and are not part of the current release.
+Maps require the optional sf package. WHO boundaries are downloaded on demand and cached locally; missing or invalid geometries are not repaired automatically.
 </p>
 </section><section class="dsi-developer" aria-labelledby="developer"><p class="dsi-eyebrow">
 The person behind the project
@@ -303,11 +303,19 @@ Start with the package
 Getting started
 </h2>
 <p>
-Install DSIR from CRAN, then follow the technical guide for data access, analysis and presentation.
+CRAN provides version 0.13.0, published on 30 October 2026. Install version 0.14.0 from GitHub for the experimental data objects, metadata, plots and maps.
 </p>
 <div class="dsi-install" aria-label="R installation commands">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># CRAN: 0.13.0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or GitHub: 0.14.0</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optional dependency for dsir_map()</span></span>
+<span><span class="co"># install.packages("sf")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

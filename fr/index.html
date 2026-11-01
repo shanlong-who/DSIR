@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Activer la navigation">
@@ -205,7 +205,7 @@ Utiliser les tables de mortalité, la standardisation directe sur l’âge et le
 Visualiser et présenter les résultats
 </h3>
 <p>
-Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents dans les rapports techniques.
+Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents. La version 0.14.0 sur GitHub propose aussi des graphiques d’indicateurs avec vérifications et des cartes expérimentales.
 </p>
 <a href="articles/visualizing-indicators.html">Voir les exemples de visualisation <span aria-hidden="true">→</span></a>
 </article>
@@ -269,10 +269,10 @@ Développement en cours
 Feuille de route
 </h2>
 <p>
-DSIR évolue selon les besoins pratiques de l’analyse des données de santé mondiale. Le développement prévu comprend des fonctions de systèmes d’information géographique (SIG) pour le traitement des données géospatiales, la cartographie et l’analyse spatiale.
+La version 0.14.0 sur GitHub ajoute des cartes d’indicateurs expérimentales avec dsir_map(), à partir de polygones sf fournis ou de frontières OMS ADM0 téléchargées avec autorisation explicite. Les objets de données conservent les métadonnées de collecte et de nettoyage.
 </p>
 <p class="dsi-small">
-Les fonctions SIG constituent une orientation future et ne sont pas incluses dans la version actuelle.
+Les cartes nécessitent le package facultatif sf. Les frontières de l’OMS sont téléchargées à la demande et mises en cache localement ; les géométries manquantes ou non valides ne sont pas réparées automatiquement.
 </p>
 </section><section class="dsi-developer" aria-labelledby="developer"><p class="dsi-eyebrow">
 La personne à l’origine du projet
@@ -297,11 +297,19 @@ Prendre le package en main
 Premiers pas
 </h2>
 <p>
-Installez DSIR depuis CRAN, puis suivez les tutoriels pour accéder aux données, les analyser et présenter les résultats.
+CRAN propose la version 0.13.0, publiée le 30 octobre 2026. Installez la version 0.14.0 depuis GitHub pour les objets de données, les métadonnées, les graphiques et les cartes expérimentaux.
 </p>
 <div class="dsi-install" aria-label="Commandes d'installation dans R">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># CRAN: 0.13.0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or GitHub: 0.14.0</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optional dependency for dsir_map()</span></span>
+<span><span class="co"># install.packages("sf")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

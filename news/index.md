@@ -1,6 +1,12 @@
 # Changelog
 
-## DSIR 0.13.0.9003 (development)
+## DSIR 0.14.0 (2026-11-01)
+
+Available on GitHub. CRAN remains at 0.13.0. This version combines the
+0.13.0.9000-0.13.0.9003 development work; the S3 and mapping interfaces
+remain experimental.
+
+### Maps
 
 - Add experimental
   [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
@@ -24,7 +30,7 @@
   still returns empty Philippine geometry; a map including it requires
   corrected official data or complete user-supplied boundaries.
 
-## DSIR 0.13.0.9002 (development)
+### Data objects and plotting
 
 - **Experimental default change:**
   [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
@@ -51,7 +57,7 @@
   needing review. Do not aggregate or select a latest year implicitly;
   trend lines break at missing estimates and annual gaps.
 
-## DSIR 0.13.0.9001 (development)
+### Acquisition metadata
 
 - Unify acquisition metadata for GHO, GHE and SDG observations and
   discovery results through
@@ -71,19 +77,19 @@
   retain the original catalog scope, and GHE cause discovery records its
   reference selection.
 
-## DSIR 0.13.0.9000 (development)
+### Explicit conversion and discovery catalogs
 
 - Add experimental
   [`as_dsir_data()`](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
   for explicit conversion after cleaning, and
   [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md)
   for provenance, field status and current coverage. Downloads and
-  cleaners keep their existing default return behavior. Printing and
-  summaries remain offline. Valid column modifications retain the class,
-  mark derived fields and flag changed input semantics for review.
-  Invalid core schemas, joins, binding and persistent grouping return
-  ordinary tables. Source snapshots reject objects whose semantics need
-  review.
+  discovery tables keep their existing default return classes; cleaners
+  use the new default described above. Printing and summaries remain
+  offline. Valid column modifications retain the class, mark derived
+  fields and flag changed input semantics for review. Invalid core
+  schemas, joins, binding and persistent grouping return ordinary
+  tables. Source snapshots reject objects whose semantics need review.
 - Add versioned `gho_catalog`, `sdg_catalog` and `ghe_catalog` datasets.
   GHO retains separate legacy/xMart rows; SDG preserves nested series
   and provider releases; GHE separates cause and measure rows. Metadata
