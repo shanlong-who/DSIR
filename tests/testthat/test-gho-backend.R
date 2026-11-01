@@ -130,7 +130,7 @@ test_that('cleaning resolves labels with recorded providers after options change
   core <- gho_clean(raw)
   detailed <- gho_clean(raw, keep_metadata = TRUE)
   expect_equal(ncol(core), 15L)
-  expect_identical(detailed[names(core)], core)
+  expect_identical(tibble::as_tibble(detailed)[names(core)], tibble::as_tibble(core))
   expect_equal(detailed$indicator, c('xMart label', 'Legacy label'))
   expect_equal(detailed$provider, c('xmart', 'legacy'))
   expect_equal(detailed$value_num, c(10, 11))
@@ -162,7 +162,7 @@ test_that('provider columns survive binding and unknown input is not relabelled'
   expect_type(gho_clean(tibble::tibble(), keep_metadata = TRUE)$provider, 'character')
   raw <- raw[0, ]
   attr(raw, 'who_provenance') <- list(backend = 'xmart', complete = TRUE, rows = 0L)
-  expect_identical(attr(gho_clean(raw), 'who_provenance'), attr(raw, 'who_provenance'))
+  expect_identical(dsir_metadata(gho_clean(raw))$provenance$retrieval, attr(raw, 'who_provenance'))
 })
 
 test_that('valid empty GHO selections are informational and retain scalar contracts', {

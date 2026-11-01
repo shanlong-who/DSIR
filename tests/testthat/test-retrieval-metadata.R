@@ -3,6 +3,11 @@ retrieval_response <- function(body, status = 200L) {
     body = charToRaw(body))
 }
 
+expect_acquisition_preserved <- function(clean, raw) {
+  fields <- c("schema_version", "source", "kind", "sources", "query", "result")
+  expect_identical(dsir_metadata(clean)[fields], dsir_metadata(raw)[fields])
+}
+
 test_that("legacy observations and empty selections preserve metadata through cleaning", {
   bodies <- c('{"value":[{"IndicatorCode":"EXAMPLE","IndicatorName":"Example",',
               '"SpatialDim":"PHL","SpatialDimType":"COUNTRY","TimeDim":2020,"TimeDimType":"YEAR","NumericValue":10}]}')
@@ -19,8 +24,8 @@ test_that("legacy observations and empty selections preserve metadata through cl
     expect_identical(metadata$query$actual_backend, "legacy")
     expect_identical(metadata$result$status, "success")
     clean <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
-    expect_identical(attr(clean, "dsir_metadata"), attr(raw, "dsir_metadata"))
-    expect_identical(attr(clean, "who_provenance"), attr(raw, "who_provenance"))
+    expect_acquisition_preserved(clean, raw)
+    expect_identical(dsir_metadata(clean)$provenance$retrieval, attr(raw, "who_provenance"))
     expect_identical(dsir_metadata(as_dsir_data(clean))$sources, metadata$sources)
     expect_identical(data_snapshot(as_dsir_data(clean))$data, data_snapshot(clean)$data)
   })
@@ -28,7 +33,7 @@ test_that("legacy observations and empty selections preserve metadata through cl
     raw <- gho_data("EXAMPLE", backend = "legacy")
     expect_identical(dsir_metadata(raw)$result$status, "empty")
     expect_true(dsir_metadata(raw)$result$complete)
-    expect_identical(attr(gho_clean(raw), "dsir_metadata"), attr(raw, "dsir_metadata"))
+    expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{}', 404L)), {
     raw <- suppressWarnings(gho_data("EXAMPLE", backend = "legacy"))
@@ -113,7 +118,7 @@ test_that("SDG records full pagination before local filtering and survives S3 co
   expect_equal(metadata$sources$query[[1]]$pages_received, 2L)
   expect_identical(class(raw), c("tbl_df", "tbl", "data.frame"))
   clean <- sdg_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
-  expect_identical(attr(clean, "dsir_metadata"), attr(raw, "dsir_metadata"))
+  expect_acquisition_preserved(clean, raw)
   object <- as_dsir_data(clean)
   expect_identical(dsir_metadata(object)$sources, metadata$sources)
   expect_identical(summary(object)$sources, metadata$sources)
@@ -126,7 +131,7 @@ test_that("SDG distinguishes empty failed incomplete and unapplied-filter result
     raw <- suppressWarnings(sdg_data("3.4.1"))
     expect_identical(dsir_metadata(raw)$result$status, "empty")
     expect_true(dsir_metadata(raw)$result$complete)
-    expect_identical(attr(sdg_clean(raw), "dsir_metadata"), attr(raw, "dsir_metadata"))
+    expect_acquisition_preserved(sdg_clean(raw), raw)
   })
   first <- retrieval_response('{"data":[{"value":"10"}],"totalPages":2,"totalElements":2}')
   for (response in list(retrieval_response('{}', 404L),
@@ -191,8 +196,8 @@ test_that("GHE metadata distinguishes provider rows from long measures and recor
     expect_equal(metadata$sources$record_count, 1)
     expect_equal(metadata$result$rows, 2L)
     expect_true(metadata$result$complete)
-    expect_identical(attr(ghe_clean(raw), 'dsir_metadata'), attr(raw, 'dsir_metadata'))
-    expect_identical(attr(ghe_clean(raw), 'who_provenance'), attr(raw, 'who_provenance'))
+    expect_acquisition_preserved(ghe_clean(raw), raw)
+    expect_identical(dsir_metadata(ghe_clean(raw))$provenance$retrieval, attr(raw, 'who_provenance'))
   })
   httr2::with_mocked_responses(list(retrieval_response(body)), {
     causes <- ghe_causes('zzzz')
@@ -206,8 +211,8 @@ test_that("GHE metadata distinguishes provider rows from long measures and recor
   httr2::with_mocked_responses(list(retrieval_response('{"@odata.count":0,"value":[]}')), {
     raw <- ghe_data('PHL', year = 2023)
     expect_identical(dsir_metadata(raw)$result$status, 'empty')
-    expect_identical(attr(ghe_clean(raw), 'dsir_metadata'), attr(raw, 'dsir_metadata'))
-    expect_identical(attr(ghe_clean(raw), 'who_provenance'), attr(raw, 'who_provenance'))
+    expect_acquisition_preserved(ghe_clean(raw), raw)
+    expect_identical(dsir_metadata(ghe_clean(raw))$provenance$retrieval, attr(raw, 'who_provenance'))
   })
 })
 
@@ -231,8 +236,10 @@ test_that("GHE measure schemas keep actual retrieval time when served from cache
 
 test_that("plain user tables acquire no invented retrieval record when cleaned", {
   raw <- tibble::tibble(geoAreaCode = '608', timePeriodStart = 2020, value = '1')
-  expect_null(attr(sdg_clean(raw), 'dsir_metadata', exact = TRUE))
-  expect_error(dsir_metadata(sdg_clean(raw)), 'no supported')
+  metadata <- dsir_metadata(sdg_clean(raw))
+  expect_null(metadata$sources)
+  expect_length(metadata$provenance$retrieval, 0L)
+  expect_match(metadata$cleaning$cleaned_at, 'T.*Z$')
 })
 
 test_that("xMart observations record valid emptiness separately from failed requests", {
@@ -248,13 +255,13 @@ test_that("xMart observations record valid emptiness separately from failed requ
     expect_identical(metadata$result$status, 'success')
     expect_identical(metadata$sources$query[[1]]$filter, context$filter)
     expect_equal(metadata$sources$record_count, 1)
-    expect_identical(attr(gho_clean(raw), 'dsir_metadata'), attr(raw, 'dsir_metadata'))
+    expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{"@odata.count":0,"value":[]}')), {
     raw <- gho_data('X', backend = 'xmart')
     expect_identical(dsir_metadata(raw)$result$status, 'empty')
     expect_true(dsir_metadata(raw)$result$complete)
-    expect_identical(attr(gho_clean(raw), 'dsir_metadata'), attr(raw, 'dsir_metadata'))
+    expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{}', 404L)), {
     raw <- suppressWarnings(gho_data('X', backend = 'xmart'))

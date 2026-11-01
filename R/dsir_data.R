@@ -1,7 +1,8 @@
 #' Explicitly Create an Experimental DSIR Data Object
 #'
 #' Adds a `dsir_data` tibble subclass to an already cleaned indicator table.
-#' The download and cleaning functions keep their existing return types.
+#' Cleaners return this subclass by default; `output = "tibble"` opts out.
+#' Downloads and directory functions retain their existing return types.
 #' This experimental interface and its metadata schema may change.
 #'
 #' @param x A data frame with the typed 15-column schema returned by
@@ -39,7 +40,7 @@
 #' explicit query scope. Objects whose metadata needs review are rejected;
 #' retain the original observations for reproducible source snapshots.
 #'
-#' @seealso [dsir_metadata()], [gho_catalog]
+#' @seealso [dsir_metadata()], [plot.dsir_data()], [gho_catalog]
 #' @export
 #'
 #' @examples
@@ -79,8 +80,8 @@ as_dsir_data <- function(x) {
                       removed_columns = character(), review_columns = character())
   )
   acquisition <- attr(x, "dsir_metadata", exact = TRUE)
-  if (identical(acquisition$layout, "retrieval")) {
-    fields <- c("source", "kind", "sources", "query", "result")
+  if (isTRUE(acquisition$layout %in% c("retrieval", "cleaning"))) {
+    fields <- intersect(c("source", "kind", "sources", "query", "result", "cleaning"), names(acquisition))
     metadata[fields] <- acquisition[fields]
   }
   .new_dsir_data(x, metadata)
@@ -135,6 +136,16 @@ as_dsir_data <- function(x) {
 #' historical acquisition records, not an audit of arbitrary changes to a
 #' plain tibble. Use the S3 object's processing status to track supported
 #' transformations. `saveRDS()` preserves attributes; CSV does not.
+#'
+#' Cleaning records live in `cleaning`, also for `output = "tibble"` and
+#' user-supplied input without acquisition records. They contain the cleaner,
+#' package version, UTC cleaning time, input/output sizes and columns, options,
+#' and a profile of semantic fields. Each profile records its retained column
+#' (or `NA`), distinct count including missing values, missing count and its
+#' constant value, if any. Varying omitted values are not stored row by row.
+#' Recorded aliases link equivalent core and named dimensions. Cleaning time
+#' never substitutes for retrieval time. These records describe the cleaning
+#' input; current coverage and subsequent field status remain separate.
 #' @export
 #' @examples
 #' dsir_metadata(gho_catalog)$sources
@@ -158,7 +169,7 @@ dsir_metadata <- function(x) {
     metadata$dimensions <- lapply(plain[dims], .dsi_data_values)
   } else if (identical(metadata$layout, "catalog") && is.data.frame(x)) {
     metadata$current <- list(rows = nrow(x), columns = ncol(x))
-  } else if (identical(metadata$layout, "retrieval")) {
+  } else if (isTRUE(metadata$layout %in% c("retrieval", "cleaning"))) {
     metadata$current <- if (is.data.frame(x)) list(rows = nrow(x), columns = ncol(x)) else list(length = length(x))
   } else {
     cli::cli_abort("{.arg x} must carry supported DSIR data, catalog or retrieval metadata.")
@@ -215,9 +226,11 @@ dsir_metadata <- function(x) {
 
 .dsi_data_roles <- function(fields) {
   roles <- rep("metadata", length(fields))
+  roles[grepl("^attr_", fields)] <- "dimension"
   roles[fields %in% c("source", "provider", "id", "series", "observation_id")] <- "identity"
   roles[fields %in% c("value", "value_num", "low", "high")] <- "value"
-  roles[fields %in% c("unit", "attr_units", "measure_field")] <- "measure"
+  roles[fields %in% c("unit", "attr_units", "attr_unit_multiplier", "attr_unit_mult",
+                      "base_period", "measure_field")] <- "measure"
   roles[fields %in% c("location", "iso3", "location_name", "year", "spatial_type", "time_type") |
           grepl("^dim[123]($|_)|^dim_", fields)] <- "dimension"
   roles
@@ -293,6 +306,12 @@ print.dsir_data <- function(x, ...) {
   cat("Indicators: ", label(shown), if (length(codes) > 3L) " (...)" else "", "\n", sep = "")
   labels <- .dsi_data_values(x$indicator)
   if (length(labels)) cat("Names: ", substr(paste(utils::head(labels, 2L), collapse = "; "), 1L, 160L), "\n", sep = "")
+  cleaning <- metadata$cleaning
+  if (!is.null(cleaning)) {
+    omitted <- cleaning$fields$column[is.na(cleaning$fields$retained_as) & cleaning$fields$distinct > 1L]
+    cat("Cleaned: ", cleaning$function_name, " | At: ", cleaning$cleaned_at,
+        " | Omitted varying fields: ", length(omitted), "\n", sep = "")
+  }
   print(.dsi_data_plain(x), ...)
   invisible(x)
 }
@@ -326,6 +345,7 @@ summary.dsir_data <- function(object, ...) {
     sources = metadata$sources,
     query = metadata$query,
     result = metadata$result,
+    cleaning = metadata$cleaning,
     processing = metadata$processing
   ), class = "summary_dsir_data")
 }

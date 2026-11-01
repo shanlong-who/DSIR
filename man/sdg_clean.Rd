@@ -4,7 +4,12 @@
 \alias{sdg_clean}
 \title{Tidy an SDG Data Frame}
 \usage{
-sdg_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
+sdg_clean(
+  df,
+  keep_dimensions = FALSE,
+  keep_metadata = FALSE,
+  output = c("dsir_data", "tibble")
+)
 }
 \arguments{
 \item{df}{A data frame returned by \code{\link[=sdg_data]{sdg_data()}}.}
@@ -29,9 +34,14 @@ character columns. \code{footnotes}, \code{indicator_codes}, \code{goal_codes}, 
 entries rather than just the first. Missing scalar fields are \code{NA};
 missing list fields are empty character vectors. This option is
 independent of \code{keep_dimensions} and makes no extra network requests.}
+
+\item{output}{Return a \code{"dsir_data"} tibble subclass (default) or a plain
+\code{"tibble"}. Both carry acquisition and cleaning metadata as attributes;
+inspect them with \code{\link[=dsir_metadata]{dsir_metadata()}}. This does not add table columns.}
 }
 \value{
-A \link[tibble:tibble]{tibble} with 15 core columns: \code{source} (always
+A \link[=as_dsir_data]{dsir_data} tibble, or a plain tibble when requested,
+with 15 core columns: \code{source} (always
 \code{"sdg"}), \code{id}, \code{indicator}, \code{location}, \code{iso3}, \code{location_name},
 \code{year}, \code{value}, \code{value_num}, \code{low}, \code{high}, \code{series}, \code{dim1}
 (\code{NA}), \code{dim2} (\code{NA}), \code{dim3} (\code{NA}). Sorted by \code{location} then
@@ -109,6 +119,16 @@ independent of \code{keep_metadata}, which controls optional data columns.
 historical acquisition records, not an audit of arbitrary changes to a
 plain tibble. Use the S3 object's processing status to track supported
 transformations. \code{saveRDS()} preserves attributes; CSV does not.
+
+Cleaning records live in \code{cleaning}, also for \code{output = "tibble"} and
+user-supplied input without acquisition records. They contain the cleaner,
+package version, UTC cleaning time, input/output sizes and columns, options,
+and a profile of semantic fields. Each profile records its retained column
+(or \code{NA}), distinct count including missing values, missing count and its
+constant value, if any. Varying omitted values are not stored row by row.
+Recorded aliases link equivalent core and named dimensions. Cleaning time
+never substitutes for retrieval time. These records describe the cleaning
+input; current coverage and subsequent field status remain separate.
 }
 
 \examples{

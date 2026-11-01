@@ -46,6 +46,16 @@ independent of \code{keep_metadata}, which controls optional data columns.
 historical acquisition records, not an audit of arbitrary changes to a
 plain tibble. Use the S3 object's processing status to track supported
 transformations. \code{saveRDS()} preserves attributes; CSV does not.
+
+Cleaning records live in \code{cleaning}, also for \code{output = "tibble"} and
+user-supplied input without acquisition records. They contain the cleaner,
+package version, UTC cleaning time, input/output sizes and columns, options,
+and a profile of semantic fields. Each profile records its retained column
+(or \code{NA}), distinct count including missing values, missing count and its
+constant value, if any. Varying omitted values are not stored row by row.
+Recorded aliases link equivalent core and named dimensions. Cleaning time
+never substitutes for retrieval time. These records describe the cleaning
+input; current coverage and subsequent field status remain separate.
 }
 
 \examples{

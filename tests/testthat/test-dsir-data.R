@@ -1,4 +1,4 @@
-dsir_test_clean <- function() {
+dsir_test_clean <- function(output = "dsir_data") {
   raw <- tibble::tibble(
     IndicatorCode = "EXAMPLE", IndicatorName = "Example indicator",
     SpatialDim = c("PHL", "PHL", "LAO", "LAO"),
@@ -9,11 +9,11 @@ dsir_test_clean <- function() {
   )
   attr(raw, "who_provenance") <- list(backend = "legacy", complete = TRUE, rows = 4L,
     retrieved = "2026-10-30 00:00:00", query_url = "https://example.test/EXAMPLE")
-  gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+  gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE, output = output)
 }
 
 test_that("explicit conversion preserves columns and separates historical provenance", {
-  clean <- dsir_test_clean()
+  clean <- dsir_test_clean(output = "tibble")
   origin <- attr(clean, "who_provenance")
   x <- as_dsir_data(clean)
   expect_identical(class(x), c("dsir_data", "tbl_df", "tbl", "data.frame"))
@@ -28,16 +28,17 @@ test_that("explicit conversion preserves columns and separates historical proven
   bad <- clean
   bad$year <- as.character(bad$year)
   expect_error(as_dsir_data(bad), "types")
-  expect_error(dsir_metadata(clean), "no supported")
+  expect_identical(dsir_metadata(clean)$layout, "cleaning")
+  expect_error(dsir_metadata(tibble::as_tibble(x)), "no supported")
 })
 
-test_that("cleaners and bind_indicators keep their default return behavior", {
-  expect_false(inherits(dsir_test_clean(), "dsir_data"))
+test_that("cleaners default to S3 while bind_indicators returns an ordinary tibble", {
+  expect_s3_class(dsir_test_clean(), "dsir_data")
   s <- sdg_clean(tibble::tibble(geoAreaCode = "608", timePeriodStart = 2020,
                                indicator = list("3.4.1"), value = "10"))
   g <- ghe_clean(.ghe_empty(), keep_dimensions = TRUE)
-  expect_false(inherits(s, "dsir_data"))
-  expect_false(inherits(g, "dsir_data"))
+  expect_s3_class(s, "dsir_data")
+  expect_s3_class(g, "dsir_data")
   expect_s3_class(as_dsir_data(s), "dsir_data")
   expect_s3_class(as_dsir_data(g), "dsir_data")
   expect_length(dsir_metadata(as_dsir_data(s))$provenance$retrieval, 0L)
@@ -180,7 +181,7 @@ test_that("RDS keeps metadata and methods without resetting processing state", {
 })
 
 test_that("snapshots distinguish unchanged input from transformed DSIR data", {
-  clean <- dsir_test_clean()
+  clean <- dsir_test_clean(output = "tibble")
   clean$spatial_type <- "COUNTRY"
   clean$time_type <- "YEAR"
   x <- as_dsir_data(clean)

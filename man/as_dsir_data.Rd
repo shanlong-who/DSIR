@@ -27,7 +27,8 @@ attribute. Use \code{\link[=dsir_metadata]{dsir_metadata()}} to inspect it.
 }
 \description{
 Adds a \code{dsir_data} tibble subclass to an already cleaned indicator table.
-The download and cleaning functions keep their existing return types.
+Cleaners return this subclass by default; \code{output = "tibble"} opts out.
+Downloads and directory functions retain their existing return types.
 This experimental interface and its metadata schema may change.
 }
 \details{
@@ -79,5 +80,5 @@ x$value_num <- x$value_num / 100
 dsir_metadata(x)$processing
 }
 \seealso{
-\code{\link[=dsir_metadata]{dsir_metadata()}}, \link{gho_catalog}
+\code{\link[=dsir_metadata]{dsir_metadata()}}, \code{\link[=plot.dsir_data]{plot.dsir_data()}}, \link{gho_catalog}
 }

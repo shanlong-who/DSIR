@@ -108,9 +108,10 @@ test_that("core identity and active dimension type/code pairs are mandatory", {
 test_that("cleaned snapshots require the full retained identity context", {
   x <- snapshot_test_data()
   expect_error(snapshot_test_wrap(gho_clean(x)), "Missing GHO identity")
-  clean <- gho_clean(x, keep_dimensions = TRUE, keep_metadata = TRUE)
+  clean <- gho_clean(x, keep_dimensions = TRUE, keep_metadata = TRUE, output = "tibble")
   out <- snapshot_test_wrap(clean)
   expect_identical(out$data, clean)
+  expect_identical(snapshot_test_wrap(as_dsir_data(clean))$data, out$data)
   expect_true(all(c("id", "spatial_type", "time_type", "dim1_type", "dim2") %in% out$key))
   expect_identical(out$primary_value, "value_num")
   expect_identical(out$source_timestamp_fields, "updated")

@@ -108,7 +108,7 @@ test_that('fallback preserves geography and years and cleaning retains actual or
     expect_match(attr(out, 'who_provenance')$query_url, 'ghoapi.azureedge.net', fixed = TRUE)
     clean <- gho_clean(out, keep_metadata = TRUE)
     expect_identical(clean$provider, 'legacy')
-    expect_equal(attr(clean, 'who_provenance')$fallback_reason, 'directory_not_listed')
+    expect_equal(dsir_metadata(clean)$provenance$retrieval$fallback_reason, 'directory_not_listed')
   })
   expect_length(urls, 1L)
   expect_match(urls, "SpatialDimType eq 'COUNTRY'", fixed = TRUE)

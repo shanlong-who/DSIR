@@ -32,7 +32,7 @@ test_that("SDG named dimensions remain aligned after cleaning and sorting", {
   out <- sdg_clean(raw, keep_dimensions = TRUE)
 
   expect_equal(ncol(compact), 15L)
-  expect_identical(out[names(compact)], compact)
+  expect_identical(tibble::as_tibble(out)[names(compact)], tibble::as_tibble(compact))
   expect_named(out, c(
     names(compact), "dim_age", "dim_location", "dim_sex",
     "dim_reporting_type", "dim_quantile", "dim_type_of_household"
@@ -56,7 +56,8 @@ test_that("cleaning handles missing and list-form SDG dimension records", {
   expect_identical(out$dim_age, rep(NA_character_, 3))
 
   raw$dimensions <- NULL
-  expect_identical(sdg_clean(raw, keep_dimensions = TRUE), sdg_clean(raw))
+  expect_identical(tibble::as_tibble(sdg_clean(raw, keep_dimensions = TRUE)),
+                   tibble::as_tibble(sdg_clean(raw)))
 })
 
 test_that("zero-row SDG subsets retain known dimension names and types", {
@@ -66,8 +67,8 @@ test_that("zero-row SDG subsets retain known dimension names and types", {
   expect_equal(ncol(out), 21L)
   expect_type(out$dim_age, "character")
   expect_type(out$year, "integer")
-  expect_identical(sdg_clean(tibble::tibble(), keep_dimensions = TRUE),
-                   sdg_clean(tibble::tibble()))
+  expect_identical(tibble::as_tibble(sdg_clean(tibble::tibble(), keep_dimensions = TRUE)),
+                   tibble::as_tibble(sdg_clean(tibble::tibble())))
 })
 
 test_that("invalid dimension retention options and ambiguous names fail clearly", {

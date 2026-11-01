@@ -4,7 +4,7 @@
 \alias{ghe_clean}
 \title{Put GHE Estimates in the Unified DSIR Schema}
 \usage{
-ghe_clean(df, keep_dimensions = FALSE)
+ghe_clean(df, keep_dimensions = FALSE, output = c("dsir_data", "tibble"))
 }
 \arguments{
 \item{df}{A data frame from \code{\link[=ghe_data]{ghe_data()}}.}
@@ -12,9 +12,14 @@ ghe_clean(df, keep_dimensions = FALSE)
 \item{keep_dimensions}{Append \code{dim_sex}, \code{dim_age}, \code{cause_name},
 \code{cause_group}, \code{cause_level}, \code{rankable}, \code{unit}, and \code{population}?
 Default \code{FALSE} keeps the 15-column core.}
+
+\item{output}{Return a \code{"dsir_data"} tibble subclass (default) or a plain
+\code{"tibble"}. Both carry acquisition and cleaning metadata as attributes;
+inspect them with \code{\link[=dsir_metadata]{dsir_metadata()}}. This does not add table columns.}
 }
 \value{
-A tibble in the unified schema, with \code{source = "ghe"}.
+A \link[=as_dsir_data]{dsir_data} tibble in the unified schema, with
+\code{source = "ghe"}, or a plain tibble when \code{output = "tibble"}.
 }
 \description{
 Converts \code{\link[=ghe_data]{ghe_data()}} output for \code{\link[=bind_indicators]{bind_indicators()}}. A GHE cause is \code{id},
@@ -54,6 +59,16 @@ independent of \code{keep_metadata}, which controls optional data columns.
 historical acquisition records, not an audit of arbitrary changes to a
 plain tibble. Use the S3 object's processing status to track supported
 transformations. \code{saveRDS()} preserves attributes; CSV does not.
+
+Cleaning records live in \code{cleaning}, also for \code{output = "tibble"} and
+user-supplied input without acquisition records. They contain the cleaner,
+package version, UTC cleaning time, input/output sizes and columns, options,
+and a profile of semantic fields. Each profile records its retained column
+(or \code{NA}), distinct count including missing values, missing count and its
+constant value, if any. Varying omitted values are not stored row by row.
+Recorded aliases link equivalent core and named dimensions. Cleaning time
+never substitutes for retrieval time. These records describe the cleaning
+input; current coverage and subsequent field status remain separate.
 }
 
 \examples{

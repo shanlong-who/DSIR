@@ -120,10 +120,12 @@ data_snapshot <- function(data, file = NULL, source = NULL, indicator = NULL,
     if (length(metadata$provenance$retrieval)) {
       attr(data, "who_provenance") <- metadata$provenance$retrieval
     }
-    if (!is.null(metadata$sources)) {
-      acquisition <- metadata[c("schema_version", "source", "kind", "sources", "query", "result")]
-      acquisition$layout <- "retrieval"
-      attr(data, "dsir_metadata") <- acquisition[c("schema_version", "layout", "source", "kind", "sources", "query", "result")]
+    if (!is.null(metadata$sources) || !is.null(metadata$cleaning)) {
+      fields <- intersect(c("schema_version", "source", "kind", "sources", "query", "result", "cleaning"), names(metadata))
+      acquisition <- metadata[fields]
+      acquisition$layout <- if (is.null(metadata$cleaning)) "retrieval" else "cleaning"
+      fields <- c("schema_version", "layout", setdiff(fields, "schema_version"))
+      attr(data, "dsir_metadata") <- acquisition[fields]
     }
   }
   .dsi_check_flag(overwrite, "overwrite")

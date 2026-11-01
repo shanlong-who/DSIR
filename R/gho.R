@@ -468,12 +468,17 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
 #'   fields are `NA`; missing list fields are empty character vectors.
 #'   This option is independent of `keep_dimensions`. Unit and dimension
 #'   labels are not inferred. xMart output also retains `unit`,
-#'   `measure_field`, and `spatial_type_source`. Both backends preserve a
-#'   `who_provenance` attribute, including with the default 15-column output.
+#'   `measure_field`, and `spatial_type_source`. Both backends preserve
+#'   acquisition provenance in the object metadata, including with the default
+#'   15-column output. Plain tibble output also keeps `who_provenance`.
 #'   Retaining these fields makes no extra
 #'   network requests beyond the usual indicator-name lookup.
 #'
-#' @return A [tibble][tibble::tibble] with 15 core columns: `source` (always
+#' @param output Return a `"dsir_data"` tibble subclass (default) or a plain
+#'   `"tibble"`. Both carry acquisition and cleaning metadata as attributes;
+#'   inspect them with [dsir_metadata()]. This does not add table columns.
+#' @return A [dsir_data][as_dsir_data] tibble, or a plain tibble when requested,
+#'   with 15 core columns: `source` (always
 #'   `"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
 #'   `year`, `value`, `value_num`, `low`, `high`, `series` (`NA`),
 #'   `dim1`, `dim2`, `dim3`. Sorted by `location` then `year`.
@@ -488,7 +493,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
 #'   gho_clean()
 #' }
 #' @inheritSection dsir_metadata Retrieval metadata
-gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
+gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE,
+                      output = c("dsir_data", "tibble")) {
+  output <- match.arg(output)
   if (!is.data.frame(df)) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
@@ -500,7 +507,8 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
     out <- .dsi_empty_clean()
     if (keep_dimensions) out <- .gho_append_dimensions(out, df)
     if (keep_metadata) out <- .gho_append_metadata(out, df)
-    return(.dsi_copy_metadata(out, df))
+    return(.dsi_finish_clean(out, df, "gho", output,
+      list(keep_dimensions = keep_dimensions, keep_metadata = keep_metadata)))
   }
 
   pick_chr <- function(src) {
@@ -547,5 +555,6 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
 
   missing_name <- is.na(out$location_name)
   if ('SpatialName' %in% names(df)) out$location_name[missing_name] <- pick_chr('SpatialName')[missing_name]
-  .dsi_copy_metadata(out[order(out$location, out$year), , drop = FALSE], df)
+  .dsi_finish_clean(out, df, "gho", output,
+    list(keep_dimensions = keep_dimensions, keep_metadata = keep_metadata))
 }

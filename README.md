@@ -38,8 +38,10 @@ remotes::install_github("shanlong-who/DSIR")
 
 ## Experimental data objects and offline catalogs
 
-The development version provides explicit S3 conversion after cleaning.
-Existing downloads and cleaners retain their default tibble behavior.
+The development version returns a `dsir_data` tibble subclass from
+`gho_clean()`, `ghe_clean()` and `sdg_clean()` by default. The 15-column core
+is unchanged. Use `output = "tibble"` for the ordinary class. Downloads and
+discovery functions retain their existing return classes.
 
 Downloads and discovery results carry acquisition metadata by default:
 
@@ -57,8 +59,9 @@ reported versions. Cached and bundled records retain their original dates.
 The result status distinguishes valid emptiness from failure or incomplete
 retrieval. SDG list failures still return `NULL` with a warning.
 
-All three cleaners retain these attributes, independently of optional metadata
-columns. Counts in `sources` precede local filtering and GHE measure pivoting;
+All three cleaners retain acquisition records and add a `cleaning` record,
+independently of optional metadata columns. Metadata lives in object attributes,
+not extra table columns. Counts in `sources` precede local filtering and GHE measure pivoting;
 `result` describes the original function return and `current` describes the
 supplied table. Acquisition metadata is historical and does not certify later
 edits to a plain tibble. Use `saveRDS()` to preserve it when saving data.
@@ -69,14 +72,18 @@ library(dplyr)
 
 # Use an already retrieved GHO table.
 data.clean <- gho_clean(data.raw, keep_dimensions = TRUE, keep_metadata = TRUE)
-data.s3 <- as_dsir_data(data.clean)
-summary(data.s3)
-dsir_metadata(data.s3)$provenance
-dsir_metadata(data.s3)$sources
+summary(data.clean)
+dsir_metadata(data.clean)$provenance
+dsir_metadata(data.clean)$sources
+dsir_metadata(data.clean)$cleaning
 
-data.flagged <- data.s3 %>% mutate(flag.high = value_num > 20)
-data.changed <- data.s3 %>% mutate(value_num = value_num / 100)
+data.flagged <- data.clean %>% mutate(flag.high = value_num > 20)
+data.changed <- data.clean %>% mutate(value_num = value_num / 100)
 dsir_metadata(data.changed)$processing
+
+# Ordinary tibble output retains acquisition and cleaning attributes.
+data.table <- gho_clean(data.raw, output = "tibble")
+data.s3 <- as_dsir_data(data.table)
 ```
 
 Both mutations retain `dsir_data` while its core structure is valid. Added
@@ -87,6 +94,31 @@ current coverage and missingness without pooling different measures. Joins,
 binding, persistent grouping and removal of required columns return ordinary
 tables. Use `.by` for transient grouping. `as_tibble()` explicitly removes the
 class and object metadata; `saveRDS()` preserves both. This interface is experimental.
+
+Cleaning time is distinct from retrieval time. The cleaning record describes
+the input and which dimensions/units were retained, including constant context
+omitted from table columns. Current coverage comes from the current rows.
+
+After selecting a single indicator, series, unit and comparable population
+stratum, use the experimental plot method:
+
+```r
+plot(data.clean, type = "trend", country = "PHL")
+plot(data.clean, type = "compare", year = 2023, interval = TRUE)
+
+# Keep the relevant named dimensions when cleaning.
+plot(data.clean, type = "trend", country = c("PHL", "LAO"),
+     group = "dim1", facet = "iso3")
+```
+
+Each call returns a standard ggplot using a DSIR theme. Comparisons require
+one common year. Mixed units, unresolved strata and duplicate positions cause
+an error; no automatic aggregation or unit conversion occurs. If cleaning
+omitted varying dimensions or units, reclean the original data with the
+retention flags. Reported bounds are optional, without an assumed confidence
+level. Trends break at missing estimates and gaps greater than one year.
+Changed plot-relevant fields need review; use explicit ggplot mappings for
+derived analyses outside this initial contract.
 
 Three offline datasets support discovery without API calls:
 

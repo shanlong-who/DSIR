@@ -42,14 +42,22 @@ tests, help pages, and [release notes](../../NEWS.md).
   including on empty results. Existing WHO attributes remain compatible;
   failed SDG list requests still return `NULL`. Plain-table metadata describes
   acquisition and does not track arbitrary later transformations.
-- **Experimental data objects:** development after 0.13.0 adds explicit
-  `as_dsir_data()` conversion of cleaned tables. Downloads and cleaners keep
-  their default returns. The subclass describes structured data with metadata,
+- **Experimental data objects:** development after 0.13.0 adds
+  `as_dsir_data()` conversion of cleaned tables. Since 0.13.0.9002, cleaners
+  default to this subclass, with an explicit `output = "tibble"` alternative.
+  Downloads and directories keep their default classes. The subclass describes structured data with metadata,
   not a guarantee of unmodified API observations. Source provenance remains
   historical; current coverage is computed from current rows. Valid mutations
   retain the class, flag derived columns and invalidate affected interpretation.
   Invalid core schemas, joins, binding and persistent grouping drop object
-  metadata. No custom plot method or automatic unit conversion is included.
+  metadata. Cleaning records live in attributes on both outputs and distinguish
+  cleaning time from retrieval time. They summarize retention and constant
+  semantic context without hiding a copy of raw observations in the object.
+  Explicit `trend` and `compare` plot methods return ggplots after checking
+  indicator/measure/unit identity, population strata, unique positions and
+  field-review status. They never aggregate, convert units, select a latest
+  year implicitly or bridge missing annual observations. Other chart types
+  remain outside this first experimental method.
 - **Public discovery catalogs:** `gho_catalog` retains backend-specific rows;
   `sdg_catalog` preserves nested series and their shared indicator links;
   `ghe_catalog` lists causes and measures separately rather than inventing

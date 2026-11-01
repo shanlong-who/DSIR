@@ -397,7 +397,9 @@ sdg_data <- function(indicator, area = NULL,
 #'   missing list fields are empty character vectors. This option is
 #'   independent of `keep_dimensions` and makes no extra network requests.
 #'
-#' @return A [tibble][tibble::tibble] with 15 core columns: `source` (always
+#' @inheritParams gho_clean
+#' @return A [dsir_data][as_dsir_data] tibble, or a plain tibble when requested,
+#'   with 15 core columns: `source` (always
 #'   `"sdg"`), `id`, `indicator`, `location`, `iso3`, `location_name`,
 #'   `year`, `value`, `value_num`, `low`, `high`, `series`, `dim1`
 #'   (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by `location` then
@@ -415,7 +417,9 @@ sdg_data <- function(indicator, area = NULL,
 #'   sdg_clean(keep_dimensions = TRUE)
 #' }
 #' @inheritSection dsir_metadata Retrieval metadata
-sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
+sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE,
+                      output = c("dsir_data", "tibble")) {
+  output <- match.arg(output)
   if (!is.data.frame(df)) {
     cli::cli_abort("{.arg df} must be a data frame.")
   }
@@ -427,7 +431,8 @@ sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
     out <- .dsi_empty_clean()
     if (keep_dimensions) out <- .sdg_append_dimensions(out, df)
     if (keep_metadata) out <- .sdg_append_metadata(out, df)
-    return(.dsi_copy_metadata(out, df))
+    return(.dsi_finish_clean(out, df, "sdg", output,
+      list(keep_dimensions = keep_dimensions, keep_metadata = keep_metadata)))
   }
 
   flatten_chr <- function(src) {
@@ -486,7 +491,8 @@ sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   if (keep_dimensions) out <- .sdg_append_dimensions(out, df)
   if (keep_metadata) out <- .sdg_append_metadata(out, df)
 
-  .dsi_copy_metadata(out[order(out$location, out$year), , drop = FALSE], df)
+  .dsi_finish_clean(out, df, "sdg", output,
+    list(keep_dimensions = keep_dimensions, keep_metadata = keep_metadata))
 }
 
 

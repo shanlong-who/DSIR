@@ -372,7 +372,9 @@ ghe_coverage <- function(area = NULL, year = NULL, year_from = NULL, year_to = N
 #' @param keep_dimensions Append `dim_sex`, `dim_age`, `cause_name`,
 #'   `cause_group`, `cause_level`, `rankable`, `unit`, and `population`?
 #'   Default `FALSE` keeps the 15-column core.
-#' @return A tibble in the unified schema, with `source = "ghe"`.
+#' @inheritParams gho_clean
+#' @return A [dsir_data][as_dsir_data] tibble in the unified schema, with
+#'   `source = "ghe"`, or a plain tibble when `output = "tibble"`.
 #' @export
 #' @examples
 #' \donttest{
@@ -380,7 +382,8 @@ ghe_coverage <- function(area = NULL, year = NULL, year_from = NULL, year_to = N
 #'          measure = 'deaths') |> ghe_clean(keep_dimensions = TRUE)
 #' }
 #' @inheritSection dsir_metadata Retrieval metadata
-ghe_clean <- function(df, keep_dimensions = FALSE) {
+ghe_clean <- function(df, keep_dimensions = FALSE, output = c("dsir_data", "tibble")) {
+  output <- match.arg(output)
   if (!is.data.frame(df)) cli::cli_abort('{.arg df} must be a data frame.')
   .dsi_check_flag(keep_dimensions, 'keep_dimensions')
   required <- names(.ghe_empty())
@@ -398,5 +401,5 @@ ghe_clean <- function(df, keep_dimensions = FALSE) {
     out$cause_group <- df$cause_group; out$cause_level <- df$level; out$rankable <- df$rankable
     out$unit <- df$unit; out$population <- df$population
   }
-  .dsi_copy_metadata(out, origin)
+  .dsi_finish_clean(out, origin, "ghe", output, list(keep_dimensions = keep_dimensions))
 }
