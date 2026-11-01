@@ -1,6 +1,6 @@
 Package: DSIR
 Title: Data Science Infrastructure for Global Health
-Version: 0.13.0.9002
+Version: 0.13.0.9003
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),
@@ -38,6 +38,7 @@ Imports:
     tibble (>= 3.0.0),
     vctrs
 Suggests:
+    sf (>= 1.0.0),
     flextable (>= 0.9.0),
     patchwork,
     officer,

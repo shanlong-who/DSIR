@@ -140,6 +140,50 @@ its original retrieval time and is marked `bundled_snapshot`. Catalog membership
 does not guarantee that observations can currently be downloaded. Rebuild using
 `data-raw/catalogs.R`; failed or partial refreshes must not replace valid data.
 
+## Experimental maps
+
+`dsir_map()` accepts a `dsir_data` object, an ordinary data frame or an `sf`
+table and returns a standard ggplot. Install the optional `sf` package first.
+Select one indicator, unit and population stratum, with one observation per
+area and a common year. Known semantic fields are checked; no aggregation or
+latest-year selection occurs.
+
+```r
+library(DSIR)
+library(dplyr)
+
+# data.clean is an already cleaned, comparable indicator table.
+data.map <- data.clean %>% filter(iso3 %in% c("LAO", "VNM"))
+map <- dsir_map(data.map, year = 2023, download = "allow")
+map
+dsir_metadata(map)$boundaries$sources
+
+# Later calls reuse the cache without contacting WHO.
+map <- dsir_map(data.map, year = 2023, download = "never")
+
+# Ordinary tables can use any character/factor area key and supplied sf polygons.
+# analysis has columns area_code, rate and unit; borders has area_code and geometry.
+map <- dsir_map(analysis, value = "rate", country = "area_code",
+                boundaries = borders, boundary_key = "area_code")
+```
+
+Without supplied geometry, the function requests only the needed countries
+from the public WHO ADM0 Feature Service, without a WHO account. Its default
+`download = "ask"` asks before an interactive download; scripts and Quarto
+must explicitly allow downloads. Detailed polygons can be large. No boundary
+files are bundled with DSIR. Use `cache_dir` for a project-specific cache and
+`refresh = TRUE` for an explicit refresh. Failed or invalid downloads do not
+replace an existing valid country cache.
+
+WHO source terms require use without modification. The function does not
+repair, simplify or combine source geometries. The service returned empty
+Philippine geometry during development: mapping the Philippines therefore
+requires corrected official data or complete user-supplied boundaries. A
+matching ISO3 code alone does not establish geographic comparability.
+Missing estimates are grey; missing or invalid boundaries cause an error.
+Map metadata describes creation and retains input and boundary records,
+including original retrieval times; it does not track later ggplot edits.
+
 ## What's new in 0.13.0 (GitHub)
 
 - **xMart-first GHO queries:** the default `backend = "auto"` tries legacy only

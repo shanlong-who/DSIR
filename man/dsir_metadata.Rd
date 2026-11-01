@@ -70,6 +70,16 @@ never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.
 }
 
+\section{Map metadata}{
+
+\code{\link[=dsir_map]{dsir_map()}} records \code{layout = "map"}, creation time, selected keys and
+value/year columns, input metadata and boundary provenance. Downloaded
+boundaries record per-country endpoints, queries, original retrieval times,
+item modification times, source terms, checksums and cache use. Supplied
+boundaries are labelled \code{user_supplied}, with no invented retrieval history.
+This describes map creation, not later ggplot edits or additional layers.
+}
+
 \examples{
 dsir_metadata(gho_catalog)$sources
 }

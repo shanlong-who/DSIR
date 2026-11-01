@@ -28,6 +28,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom httr2 %>%
 #' @importFrom rlang .data %||%
 #' @importFrom tibble as_tibble tibble
 ## usethis namespace: end

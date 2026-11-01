@@ -33,6 +33,7 @@ export(bind_indicators)
 export(compare_snapshots)
 export(data_snapshot)
 export(dsi_flextable_defaults)
+export(dsir_map)
 export(dsir_metadata)
 export(geomean)
 export(ggpie)
@@ -67,6 +68,7 @@ export(sdg_targets)
 export(snapshot)
 export(theme_dsi)
 export(theme_dsi_facet)
+importFrom(httr2,"%>%")
 importFrom(rlang,
   "%||%",
   .data

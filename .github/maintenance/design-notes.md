@@ -58,6 +58,17 @@ tests, help pages, and [release notes](../../NEWS.md).
   field-review status. They never aggregate, convert units, select a latest
   year implicitly or bridge missing annual observations. Other chart types
   remain outside this first experimental method.
+- **Experimental maps:** since 0.13.0.9003, `dsir_map()` accepts DSIR objects,
+  ordinary tables and supplied `sf` polygons, returning a ggplot. WHO ADM0
+  geometry remains external, with explicit download permission and validated
+  per-country caches. ISO3 and stable feature IDs must match; empty/invalid
+  geometries and ambiguous analysis keys fail. Never repair, simplify, dissolve
+  or fill WHO gaps from other sources automatically. The observed empty
+  Philippine geometry is checked from the data, not a hard-coded blacklist.
+  Supplied polygons may use other keys and need no network. Retain the shared
+  plot semantic checks, common-year requirement and no-aggregation rule.
+  Map metadata records creation and per-country acquisition, not an audit of
+  later ggplot edits. Item modification time is not a boundary reference date.
 - **Public discovery catalogs:** `gho_catalog` retains backend-specific rows;
   `sdg_catalog` preserves nested series and their shared indicator links;
   `ghe_catalog` lists causes and measures separately rather than inventing

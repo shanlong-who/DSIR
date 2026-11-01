@@ -176,7 +176,7 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
   p
 }
 
-.dsi_plot_context <- function(data, metadata, mapped, interval) {
+.dsi_plot_context <- function(data, metadata, mapped, interval, require_indicator = TRUE) {
   profile <- metadata$cleaning$fields
   if (is.null(profile)) profile <- tibble::tibble(column = character(),
     retained_as = character(), distinct = integer(), constant = character())
@@ -207,7 +207,7 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
   identity <- intersect(c("source", "id", "series", "provider", "measure_field", "indicator"), names(values))
   mixed <- identity[lengths(values[identity]) > 1L]
   if (length(mixed)) cli::cli_abort("Select one indicator, series/measure and origin; mixed {.val {mixed}}.")
-  if (length(values$id) != 1L || is.na(values$id)) cli::cli_abort("A single recorded indicator code is required.")
+  if (require_indicator && (length(values$id) != 1L || is.na(values$id))) cli::cli_abort("A single recorded indicator code is required.")
   backend <- if (length(values$provider) && !all(is.na(values$provider))) values$provider else
     unique(c(metadata$sources$backend, metadata$provenance$retrieval$backend))
   if (length(backend) > 1L) cli::cli_abort("Multiple recorded backends cannot be combined automatically.")
@@ -226,7 +226,7 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
   dimensions <- setdiff(dimensions, c("location", "iso3", "location_name", "year", mapped))
   varying <- dimensions[lengths(values[dimensions]) > 1L]
   if (length(varying)) cli::cli_abort(c("Unresolved population or time dimensions: {.val {varying}}.",
-    "i" = "Filter to comparable strata or name the dimension in {.arg group}/{.arg facet}."))
+    "i" = "Filter to comparable strata or explicitly map each varying dimension."))
   fixed <- dimensions[vapply(values[dimensions], function(x) length(x) == 1L && !is.na(x), logical(1))]
   fixed <- setdiff(fixed, c("time_type", "spatial_type", grep("_type$", fixed, value = TRUE), names(aliases)))
   basis <- setdiff(measures, c("unit", "attr_units", "measure_field"))
@@ -235,7 +235,7 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
   strata <- vapply(fixed, function(field) paste0(field, ": ", values[[field]]), character(1))
   retrieval <- unique(metadata$sources$retrieved_at %||% metadata$provenance$retrieval$retrieved)
   retrieval <- retrieval[!is.na(retrieval)]
-  caption <- c(paste("Source:", paste(values$source, collapse = ", ")),
+  caption <- c(if (length(values$source)) paste("Source:", paste(values$source, collapse = ", ")) else "Source: not recorded",
     if (length(backend)) paste("Backend:", paste(backend, collapse = ", ")),
     if (length(retrieval)) paste("Retrieved:", paste(retrieval, collapse = ", ")))
   title <- values$indicator

@@ -146,6 +146,13 @@ as_dsir_data <- function(x) {
 #' Recorded aliases link equivalent core and named dimensions. Cleaning time
 #' never substitutes for retrieval time. These records describe the cleaning
 #' input; current coverage and subsequent field status remain separate.
+#' @section Map metadata:
+#' [dsir_map()] records `layout = "map"`, creation time, selected keys and
+#' value/year columns, input metadata and boundary provenance. Downloaded
+#' boundaries record per-country endpoints, queries, original retrieval times,
+#' item modification times, source terms, checksums and cache use. Supplied
+#' boundaries are labelled `user_supplied`, with no invented retrieval history.
+#' This describes map creation, not later ggplot edits or additional layers.
 #' @export
 #' @examples
 #' dsir_metadata(gho_catalog)$sources
@@ -171,6 +178,9 @@ dsir_metadata <- function(x) {
     metadata$current <- list(rows = nrow(x), columns = ncol(x))
   } else if (isTRUE(metadata$layout %in% c("retrieval", "cleaning"))) {
     metadata$current <- if (is.data.frame(x)) list(rows = nrow(x), columns = ncol(x)) else list(length = length(x))
+  } else if (identical(metadata$layout, "map") && inherits(x, "ggplot")) {
+    # Map metadata describes creation, not later changes to layers or scales.
+    return(metadata)
   } else {
     cli::cli_abort("{.arg x} must carry supported DSIR data, catalog or retrieval metadata.")
   }
