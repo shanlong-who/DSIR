@@ -64,6 +64,14 @@ navbar:
       text: Updates
       href: news/index.html
 reference:
+- title: Experimental data objects and discovery catalogs
+  desc: Explicit tibble subclasses and versioned offline discovery snapshots.
+  contents:
+  - as_dsir_data
+  - dsir_metadata
+  - gho_catalog
+  - sdg_catalog
+  - ghe_catalog
 - title: WHO country metadata
   desc: Datasets and helpers for WHO Member States and regional groupings.
   contents:

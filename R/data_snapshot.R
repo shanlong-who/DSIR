@@ -108,6 +108,19 @@
 data_snapshot <- function(data, file = NULL, source = NULL, indicator = NULL,
                           backend = NULL, scope = NULL, key = NULL,
                           value_fields = NULL, overwrite = FALSE) {
+  if (inherits(data, "dsir_data")) {
+    metadata <- dsir_metadata(data)
+    if (metadata$processing$semantics == "needs_review") {
+      cli::cli_abort("DSIR metadata needs review after field changes; snapshot the original observations instead.")
+    }
+    if (is.null(scope) && metadata$processing$row_scope != "input") {
+      cli::cli_abort("Supply an explicit {.arg scope} for a row-selected DSIR object.")
+    }
+    data <- .dsi_data_plain(data)
+    if (length(metadata$provenance$retrieval)) {
+      attr(data, "who_provenance") <- metadata$provenance$retrieval
+    }
+  }
   .dsi_check_flag(overwrite, "overwrite")
   if (!is.null(file)) {
     .dsi_snapshot_scalar(file, "file")

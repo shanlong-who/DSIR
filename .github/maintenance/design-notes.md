@@ -33,6 +33,22 @@ tests, help pages, and [release notes](../../NEWS.md).
 
 ## Contracts worth preserving
 
+- **Experimental data objects:** development after 0.13.0 adds explicit
+  `as_dsir_data()` conversion of cleaned tables. Downloads and cleaners keep
+  their default returns. The subclass describes structured data with metadata,
+  not a guarantee of unmodified API observations. Source provenance remains
+  historical; current coverage is computed from current rows. Valid mutations
+  retain the class, flag derived columns and invalidate affected interpretation.
+  Invalid core schemas, joins, binding and persistent grouping drop object
+  metadata. No custom plot method or automatic unit conversion is included.
+- **Public discovery catalogs:** `gho_catalog` retains backend-specific rows;
+  `sdg_catalog` preserves nested series and their shared indicator links;
+  `ghe_catalog` lists causes and measures separately rather than inventing
+  combinations. Snapshot, package and reported provider versions are distinct.
+  Original retrieval dates and GHE reference scope are recorded. Historical
+  fallback may seed a first catalog only when explicitly enabled; failed or
+  partial refreshes cannot overwrite an existing catalog. These datasets do
+  not change live discovery or prove that observations are available.
 - **Default cleaned schema:** the 15-column order and types are defined in
   [`R/clean_schema.R`](../../R/clean_schema.R). Empty cleaner output has
   these same types. The 0.10.0 optional dimensions and metadata add columns
