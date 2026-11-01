@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +76,17 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.13.0.9000" id="dsir-01309000-development">DSIR 0.13.0.9000 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309000-development"></a>
+</h2>
+<ul>
+<li>Add experimental <code><a href="../reference/as_dsir_data.html">as_dsir_data()</a></code> for explicit conversion after cleaning, and <code><a href="../reference/dsir_metadata.html">dsir_metadata()</a></code> for provenance, field status and current coverage. Downloads and cleaners keep their existing default return behavior. Printing and summaries remain offline. Valid column modifications retain the class, mark derived fields and flag changed input semantics for review. Invalid core schemas, joins, binding and persistent grouping return ordinary tables. Source snapshots reject objects whose semantics need review.</li>
+<li>Add versioned <code>gho_catalog</code>, <code>sdg_catalog</code> and <code>ghe_catalog</code> datasets. GHO retains separate legacy/xMart rows; SDG preserves nested series and provider releases; GHE separates cause and measure rows. Metadata records source retrieval dates, historical fallback, reference scope and package build version. Catalog membership does not establish observation availability. Live discovery, backend selection and the internal legacy fallback are unchanged.</li>
+</ul>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.13.0" id="dsir-0130-2026-10-30">DSIR 0.13.0 (2026-10-30)<a class="anchor" aria-label="anchor" href="#dsir-0130-2026-10-30"></a>
 </h2>
+<p class="text-muted">CRAN release: 2026-10-30</p>
 <ul>
 <li><p>Reference WHO’s official GHO API documentation in DESCRIPTION instead of the unavailable legacy API root URL. Retrieval behavior is unchanged.</p></li>
 <li><p><strong>Default backend change:</strong> GHO queries now use <code>backend = "auto"</code> unless overridden by an argument or <code>DSIR.who_backend</code>. Automatic selection prefers xMart and tries legacy only when a successful directory omits the exact code or a bounded whole-indicator query verifies zero observations. HTTP, parsing and schema failures, empty filtered selections and partial coverage do not trigger fallback. Explicit <code>"legacy"</code> and <code>"xmart"</code> retain fixed-provider behavior.</p></li>

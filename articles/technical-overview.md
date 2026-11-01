@@ -39,6 +39,63 @@ install.packages("DSIR")
 remotes::install_github("shanlong-who/DSIR")
 ```
 
+## Experimental data objects and offline catalogs
+
+The development version provides explicit S3 conversion after cleaning.
+Existing downloads and cleaners retain their default tibble behavior.
+
+``` r
+
+library(DSIR)
+library(dplyr)
+
+# Use an already retrieved GHO table.
+data.clean <- gho_clean(data.raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+data.s3 <- as_dsir_data(data.clean)
+summary(data.s3)
+dsir_metadata(data.s3)$provenance
+
+data.flagged <- data.s3 %>% mutate(flag.high = value_num > 20)
+data.changed <- data.s3 %>% mutate(value_num = value_num / 100)
+dsir_metadata(data.changed)$processing
+```
+
+Both mutations retain `dsir_data` while its core structure is valid.
+Added columns are marked derived. Changing an input value flags its
+interpretation, including units and bounds, as needing review; no unit
+conversion is inferred. The metadata records field changes, not
+executable formulas. Summaries describe current coverage and missingness
+without pooling different measures. Joins, binding, persistent grouping
+and removal of required columns return ordinary tables. Use `.by` for
+transient grouping.
+[`as_tibble()`](https://tibble.tidyverse.org/reference/as_tibble.html)
+explicitly removes the class and object metadata;
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) preserves both. This
+interface is experimental.
+
+Three offline datasets support discovery without API calls:
+
+``` r
+
+table(gho_catalog$backend)
+sdg_catalog[sdg_catalog$goal == "3", c("code", "description")]
+ghe_catalog[ghe_catalog$kind == "measure", c("code", "label", "unit")]
+dsir_metadata(gho_catalog)$sources
+dsir_metadata(sdg_catalog)$catalog_version
+dsir_metadata(ghe_catalog)$scope
+```
+
+GHO keeps a separate row for each backend’s code and language. SDG
+retains linked series in its `series` list-column, including provider
+release labels. GHE keeps causes and measures as separate row kinds,
+with its cause reference country and year in metadata. Catalog versions,
+DSIR build versions, retrieval times and provider releases are separate
+fields. Historical fallback retains its original retrieval time and is
+marked `bundled_snapshot`. Catalog membership does not guarantee that
+observations can currently be downloaded. Rebuild using
+`data-raw/catalogs.R`; failed or partial refreshes must not replace
+valid data.
+
 ## What’s new in 0.13.0 (GitHub)
 
 - **xMart-first GHO queries:** the default `backend = "auto"` tries

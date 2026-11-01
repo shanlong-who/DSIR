@@ -1,6 +1,29 @@
 # Changelog
 
+## DSIR 0.13.0.9000 (development)
+
+- Add experimental
+  [`as_dsir_data()`](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
+  for explicit conversion after cleaning, and
+  [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md)
+  for provenance, field status and current coverage. Downloads and
+  cleaners keep their existing default return behavior. Printing and
+  summaries remain offline. Valid column modifications retain the class,
+  mark derived fields and flag changed input semantics for review.
+  Invalid core schemas, joins, binding and persistent grouping return
+  ordinary tables. Source snapshots reject objects whose semantics need
+  review.
+- Add versioned `gho_catalog`, `sdg_catalog` and `ghe_catalog` datasets.
+  GHO retains separate legacy/xMart rows; SDG preserves nested series
+  and provider releases; GHE separates cause and measure rows. Metadata
+  records source retrieval dates, historical fallback, reference scope
+  and package build version. Catalog membership does not establish
+  observation availability. Live discovery, backend selection and the
+  internal legacy fallback are unchanged.
+
 ## DSIR 0.13.0 (2026-10-30)
+
+CRAN release: 2026-10-30
 
 - Reference WHO’s official GHO API documentation in DESCRIPTION instead
   of the unavailable legacy API root URL. Retrieval behavior is
