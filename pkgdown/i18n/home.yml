@@ -118,9 +118,9 @@
 - en: Visualize and Present Results
   zh: 可视化并呈现结果
   fr: Visualiser et présenter les résultats
-- en: Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables for technical reports.
-  zh: 复用 ggplot2 主题和 flextable 格式，为技术报告制作风格一致的图形与分析表格。
-  fr: Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents dans les rapports techniques.
+- en: Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables. GitHub version 0.14.0 also provides checked indicator plots and experimental maps.
+  zh: 复用 ggplot2 主题和 flextable 格式，制作风格一致的图形与分析表格。GitHub 0.14.0 版本还提供带有数据检查的指标图和实验性地图功能。
+  fr: Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents. La version 0.14.0 sur GitHub propose aussi des graphiques d'indicateurs avec vérifications et des cartes expérimentales.
 - en: View visualization examples
   zh: 查看可视化示例
   fr: Voir les exemples de visualisation
@@ -169,12 +169,12 @@
 - en: Development roadmap
   zh: 开发方向
   fr: Feuille de route
-- en: DSIR continues to evolve in response to practical needs in global health data analysis. Future development is planned to include GIS-related functions to support geospatial data processing, mapping and spatial analysis.
-  zh: DSIR 根据全球卫生数据分析的实际需求持续改进。未来计划加入地理信息系统（GIS）相关功能，支持地理空间数据处理、制图和空间分析。
-  fr: DSIR évolue selon les besoins pratiques de l'analyse des données de santé mondiale. Le développement prévu comprend des fonctions de systèmes d'information géographique (SIG) pour le traitement des données géospatiales, la cartographie et l'analyse spatiale.
-- en: GIS capabilities are a future direction and are not part of the current release.
-  zh: GIS 功能属于未来开发方向，当前版本尚未提供。
-  fr: Les fonctions SIG constituent une orientation future et ne sont pas incluses dans la version actuelle.
+- en: GitHub version 0.14.0 introduces experimental indicator maps with dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0 boundaries. Data objects retain acquisition and cleaning metadata.
+  zh: GitHub 0.14.0 版本新增实验性的 dsir_map() 指标地图，可使用用户提供的 sf 多边形或经明确许可下载的 WHO ADM0 边界。数据对象保留获取与清洗 metadata。
+  fr: La version 0.14.0 sur GitHub ajoute des cartes d'indicateurs expérimentales avec dsir_map(), à partir de polygones sf fournis ou de frontières OMS ADM0 téléchargées avec autorisation explicite. Les objets de données conservent les métadonnées de collecte et de nettoyage.
+- en: Maps require the optional sf package. WHO boundaries are downloaded on demand and cached locally; missing or invalid geometries are not repaired automatically.
+  zh: 制图需要可选依赖 sf。WHO 边界按需下载并缓存在本地；缺失或无效几何不会自动修补。
+  fr: Les cartes nécessitent le package facultatif sf. Les frontières de l'OMS sont téléchargées à la demande et mises en cache localement ; les géométries manquantes ou non valides ne sont pas réparées automatiquement.
 - en: The person behind the project
   zh: 项目维护者
   fr: La personne à l'origine du projet
@@ -199,9 +199,9 @@
 - en: Getting started
   zh: 快速入门
   fr: Premiers pas
-- en: Install DSIR from CRAN, then follow the technical guide for data access, analysis and presentation.
-  zh: 从 CRAN 安装 DSIR，然后跟随教程获取数据、开展分析并呈现结果。
-  fr: Installez DSIR depuis CRAN, puis suivez les tutoriels pour accéder aux données, les analyser et présenter les résultats.
+- en: CRAN provides version 0.13.0, published on 30 October 2026. Install version 0.14.0 from GitHub for the experimental data objects, metadata, plots and maps.
+  zh: CRAN 提供 2026 年 10 月 30 日发布的 0.13.0 版本。若需使用实验性数据对象、metadata、指标图和地图功能，请从 GitHub 安装 0.14.0 版本。
+  fr: CRAN propose la version 0.13.0, publiée le 30 octobre 2026. Installez la version 0.14.0 depuis GitHub pour les objets de données, les métadonnées, les graphiques et les cartes expérimentaux.
 - en: R installation commands
   zh: R 安装命令
   fr: Commandes d'installation dans R

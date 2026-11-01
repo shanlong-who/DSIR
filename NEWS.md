@@ -2,7 +2,13 @@
 
 For full source, see <https://github.com/shanlong-who/DSIR>.
 
-# DSIR 0.13.0.9003 (development)
+# DSIR 0.14.0 (2026-11-01)
+
+Available on GitHub. CRAN remains at 0.13.0. This version combines the
+0.13.0.9000-0.13.0.9003 development work; the S3 and mapping interfaces
+remain experimental.
+
+## Maps
 
 * Add experimental `dsir_map()` for `dsir_data`, ordinary analysis tables
   and `sf` input. Return a standard ggplot with a continuous viridis scale
@@ -21,7 +27,7 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   ADM0 service still returns empty Philippine geometry; a map including it
   requires corrected official data or complete user-supplied boundaries.
 
-# DSIR 0.13.0.9002 (development)
+## Data objects and plotting
 
 * **Experimental default change:** `gho_clean()`, `ghe_clean()` and
   `sdg_clean()` now return `dsir_data`, still inheriting from tibble. Append
@@ -40,7 +46,7 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   plot-relevant metadata needing review. Do not aggregate or select a latest
   year implicitly; trend lines break at missing estimates and annual gaps.
 
-# DSIR 0.13.0.9001 (development)
+## Acquisition metadata
 
 * Unify acquisition metadata for GHO, GHE and SDG observations and discovery
   results through `dsir_metadata()`, without changing their default classes
@@ -56,11 +62,12 @@ For full source, see <https://github.com/shanlong-who/DSIR>.
   from long-format measure counts. Directory searches retain the original
   catalog scope, and GHE cause discovery records its reference selection.
 
-# DSIR 0.13.0.9000 (development)
+## Explicit conversion and discovery catalogs
 
 * Add experimental `as_dsir_data()` for explicit conversion after cleaning,
   and `dsir_metadata()` for provenance, field status and current coverage.
-  Downloads and cleaners keep their existing default return behavior.
+  Downloads and discovery tables keep their existing default return classes;
+  cleaners use the new default described above.
   Printing and summaries remain offline. Valid column modifications retain
   the class, mark derived fields and flag changed input semantics for review.
   Invalid core schemas, joins, binding and persistent grouping return ordinary
