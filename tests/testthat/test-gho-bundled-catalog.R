@@ -31,7 +31,8 @@ test_that("legacy failures use a dated snapshot with literal AND search semantic
       expect_true(all(grepl(term, tolower(out$IndicatorName), fixed = TRUE)))
     }
     phrase <- suppressWarnings(gho_indicators(c("UHC", "Service Coverage"), backend = "legacy"))
-    expect_equal(phrase, out)
+    expect_equal(.dsi_data_plain(phrase), .dsi_data_plain(out))
+    expect_identical(dsir_metadata(phrase)$sources$retrieved_at, dsir_metadata(out)$sources$retrieved_at)
     literal <- suppressWarnings(gho_indicators(".*", backend = "legacy"))
     expect_equal(nrow(literal), 0L)
     expect_false(is.null(attr(literal, "catalog_snapshot")))

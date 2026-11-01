@@ -27,6 +27,17 @@
     }
     attr(out, 'who_provenance') <- provenance
   }
+  if (operation %in% c('data', 'indicators', 'dimensions')) {
+    args$requested_backend <- config$backend
+    args$actual_backend <- actual
+    args$fallback_reason <- selection$fallback_reason
+    endpoint <- if (operation == 'indicators') {
+      if (actual == 'legacy') 'https://ghoapi.azureedge.net/api/Indicator' else
+        paste0(config$base, '/DATA_/IND_DIRECTORY_WIDE')
+    } else NA_character_
+    out <- .dsi_result(out, 'gho', if (operation == 'data') 'observations' else operation,
+      query = args, backend = actual, endpoint = endpoint)
+  }
   out
 }
 
@@ -82,7 +93,7 @@
   .who_codes(search, 'search')
   df <- .xmart_catalog()
   empty <- tibble::tibble(IndicatorCode = character(), IndicatorName = character(), Language = character())
-  if (is.null(df) || !nrow(df)) return(empty)
+  if (is.null(df) || !nrow(df)) return(.dsi_copy_metadata(empty, df))
   if (!all(c('IND_CODE_GHO', 'IND_NAME', 'TERM_LANG') %in% names(df))) {
     cli::cli_warn('WHO indicator directory schema is unsupported.')
     return(empty)
@@ -94,6 +105,7 @@
   missing <- is.na(out$IndicatorName) | !nzchar(out$IndicatorName)
   out$IndicatorName[missing] <- df$IND_NAME[missing]
   out <- out[!duplicated(out$IndicatorCode), , drop = FALSE]
+  out <- .dsi_copy_metadata(out, df)
   .who_search(out, 'IndicatorName', search)
 }
 
@@ -149,9 +161,12 @@
       cli::cli_warn('Malformed WHO table schema response; no fields returned.')
       return(NULL)
     }
-    tibble::tibble(field = names(body$value))
+    .dsi_record(tibble::tibble(field = names(body$value)),
+      if (startsWith(path, 'DEX_CMS/')) 'ghe' else 'gho', 'xmart',
+      paste0(.who_config('xmart')$base, '/', path), kind = 'schema',
+      query = list(top = 1L), retrieved_at = .dsi_timestamp(), complete = TRUE)
   })
-  if (is.null(df)) character() else df$field
+  if (is.null(df)) character() else .dsi_copy_metadata(df$field, df)
 }
 .xmart_geo <- function() {
   .who_cached('geo', function() {
@@ -352,7 +367,7 @@
 }
 
 .xmart_gho_normalize <- function(df, context) {
-  if (is.null(df) || !nrow(df)) return(tibble::tibble())
+  if (is.null(df) || !nrow(df)) return(.dsi_copy_metadata(tibble::tibble(), df))
   if (!all(c('DIM_TIME', 'DIM_GEO_CODE_M49') %in% names(df))) {
     cli::cli_warn('Malformed WHO GHO observations; no data returned.')
     return(tibble::tibble())
@@ -436,8 +451,7 @@
     }
   } else extras <- .xmart_dimension_fields(names(df))
   for (field in extras) out[[field]] <- pick(field)
-  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
-  out
+  .dsi_copy_metadata(out, df)
 }
 
 .xmart_gho_data <- function(...) {
@@ -445,7 +459,10 @@
   if (is.null(context)) return(tibble::tibble())
   df <- .who_odata(context$path, filter = context$filter)
   if (!is.null(df) && !nrow(df)) .gho_inform_empty('xmart')
-  .xmart_gho_normalize(df, context)
+  out <- .xmart_gho_normalize(df, context)
+  .dsi_result(out, 'gho', 'observations', origin = df, backend = 'xmart',
+    endpoint = paste0(.who_config('xmart')$base, '/', context$path),
+    status = if (!is.null(df) && nrow(df) && !nrow(out)) 'invalid' else NULL)
 }
 .xmart_gho_count <- function(...) {
   context <- .xmart_gho_context(...)
@@ -487,6 +504,9 @@
 .xmart_gho_dimensions <- function(indicator, dimension = 'SpatialDimType') {
   context <- .xmart_gho_context(indicator)
   if (is.null(context)) return(character())
+  finish <- function(out, origin = NULL, sources = NULL, status = NULL) .dsi_result(
+    out, 'gho', 'dimensions', origin = origin, sources = sources, status = status,
+    backend = 'xmart', endpoint = paste0(.who_config('xmart')$base, '/', context$path))
   field <- switch(dimension, SpatialDim = 'DIM_GEO_CODE_M49', SpatialDimType = 'DIM_GEO_CODE_TYPE',
                   TimeDim = 'DIM_TIME', TimeDimType = 'DIM_TIME_TYPE', dimension)
   if ('DIM_1_CODE' %in% context$fields && !field %in% context$fields && startsWith(field, 'DIM_')) {
@@ -497,15 +517,18 @@
       cli::cli_warn('Unknown dimension {.val {dimension}} for this indicator table.')
       return(character())
     }
+    origins <- list()
     values <- lapply(positions, function(type_field) {
       member <- .xmart_member_field(type_field, context$fields)
       df <- .who_distinct(context$path, member, .who_and(context$filter, .who_in(type_field, field)))
+      origins[[length(origins) + 1L]] <<- if (is.null(df)) finish(character()) else df
       if (is.null(df)) return(NULL)
       as.character(df[[member]])
     })
-    if (any(vapply(values, is.null, logical(1)))) return(character())
+    sources <- .dsi_source_rows(origins)
+    if (any(vapply(values, is.null, logical(1)))) return(finish(character(), sources = sources, status = 'failed'))
     values <- unlist(values, use.names = FALSE)
-    return(sort(unique(values[!is.na(values)])))
+    return(finish(sort(unique(values[!is.na(values)])), origins[[1L]], sources = sources))
   }
   type_requested <- dimension %in% paste0('Dim', 1:3, 'Type')
   if (type_requested) {
@@ -529,13 +552,13 @@
     type_field <- paste0('DIM_', sub('Dim', '', dimension, fixed = TRUE), '_CODE')
   }
   df <- .who_distinct(context$path, c(type_field, field), context$filter)
-  if (is.null(df) || !nrow(df)) return(character())
+  if (is.null(df) || !nrow(df)) return(finish(character(), df))
   values <- as.character(df[[field]])
   if (type_requested) {
     if ('DIM_1_CODE' %in% context$fields) {
       values <- .xmart_dimension_type(values)
     } else {
-      if (!any(!is.na(values))) return(character())
+      if (!any(!is.na(values))) return(finish(character(), df))
       values <- switch(field, DIM_SEX = 'SEX', DIM_AGE = 'AGEGROUP', field)
     }
   }
@@ -549,5 +572,5 @@
     values[sex] <- .xmart_legacy_sex(values[sex], inverse = TRUE)
     values[age] <- .xmart_age_code(values[age], inverse = TRUE)
   }
-  sort(unique(values[!is.na(values)]))
+  finish(sort(unique(values[!is.na(values)])), df)
 }

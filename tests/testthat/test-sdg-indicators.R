@@ -21,7 +21,8 @@ test_that("sdg_indicators filters on a single term (case-insensitive substring)"
 
   # Same result regardless of input case
   out_upper <- sdg_indicators("MORTALITY")
-  expect_identical(out, out_upper)
+  expect_identical(.dsi_data_plain(out), .dsi_data_plain(out_upper))
+  expect_identical(dsir_metadata(out_upper)$query$search, "MORTALITY")
 })
 
 test_that("sdg_indicators applies AND semantics on a whitespace-split string", {

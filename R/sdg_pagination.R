@@ -2,12 +2,24 @@
 #'
 #' @noRd
 .sdg_collect_pages <- function(url, indicator) {
+  finish <- function(data, status = NULL, complete = NA) {
+    if (is.null(status)) status <- if (nrow(data)) "success" else "empty"
+    success <- status %in% c("success", "empty")
+    .dsi_record(data, "sdg", "unsdg", sub("[?].*$", "", url), kind = "observations",
+      query = list(url = url, pages_received = length(all_data),
+        expected_pages = expected_pages, expected_rows = expected_rows),
+      retrieved_at = if (success) .dsi_timestamp() else NA_character_,
+      status = status, complete = complete,
+      record_count = if (success) nrow(data) else NA_real_,
+      retrieval_status = if (success) "live" else "not_retrieved",
+      api_version = "V5", source_release = if (length(releases)) paste(sort(unique(releases)), collapse = "; ") else NA_character_)
+  }
   fail <- function(reason) {
     cli::cli_warn(c(
       "SDG download is incomplete or invalid: {reason}",
       "i" = "Returning no rows; partial data must not be used as a complete download."
     ), class = "dsir_incomplete_data")
-    tibble::tibble()
+    finish(tibble::tibble(), status = "incomplete", complete = FALSE)
   }
   valid_count <- function(x, minimum = 0) {
     is.numeric(x) && length(x) == 1L && is.finite(x) &&
@@ -19,10 +31,11 @@
   expected_rows <- NULL
   received_rows <- 0
   page <- 1L
+  releases <- character()
 
   repeat {
     body <- .sdg_get(paste0(url, "&page=", page))
-    if (is.null(body)) return(tibble::tibble())
+    if (is.null(body)) return(finish(tibble::tibble(), status = "failed", complete = FALSE))
     if (!is.list(body) || !"data" %in% names(body)) {
       return(fail("the response has no data field."))
     }
@@ -47,6 +60,7 @@
       }
       expected_rows <- body$totalElements
     }
+    releases <- c(releases, .dsi_sdg_releases(body))
 
     rows <- body$data
     empty_page <- is.null(rows) || (is.list(rows) && length(rows) == 0L) ||
@@ -57,7 +71,7 @@
         return(fail(paste0("page ", page, " is empty before the declared data were received.")))
       }
       cli::cli_warn("No data returned for indicator {.val {indicator}}.")
-      return(tibble::tibble())
+      return(finish(tibble::tibble(), complete = if (!is.null(expected_pages) && !is.null(expected_rows)) TRUE else NA))
     }
     if (!is.data.frame(rows)) return(fail("data is not an observation table."))
     if (!is.null(expected_pages) && page > expected_pages) {
@@ -78,10 +92,12 @@
   }
   # Different series can have different nested dimension/attribute columns.
   # Preserve their union and fill absent fields, rather than using base rbind.
-  tryCatch(
+  out <- tryCatch(
     tibble::as_tibble(do.call(vctrs::vec_rbind, all_data)),
     error = function(e) {
       fail(paste0("pages could not be combined: ", conditionMessage(e)))
     }
   )
+  if (!is.null(attr(out, "dsir_metadata", exact = TRUE))) return(out)
+  finish(out, complete = if (!is.null(expected_pages) && !is.null(expected_rows)) TRUE else NA)
 }

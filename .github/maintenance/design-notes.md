@@ -33,6 +33,15 @@ tests, help pages, and [release notes](../../NEWS.md).
 
 ## Contracts worth preserving
 
+- **Acquisition metadata:** downloads and discovery results retain their
+  existing classes and expose metadata through `dsir_metadata()`. Server
+  retrieval time, cache delivery, historical fallback and current table size
+  are distinct. Source counts precede local filtering and GHE measure pivoting.
+  SDG records pagination before local filters; unknown completeness stays
+  unknown. Cleaners and explicit S3 conversion retain acquisition records,
+  including on empty results. Existing WHO attributes remain compatible;
+  failed SDG list requests still return `NULL`. Plain-table metadata describes
+  acquisition and does not track arbitrary later transformations.
 - **Experimental data objects:** development after 0.13.0 adds explicit
   `as_dsir_data()` conversion of cleaned tables. Downloads and cleaners keep
   their default returns. The subclass describes structured data with metadata,

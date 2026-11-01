@@ -45,7 +45,9 @@ test_that("gho_dimensions returns sorted unique values of the requested column",
   httr2::with_mocked_responses(mock_json(body), {
     out <- gho_dimensions("X")  # default dimension = SpatialDimType
     expect_type(out, "character")
-    expect_equal(out, c("COUNTRY", "REGION"))
+    expect_equal(as.character(out), c("COUNTRY", "REGION"))
+    expect_equal(dsir_metadata(out)$sources$record_count, 4)
+    expect_equal(dsir_metadata(out)$current$length, 2L)
   })
 })
 
@@ -60,7 +62,7 @@ test_that("gho_dimensions picks the requested dimension column", {
   )
   httr2::with_mocked_responses(mock_json(body), {
     out <- gho_dimensions("X", dimension = "Dim1")
-    expect_equal(out, c("BTSX", "FMLE", "MLE"))  # sorted
+    expect_equal(as.character(out), c("BTSX", "FMLE", "MLE"))  # sorted
   })
 })
 
@@ -94,7 +96,7 @@ test_that("gho_dimensions requests only the dimension column via $select", {
   }
   httr2::with_mocked_responses(mock_fn, {
     out <- gho_dimensions("X", dimension = "Dim1")
-    expect_equal(out, c("SEX_BTSX", "SEX_MLE"))
+    expect_equal(as.character(out), c("SEX_BTSX", "SEX_MLE"))
   })
   expect_length(captured, 1L)
   expect_match(captured[1], "$select=Dim1", fixed = TRUE)

@@ -78,17 +78,23 @@ as_dsir_data <- function(x) {
                       semantics = "as_supplied", modified_columns = character(),
                       removed_columns = character(), review_columns = character())
   )
+  acquisition <- attr(x, "dsir_metadata", exact = TRUE)
+  if (identical(acquisition$layout, "retrieval")) {
+    fields <- c("source", "kind", "sources", "query", "result")
+    metadata[fields] <- acquisition[fields]
+  }
   .new_dsir_data(x, metadata)
 }
 
 
-#' Inspect DSIR Object or Catalog Metadata
+#' Inspect DSIR Data, Catalog and Retrieval Metadata
 #'
 #' Reads metadata without network requests. For `dsir_data`, indicator
 #' identities, dimension values and coverage describe the current rows;
 #' provenance and input counts describe the original conversion input.
 #'
-#' @param x A [dsir_data][as_dsir_data] object or one of the bundled
+#' @param x A download, directory or cleaned result carrying DSIR metadata,
+#'   a [dsir_data][as_dsir_data] object, or one of the bundled
 #'   [gho_catalog], [sdg_catalog] and [ghe_catalog] datasets.
 #' @return A named list. For an analysis object it contains `schema_version`,
 #'   `layout`, `provenance`, `input`, `fields`, `processing`, `current`,
@@ -98,6 +104,37 @@ as_dsir_data <- function(x) {
 #'   Catalog metadata includes its snapshot version, package build version
 #'   and source-specific retrieval records. `current` describes the supplied
 #'   table; source record counts describe the complete bundled snapshot.
+#' @section Retrieval metadata:
+#' Downloads and directories retain their existing classes and columns.
+#' `dsir_metadata(x)$sources` records the actual backend, endpoint, UTC
+#' `retrieved_at`, retrieval status, cache use, source record count, reported
+#' API version and release. Unknown versions and times remain `NA`.
+#' Each source row includes its own server query. `query` records the public
+#' selection, including local filters and reference-country/year restrictions.
+#' `result` describes the function's original return; `current` is computed
+#' from the supplied object. Source counts precede local filtering and GHE
+#' measure pivoting, so they can differ from returned row counts.
+#'
+#' Result status distinguishes `success`, `empty`, `failed`, `incomplete`,
+#' `invalid`, `partial` and `unverified`. Completeness concerns the requested
+#' retrieval, not global indicator coverage. It is `NA` when the response
+#' lacks sufficient completeness information. A successful HTTP response
+#' alone does not establish completeness of an observation download.
+#'
+#' Cached records retain their original retrieval time and set `cache_hit`.
+#' A historical fallback uses `retrieval_status = "bundled_snapshot"` and
+#' retains the original collection date. It does not prove live availability.
+#' Failed SDG list requests still return `NULL` with a warning; `NULL` cannot
+#' carry metadata. Other empty failure results record no successful retrieval
+#' time. Existing WHO `who_provenance` and `catalog_snapshot` attributes remain
+#' available for compatibility.
+#'
+#' Cleaners preserve acquisition metadata even for empty input. This is
+#' independent of `keep_metadata`, which controls optional data columns.
+#' `as_dsir_data()` also retains `sources`, `query` and `result`. These are
+#' historical acquisition records, not an audit of arbitrary changes to a
+#' plain tibble. Use the S3 object's processing status to track supported
+#' transformations. `saveRDS()` preserves attributes; CSV does not.
 #' @export
 #' @examples
 #' dsir_metadata(gho_catalog)$sources
@@ -121,8 +158,10 @@ dsir_metadata <- function(x) {
     metadata$dimensions <- lapply(plain[dims], .dsi_data_values)
   } else if (identical(metadata$layout, "catalog") && is.data.frame(x)) {
     metadata$current <- list(rows = nrow(x), columns = ncol(x))
+  } else if (identical(metadata$layout, "retrieval")) {
+    metadata$current <- if (is.data.frame(x)) list(rows = nrow(x), columns = ncol(x)) else list(length = length(x))
   } else {
-    cli::cli_abort("{.arg x} must be a DSIR data object or catalog.")
+    cli::cli_abort("{.arg x} must carry supported DSIR data, catalog or retrieval metadata.")
   }
   metadata
 }
@@ -236,13 +275,17 @@ dsir_metadata <- function(x) {
 print.dsir_data <- function(x, ...) {
   metadata <- dsir_metadata(x)
   retrieval <- metadata$provenance$retrieval
+  if (!is.null(metadata$sources)) {
+    retrieval$backend <- metadata$sources$backend
+    retrieval$retrieved <- metadata$sources$retrieved_at
+  }
   label <- function(value) {
     value <- value[!is.na(value) & nzchar(value)]
     if (!length(value)) "not recorded" else paste(unique(value), collapse = ", ")
   }
   cat("<dsir_data> ", metadata$processing$state,
       " | metadata: ", metadata$processing$semantics, "\n", sep = "")
-  cat("Origin: ", label(metadata$provenance$sources),
+  cat("Origin: ", label(metadata$source %||% metadata$provenance$sources),
       " | Backend: ", label(retrieval$backend),
       " | Retrieved: ", label(retrieval$retrieved), "\n", sep = "")
   codes <- .dsi_data_values(x$id)
@@ -280,6 +323,9 @@ summary.dsir_data <- function(object, ...) {
     numeric = list(n_missing = sum(is.na(object$value_num)),
                    n_nonfinite = sum(!is.na(object$value_num) & !is.finite(object$value_num))),
     provenance = metadata$provenance,
+    sources = metadata$sources,
+    query = metadata$query,
+    result = metadata$result,
     processing = metadata$processing
   ), class = "summary_dsir_data")
 }

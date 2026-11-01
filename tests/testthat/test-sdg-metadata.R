@@ -37,6 +37,12 @@ test_that("sdg_dimensions returns official names, labels, and distinct SDMX code
   expect_match(urls[[2]], "Series/S1/Dimensions", fixed = TRUE)
   expect_match(urls[[3]], "Series/S1/Attributes", fixed = TRUE)
   expect_false(any(grepl("Indicator/Data", urls, fixed = TRUE)))
+  acquisition <- dsir_metadata(out)
+  expect_equal(nrow(acquisition$sources), 3L)
+  expect_identical(acquisition$sources$endpoint, urls)
+  expect_true(all(!is.na(acquisition$sources$retrieved_at)))
+  expect_true(acquisition$result$complete)
+  expect_identical(acquisition$query$series, "S1")
 })
 
 test_that("metadata for different SDG series stays separate", {
@@ -57,6 +63,11 @@ test_that("an SDG metadata failure cannot return a partial code list", {
     expect_warning(out <- sdg_dimensions("3.8.2"), "SDG request failed")
     expect_equal(nrow(out), 0L)
     expect_type(out$label, "character")
+    acquisition <- dsir_metadata(out)
+    expect_identical(acquisition$result$status, "failed")
+    expect_false(acquisition$result$complete)
+    expect_identical(acquisition$sources$status, c("success", "success", "failed"))
+    expect_true(is.na(acquisition$sources$retrieved_at[[3L]]))
   })
   httr2::with_mocked_responses(list(failure), {
     expect_warning(out <- sdg_dimensions("3.8.2"), "SDG request failed")

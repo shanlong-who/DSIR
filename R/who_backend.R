@@ -23,7 +23,7 @@
   key <- paste(config$backend, config$base, key, sep = '|')
   saved <- .who_cache[[key]]
   if (!is.null(saved) && as.numeric(difftime(Sys.time(), saved$time, units = 'secs')) < 600) {
-    return(saved$value)
+    return(.dsi_cached_metadata(saved$value))
   }
   value <- fetch()
   if (is.data.frame(value) && nrow(value) > 0L) {
@@ -121,6 +121,15 @@
                  '$select' = if (!is.null(select)) paste(select, collapse = ',') else NULL,
                  '$apply' = apply, '$orderby' = order,
                  '$count' = if (is.null(group)) 'true' else NULL)
+  finish <- function(out) {
+    attr(out, 'who_provenance') <- list(backend = 'xmart', base_url = .who_config('xmart')$base,
+      table = path, filter = filter, retrieved = format(Sys.time(), tz = 'UTC'),
+      complete = TRUE, rows = nrow(out))
+    .dsi_record(out, if (startsWith(path, 'DEX_CMS/')) 'ghe' else 'gho', 'xmart',
+      paste0(.who_config('xmart')$base, '/', path), query = list(filter = filter,
+        select = select, group = group, order = order),
+      retrieved_at = attr(out, 'who_provenance')$retrieved, complete = TRUE)
+  }
   chunks <- list()
   offset <- 0L
   total <- NULL
@@ -158,7 +167,7 @@
     # A short group page is complete because our requested top is below the
     # documented public cap (120000). Full pages require another request.
     if (!is.null(group) && n == 0L) break
-    if (total == 0 && n == 0L) return(tibble::tibble())
+    if (total == 0 && n == 0L) return(finish(tibble::tibble()))
     if (n == 0L || n > size || (is.null(group) && offset + n > total) || identical(chunk, previous)) {
       cli::cli_warn('Unexpected or repeated WHO page; incomplete download discarded.')
       return(NULL)
@@ -177,7 +186,7 @@
     if (!is.null(group) && n < size) break
     previous <- chunk
   }
-  if (!length(chunks)) return(tibble::tibble())
+  if (!length(chunks)) return(finish(tibble::tibble()))
   out <- tryCatch(vctrs::vec_rbind(!!!chunks), error = function(e) NULL)
   if (is.null(out)) {
     cli::cli_warn('Incompatible WHO page types; incomplete download discarded.')
@@ -188,10 +197,7 @@
     return(NULL)
   }
   out <- tibble::as_tibble(out)
-  attr(out, 'who_provenance') <- list(backend = 'xmart', base_url = .who_config('xmart')$base,
-                                    table = path, filter = filter, retrieved = format(Sys.time(), tz = 'UTC'),
-                                    complete = TRUE, rows = nrow(out))
-  out
+  finish(out)
 }
 
 .who_distinct <- function(path, fields, filter = NULL) {
@@ -202,13 +208,16 @@
   # Small reference views can have expensive count/order expressions. Request
   # below the public cap and require a short page; never accept a full page
   # as a complete reference catalog.
+  finish <- function(out) .dsi_record(out, 'ghe', 'xmart',
+    paste0(.who_config('xmart')$base, '/', path), kind = 'reference',
+    query = list(top = top), retrieved_at = .dsi_timestamp(), complete = TRUE)
   body <- .who_query(path, list('$top' = as.integer(top)))
   if (is.null(body)) return(NULL)
   if (!is.list(body)) {
     cli::cli_warn('WHO reference response is incomplete or malformed; no codes returned.')
     return(NULL)
   }
-  if (identical(body$value, list())) return(tibble::tibble())
+  if (identical(body$value, list())) return(finish(tibble::tibble()))
   if (!is.data.frame(body$value) || nrow(body$value) >= top ||
       !is.null(body[['@odata.nextLink']])) {
     cli::cli_warn('WHO reference response is incomplete or malformed; no codes returned.')
@@ -218,5 +227,5 @@
     cli::cli_warn('Malformed WHO reference schema; no codes returned.')
     return(NULL)
   }
-  tibble::as_tibble(body$value)
+  finish(tibble::as_tibble(body$value))
 }

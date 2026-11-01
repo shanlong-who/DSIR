@@ -27,6 +27,7 @@
 #' sdg_dimensions("3.8.2")
 #' sdg_dimensions("3.8.2", include_attributes = TRUE)
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 sdg_dimensions <- function(indicator, series = NULL, include_attributes = FALSE) {
   if (!is.character(indicator) || length(indicator) != 1L ||
       is.na(indicator) || !nzchar(indicator)) {
@@ -36,13 +37,27 @@ sdg_dimensions <- function(indicator, series = NULL, include_attributes = FALSE)
   .dsi_check_flag(include_attributes, "include_attributes")
   empty <- .sdg_empty_dimensions()
   base_url <- "https://unstats.un.org/sdgs/UNSDGAPIV5/v1/sdg/"
-  catalog <- .sdg_get(paste0(
+  origins <- list()
+  query <- list(indicator = indicator, series = series, include_attributes = include_attributes)
+  finish <- function(data, status = NULL) .dsi_result(data, "sdg", "dimensions",
+    query = query, origin = if (length(origins)) origins[[1L]] else NULL,
+    backend = "unsdg", endpoint = url, status = status, sources = .dsi_source_rows(origins))
+  fetch <- function(url) {
+    response <- .sdg_get(url)
+    recorded <- response
+    if (is.null(response)) recorded <- .dsi_result(empty, "sdg", "dimensions",
+      backend = "unsdg", endpoint = url)
+    origins[[length(origins) + 1L]] <<- recorded
+    response
+  }
+  url <- paste0(
     base_url, "Indicator/", utils::URLencode(indicator, reserved = TRUE), "/Series/List"
-  ))
-  if (is.null(catalog)) return(empty)
+  )
+  catalog <- fetch(url)
+  if (is.null(catalog)) return(finish(empty, "failed"))
   if (!is.data.frame(catalog) || !all(c("code", "series") %in% names(catalog))) {
     cli::cli_warn("SDG series metadata has an invalid structure.")
-    return(empty)
+    return(finish(empty, "invalid"))
   }
   linked <- catalog$series[catalog$code %in% indicator]
   series_codes <- character()
@@ -50,7 +65,7 @@ sdg_dimensions <- function(indicator, series = NULL, include_attributes = FALSE)
     if (length(entry) == 0L) next
     if (!is.data.frame(entry) || !"code" %in% names(entry)) {
       cli::cli_warn("SDG series metadata has an invalid structure.")
-      return(empty)
+      return(finish(empty, "invalid"))
     }
     series_codes <- c(series_codes, as.character(entry$code))
   }
@@ -59,13 +74,13 @@ sdg_dimensions <- function(indicator, series = NULL, include_attributes = FALSE)
     missing_series <- setdiff(series, series_codes)
     if (length(missing_series) > 0L) {
       cli::cli_warn("Series not linked to indicator {.val {indicator}}: {.val {missing_series}}.")
-      return(empty)
+      return(finish(empty, "invalid"))
     }
     series_codes <- series_codes[series_codes %in% series]
   }
   if (length(series_codes) == 0L) {
     cli::cli_warn("No series metadata returned for indicator {.val {indicator}}.")
-    return(empty)
+    return(finish(empty, "empty"))
   }
 
   kinds <- c(dimension = "Dimensions")
@@ -75,15 +90,15 @@ sdg_dimensions <- function(indicator, series = NULL, include_attributes = FALSE)
     for (kind in names(kinds)) {
       url <- paste0(base_url, "Series/", utils::URLencode(code, reserved = TRUE),
                     "/", kinds[[kind]])
-      metadata <- .sdg_get(url)
-      if (is.null(metadata)) return(empty)
+      metadata <- fetch(url)
+      if (is.null(metadata)) return(finish(empty, "failed"))
       table <- .sdg_codebook_rows(metadata, indicator, code, kind)
-      if (is.null(table)) return(empty)
+      if (is.null(table)) return(finish(empty, "invalid"))
       tables[[length(tables) + 1L]] <- table
     }
   }
   out <- unique(do.call(vctrs::vec_rbind, tables))
-  out[order(out$series, out$kind, out$dimension, out$code), , drop = FALSE]
+  finish(out[order(out$series, out$kind, out$dimension, out$code), , drop = FALSE])
 }
 
 

@@ -20,7 +20,7 @@
     res <- .gho_get(url)
     if (is.null(res)) return(.gho_bundled_catalog(search))
     if (nrow(res) == 0L) {
-        return(tibble::tibble(IndicatorCode = character(), IndicatorName = character(), Language = character()))
+        return(.dsi_copy_metadata(tibble::tibble(IndicatorCode = character(), IndicatorName = character(), Language = character()), res))
     }
     if (!all(c("IndicatorCode", "IndicatorName", "Language") %in% names(res))) {
         cli::cli_warn("Malformed GHO indicator catalog received.")
@@ -38,7 +38,9 @@
     ))
     out <- .who_search(snapshot$catalog, "IndicatorName", search)
     attr(out, "catalog_snapshot") <- snapshot[c("backend", "source", "retrieved")]
-    out
+    .dsi_record(out, "gho", "legacy", snapshot$source, kind = "indicators",
+      query = list(search = search), retrieved_at = snapshot$retrieved,
+      record_count = nrow(snapshot$catalog), retrieval_status = "bundled_snapshot")
 }
 
 .legacy_gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL,
@@ -47,7 +49,8 @@
     url <- .gho_build_url(indicator, spatial_type = spatial_type, area = area, year_from = year_from,
         year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3)
     res <- .gho_get(url, indicator = indicator)
-    if (is.null(res)) return(tibble::tibble())
+    if (is.null(res)) return(.dsi_result(tibble::tibble(), 'gho', 'observations',
+      backend = 'legacy', endpoint = sub('[?].*$', '', url)))
     if (!nrow(res)) .gho_inform_empty('legacy')
     res
 }
@@ -122,10 +125,13 @@
     stopifnot(is.character(dimension), length(dimension) == 1L, nzchar(dimension))
     url <- .gho_build_url(indicator, select = dimension)
     res <- .gho_get(url, indicator = indicator)
-    if (is.null(res) || !dimension %in% names(res))
-        return(character())
+    if (is.null(res) || !dimension %in% names(res)) {
+        return(.dsi_result(character(), 'gho', 'dimensions', origin = res,
+          backend = 'legacy', endpoint = sub('[?].*$', '', url),
+          status = if (!is.null(res) && nrow(res)) 'invalid' else NULL))
+    }
     vals <- unique(res[[dimension]])
-    sort(vals[!is.na(vals)])
+    .dsi_copy_metadata(sort(vals[!is.na(vals)]), res)
 }
 
 
@@ -343,5 +349,7 @@
   attr(out, 'who_provenance') <- list(backend = 'legacy',
     base_url = sub('^(https://[^/]+).*', '\\1', url), query_url = url,
     retrieved = format(Sys.time(), tz = 'UTC'), complete = TRUE, rows = nrow(out))
-  out
+  .dsi_record(out, 'gho', 'legacy', sub('[?].*$', '', url),
+    query = list(url = url), retrieved_at = attr(out, 'who_provenance')$retrieved,
+    complete = TRUE)
 }

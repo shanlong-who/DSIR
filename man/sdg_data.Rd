@@ -62,6 +62,40 @@ verified; a response without \code{totalPages} is treated as one page.
 Retrieves data for one or more SDG indicators from the UN SDG
 API, with optional filters by area, year, series, and named dimensions.
 }
+\section{Retrieval metadata}{
+
+Downloads and directories retain their existing classes and columns.
+\code{dsir_metadata(x)$sources} records the actual backend, endpoint, UTC
+\code{retrieved_at}, retrieval status, cache use, source record count, reported
+API version and release. Unknown versions and times remain \code{NA}.
+Each source row includes its own server query. \code{query} records the public
+selection, including local filters and reference-country/year restrictions.
+\code{result} describes the function's original return; \code{current} is computed
+from the supplied object. Source counts precede local filtering and GHE
+measure pivoting, so they can differ from returned row counts.
+
+Result status distinguishes \code{success}, \code{empty}, \code{failed}, \code{incomplete},
+\code{invalid}, \code{partial} and \code{unverified}. Completeness concerns the requested
+retrieval, not global indicator coverage. It is \code{NA} when the response
+lacks sufficient completeness information. A successful HTTP response
+alone does not establish completeness of an observation download.
+
+Cached records retain their original retrieval time and set \code{cache_hit}.
+A historical fallback uses \code{retrieval_status = "bundled_snapshot"} and
+retains the original collection date. It does not prove live availability.
+Failed SDG list requests still return \code{NULL} with a warning; \code{NULL} cannot
+carry metadata. Other empty failure results record no successful retrieval
+time. Existing WHO \code{who_provenance} and \code{catalog_snapshot} attributes remain
+available for compatibility.
+
+Cleaners preserve acquisition metadata even for empty input. This is
+independent of \code{keep_metadata}, which controls optional data columns.
+\code{as_dsir_data()} also retains \code{sources}, \code{query} and \code{result}. These are
+historical acquisition records, not an audit of arbitrary changes to a
+plain tibble. Use the S3 object's processing status to track supported
+transformations. \code{saveRDS()} preserves attributes; CSV does not.
+}
+
 \examples{
 \donttest{
 # One indicator, one country — the typical entry point

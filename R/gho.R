@@ -62,6 +62,7 @@
 #' # Or pass terms as a vector
 #' gho_indicators(c("child", "mortality"))
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 gho_indicators <- function(search = NULL, backend = NULL) {
   .who_gho("indicators", search = search, backend = backend)
 }
@@ -167,6 +168,7 @@ gho_indicators <- function(search = NULL, backend = NULL) {
 #' gho_data("NCDMORT3070", area = "PHL", year_from = 2020, year_to = 2021,
 #'          dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
   .who_gho("data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
 }
@@ -318,6 +320,7 @@ gho_coverage <- function(indicator, spatial_type = "country", area = NULL, year_
 #' gho_dimensions("NCDMORT3070")
 #' gho_dimensions("NCDMORT3070", dimension = "Dim1")
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NULL) {
   .who_gho("dimensions", indicator = indicator, dimension = dimension, backend = backend)
 }
@@ -484,6 +487,7 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
 #' gho_data("NCDMORT3070", spatial_type = "country") |>
 #'   gho_clean()
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
   if (!is.data.frame(df)) {
     cli::cli_abort("{.arg df} must be a data frame.")
@@ -496,8 +500,7 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
     out <- .dsi_empty_clean()
     if (keep_dimensions) out <- .gho_append_dimensions(out, df)
     if (keep_metadata) out <- .gho_append_metadata(out, df)
-    attr(out, 'who_provenance') <- attr(df, 'who_provenance')
-    return(out)
+    return(.dsi_copy_metadata(out, df))
   }
 
   pick_chr <- function(src) {
@@ -544,7 +547,5 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE) {
 
   missing_name <- is.na(out$location_name)
   if ('SpatialName' %in% names(df)) out$location_name[missing_name] <- pick_chr('SpatialName')[missing_name]
-  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
-
-  out[order(out$location, out$year), , drop = FALSE]
+  .dsi_copy_metadata(out[order(out$location, out$year), , drop = FALSE], df)
 }

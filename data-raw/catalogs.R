@@ -31,14 +31,16 @@ if (nzchar(catalog.input.dir)) {
     inputs[[backend]] <- list(catalog = catalog, directory = directory,
       attempted_at = started, finished_at = catalog.time())
   }
-  inputs$sdg <- list(catalog = DSIR::sdg_indicators(), retrieved_at = catalog.time())
+  sdg.live <- DSIR::sdg_indicators()
+  if (is.null(sdg.live)) stop("SDG catalog retrieval failed. Existing catalogs are unchanged.")
+  inputs$sdg <- list(catalog = sdg.live, retrieved_at = DSIR::dsir_metadata(sdg.live)$sources$retrieved_at[[1]])
   causes <- DSIR::ghe_causes()
   measures <- DSIR::ghe_dimensions("measure")
   cache.key <- paste("xmart", DSIR:::.who_config("xmart")$base, "ghe_causes", sep = "|")
   origin <- attr(DSIR:::.who_cache[[cache.key]]$value, "who_provenance", exact = TRUE)
   inputs$ghe <- list(causes = causes, measures = measures,
     year = DSIR:::.ghe_latest(), area = DSIR:::.ghe_reference_area(),
-    provenance = origin, retrieved_at = catalog.time())
+    provenance = origin, retrieved_at = DSIR::dsir_metadata(measures)$sources$retrieved_at[[1]])
   if (nzchar(catalog.capture.dir)) {
     dir.create(catalog.capture.dir, recursive = TRUE, showWarnings = FALSE)
     for (name in names(inputs)) saveRDS(inputs[[name]], file.path(catalog.capture.dir, paste0(name, ".rds")))

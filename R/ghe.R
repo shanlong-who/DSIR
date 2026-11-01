@@ -28,7 +28,8 @@
   .who_cached('ghe_years', function() {
     ref <- .who_reference('DEX_CMS/REF_YEAR_COD', top = 100L)
     if (is.null(ref)) return(NULL)
-    tibble::tibble(DIM_YEAR_CODE = sort(as.integer(ref$CODE)))
+    if (!nrow(ref)) return(.dsi_copy_metadata(tibble::tibble(DIM_YEAR_CODE = integer()), ref))
+    .dsi_copy_metadata(tibble::tibble(DIM_YEAR_CODE = sort(as.integer(ref$CODE))), ref)
   })
 }
 .ghe_latest <- function() {
@@ -69,45 +70,63 @@
 #' ghe_dimensions('age')
 #' ghe_dimensions('measure')
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 ghe_dimensions <- function(dimension = 'measure') {
   dimension <- match.arg(dimension, c('area', 'year', 'sex', 'age', 'cause', 'measure'))
   empty <- tibble::tibble(code = character(), label = character())
+  query <- list(dimension = dimension)
+  endpoint <- paste0(.who_config('xmart')$base, '/', .ghe_path)
+  finish <- function(out, origin = NULL, sources = NULL, status = NULL) {
+    .dsi_result(out, 'ghe', 'dimensions', query = query, origin = origin,
+      backend = 'xmart', endpoint = endpoint, sources = sources, status = status)
+  }
   if (dimension == 'cause') return(ghe_causes())
   if (dimension == 'measure') {
     fields <- .xmart_fields(.ghe_path)
     out <- .ghe_measures()
-    if (!length(fields)) return(out[0, ])
-    return(out[out$field %in% fields, ])
+    query$definitions <- 'DSIR adapter measure labels and units, checked against provider fields'
+    query$package_version <- as.character(utils::packageVersion('DSIR'))
+    if (!length(fields)) return(finish(out[0, ], fields))
+    return(finish(out[out$field %in% fields, ], fields))
   }
   if (dimension == 'sex') {
     df <- .who_cached('ghe_sex', function() .who_reference('DEX_CMS/REF_SEX_COD', top = 20L))
-    if (is.null(df) || !nrow(df)) return(empty)
-    return(tibble::tibble(code = as.character(df$CODE), label = df$TITLE))
+    endpoint <- paste0(.who_config('xmart')$base, '/DEX_CMS/REF_SEX_COD')
+    if (is.null(df) || !nrow(df)) return(finish(empty, df))
+    return(finish(tibble::tibble(code = as.character(df$CODE), label = df$TITLE), df))
   }
   if (dimension == 'year') {
     df <- .ghe_years()
-    if (is.null(df) || !nrow(df)) return(empty)
-    return(tibble::tibble(code = as.character(df$DIM_YEAR_CODE), label = as.character(df$DIM_YEAR_CODE)))
+    endpoint <- paste0(.who_config('xmart')$base, '/DEX_CMS/REF_YEAR_COD')
+    if (is.null(df) || !nrow(df)) return(finish(empty, df))
+    return(finish(tibble::tibble(code = as.character(df$DIM_YEAR_CODE), label = as.character(df$DIM_YEAR_CODE)), df))
   }
   year <- .ghe_latest()
-  if (is.null(year)) return(empty)
+  if (is.null(year)) return(finish(empty))
+  query$year <- year
   field <- if (dimension == 'area') 'DIM_COUNTRY_CODE' else 'DIM_AGEGROUP_CODE'
   if (dimension == 'area') df <- .ghe_areas() else {
     area <- .ghe_reference_area()
-    if (is.null(area)) return(empty)
+    if (is.null(area)) return(finish(empty))
+    query$area <- area
     filter <- paste0('DIM_YEAR_CODE eq ', year, " and DIM_GHECAUSE_CODE eq 0 and DIM_SEX_CODE eq 'TOTAL' and DIM_COUNTRY_CODE eq '", area, "'")
     df <- .who_cached('ghe_ages', function() .who_odata(.ghe_path, filter, select = c('Sys_PK', field)))
   }
-  if (is.null(df) || !nrow(df)) return(empty)
+  if (is.null(df) || !nrow(df)) return(finish(empty, df))
+  origins <- list(df)
   code <- as.character(df[[field]])
   if (dimension == 'area') {
     label <- who_countries$name_short[match(code, who_countries$iso3)]
+    query$labels <- 'DSIR who_countries'
   } else {
     ref <- .who_cached('ghe_age_labels', function() .who_reference('DEX_CMS/REF_AGE_COD', top = 100L))
+    origins[[2L]] <- if (is.null(ref)) .dsi_result(empty, 'ghe', 'reference',
+      backend = 'xmart', endpoint = paste0(.who_config('xmart')$base, '/DEX_CMS/REF_AGE_COD')) else ref
     label <- if (is.null(ref)) rep(NA_character_, length(code)) else ref$TITLE[match(code, ref$CODE)]
   }
   out <- tibble::tibble(code = code, label = label)
-  out[!duplicated(out$code), ][order(unique(code)), ]
+  finish(out[!duplicated(out$code), ][order(unique(code)), ], df,
+    sources = .dsi_source_rows(origins))
 }
 
 #' Explore Global Health Estimates Causes
@@ -128,15 +147,22 @@ ghe_dimensions <- function(dimension = 'measure') {
 #' ghe_causes('diabetes')
 #' ghe_causes('stroke')
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 ghe_causes <- function(search = NULL) {
   .who_codes(search, 'search')
   empty <- tibble::tibble(cause_code = character(), cause_name = character(),
                           level = integer(), cause_group = character(),
                           rankable = logical(), single_cause = logical())
+  query <- list(search = search, age = 'TOTAL', sex = 'TOTAL')
+  finish <- function(out, origin = NULL, status = NULL) .dsi_result(out, 'ghe', 'causes',
+    query = query, origin = origin, backend = 'xmart',
+    endpoint = paste0(.who_config('xmart')$base, '/', .ghe_path), status = status)
   year <- .ghe_latest()
-  if (is.null(year)) return(empty)
+  if (is.null(year)) return(finish(empty))
+  query$year <- year
   area <- .ghe_reference_area()
-  if (is.null(area)) return(empty)
+  if (is.null(area)) return(finish(empty))
+  query$area <- area
   fields <- c('DIM_GHECAUSE_CODE', 'DIM_GHECAUSE_TITLE', 'FLAG_LEVEL',
               'DIM_CAUSE_GROUP', 'FLAG_RANKABLE', 'FLAG_SINGLE_CAUSE')
   df <- .who_cached('ghe_causes', function() {
@@ -144,16 +170,16 @@ ghe_causes <- function(search = NULL) {
       paste0('DIM_YEAR_CODE eq ', year, " and DIM_AGEGROUP_CODE eq 'TOTAL' and DIM_SEX_CODE eq 'TOTAL' and DIM_COUNTRY_CODE eq '", area, "'"),
       select = c('Sys_PK', fields))
   })
-  if (is.null(df) || !nrow(df)) return(empty)
+  if (is.null(df) || !nrow(df)) return(finish(empty, df))
   if (!all(fields %in% names(df))) {
     cli::cli_warn('Unsupported WHO GHE cause schema.')
-    return(empty)
+    return(finish(empty, df, status = 'invalid'))
   }
   out <- tibble::tibble(cause_code = as.character(df$DIM_GHECAUSE_CODE),
                         cause_name = df$DIM_GHECAUSE_TITLE, level = as.integer(df$FLAG_LEVEL),
                         cause_group = as.character(df$DIM_CAUSE_GROUP),
                         rankable = as.logical(df$FLAG_RANKABLE), single_cause = as.logical(df$FLAG_SINGLE_CAUSE))
-  .who_search(out, 'cause_name', search)
+  finish(.who_search(out, 'cause_name', search), df)
 }
 
 .ghe_filter <- function(area, year, year_from, year_to, sex, age, cause) {
@@ -241,8 +267,15 @@ ghe_causes <- function(search = NULL) {
 #' ghe_data(area = 'PHL', year = 2023, age = 'Y40T44',
 #'          sex = c('FEMALE', 'MALE'), cause = 0, measure = 'death_rate')
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 ghe_data <- function(area = NULL, year = NULL, year_from = NULL, year_to = NULL,
                      sex = NULL, age = NULL, cause = NULL, measure = NULL) {
+  query <- list(area = area, year = year, year_from = year_from, year_to = year_to,
+    sex = sex, age = age, cause = cause, measure = measure)
+  finish <- function(out, origin = NULL, status = NULL) .dsi_result(
+    .dsi_copy_metadata(out, origin), 'ghe', 'observations', query = query,
+    origin = origin, backend = 'xmart',
+    endpoint = paste0(.who_config('xmart')$base, '/', .ghe_path), status = status)
   if (all(vapply(list(area, year, year_from, year_to, sex, age, cause), is.null, logical(1)))) {
     cli::cli_abort('Supply at least one GHE selection, for example {.code area = "PHL", year = 2023}.')
   }
@@ -250,12 +283,12 @@ ghe_data <- function(area = NULL, year = NULL, year_from = NULL, year_to = NULL,
   definitions <- .ghe_measures()
   if (!is.null(measure) && any(!measure %in% definitions$code)) cli::cli_abort('Unknown GHE measure. Use {.code ghe_dimensions("measure")}.')
   filter <- .ghe_filter(area, year, year_from, year_to, sex, age, cause)
-  if (is.null(filter)) return(.ghe_empty())
+  if (is.null(filter)) return(finish(.ghe_empty()))
   available <- ghe_dimensions('measure')
-  if (!nrow(available)) return(.ghe_empty())
+  if (!nrow(available)) return(finish(.ghe_empty()))
   if (!is.null(measure) && any(!measure %in% available$code)) {
     cli::cli_warn('Requested GHE measure is absent from the current provider schema.')
-    return(.ghe_empty())
+    return(finish(.ghe_empty(), status = 'invalid'))
   }
   if (!is.null(measure)) available <- available[match(measure, available$code), ]
   keys <- c('Sys_PK', 'DIM_COUNTRY_CODE', 'DIM_YEAR_CODE', 'DIM_SEX_CODE',
@@ -267,13 +300,13 @@ ghe_data <- function(area = NULL, year = NULL, year_from = NULL, year_to = NULL,
   selected <- unique(c(keys, available$field, intersect(bounds, fields)))
   if (!all(keys %in% fields)) {
     cli::cli_warn('Unsupported WHO GHE observation schema.')
-    return(.ghe_empty())
+    return(finish(.ghe_empty(), status = 'invalid'))
   }
   df <- .who_odata(.ghe_path, filter, select = selected)
-  if (is.null(df) || !nrow(df)) return(.ghe_empty())
+  if (is.null(df) || !nrow(df)) return(finish(.ghe_empty(), df))
   if (!all(selected %in% names(df))) {
     cli::cli_warn('Malformed WHO GHE observations; no data returned.')
-    return(.ghe_empty())
+    return(finish(.ghe_empty(), df, status = 'invalid'))
   }
   out <- lapply(seq_len(nrow(available)), function(i) {
     field <- available$field[i]
@@ -292,8 +325,7 @@ ghe_data <- function(area = NULL, year = NULL, year_from = NULL, year_to = NULL,
   })
   out <- tibble::as_tibble(vctrs::vec_rbind(!!!out))
   out <- out[order(out$iso3, out$year, out$sex, out$age, out$cause_code, out$measure), ]
-  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
-  out
+  finish(out, df)
 }
 
 #' Summarise Global Health Estimates Coverage
@@ -347,11 +379,13 @@ ghe_coverage <- function(area = NULL, year = NULL, year_from = NULL, year_to = N
 #' ghe_data('PHL', year = 2023, age = 'TOTAL', sex = 'TOTAL', cause = 0,
 #'          measure = 'deaths') |> ghe_clean(keep_dimensions = TRUE)
 #' }
+#' @inheritSection dsir_metadata Retrieval metadata
 ghe_clean <- function(df, keep_dimensions = FALSE) {
   if (!is.data.frame(df)) cli::cli_abort('{.arg df} must be a data frame.')
   .dsi_check_flag(keep_dimensions, 'keep_dimensions')
   required <- names(.ghe_empty())
   if (nrow(df) && !all(required %in% names(df))) cli::cli_abort('{.arg df} must be output from {.fn ghe_data}.')
+  origin <- df
   if (!nrow(df)) df <- .ghe_empty()
   out <- tibble::tibble(source = rep('ghe', nrow(df)), id = df$cause_code,
     indicator = if (nrow(df)) paste(df$cause_name, df$measure, sep = ': ') else character(),
@@ -364,6 +398,5 @@ ghe_clean <- function(df, keep_dimensions = FALSE) {
     out$cause_group <- df$cause_group; out$cause_level <- df$level; out$rankable <- df$rankable
     out$unit <- df$unit; out$population <- df$population
   }
-  attr(out, 'who_provenance') <- attr(df, 'who_provenance')
-  out
+  .dsi_copy_metadata(out, origin)
 }
