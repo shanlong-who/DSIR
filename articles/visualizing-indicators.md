@@ -7,19 +7,22 @@ library(dplyr)
 library(ggplot2)
 ```
 
-[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
-and
+[`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-return data in the same 15-column schema, so a handful of `ggplot2`
-recipes cover most routine indicator charts. This vignette collects the
-recipes we reach for most often: trend lines with confidence bands,
-sex/age breakdowns, forest-style country comparisons, dumbbell progress
-plots, and progress tracking with
+and
+[`ghe_clean()`](https://shanlong-who.github.io/DSIR/reference/ghe_clean.md)
+return `dsir_data` tibbles with the same 15-column core schema. Use
+`output = "tibble"` to request the ordinary class. A handful of
+`ggplot2` recipes cover most routine indicator charts. This vignette
+collects the recipes we reach for most often: trend lines with
+confidence bands, sex/age breakdowns, forest-style country comparisons,
+dumbbell progress plots, and progress tracking with
 [`aarr()`](https://shanlong-who.github.io/DSIR/reference/aarr.md).
 
-Chart-building helpers stay out of the package on purpose — each recipe
-below is a few lines of plain `ggplot2` on top of the cleaned schema,
-and your project code can adapt them freely.
+The experimental
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) method supports
+checked annual trends and same-year country comparisons. The recipes
+below use plain `ggplot2` for additional analyses and customization.
 
 ## Example data
 
@@ -98,6 +101,44 @@ ncd
 #> # ℹ 6 more variables: low <dbl>, high <dbl>, series <chr>, dim1 <chr>,
 #> #   dim2 <chr>, dim3 <chr>
 ```
+
+## Experimental S3 plots
+
+Real cleaner output carries acquisition and cleaning metadata in
+attributes. The simulated table above has no retrieval history; explicit
+conversion does not invent one. Its units are specified here as part of
+the simulation.
+
+``` r
+
+data.plot <- ncd %>%
+  filter(dim1 == "SEX_BTSX") %>%
+  mutate(unit = "percent") %>%
+  as_dsir_data()
+
+plot(data.plot, type = "trend", country = "PHL", interval = TRUE)
+```
+
+![](visualizing-indicators_files/figure-html/s3-trend-1.png)
+
+``` r
+
+plot(data.plot, type = "compare", year = 2023, interval = TRUE) +
+  labs(title = "Illustrative country comparison")
+```
+
+![](visualizing-indicators_files/figure-html/s3-compare-1.png)
+
+The returned objects are standard ggplots. Reported bounds are drawn as
+ranges without assuming a confidence level. A comparison uses one common
+year, and trend lines break across missing estimates or gaps exceeding
+one year. Neither method aggregates or converts units. Select one
+indicator, series/measure and unit; filter other strata or specify
+column names with `group` and `facet`. For example, sex trends can use
+`group = "dim1"` and `facet = "iso3"`. Varying dimensions omitted during
+cleaning require recleaning with the retention flags. Changes to
+plot-relevant fields marked `needs_review` require explicit ggplot
+mappings after review.
 
 ## Trend lines with a confidence band
 

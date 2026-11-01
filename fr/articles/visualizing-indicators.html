@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Activer la navigation">
@@ -91,17 +91,22 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code> et <code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code> renvoient la
-même structure à 15 colonnes. Quelques exemples <code>ggplot2</code>
-couvrent ainsi les graphiques courants : tendances avec bandes
-d’incertitude, ventilations par sexe ou âge, comparaisons entre pays
-avec intervalles, graphiques en haltères et suivi des progrès avec
-<code><a href="../../reference/aarr.html" hreflang="en">aarr()</a></code>.</p>
-<p>Ces exemples restent du code <code>ggplot2</code> directement
-adaptable à votre projet, sans ajouter de fonctions graphiques
-spécialisées au package. Le code et les libellés des graphiques sont
-communs à la version anglaise ; les explications sont traduites ici.
-Pour l’installation et l’accès aux données, consultez les <a href="DSIR.html">premiers pas avec DSIR</a>.</p>
+<p><code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code>, <code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code> et
+<code><a href="../../reference/ghe_clean.html" hreflang="en">ghe_clean()</a></code> renvoient par défaut des tibbles
+<code>dsir_data</code> avec la même structure de base à 15 colonnes.
+Utilisez <code>output = "tibble"</code> pour obtenir un tibble
+ordinaire. Quelques exemples <code>ggplot2</code> couvrent ainsi les
+graphiques courants : tendances avec bandes d’incertitude, ventilations
+par sexe ou âge, comparaisons entre pays avec intervalles, graphiques en
+haltères et suivi des progrès avec <code><a href="../../reference/aarr.html" hreflang="en">aarr()</a></code>.</p>
+<p>La méthode expérimentale <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> permet de tracer des
+tendances annuelles et des comparaisons entre pays pour une même année,
+après vérification des données. Les exemples <code>ggplot2</code>
+ci-dessous permettent d’autres analyses et personnalisations. Le code et
+les libellés des graphiques sont communs à la version anglaise ; les
+explications sont traduites ici. Pour l’installation et l’accès aux
+données, consultez les <a href="DSIR.html">premiers pas avec
+DSIR</a>.</p>
 <div class="section level2">
 <h2 id="données-dexemple">Données d’exemple<a class="anchor" aria-label="anchor" href="#donn%C3%A9es-dexemple"></a>
 </h2>
@@ -179,6 +184,41 @@ par l’OMS.</strong></p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="graphiques-s3-expérimentaux">Graphiques S3 expérimentaux<a class="anchor" aria-label="anchor" href="#graphiques-s3-exp%C3%A9rimentaux"></a>
+</h2>
+<p>Les résultats des fonctions de nettoyage conservent les métadonnées
+d’acquisition et de nettoyage dans les attributs de l’objet. La table
+simulée ci-dessus ne possède pas d’historique d’acquisition ; la
+conversion explicite n’en crée pas. Les unités sont définies ici dans le
+cadre de la simulation.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data.plot</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>unit <span class="op">=</span> <span class="st">"percent"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../../reference/as_dsir_data.html" hreflang="en">as_dsir_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"trend"</span>, country <span class="op">=</span> <span class="st">"PHL"</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-trend-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"compare"</span>, year <span class="op">=</span> <span class="fl">2023</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Illustrative country comparison"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-compare-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<p>Les résultats sont des objets ggplot ordinaires. Les bornes fournies
+sont représentées par des intervalles, sans supposer de niveau de
+confiance. Une comparaison utilise une année commune. Les lignes de
+tendance sont interrompues en cas de valeur manquante ou d’écart
+supérieur à un an. Aucune méthode n’agrège les données ni ne convertit
+les unités. Sélectionnez un seul indicateur, une seule série ou mesure
+et une seule unité, puis filtrez les autres strates ou indiquez les
+colonnes avec <code>group</code> et <code>facet</code>. Par exemple, les
+tendances par sexe peuvent utiliser <code>group = "dim1"</code> et
+<code>facet = "iso3"</code>. Si des dimensions variables ont été omises
+lors du nettoyage, recommencez avec les options de conservation. Après
+modification de champs nécessaires au graphique marqués
+<code>needs_review</code>, vérifiez les données puis utilisez des
+correspondances ggplot explicites.</p>
+</div>
+<div class="section level2">
 <h2 id="tendances-avec-une-bande-dincertitude">Tendances avec une bande d’incertitude<a class="anchor" aria-label="anchor" href="#tendances-avec-une-bande-dincertitude"></a>
 </h2>
 <p><code>low</code> et <code>high</code> correspondent directement à
@@ -186,7 +226,7 @@ par l’OMS.</strong></p>
 deux sexes réunis (<code>dim1 == "SEX_BTSX"</code>).
 <code><a href="../../reference/theme_dsi_facet.html" hreflang="en">theme_dsi_facet()</a></code> est la variante du thème adaptée aux
 facettes.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -215,7 +255,7 @@ accessible aux personnes daltoniennes, comme
 <code><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_d()</a></code> de <code>ggplot2</code>. Les
 données simulées reprennent ces dimensions positionnelles ; adaptez les
 colonnes aux dimensions nommées lorsque vous utilisez xMart.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX_MLE"</span>, <span class="st">"SEX_FMLE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span>, color <span class="op">=</span> <span class="va">dim1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -239,7 +279,7 @@ d’incertitude, sélectionnez la dernière année par pays et utilisez
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_pointrange()</a></code>. Trier l’axe selon la valeur facilite la
 lecture. Ici, la dernière année est identique pour tous les pays ;
 vérifiez ce point avec des données réelles.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">year</span>, by <span class="op">=</span> <span class="va">iso3</span><span class="op">)</span></span>
@@ -262,7 +302,7 @@ vérifiez ce point avec des données réelles.</p>
 table large à partir de deux sélections filtrées et d’une jointure, sans
 package supplémentaire de restructuration. Les couleurs proviennent de
 la palette Okabe–Ito, adaptée aux personnes daltoniennes.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">location_name</span>, start <span class="op">=</span> <span class="va">value_num</span><span class="op">)</span></span>
@@ -302,7 +342,7 @@ s’utilise directement dans <code><a href="https://dplyr.tidyverse.org/referenc
 <code>.by</code> sur les données nettoyées. Attention au signe :
 <strong>une valeur positive indique une baisse de
 l’indicateur</strong>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">progress</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>aarr <span class="op">=</span> <span class="fu"><a href="../../reference/aarr.html" hreflang="en">aarr</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">location_name</span><span class="op">)</span><span class="op">)</span></span>
@@ -323,7 +363,7 @@ l’indicateur</strong>.</p>
 observé. C’est un outil d’examen rapide, qui ne remplace pas les modèles
 et hypothèses propres à chaque indicateur utilisés pour les projections
 officielles à l’horizon 2030.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">progress</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"location_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>projected_2030 <span class="op">=</span> <span class="va">value_num</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">aarr</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">2030</span> <span class="op">-</span> <span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

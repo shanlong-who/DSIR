@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,15 +91,17 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/gho_clean.html">gho_clean()</a></code> and <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> return data in
-the same 15-column schema, so a handful of <code>ggplot2</code> recipes
+<p><code><a href="../reference/gho_clean.html">gho_clean()</a></code>, <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> and
+<code><a href="../reference/ghe_clean.html">ghe_clean()</a></code> return <code>dsir_data</code> tibbles with the
+same 15-column core schema. Use <code>output = "tibble"</code> to
+request the ordinary class. A handful of <code>ggplot2</code> recipes
 cover most routine indicator charts. This vignette collects the recipes
 we reach for most often: trend lines with confidence bands, sex/age
 breakdowns, forest-style country comparisons, dumbbell progress plots,
 and progress tracking with <code><a href="../reference/aarr.html">aarr()</a></code>.</p>
-<p>Chart-building helpers stay out of the package on purpose — each
-recipe below is a few lines of plain <code>ggplot2</code> on top of the
-cleaned schema, and your project code can adapt them freely.</p>
+<p>The experimental <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method supports checked annual
+trends and same-year country comparisons. The recipes below use plain
+<code>ggplot2</code> for additional analyses and customization.</p>
 <div class="section level2">
 <h2 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
@@ -173,6 +175,37 @@ band in <code>low</code> / <code>high</code>.</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="experimental-s3-plots">Experimental S3 plots<a class="anchor" aria-label="anchor" href="#experimental-s3-plots"></a>
+</h2>
+<p>Real cleaner output carries acquisition and cleaning metadata in
+attributes. The simulated table above has no retrieval history; explicit
+conversion does not invent one. Its units are specified here as part of
+the simulation.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data.plot</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>unit <span class="op">=</span> <span class="st">"percent"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/as_dsir_data.html">as_dsir_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"trend"</span>, country <span class="op">=</span> <span class="st">"PHL"</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-trend-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"compare"</span>, year <span class="op">=</span> <span class="fl">2023</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Illustrative country comparison"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-compare-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<p>The returned objects are standard ggplots. Reported bounds are drawn
+as ranges without assuming a confidence level. A comparison uses one
+common year, and trend lines break across missing estimates or gaps
+exceeding one year. Neither method aggregates or converts units. Select
+one indicator, series/measure and unit; filter other strata or specify
+column names with <code>group</code> and <code>facet</code>. For
+example, sex trends can use <code>group = "dim1"</code> and
+<code>facet = "iso3"</code>. Varying dimensions omitted during cleaning
+require recleaning with the retention flags. Changes to plot-relevant
+fields marked <code>needs_review</code> require explicit ggplot mappings
+after review.</p>
+</div>
+<div class="section level2">
 <h2 id="trend-lines-with-a-confidence-band">Trend lines with a confidence band<a class="anchor" aria-label="anchor" href="#trend-lines-with-a-confidence-band"></a>
 </h2>
 <p><code>low</code> and <code>high</code> map directly onto
@@ -180,7 +213,7 @@ band in <code>low</code> / <code>high</code>.</p>
 both-sexes rows (<code>dim1 == "SEX_BTSX"</code>).
 <code><a href="../reference/theme_dsi_facet.html">theme_dsi_facet()</a></code> is the facet-friendly variant of
 <code><a href="../reference/theme_dsi.html">theme_dsi()</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -205,7 +238,7 @@ both-sexes rows (<code>dim1 == "SEX_BTSX"</code>).
 <code>colour</code> and keep palettes colorblind-safe —
 <code><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_d()</a></code> ships with
 <code>ggplot2</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX_MLE"</span>, <span class="st">"SEX_FMLE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span>, color <span class="op">=</span> <span class="va">dim1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -228,7 +261,7 @@ both-sexes rows (<code>dim1 == "SEX_BTSX"</code>).
 intervals, take the latest year per country and use
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_pointrange()</a></code>. Ordering the axis by value makes the
 ranking readable.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">year</span>, by <span class="op">=</span> <span class="va">iso3</span><span class="op">)</span></span>
@@ -250,7 +283,7 @@ ranking readable.</p>
 <p>A dumbbell plot compares two time points per country. Build the wide
 shape with two filtered slices and a join — no reshaping package needed.
 The colors are from the colorblind-safe Okabe-Ito palette.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">location_name</span>, start <span class="op">=</span> <span class="va">value_num</span><span class="op">)</span></span>
@@ -288,7 +321,7 @@ The colors are from the colorblind-safe Okabe-Ito palette.</p>
 the standard WHO / UNICEF progress metric. It slots directly into a
 grouped <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> on the cleaned schema. Remember the
 sign convention: positive means the indicator is declining.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">progress</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>aarr <span class="op">=</span> <span class="fu"><a href="../reference/aarr.html">aarr</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">location_name</span><span class="op">)</span><span class="op">)</span></span>
@@ -308,7 +341,7 @@ sign convention: positive means the indicator is declining.</p>
 <p>A back-of-envelope projection carries the latest value forward at the
 observed AARR. This is a quick screening device, not a substitute for
 the indicator-specific models behind official 2030 projections.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">progress</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"location_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>projected_2030 <span class="op">=</span> <span class="va">value_num</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">aarr</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">2030</span> <span class="op">-</span> <span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

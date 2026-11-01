@@ -16,10 +16,12 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Explicitly Create an Experimental DSIR Data Object — as_dsir_data">
 <meta name="description" content="Adds a dsir_data tibble subclass to an already cleaned indicator table.
-The download and cleaning functions keep their existing return types.
+Cleaners return this subclass by default; output = &quot;tibble&quot; opts out.
+Downloads and directory functions retain their existing return types.
 This experimental interface and its metadata schema may change.">
 <meta property="og:description" content="Adds a dsir_data tibble subclass to an already cleaned indicator table.
-The download and cleaning functions keep their existing return types.
+Cleaners return this subclass by default; output = &quot;tibble&quot; opts out.
+Downloads and directory functions retain their existing return types.
 This experimental interface and its metadata schema may change.">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
 <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
@@ -33,7 +35,7 @@ This experimental interface and its metadata schema may change.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +86,8 @@ This experimental interface and its metadata schema may change.">
 
     <div class="ref-description section level2">
     <p>Adds a <code>dsir_data</code> tibble subclass to an already cleaned indicator table.
-The download and cleaning functions keep their existing return types.
+Cleaners return this subclass by default; <code>output = "tibble"</code> opts out.
+Downloads and directory functions retain their existing return types.
 This experimental interface and its metadata schema may change.</p>
     </div>
 
@@ -167,7 +170,7 @@ containing only missing values count as missing in list columns.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
-    <div class="dont-index"><p><code><a href="dsir_metadata.html">dsir_metadata()</a></code>, <a href="gho_catalog.html">gho_catalog</a></p></div>
+    <div class="dont-index"><p><code><a href="dsir_metadata.html">dsir_metadata()</a></code>, <code><a href="plot.dsir_data.html">plot.dsir_data()</a></code>, <a href="gho_catalog.html">gho_catalog</a></p></div>
     </div>
 
     <div class="section level2">

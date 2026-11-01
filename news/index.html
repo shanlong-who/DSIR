@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,16 @@
       <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.13.0.9002" id="dsir-01309002-development">DSIR 0.13.0.9002 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309002-development"></a>
+</h2>
+<ul>
+<li>
+<strong>Experimental default change:</strong> <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, <code><a href="../reference/ghe_clean.html">ghe_clean()</a></code> and <code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> now return <code>dsir_data</code>, still inheriting from tibble. Append <code>output = "tibble"</code> to retain the ordinary class. The typed 15-column core and optional-column defaults are unchanged. Download and discovery return classes are unchanged.</li>
+<li>Keep acquisition and cleaning metadata in object attributes, accessible through <code><a href="../reference/dsir_metadata.html">dsir_metadata()</a></code>. Cleaning records its own time, package version, options, row counts, dimension retention and constant units/context without duplicating raw observations. Plain output also retains these records. Printing shows cleaning context, and summaries include the cleaning record.</li>
+<li>Add offline <code><a href="../reference/plot.dsir_data.html">plot.dsir_data()</a></code> with explicit <code>type = "trend"</code> and <code>type = "compare"</code>, country/year selection, colour groups, facets and optional reported bounds. Return standard ggplots with DSIR themes. Reject ambiguous strata, mixed definitions/units, duplicate positions and plot-relevant metadata needing review. Do not aggregate or select a latest year implicitly; trend lines break at missing estimates and annual gaps.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.13.0.9001" id="dsir-01309001-development">DSIR 0.13.0.9001 (development)<a class="anchor" aria-label="anchor" href="#dsir-01309001-development"></a>
 </h2>

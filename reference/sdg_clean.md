@@ -12,7 +12,12 @@ so the two outputs can be combined directly with
 ## Usage
 
 ``` r
-sdg_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
+sdg_clean(
+  df,
+  keep_dimensions = FALSE,
+  keep_metadata = FALSE,
+  output = c("dsir_data", "tibble")
+)
 ```
 
 ## Arguments
@@ -48,16 +53,26 @@ sdg_clean(df, keep_dimensions = FALSE, keep_metadata = FALSE)
   character vectors. This option is independent of `keep_dimensions` and
   makes no extra network requests.
 
+- output:
+
+  Return a `"dsir_data"` tibble subclass (default) or a plain
+  `"tibble"`. Both carry acquisition and cleaning metadata as
+  attributes; inspect them with
+  [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md).
+  This does not add table columns.
+
 ## Value
 
-A [tibble](https://tibble.tidyverse.org/reference/tibble.html) with 15
-core columns: `source` (always `"sdg"`), `id`, `indicator`, `location`,
-`iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`,
-`series`, `dim1` (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by
-`location` then `year`. Empty input returns an empty tibble with the
-same columns and types. With `keep_dimensions = TRUE`, available named
-dimensions follow the core columns, including on zero-row subsets of raw
-data. With `keep_metadata = TRUE`, source context follows those columns.
+A
+[dsir_data](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
+tibble, or a plain tibble when requested, with 15 core columns: `source`
+(always `"sdg"`), `id`, `indicator`, `location`, `iso3`,
+`location_name`, `year`, `value`, `value_num`, `low`, `high`, `series`,
+`dim1` (`NA`), `dim2` (`NA`), `dim3` (`NA`). Sorted by `location` then
+`year`. Empty input returns an empty tibble with the same columns and
+types. With `keep_dimensions = TRUE`, available named dimensions follow
+the core columns, including on zero-row subsets of raw data. With
+`keep_metadata = TRUE`, source context follows those columns.
 
 ## Details
 
@@ -133,6 +148,17 @@ acquisition records, not an audit of arbitrary changes to a plain
 tibble. Use the S3 object's processing status to track supported
 transformations. [`saveRDS()`](https://rdrr.io/r/base/readRDS.html)
 preserves attributes; CSV does not.
+
+Cleaning records live in `cleaning`, also for `output = "tibble"` and
+user-supplied input without acquisition records. They contain the
+cleaner, package version, UTC cleaning time, input/output sizes and
+columns, options, and a profile of semantic fields. Each profile records
+its retained column (or `NA`), distinct count including missing values,
+missing count and its constant value, if any. Varying omitted values are
+not stored row by row. Recorded aliases link equivalent core and named
+dimensions. Cleaning time never substitutes for retrieval time. These
+records describe the cleaning input; current coverage and subsequent
+field status remain separate.
 
 ## See also
 

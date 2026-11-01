@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -91,12 +91,16 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code> 和 <code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code> 返回相同的 15
-列结构，因此少量 <code>ggplot2</code>
+<p><code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code>、<code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code> 和
+<code><a href="../../reference/ghe_clean.html" hreflang="en">ghe_clean()</a></code> 默认返回 <code>dsir_data</code>
+tibble，保留相同的 15 列核心结构。使用 <code>output = "tibble"</code>
+可返回普通 tibble。少量 <code>ggplot2</code>
 示例即可覆盖常见的卫生指标图形。本教程介绍带区间的趋势图、性别或年龄分层图、森林图式的国家比较、哑铃图，以及使用
 <code><a href="../../reference/aarr.html" hreflang="en">aarr()</a></code> 跟踪进展。</p>
-<p>这些绘图步骤保留为可直接修改的 <code>ggplot2</code>
-代码，便于按项目需要调整，而不增加包内的专用绘图函数。代码和图中文字与英文版共用，本文翻译操作说明。需要安装或数据获取指导时，请阅读
+<p>试验性的 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>
+方法支持带数据检查的年度趋势图和同年国家比较图。其余分析和自定义图形仍可使用下文的
+<code>ggplot2</code>
+代码。代码和图中文字与英文版共用，本文翻译操作说明。需要安装或数据获取指导时，请阅读
 <a href="DSIR.html">DSIR 入门</a>。</p>
 <div class="section level2">
 <h2 id="示例数据">示例数据<a class="anchor" aria-label="anchor" href="#%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"></a>
@@ -170,12 +174,35 @@
 <span><span class="co">#&gt; <span style="color: #949494;">#   dim2 &lt;chr&gt;, dim3 &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="试验性-s3-绘图">试验性 S3 绘图<a class="anchor" aria-label="anchor" href="#%E8%AF%95%E9%AA%8C%E6%80%A7-s3-%E7%BB%98%E5%9B%BE"></a>
+</h2>
+<p>实际清洗结果将数据获取记录和清洗记录保存在对象属性中。上面的模拟数据没有获取记录，显式转换也不会补造记录。这里将单位指定为模拟数据定义的一部分。</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data.plot</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>unit <span class="op">=</span> <span class="st">"percent"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../../reference/as_dsir_data.html" hreflang="en">as_dsir_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"trend"</span>, country <span class="op">=</span> <span class="st">"PHL"</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-trend-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.plot</span>, type <span class="op">=</span> <span class="st">"compare"</span>, year <span class="op">=</span> <span class="fl">2023</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Illustrative country comparison"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="visualizing-indicators_files/figure-html/s3-compare-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<p>返回结果是标准
+ggplot。原始数据提供的上下界显示为区间，不假定置信水平。国家比较使用同一年份；趋势线在缺失估计值或超过一年的间隔处断开。两种方法都不汇总数据或转换单位。绘图前选择单一指标、系列或度量及单位，再筛选其他分层，或通过
+<code>group</code> 和 <code>facet</code>
+指定列名。例如，按性别展示各国趋势可使用 <code>group = "dim1"</code> 和
+<code>facet = "iso3"</code>。如果清洗时省略了取值不一致的维度，需要使用保留选项重新清洗。绘图相关字段变更后若标记为
+<code>needs_review</code>，应先核查，再使用显式 ggplot 映射。</p>
+</div>
+<div class="section level2">
 <h2 id="带区间的趋势线">带区间的趋势线<a class="anchor" aria-label="anchor" href="#%E5%B8%A6%E5%8C%BA%E9%97%B4%E7%9A%84%E8%B6%8B%E5%8A%BF%E7%BA%BF"></a>
 </h2>
 <p><code>low</code> 和 <code>high</code> 可直接映射到
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon()</a></code>。绘图前先筛选一个人群分层，这里使用男女合计（<code>dim1 == "SEX_BTSX"</code>）。<code><a href="../../reference/theme_dsi_facet.html" hreflang="en">theme_dsi_facet()</a></code>
 是适用于分面图的主题。</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -202,7 +229,7 @@
 提供的
 <code><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_d()</a></code>。本文模拟数据沿用旧版位置维度；使用
 xMart 命名维度时，应按实际字段调整。</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX_MLE"</span>, <span class="st">"SEX_FMLE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span>, color <span class="op">=</span> <span class="va">dim1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -223,7 +250,7 @@ xMart 命名维度时，应按实际字段调整。</p>
 </h2>
 <p>比较某一时点各国数值及其不确定性区间时，可取各国最新年份，再使用
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_pointrange()</a></code>。按数值排序坐标轴可使结果更易读。这里所有国家的最新年份相同；使用真实数据时，应检查年份是否一致。</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">year</span>, by <span class="op">=</span> <span class="va">iso3</span><span class="op">)</span></span>
@@ -244,7 +271,7 @@ xMart 命名维度时，应按实际字段调整。</p>
 </h2>
 <p>哑铃图比较每个国家的两个时点。分别筛选两个年份，再通过连接形成宽表，无需额外的数据重塑包。示例颜色来自色觉友好的
 Okabe–Ito 配色。</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span>, <span class="va">year</span> <span class="op">==</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">location_name</span>, start <span class="op">=</span> <span class="va">value_num</span><span class="op">)</span></span>
@@ -282,7 +309,7 @@ Okabe–Ito 配色。</p>
 常用的进展度量。可在清洗后的数据上直接通过带 <code>.by</code> 的
 <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>
 分组计算。请注意符号：<strong>正值表示指标下降</strong>。</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">progress</span> <span class="op">&lt;-</span> <span class="va">ncd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dim1</span> <span class="op">==</span> <span class="st">"SEX_BTSX"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>aarr <span class="op">=</span> <span class="fu"><a href="../../reference/aarr.html" hreflang="en">aarr</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">value_num</span><span class="op">)</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">iso3</span>, <span class="va">location_name</span><span class="op">)</span><span class="op">)</span></span>
@@ -301,7 +328,7 @@ Okabe–Ito 配色。</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> FJI   Fiji          -<span style="color: #BB0000;">0.002</span><span style="color: #BB0000; text-decoration: underline;">40</span>     -<span style="color: #BB0000;">0.2</span></span></span></code></pre></div>
 <p>可按观测到的 AARR 将最新值向未来外推，作为粗略筛查。这不能替代官方
 2030 年预测所使用的指标专属模型和假设。</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">latest</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">progress</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iso3"</span>, <span class="st">"location_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>projected_2030 <span class="op">=</span> <span class="va">value_num</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">aarr</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">2030</span> <span class="op">-</span> <span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

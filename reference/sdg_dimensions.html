@@ -39,7 +39,7 @@ representation and may differ from the JSON API's observation codes.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -169,6 +169,15 @@ independent of <code>keep_metadata</code>, which controls optional data columns.
 historical acquisition records, not an audit of arbitrary changes to a
 plain tibble. Use the S3 object's processing status to track supported
 transformations. <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> preserves attributes; CSV does not.</p>
+<p>Cleaning records live in <code>cleaning</code>, also for <code>output = "tibble"</code> and
+user-supplied input without acquisition records. They contain the cleaner,
+package version, UTC cleaning time, input/output sizes and columns, options,
+and a profile of semantic fields. Each profile records its retained column
+(or <code>NA</code>), distinct count including missing values, missing count and its
+constant value, if any. Varying omitted values are not stored row by row.
+Recorded aliases link equivalent core and named dimensions. Cleaning time
+never substitutes for retrieval time. These records describe the cleaning
+input; current coverage and subsequent field status remain separate.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>

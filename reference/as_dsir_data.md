@@ -1,7 +1,8 @@
 # Explicitly Create an Experimental DSIR Data Object
 
 Adds a `dsir_data` tibble subclass to an already cleaned indicator
-table. The download and cleaning functions keep their existing return
+table. Cleaners return this subclass by default; `output = "tibble"`
+opts out. Downloads and directory functions retain their existing return
 types. This experimental interface and its metadata schema may change.
 
 ## Usage
@@ -88,6 +89,7 @@ missing values count as missing in list columns.
 ## See also
 
 [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md),
+[`plot.dsir_data()`](https://shanlong-who.github.io/DSIR/reference/plot.dsir_data.md),
 [gho_catalog](https://shanlong-who.github.io/DSIR/reference/gho_catalog.md)
 
 ## Examples

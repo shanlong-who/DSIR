@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.13.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,9 +117,11 @@ tables produced from this data look consistent across reports.</p>
 <div class="section level2">
 <h2 id="experimental-data-objects-and-offline-catalogs">Experimental data objects and offline catalogs<a class="anchor" aria-label="anchor" href="#experimental-data-objects-and-offline-catalogs"></a>
 </h2>
-<p>The development version provides explicit S3 conversion after
-cleaning. Existing downloads and cleaners retain their default tibble
-behavior.</p>
+<p>The development version returns a <code>dsir_data</code> tibble
+subclass from <code><a href="../reference/gho_clean.html">gho_clean()</a></code>, <code><a href="../reference/ghe_clean.html">ghe_clean()</a></code> and
+<code><a href="../reference/sdg_clean.html">sdg_clean()</a></code> by default. The 15-column core is unchanged.
+Use <code>output = "tibble"</code> for the ordinary class. Downloads and
+discovery functions retain their existing return classes.</p>
 <p>Downloads and discovery results carry acquisition metadata by
 default:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -134,27 +136,32 @@ cache use, original record count and reported versions. Cached and
 bundled records retain their original dates. The result status
 distinguishes valid emptiness from failure or incomplete retrieval. SDG
 list failures still return <code>NULL</code> with a warning.</p>
-<p>All three cleaners retain these attributes, independently of optional
-metadata columns. Counts in <code>sources</code> precede local filtering
-and GHE measure pivoting; <code>result</code> describes the original
-function return and <code>current</code> describes the supplied table.
-Acquisition metadata is historical and does not certify later edits to a
-plain tibble. Use <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> to preserve it when saving
-data.</p>
+<p>All three cleaners retain acquisition records and add a
+<code>cleaning</code> record, independently of optional metadata
+columns. Metadata lives in object attributes, not extra table columns.
+Counts in <code>sources</code> precede local filtering and GHE measure
+pivoting; <code>result</code> describes the original function return and
+<code>current</code> describes the supplied table. Acquisition metadata
+is historical and does not certify later edits to a plain tibble. Use
+<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> to preserve it when saving data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use an already retrieved GHO table.</span></span>
 <span><span class="va">data.clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">data.raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">data.s3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_dsir_data.html">as_dsir_data</a></span><span class="op">(</span><span class="va">data.clean</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data.s3</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.s3</span><span class="op">)</span><span class="op">$</span><span class="va">provenance</span></span>
-<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.s3</span><span class="op">)</span><span class="op">$</span><span class="va">sources</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data.clean</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.clean</span><span class="op">)</span><span class="op">$</span><span class="va">provenance</span></span>
+<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.clean</span><span class="op">)</span><span class="op">$</span><span class="va">sources</span></span>
+<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.clean</span><span class="op">)</span><span class="op">$</span><span class="va">cleaning</span></span>
 <span></span>
-<span><span class="va">data.flagged</span> <span class="op">&lt;-</span> <span class="va">data.s3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>flag.high <span class="op">=</span> <span class="va">value_num</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="va">data.changed</span> <span class="op">&lt;-</span> <span class="va">data.s3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value_num <span class="op">=</span> <span class="va">value_num</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.changed</span><span class="op">)</span><span class="op">$</span><span class="va">processing</span></span></code></pre></div>
+<span><span class="va">data.flagged</span> <span class="op">&lt;-</span> <span class="va">data.clean</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>flag.high <span class="op">=</span> <span class="va">value_num</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">data.changed</span> <span class="op">&lt;-</span> <span class="va">data.clean</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value_num <span class="op">=</span> <span class="va">value_num</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dsir_metadata.html">dsir_metadata</a></span><span class="op">(</span><span class="va">data.changed</span><span class="op">)</span><span class="op">$</span><span class="va">processing</span></span>
+<span></span>
+<span><span class="co"># Ordinary tibble output retains acquisition and cleaning attributes.</span></span>
+<span><span class="va">data.table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">data.raw</span>, output <span class="op">=</span> <span class="st">"tibble"</span><span class="op">)</span></span>
+<span><span class="va">data.s3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_dsir_data.html">as_dsir_data</a></span><span class="op">(</span><span class="va">data.table</span><span class="op">)</span></span></code></pre></div>
 <p>Both mutations retain <code>dsir_data</code> while its core structure
 is valid. Added columns are marked derived. Changing an input value
 flags its interpretation, including units and bounds, as needing review;
@@ -165,8 +172,30 @@ and removal of required columns return ordinary tables. Use
 <code>.by</code> for transient grouping. <code><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble()</a></code>
 explicitly removes the class and object metadata; <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code>
 preserves both. This interface is experimental.</p>
-<p>Three offline datasets support discovery without API calls:</p>
+<p>Cleaning time is distinct from retrieval time. The cleaning record
+describes the input and which dimensions/units were retained, including
+constant context omitted from table columns. Current coverage comes from
+the current rows.</p>
+<p>After selecting a single indicator, series, unit and comparable
+population stratum, use the experimental plot method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.clean</span>, type <span class="op">=</span> <span class="st">"trend"</span>, country <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.clean</span>, type <span class="op">=</span> <span class="st">"compare"</span>, year <span class="op">=</span> <span class="fl">2023</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Keep the relevant named dimensions when cleaning.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data.clean</span>, type <span class="op">=</span> <span class="st">"trend"</span>, country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"LAO"</span><span class="op">)</span>,</span>
+<span>     group <span class="op">=</span> <span class="st">"dim1"</span>, facet <span class="op">=</span> <span class="st">"iso3"</span><span class="op">)</span></span></code></pre></div>
+<p>Each call returns a standard ggplot using a DSIR theme. Comparisons
+require one common year. Mixed units, unresolved strata and duplicate
+positions cause an error; no automatic aggregation or unit conversion
+occurs. If cleaning omitted varying dimensions or units, reclean the
+original data with the retention flags. Reported bounds are optional,
+without an assumed confidence level. Trends break at missing estimates
+and gaps greater than one year. Changed plot-relevant fields need
+review; use explicit ggplot mappings for derived analyses outside this
+initial contract.</p>
+<p>Three offline datasets support discovery without API calls:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">gho_catalog</span><span class="op">$</span><span class="va">backend</span><span class="op">)</span></span>
 <span><span class="va">sdg_catalog</span><span class="op">[</span><span class="va">sdg_catalog</span><span class="op">$</span><span class="va">goal</span> <span class="op">==</span> <span class="st">"3"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"code"</span>, <span class="st">"description"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">ghe_catalog</span><span class="op">[</span><span class="va">ghe_catalog</span><span class="op">$</span><span class="va">kind</span> <span class="op">==</span> <span class="st">"measure"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"code"</span>, <span class="st">"label"</span>, <span class="st">"unit"</span><span class="op">)</span><span class="op">]</span></span>
@@ -255,7 +284,7 @@ xMart and GHE guide</a> for examples and migration details.</p>
 Member States with ISO3, ISO2, UN M49 codes, official and short names,
 WHO region, and a <code>is_pic</code> flag for Pacific Island
 Countries.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shanlong-who/DSIR" class="external-link">DSIR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -268,7 +297,7 @@ Countries.</p>
 <p><strong>Regional ISO3 vectors</strong> — convenience character
 vectors for each WHO region, derived from
 <code>who_countries</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wpro_cty</span>   <span class="co"># 28 Western Pacific Member States (since May 2025)</span></span>
 <span><span class="va">afro_cty</span>   <span class="co"># 47 African Region Member States</span></span>
 <span><span class="va">amro_cty</span>   <span class="co"># 35 Region of the Americas Member States</span></span>
@@ -279,7 +308,7 @@ vectors for each WHO region, derived from
 <p><strong><code><a href="../reference/iso3_to_region.html">iso3_to_region()</a></code></strong> — quick lookup from
 ISO3 codes to WHO regions. Vectorized; returns <code>NA</code> for codes
 not matching a Member State.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/iso3_to_region.html">iso3_to_region</a></span><span class="op">(</span><span class="st">"PHL"</span><span class="op">)</span>                          <span class="co"># "WPR"</span></span>
 <span><span class="fu"><a href="../reference/iso3_to_region.html">iso3_to_region</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"FRA"</span>, <span class="st">"ZAF"</span>, <span class="st">"XYZ"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># "WPR" "EUR" "AFR" NA</span></span></code></pre></div>
 <p><strong><code><a href="../reference/iso3_to_m49.html">iso3_to_m49()</a></code> /
@@ -288,7 +317,7 @@ M49 numeric codes in either direction. Useful for moving between GHO
 (ISO3) and SDG (M49) workflows. Case-insensitive on the ISO3 side; both
 accept zero-padded or bare M49 input on the M49 side; non-Member areas
 return <code>NA</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="st">"PHL"</span><span class="op">)</span>                             <span class="co"># "608"</span></span>
 <span><span class="fu"><a href="../reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHL"</span>, <span class="st">"FRA"</span>, <span class="st">"JPN"</span><span class="op">)</span><span class="op">)</span>            <span class="co"># "608" "250" "392"</span></span>
 <span><span class="fu"><a href="../reference/iso3_to_m49.html">iso3_to_m49</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PRI"</span>, <span class="st">"PHL"</span><span class="op">)</span><span class="op">)</span>                   <span class="co"># NA "608"</span></span>
@@ -312,7 +341,7 @@ populates its <code>iso3</code> column via
 single-panel charts and <code><a href="../reference/theme_dsi_facet.html">theme_dsi_facet()</a></code> for faceted
 plots; the facet variant adds panel borders, light strip backgrounds,
 and panel spacing tuned for multi-panel layouts.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -353,7 +382,7 @@ bars made with <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip
 <code>value</code> is the <code>x</code> aesthetic (e.g.
 <code>geom_col(aes(value, category))</code>). Both accept any argument
 that <code>scale_*_continuous()</code> accepts.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Vertical bars</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#0093D5"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -365,11 +394,11 @@ setup for <code>flextable</code> formatting (booktabs style, bold
 headers, paddings). <code>flextable</code> (&gt;= 0.9.0) is optional;
 install it with <code>install.packages("flextable")</code> before using
 this helper.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dsi_flextable_defaults.html">dsi_flextable_defaults</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong><code><a href="../reference/ggpie.html">ggpie()</a></code></strong> — quick pie charts with
 automatic percentage labels.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"AMR"</span>, <span class="st">"EUR"</span>, <span class="st">"WPR"</span>, <span class="st">"SEAR"</span>, <span class="st">"EMR"</span><span class="op">)</span>,</span>
 <span>  countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">47</span>, <span class="fl">35</span>, <span class="fl">53</span>, <span class="fl">28</span>, <span class="fl">10</span>, <span class="fl">21</span><span class="op">)</span></span>
@@ -386,7 +415,7 @@ extracts offline. Matching uses the full geographical, temporal and
 dimension key. Incompatible backends, query scopes or unit/measure
 definitions stop the comparison; value changes and metadata-only changes
 are reported separately.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Repeat exactly the same query later, using the same backend.</span></span>
 <span><span class="va">old_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/data_snapshot.html">data_snapshot</a></span><span class="op">(</span><span class="va">old_data</span>, file <span class="op">=</span> <span class="st">"snapshots/gho_old.rds"</span><span class="op">)</span></span>
@@ -409,7 +438,7 @@ reproducible simulation and the full comparison contract. The existing
 optional weights. Useful for aggregating ratio-based health indicators
 where the composite is multiplicative — e.g. UHC service-coverage
 tracers.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span>                      <span class="co"># ~0.772</span></span>
 <span><span class="fu"><a href="../reference/geomean.html">geomean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>      <span class="co"># weighted version</span></span></code></pre></div>
 <p><strong><code><a href="../reference/aarr.html">aarr()</a></code></strong> — average annual rate of
@@ -419,7 +448,7 @@ mortality, stunting). Fits an OLS line to <code>log(value)</code>
 against <code>year</code> (the UNICEF-standard method; an endpoint-only
 method is also available). Positive values mean the indicator is
 declining; multiply by 100 to compare with published tables.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">years</span>  <span class="op">&lt;-</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2015</span></span>
 <span><span class="va">values</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0.024</span><span class="op">)</span> <span class="op">^</span> <span class="op">(</span><span class="va">years</span> <span class="op">-</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/aarr.html">aarr</a></span><span class="op">(</span><span class="va">years</span>, <span class="va">values</span><span class="op">)</span>                             <span class="co"># 0.024 = 2.4%/yr decline</span></span>
@@ -437,7 +466,7 @@ declining; multiply by 100 to compare with published tables.</p>
 GHO directory contains many indicators but any one of them may not cover
 the countries or years you need. Three lightweight helpers ask the
 server what is available without transferring observations:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Yes / no for a given indicator + filter (TRUE / FALSE / NA on failure)</span></span>
 <span><span class="fu"><a href="../reference/gho_has_data.html">gho_has_data</a></span><span class="op">(</span><span class="st">"WHOSIS_000001"</span>, area <span class="op">=</span> <span class="st">"FRA"</span><span class="op">)</span></span>
 <span></span>
@@ -454,7 +483,7 @@ explicit <code>backend</code> overrides <code>DSIR.who_backend</code>,
 with <code>"auto"</code> as the default when neither is set. Missing
 timestamps or failed requests do not trigger fallback; automatic
 selection checks observation availability first.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_last_updated.html">gho_last_updated</a></span><span class="op">(</span><span class="st">"WHS4_100"</span>, backend <span class="op">=</span> <span class="st">"xmart"</span>, diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -506,7 +535,7 @@ are available. Successful empty searches do not trigger fallback. xMart
 never uses the legacy snapshot. Search matches names literally: use
 <code>"UHC service coverage"</code>, not the abbreviation
 <code>"UHC SCI"</code>, to find names containing those words.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Search indicators by keyword</span></span>
 <span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">"mortality"</span><span class="op">)</span></span>
 <span></span>
@@ -552,7 +581,7 @@ Their meaning can vary between rows: for financial hardship,
 <code>dim1_type</code> can be <code>WEALTHQUINTILE</code>,
 <code>FINANCIALHARDSHIPCOMPONENT</code>, or <code>DEMOGRAPHIC</code>,
 among others.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
 <span>                backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -574,7 +603,7 @@ name or code prefix. Both options default to <code>FALSE</code>.</p>
 <p>Same pattern as GHO: <strong>search → fetch → clean</strong>.</p>
 <p><code><a href="../reference/sdg_last_updated.html">sdg_last_updated()</a></code> queries the update timestamp of the
 <strong>whole database</strong>:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sdg_last_updated.html">sdg_last_updated</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It returns the same columns and status values as
 <code><a href="../reference/gho_last_updated.html">gho_last_updated()</a></code>, with <code>scope = "database"</code>
@@ -584,7 +613,7 @@ mean that every indicator changed then. Series release codes and
 metadata-document update dates are not data update timestamps. Source
 time zones are preserved; an unspecified time zone is not assumed to be
 UTC.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Browse goals, targets, indicators, and geographic areas</span></span>
 <span><span class="fu"><a href="../reference/sdg_goals.html">sdg_goals</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/sdg_targets.html">sdg_targets</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -636,7 +665,7 @@ remain <code>NA</code>. The default 15-column output omits these
 breakdowns, so select the required strata first when using the compact
 format. Use <code>keep_metadata = TRUE</code> to also retain units,
 nature, and other attributes as <code>attr_*</code> columns.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span> <span class="co"># Inspect actual dimension names and codes</span></span>
 <span><span class="va">financial_hardship</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span></span>
@@ -656,7 +685,7 @@ nature, and other attributes as <code>attr_*</code> columns.</p>
 <span>  <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Discovering dimension codes and labels.</strong> This reads
 official series metadata without downloading the observation table:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_dimensions.html">sdg_dimensions</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, include_attributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">codebook</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">series</span>, <span class="va">kind</span>, <span class="va">dimension</span>, <span class="va">code</span>, <span class="va">label</span>, <span class="va">sdmx</span><span class="op">)</span></span></code></pre></div>
@@ -672,7 +701,7 @@ observations.</p>
 and the geographic information URL. All footnotes and linked indicator,
 goal, and target codes are preserved in list-columns. This makes no
 additional network requests. For example:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">financial_hardship</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"iso3"</span>, <span class="st">"year"</span>, <span class="st">"value_num"</span>, <span class="st">"attr_units"</span>, <span class="st">"attr_nature"</span>, <span class="st">"data_source"</span></span>
@@ -707,7 +736,7 @@ series catalogue</a>.</p>
 output with <code><a href="../reference/bind_indicators.html">bind_indicators()</a></code> and use the
 <code>source</code> column to keep track of where each row came
 from:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gho</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/gho_clean.html">gho_clean</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sdg_data.html">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/sdg_clean.html">sdg_clean</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/bind_indicators.html">bind_indicators</a></span><span class="op">(</span><span class="va">gho</span>, <span class="va">sdg</span><span class="op">)</span></span></code></pre></div>
@@ -722,7 +751,7 @@ causes of death — each with its own country / year coverage.
 <code><a href="../reference/sdg_coverage.html">sdg_coverage()</a></code> summarises the year range and observation
 count per <code>(location, series)</code> so you can see what is
 available before deciding which series to analyse.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3.b.1 (vaccine coverage) is published as four separate series</span></span>
 <span><span class="fu"><a href="../reference/sdg_coverage.html">sdg_coverage</a></span><span class="op">(</span><span class="st">"3.b.1"</span>, area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"156"</span>, <span class="st">"608"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   location series      year_min year_max n_obs</span></span>
@@ -801,7 +830,7 @@ counts and availability results. Raw observations retain
 checked afresh on subsequent calls. Pin a backend for repeated analysis,
 since provider coverage and published estimates may change. The
 15-column default of <code><a href="../reference/gho_clean.html">gho_clean()</a></code> is unchanged.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gho_dimensions.html">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="va">ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_data.html">gho_data</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>, year_from <span class="op">=</span> <span class="fl">2020</span>,</span>
@@ -854,7 +883,7 @@ JSON. An empty result accompanied by this warning is a failed request,
 not evidence that no matching indicators or observations exist. Retry
 later. To use the separate legacy GHO service explicitly for a
 comparison or temporary workaround:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mortality_indicators</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gho_indicators.html">gho_indicators</a></span><span class="op">(</span><span class="st">'mortality'</span>, backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span></code></pre></div>
 <p>The legacy catalog and estimates can differ from xMart. Backend
 selection applies to GHO functions; GHE continues to use its xMart
@@ -868,7 +897,7 @@ measure. GHE is a separate module backed by
 <code>DEX_CMS/GHE_FULL</code>. It returns long data with one row per
 measure. A download needs at least one filter and is limited to one
 million source rows by default.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'sex'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'age'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ghe_dimensions.html">ghe_dimensions</a></span><span class="op">(</span><span class="st">'measure'</span><span class="op">)</span></span>
@@ -905,7 +934,7 @@ years.</p>
 rounded Table 1 percentages sum to 100.02; DSIR normalizes them to 100
 and derives a numeric standard million summing to 1,000,000. No finer
 split of <code>0-4</code> or <code>85+</code> is fabricated.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">who_std_pop</span></span>
 <span><span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">who_std_pop</span><span class="op">)</span><span class="op">)</span></span>

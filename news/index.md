@@ -1,5 +1,32 @@
 # Changelog
 
+## DSIR 0.13.0.9002 (development)
+
+- **Experimental default change:**
+  [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md),
+  [`ghe_clean()`](https://shanlong-who.github.io/DSIR/reference/ghe_clean.md)
+  and
+  [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
+  now return `dsir_data`, still inheriting from tibble. Append
+  `output = "tibble"` to retain the ordinary class. The typed 15-column
+  core and optional-column defaults are unchanged. Download and
+  discovery return classes are unchanged.
+- Keep acquisition and cleaning metadata in object attributes,
+  accessible through
+  [`dsir_metadata()`](https://shanlong-who.github.io/DSIR/reference/dsir_metadata.md).
+  Cleaning records its own time, package version, options, row counts,
+  dimension retention and constant units/context without duplicating raw
+  observations. Plain output also retains these records. Printing shows
+  cleaning context, and summaries include the cleaning record.
+- Add offline
+  [`plot.dsir_data()`](https://shanlong-who.github.io/DSIR/reference/plot.dsir_data.md)
+  with explicit `type = "trend"` and `type = "compare"`, country/year
+  selection, colour groups, facets and optional reported bounds. Return
+  standard ggplots with DSIR themes. Reject ambiguous strata, mixed
+  definitions/units, duplicate positions and plot-relevant metadata
+  needing review. Do not aggregate or select a latest year implicitly;
+  trend lines break at missing estimates and annual gaps.
+
 ## DSIR 0.13.0.9001 (development)
 
 - Unify acquisition metadata for GHO, GHE and SDG observations and
