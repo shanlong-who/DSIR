@@ -1,6 +1,9 @@
 # DSIR design notes
 
-Reviewed against main at `634c2bf` (DSIR 0.10.0) on 2026-10-04.
+The original review covered main at `634c2bf` (DSIR 0.10.0) on 2026-10-04.
+The contracts below also record the later changes through DSIR 0.14.0.
+For file locations and maintenance entry points, see the
+[repository maintenance guide](repository-hygiene.md).
 
 These notes preserve useful decisions from the former
 `conversation-export.md`, `development_proposals.md`, and development

@@ -7,6 +7,7 @@ library(yaml)
 library(digest)
 library(fs)
 library(withr)
+source("pkgdown/site-sources.R")
 
 read_utf8 <- function(path) {
   readLines(path, warn = FALSE, encoding = "UTF-8")
@@ -175,6 +176,9 @@ build_multilingual_site <- function(root = ".", destination = "docs", build.engl
   root <- path_abs(root)
   destination <- path_abs(destination)
   check_translations(root)
+  # pkgdown renders extra root Markdown files, including ignored local files.
+  # Build from the maintained sources without moving or editing the originals.
+  root <- stage_site_source(root)
   labels <- read_yaml(path(root, "pkgdown/i18n/navigation.yml"))
   config <- read_yaml(path(root, "_pkgdown.yml"))
   base.url <- config$url
@@ -244,6 +248,7 @@ build_multilingual_site <- function(root = ".", destination = "docs", build.engl
     finish_language_pages(destination, language, local.labels, base.url)
   }
   file_create(path(destination, ".nojekyll"))
+  validate_site_sources(destination)
   invisible(destination)
 }
 

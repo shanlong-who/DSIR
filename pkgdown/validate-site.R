@@ -5,6 +5,7 @@ source("pkgdown/build-site.R")
 validate_multilingual_site <- function(destination = "docs") {
   check_translations()
   destination <- path_abs(destination)
+  validate_site_sources(destination)
   labels <- read_yaml("pkgdown/i18n/navigation.yml")
   failures <- character()
   check <- function(condition, message) {

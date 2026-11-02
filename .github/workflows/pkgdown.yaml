@@ -49,6 +49,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
-          clean: false
+          # The complete validated build owns this branch, including removals.
+          clean: true
           branch: gh-pages
           folder: docs

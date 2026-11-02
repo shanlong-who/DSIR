@@ -770,10 +770,6 @@ GHO-style `has_data()` / `count()` helpers are intentionally not
 provided for SDG because SDG data is generally complete enough
 that pre-flight checks add little value.
 
-## License
-
-MIT — © 2026 Shanlong Ding
-
 ### WHO backend selection (0.13.0)
 
 GHO defaults to `backend = "auto"`, preferring the public xMart API at
@@ -914,3 +910,13 @@ age_standardize(count, population, who_std_pop$weight)
 See the [WHO technical report](https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2023_who_standard_population.pdf),
 Table 1, page 6 (September 2026). The former 21-row object is replaced;
 align observed age groups explicitly before computing a standardized rate.
+
+## Package maintenance
+
+The [repository maintenance guide](https://github.com/shanlong-who/DSIR/blob/main/.github/maintenance/repository-hygiene.md)
+maps the source modules, documentation sources, data rebuild scripts and
+website publication process.
+
+## License
+
+MIT — © 2026 Shanlong Ding

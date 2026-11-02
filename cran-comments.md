@@ -1,3 +1,11 @@
+# CRAN submission record: DSIR 0.13.0
+
+These are the historical comments for the 30 October 2026 submission.
+DSIR 0.13.0 has since been published on CRAN. The text below is retained as
+submitted and does not describe the current GitHub version. `CRAN-SUBMISSION`
+records the submitted version, date and commit; `DESCRIPTION` and `NEWS.md`
+describe the current source package.
+
 ## Resubmission
 
 This is a resubmission of DSIR 0.13.0 following Uwe Ligges's feedback
