@@ -115,6 +115,19 @@ a Philippine map therefore requires corrected official data or complete
 user-supplied boundaries. This is validated from each response, not a
 country blacklist.
 
+Boundary validation errors have class `dsir_map_boundary_error` and a
+`diagnostics` field with area keys, validation reasons, engine and
+version, check time and source context. Catch with
+`tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)` and
+inspect or save the returned condition's `diagnostics` field. S2
+validates geographic coordinates when enabled in sf; otherwise GEOS is
+used. Structural checks (including empty geometry) are labelled sf. A
+boundary can render on a web map while failing topology validation; this
+does not mean its geometry is missing. Unknown validity also causes an
+error. Successful maps retain validation records in
+`dsir_metadata(map)$boundaries$validation`. Cache reads validate again;
+invalid-cache warnings retain geometry diagnostics when available.
+
 Downloads use the public WHO `Detailed_Boundary_ADM0` Feature Service,
 layer 0, item `39663258d2b44dcaa28af952ed40760b`, without
 authentication. Its item terms require use without modification and link

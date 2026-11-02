@@ -8,6 +8,11 @@ remain experimental.
 
 ### Maps
 
+- Report boundary validation failures with area keys, engine versions
+  and specific reasons. Errors carry structured diagnostics; successful
+  maps retain validation records in boundary metadata, including fresh
+  cache checks. Strict validation remains in place without automatic
+  repair.
 - Add experimental
   [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
   for `dsir_data`, ordinary analysis tables and `sf` input. Return a

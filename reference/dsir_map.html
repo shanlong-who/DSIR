@@ -208,6 +208,18 @@ dissolved or combined with another source automatically. The WHO ADM0
 service returned empty Philippine geometry during development; a Philippine
 map therefore requires corrected official data or complete user-supplied
 boundaries. This is validated from each response, not a country blacklist.</p>
+<p>Boundary validation errors have class <code>dsir_map_boundary_error</code> and a
+<code>diagnostics</code> field with area keys, validation reasons, engine and version,
+check time and source context. Catch with
+<code>tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)</code> and
+inspect or save the returned condition's <code>diagnostics</code> field. S2 validates
+geographic coordinates when enabled in sf; otherwise GEOS is used.
+Structural checks (including empty geometry) are labelled sf. A boundary
+can render on a web map while failing topology validation; this does not
+mean its geometry is missing. Unknown validity also causes an error.
+Successful maps retain validation records in
+<code>dsir_metadata(map)$boundaries$validation</code>. Cache reads validate again;
+invalid-cache warnings retain geometry diagnostics when available.</p>
 <p>Downloads use the public WHO <code>Detailed_Boundary_ADM0</code> Feature Service,
 layer 0, item <code>39663258d2b44dcaa28af952ed40760b</code>, without authentication.
 Its item terms require use without modification and link to
