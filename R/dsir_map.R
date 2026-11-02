@@ -56,6 +56,19 @@
 #' map therefore requires corrected official data or complete user-supplied
 #' boundaries. This is validated from each response, not a country blacklist.
 #'
+#' Boundary validation errors have class `dsir_map_boundary_error` and a
+#' `diagnostics` field with area keys, validation reasons, engine and version,
+#' check time and source context. Catch with
+#' `tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)` and
+#' inspect or save the returned condition's `diagnostics` field. S2 validates
+#' geographic coordinates when enabled in sf; otherwise GEOS is used.
+#' Structural checks (including empty geometry) are labelled sf. A boundary
+#' can render on a web map while failing topology validation; this does not
+#' mean its geometry is missing. Unknown validity also causes an error.
+#' Successful maps retain validation records in
+#' `dsir_metadata(map)$boundaries$validation`. Cache reads validate again;
+#' invalid-cache warnings retain geometry diagnostics when available.
+#'
 #' Downloads use the public WHO `Detailed_Boundary_ADM0` Feature Service,
 #' layer 0, item `39663258d2b44dcaa28af952ed40760b`, without authentication.
 #' Its item terms require use without modification and link to
@@ -157,6 +170,7 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
     borders <- .dsi_map_select_boundaries(boundaries, boundary_key, keys)
     boundary.metadata <- list(origin = "user_supplied", key = boundary_key,
       countries = keys, crs = sf::st_crs(borders)$wkt,
+      validation = list(attr(borders, "dsir_boundary_validation", exact = TRUE)),
       supplied_metadata = attr(boundaries, "dsir_metadata", exact = TRUE))
   }
   map.data <- sf::st_sf(plain, geometry = sf::st_geometry(borders))
@@ -190,7 +204,7 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   as.character(x)
 }
 
-.dsi_map_select_boundaries <- function(boundaries, key, keys) {
+.dsi_map_select_boundaries <- function(boundaries, key, keys, source = list(origin = "user_supplied")) {
   if (!inherits(boundaries, "sf")) cli::cli_abort("{.arg boundaries} must be an sf table.")
   if (!is.character(key) || length(key) != 1L || is.na(key) || !key %in% names(boundaries)) {
     cli::cli_abort("{.arg boundary_key} must name a column in the boundary table.")
@@ -199,15 +213,18 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   selected <- ids %in% keys
   if (anyDuplicated(ids[selected])) cli::cli_abort("Duplicate boundary keys; supply one polygon or multipolygon row per area.")
   absent <- setdiff(keys, ids)
-  if (length(absent)) cli::cli_abort("Boundary geometry is missing for {.val {absent}}.")
+  if (length(absent)) .dsi_map_structure_abort("Boundary geometry is missing.", absent, "No matching boundary key.", source)
   out <- boundaries[match(keys, ids), , drop = FALSE]
-  if (is.na(sf::st_crs(out))) cli::cli_abort("Boundary coordinate reference system is missing; verify it before mapping.")
+  if (is.na(sf::st_crs(out))) .dsi_map_structure_abort("Boundary coordinate reference system is missing; verify it before mapping.", keys, "Missing coordinate reference system.", source)
   empty <- sf::st_is_empty(out)
-  if (any(empty)) cli::cli_abort("Empty boundary geometry for {.val {keys[empty]}}; obtain corrected source data or supply complete sf boundaries.")
-  if (any(!as.character(sf::st_geometry_type(out)) %in% c("POLYGON", "MULTIPOLYGON"))) {
-    cli::cli_abort("Map boundaries must be polygons or multipolygons.")
+  if (any(empty)) .dsi_map_structure_abort("Empty boundary geometry; obtain corrected source data or supply complete sf boundaries.", keys[empty], "Empty geometry.", source)
+  type <- as.character(sf::st_geometry_type(out))
+  wrong <- !type %in% c("POLYGON", "MULTIPOLYGON")
+  if (any(wrong)) {
+    .dsi_map_structure_abort("Map boundaries must be polygons or multipolygons.", keys[wrong], paste("Unsupported geometry type:", type[wrong]), source)
   }
-  valid <- sf::st_is_valid(out)
-  if (anyNA(valid) || any(!valid)) cli::cli_abort("Invalid boundary geometry for {.val {keys[is.na(valid) | !valid]}}; no automatic repair is performed.")
+  validation <- .dsi_map_validation(out, keys, source)
+  if (any(!validation$checks$valid)) .dsi_map_boundary_abort("Invalid boundary geometry; no automatic repair is performed.", validation)
+  attr(out, "dsir_boundary_validation") <- validation
   out
 }

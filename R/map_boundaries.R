@@ -83,16 +83,22 @@
     NULL
   })
   if (is.null(data)) cli::cli_abort("No usable WHO boundary download for {.val {code}}.")
-  if (!inherits(data, "sf")) cli::cli_abort("Empty geometry in the WHO boundary response for {.val {code}}.")
+  if (!inherits(data, "sf")) .dsi_map_structure_abort("Empty geometry in the WHO boundary response.",
+    code, "Response has no readable geometry column.",
+    list(origin = "who_gis", stage = "download", endpoint = source$endpoint,
+      item_id = source$item_id, object_id = object.ids, download_md5 = unname(tools::md5sum(file))))
   if (nrow(data) != 1L || !ids$objectIdFieldName %in% names(data) ||
       !isTRUE(as.character(data[[ids$objectIdFieldName]]) == as.character(object.ids))) {
     cli::cli_abort("WHO boundary feature identifiers changed or the response was incomplete for {.val {code}}.")
   }
-  data <- .dsi_map_select_boundaries(data, "ISO_3_CODE", code)
+  data <- .dsi_map_select_boundaries(data, "ISO_3_CODE", code,
+    source = list(origin = "who_gis", stage = "download", endpoint = source$endpoint,
+      item_id = source$item_id, object_id = object.ids, download_md5 = unname(tools::md5sum(file))))
   if (!isTRUE(sf::st_crs(data) == sf::st_crs(4326))) cli::cli_abort("Unexpected coordinate system in the WHO boundary response.")
   list(schema_version = 1L, item_id = source$item_id, endpoint = source$endpoint,
     layer_id = source$layer_id, code = code, id_field = ids$objectIdFieldName,
     object_id = object.ids, data = data, retrieved_at = .dsi_timestamp(),
+    validation = attr(data, "dsir_boundary_validation", exact = TRUE),
     item_modified_at = item$item_modified_at, license = item$license,
     download_md5 = unname(tools::md5sum(file)), query = list(where = where,
       object_ids = object.ids, out_sr = 4326L), cache_hit = FALSE)
@@ -119,13 +125,17 @@
         !isTRUE(as.character(record$data[[record$id_field]]) == as.character(record$object_id))) {
       stop("Unrecognized or incomplete cache record.")
     }
-    .dsi_map_select_boundaries(record$data, "ISO_3_CODE", code)
+    checked <- .dsi_map_select_boundaries(record$data, "ISO_3_CODE", code,
+      source = list(origin = "who_gis", stage = "cache", endpoint = record$endpoint,
+        item_id = record$item_id, object_id = record$object_id, download_md5 = record$download_md5))
+    record$validation <- attr(checked, "dsir_boundary_validation", exact = TRUE)
     if (!isTRUE(sf::st_crs(record$data) == sf::st_crs(4326))) stop("Unexpected cache coordinate system.")
     record$cache_hit <- TRUE
     record
   }, error = function(e) {
     msg <- conditionMessage(e)
-    cli::cli_warn(c("Ignoring an invalid WHO boundary cache for {.val {code}}.", "x" = "{msg}"))
+    cli::cli_warn(c("Ignoring an invalid WHO boundary cache for {.val {code}}.", "x" = "{msg}"),
+      class = "dsir_map_cache_warning", diagnostics = e$diagnostics)
     NULL
   })
 }
@@ -172,5 +182,6 @@
       cache_hit = record$cache_hit, license = record$license, query = list(record$query))
   }))
   list(data = data, metadata = list(origin = "who_gis", key = "ISO_3_CODE",
-    countries = codes, crs = sf::st_crs(data)$wkt, sources = sources))
+    countries = codes, crs = sf::st_crs(data)$wkt, sources = sources,
+    validation = lapply(records, `[[`, "validation")))
 }

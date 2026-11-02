@@ -10,6 +10,10 @@ remain experimental.
 
 ## Maps
 
+* Report boundary validation failures with area keys, engine versions and
+  specific reasons. Errors carry structured diagnostics; successful maps
+  retain validation records in boundary metadata, including fresh cache
+  checks. Strict validation remains in place without automatic repair.
 * Add experimental `dsir_map()` for `dsir_data`, ordinary analysis tables
   and `sf` input. Return a standard ggplot with a continuous viridis scale
   and DSIR theme. Support custom area/value columns and supplied polygons.

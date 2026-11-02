@@ -1,5 +1,51 @@
 skip_if_not_installed("sf")
 
+test_that("boundary diagnostics identify engines and preserve source geometry", {
+  boundaries <- sf::st_sf(iso3 = c("GOOD", "BAD"), geometry = sf::st_as_sfc(c(
+    "POLYGON((0 0,1 0,1 1,0 1,0 0))", "POLYGON((0 0,1 1,0 1,1 0,0 0))"), crs = 4326))
+  original <- sf::st_as_binary(sf::st_geometry(boundaries))
+  previous <- sf::sf_use_s2()
+  on.exit(suppressMessages(sf::sf_use_s2(previous)), add = TRUE)
+  for (spherical in c(TRUE, FALSE)) {
+    suppressMessages(sf::sf_use_s2(spherical))
+    error <- tryCatch(.dsi_map_select_boundaries(boundaries, "iso3", boundaries$iso3),
+      dsir_map_boundary_error = identity)
+    expect_s3_class(error, "dsir_map_boundary_error")
+    expect_identical(error$diagnostics$engine, if (spherical) "S2" else "GEOS")
+    expect_identical(error$diagnostics$checks$valid, c(TRUE, FALSE))
+    expect_match(conditionMessage(error), "BAD")
+    expect_true(nzchar(error$diagnostics$checks$reason[2]))
+    expect_identical(sf::sf_use_s2(), spherical)
+    expect_identical(sf::st_as_binary(sf::st_geometry(boundaries)), original)
+  }
+})
+
+test_that("unknown validity and literal external errors remain diagnostic failures", {
+  boundaries <- sf::st_sf(code = "A", geometry = sf::st_as_sfc("POLYGON((0 0,1 0,1 1,0 0))", crs = 4326))
+  testthat::local_mocked_bindings(st_is_valid = function(...) NA_character_, .package = "sf")
+  error <- tryCatch(.dsi_map_select_boundaries(boundaries, "code", "A"), dsir_map_boundary_error = identity)
+  expect_match(conditionMessage(error), "Validation returned NA")
+  expect_false(error$diagnostics$checks$valid)
+  testthat::local_mocked_bindings(st_is_valid = function(...) stop("failure {literal}"), .package = "sf")
+  error <- tryCatch(.dsi_map_select_boundaries(boundaries, "code", "A"), dsir_map_boundary_error = identity)
+  expect_match(conditionMessage(error), "failure {literal}", fixed = TRUE)
+})
+
+test_that("successful maps and structural failures expose validation records", {
+  boundaries <- sf::st_sf(iso3 = c("LAO", "VNM"), geometry = sf::st_as_sfc(c(
+    "POLYGON((0 0,1 0,1 1,0 0))", "POLYGON((2 0,3 0,3 1,2 0))"), crs = 4326))
+  p <- dsir_map(data.frame(iso3 = c("LAO", "VNM"), value_num = c(1, 2)), boundaries = boundaries)
+  validation <- dsir_metadata(p)$boundaries$validation[[1]]
+  expect_identical(validation$checks$key, c("LAO", "VNM"))
+  expect_true(all(validation$checks$valid))
+  expect_match(validation$checked_at, "T.*Z$")
+  sf::st_geometry(boundaries)[[1]] <- sf::st_polygon()
+  error <- tryCatch(.dsi_map_select_boundaries(boundaries, "iso3", c("LAO", "VNM")), dsir_map_boundary_error = identity)
+  expect_identical(error$diagnostics$engine, "sf")
+  expect_identical(error$diagnostics$checks$key, "LAO")
+  expect_match(error$diagnostics$checks$reason, "Empty")
+})
+
 map_test_boundaries <- function(keys = c("LAO", "VNM")) {
   geometry <- lapply(seq_along(keys), function(i) sf::st_polygon(list(matrix(
     c(i, 0, i + 1, 0, i + 1, 1, i, 1, i, 0), ncol = 2, byrow = TRUE))))
@@ -180,13 +226,50 @@ test_that("per-country downloads are validated then reused offline with original
   expect_match(first$retrieved_at, "T.*Z$")
   expect_identical(first$item_modified_at, "2024-01-01T00:00:00Z")
   expect_match(first$download_md5, "^[a-f0-9]{32}$")
+  expect_identical(dsir_metadata(p)$boundaries$validation[[1]]$source$stage, "download")
+  # Existing version-1 caches need not contain validation metadata.
+  file <- list.files(cache, full.names = TRUE, recursive = TRUE)
+  record <- readRDS(file)
+  record$validation <- NULL
+  attr(record$data, "dsir_boundary_validation") <- NULL
+  saveRDS(record, file)
   testthat::local_mocked_bindings(.dsi_request = function(...) stop("Unexpected network"), .package = "DSIR")
   cached <- dsir_map(data, download = "never", cache_dir = cache)
   second <- dsir_metadata(cached)$boundaries$sources
   expect_true(second$cache_hit)
+  expect_identical(dsir_metadata(cached)$boundaries$validation[[1]]$source$stage, "cache")
   expect_identical(first$retrieved_at, second$retrieved_at)
   expect_identical(sf::st_geometry(p$data), sf::st_geometry(cached$data))
   expect_no_warning(ggplot2::ggplot_build(cached))
+})
+
+test_that("invalid downloads and cache warnings retain source diagnostics without repairs", {
+  map_test_streaming()
+  cache <- tempfile("map-cache-")
+  bad <- '{"type":"Polygon","coordinates":[[[0,0],[1,1],[0,1],[1,0],[0,0]]]}'
+  map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(map_test_feature(geometry = bad))), {
+    error <- tryCatch(dsir_map(data.frame(iso3 = "LAO", value_num = 1), download = "allow", cache_dir = cache),
+      dsir_map_boundary_error = identity)
+    expect_s3_class(error, "dsir_map_boundary_error")
+    expect_identical(error$diagnostics$source$stage, "download")
+    expect_equal(error$diagnostics$source$object_id, 1)
+    expect_match(error$diagnostics$source$download_md5, "^[a-f0-9]{32}$")
+  })
+  expect_length(list.files(cache, recursive = TRUE), 0)
+  map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(map_test_feature())),
+    dsir_map(data.frame(iso3 = "LAO", value_num = 1), download = "allow", cache_dir = cache))
+  file <- list.files(cache, recursive = TRUE, full.names = TRUE)
+  record <- readRDS(file)
+  sf::st_geometry(record$data) <- sf::st_as_sfc("POLYGON((0 0,1 1,0 1,1 0,0 0))", crs = 4326)
+  saveRDS(record, file)
+  before <- tools::md5sum(file)
+  warning <- NULL
+  result <- withCallingHandlers(.dsi_map_read_cache(file, "LAO", .dsi_map_source()),
+    dsir_map_cache_warning = function(w) { warning <<- w; invokeRestart("muffleWarning") })
+  expect_null(result)
+  expect_identical(warning$diagnostics$source$stage, "cache")
+  expect_identical(warning$diagnostics$checks$key, "LAO")
+  expect_identical(tools::md5sum(file), before)
 })
 
 test_that("interactive approval is requested once and refusal never starts a request", {
@@ -210,7 +293,12 @@ test_that("the Philippine empty-geometry regression cannot create a successful c
   map_test_streaming()
   cache <- tempfile("map-cache-")
   map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(map_test_feature("PHL", "null"))), {
-    expect_error(dsir_map(data.frame(iso3 = "PHL", value_num = 10), download = "allow", cache_dir = cache), "[Ee]mpty.*PHL")
+    error <- tryCatch(dsir_map(data.frame(iso3 = "PHL", value_num = 10), download = "allow", cache_dir = cache),
+      dsir_map_boundary_error = identity)
+    expect_s3_class(error, "dsir_map_boundary_error")
+    expect_match(conditionMessage(error), "[Ee]mpty.*PHL")
+    expect_identical(error$diagnostics$engine, "sf")
+    expect_identical(error$diagnostics$checks$key, "PHL")
   })
   expect_length(list.files(cache, recursive = TRUE), 0L)
 })
