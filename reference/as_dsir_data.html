@@ -9,19 +9,19 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Explicitly Create an Experimental DSIR Data Object — as_dsir_data">
 <meta name="description" content="Adds a dsir_data tibble subclass to an already cleaned indicator table.
 Cleaners return this subclass by default; output = &quot;tibble&quot; opts out.
-Downloads and directory functions retain their existing return types.
+GHO and SDG observation downloads also return this class by default.
 This experimental interface and its metadata schema may change.">
 <meta property="og:description" content="Adds a dsir_data tibble subclass to an already cleaned indicator table.
 Cleaners return this subclass by default; output = &quot;tibble&quot; opts out.
-Downloads and directory functions retain their existing return types.
+GHO and SDG observation downloads also return this class by default.
 This experimental interface and its metadata schema may change.">
 <meta property="og:image" content="https://shanlong-who.github.io/DSIR/logo.png">
 <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
@@ -35,7 +35,7 @@ This experimental interface and its metadata schema may change.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,14 +80,14 @@ This experimental interface and its metadata schema may change.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Explicitly Create an Experimental DSIR Data Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/R/dsir_data.R" class="external-link"><code>R/dsir_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/dsir_data.R" class="external-link"><code>R/dsir_data.R</code></a></small>
       <div class="d-none name"><code>as_dsir_data.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p>Adds a <code>dsir_data</code> tibble subclass to an already cleaned indicator table.
 Cleaners return this subclass by default; <code>output = "tibble"</code> opts out.
-Downloads and directory functions retain their existing return types.
+GHO and SDG observation downloads also return this class by default.
 This experimental interface and its metadata schema may change.</p>
     </div>
 

@@ -2,8 +2,8 @@
 
 ## Experimental data objects and discovery catalogs
 
-Cleaned tibble subclasses, metadata, plots and versioned offline
-discovery snapshots.
+Cleaned observations, dimension summaries, automatic plots and offline
+discovery catalogs.
 
 - [`as_dsir_data()`](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
   [`print(`*`<dsir_data>`*`)`](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
@@ -95,7 +95,8 @@ measure filters.
 
 ## SDG indicator data
 
-Functions for fetching and cleaning data from the UN SDG API.
+Cleaned observations, raw responses and indicator discovery from the UN
+SDG API.
 
 - [`sdg_goals()`](https://shanlong-who.github.io/DSIR/reference/sdg_goals.md)
   : List SDG Goals

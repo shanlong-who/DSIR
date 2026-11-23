@@ -13,7 +13,10 @@ sdg_data(
   year_to = NULL,
   page_size = 1000L,
   series = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  clean = TRUE,
+  keep_dimensions = FALSE,
+  keep_metadata = FALSE
 )
 ```
 
@@ -64,11 +67,43 @@ sdg_data(
   all strata. Like year and series filters, these filters run
   client-side and do not reduce the number of downloaded pages.
 
+- clean:
+
+  Logical. Return cleaned observations as a `dsir_data` tibble by
+  default. Use `FALSE` for the original observation columns.
+
+- keep_dimensions:
+
+  Logical. Append the named SDG dimensions as character columns? Default
+  `FALSE` preserves the 15-column format. With `TRUE`, names are
+  converted to snake_case and prefixed with `dim_`, e.g. `Age` becomes
+  `dim_age`, `Reporting Type` becomes `dim_reporting_type`, and
+  `Type_of_household` becomes `dim_type_of_household`. Codes are kept
+  unchanged; absent values remain `NA`. Conflicting names after
+  conversion cause an error. No dimensions, total-population codes, or
+  GHO component codes are inferred. Use
+  [`sdg_dimensions()`](https://shanlong-who.github.io/DSIR/reference/sdg_dimensions.md)
+  to look up official codes and labels.
+
+- keep_metadata:
+
+  Logical. Retain observation attributes and source context? Default
+  `FALSE`. With `TRUE`, all returned attributes become character columns
+  prefixed with `attr_` (e.g. `attr_units`, `attr_nature`). Also appends
+  `data_source`, `time_detail`, `time_coverage`, `base_period`,
+  `value_type`, and `geo_info_url` as character columns. `footnotes`,
+  `indicator_codes`, `goal_codes`, and `target_codes` are list-columns
+  of character vectors, preserving all entries rather than just the
+  first. Missing scalar fields are `NA`; missing list fields are empty
+  character vectors. This option is independent of `keep_dimensions` and
+  makes no extra network requests.
+
 ## Value
 
-A [tibble](https://tibble.tidyverse.org/reference/tibble.html) of
-indicator observations, or an empty tibble when the service is
-unreachable or there are no matching rows. The raw `dimensions` and
+A cleaned
+[dsir_data](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
+table, or the original observation tibble with `clean = FALSE`. Empty
+cleaned results have the same core schema. The raw `dimensions` and
 `attributes` columns retain the API's named breakdowns and attributes
 (usually packed data-frame columns). Inspect `unique(df$dimensions)` to
 discover observed strata. Use `sdg_clean(df, keep_dimensions = TRUE)` to
@@ -80,16 +115,17 @@ treated as one page.
 
 ## Retrieval metadata
 
-Downloads and directories retain their existing classes and columns.
-`dsir_metadata(x)$sources` records the actual backend, endpoint, UTC
-`retrieved_at`, retrieval status, cache use, source record count,
-reported API version and release. Unknown versions and times remain
-`NA`. Each source row includes its own server query. `query` records the
-public selection, including local filters and reference-country/year
-restrictions. `result` describes the function's original return;
-`current` is computed from the supplied object. Source counts precede
-local filtering and GHE measure pivoting, so they can differ from
-returned row counts.
+Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless
+`clean = FALSE`. `dsir_metadata(x)$sources` records the actual backend,
+endpoint, UTC `retrieved_at`, retrieval status, cache use, source record
+count, reported API version and release. Unknown versions and times
+remain `NA`. Each source row includes its own server query. `query`
+records the public selection, including local filters and
+reference-country/year restrictions. `result` describes the function's
+original return; `current` is computed from the supplied object. Source
+counts precede local filtering and GHE measure pivoting, so they can
+differ from returned row counts.
 
 Result status distinguishes `success`, `empty`, `failed`, `incomplete`,
 `invalid`, `partial` and `unverified`. Completeness concerns the
@@ -120,8 +156,10 @@ user-supplied input without acquisition records. They contain the
 cleaner, package version, UTC cleaning time, input/output sizes and
 columns, options, and a profile of semantic fields. Each profile records
 its retained column (or `NA`), distinct count including missing values,
-missing count and its constant value, if any. Varying omitted values are
-not stored row by row. Recorded aliases link equivalent core and named
+missing count and its constant value, if any. From 0.15.0,
+`cleaning$dimension_values` stores the distinct observed codes for each
+named dimension at cleaning time. Per-row membership is available only
+for retained dimensions. Recorded aliases link equivalent core and named
 dimensions. Cleaning time never substitutes for retrieval time. These
 records describe the cleaning input; current coverage and subsequent
 field status remain separate.

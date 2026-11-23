@@ -1,5 +1,28 @@
 # Changelog
 
+## DSIR 0.15.0
+
+- **Breaking default:**
+  [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
+  and
+  [`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
+  return cleaned `dsir_data` tables. Use `clean = FALSE` for provider
+  columns, raw archives and source snapshots. Both retention flags
+  default to `FALSE`. Set `keep_dimensions` or `keep_metadata` on the
+  download to retain row-level details. GHO continues to prefer xMart in
+  automatic mode.
+- Repeating the corresponding cleaner on a cleaned table preserves the
+  observations and cleaning record. Requesting previously omitted fields
+  explains how to retrieve them.
+- Print and summary show current breakdowns. Cleaning records also
+  preserve unique observed codes for named dimensions, including omitted
+  SDG fields. Their historical scope stays visible after filtering.
+- [`plot()`](https://rdrr.io/r/graphics/plot.default.html) selects a
+  common-year comparison or a trend with repeated years within a series.
+  It can group one identified breakdown or complete a single missing
+  group or facet mapping. Ambiguous series still require a choice.
+  Existing unit, stratum, duplicate and annual-gap checks apply.
+
 ## DSIR 0.14.0 (2026-11-01)
 
 Available on GitHub. CRAN remains at 0.13.0. This version combines the

@@ -18,7 +18,7 @@ gho_indicators('mortality', backend = 'xmart')
 gho_dimensions('NCDMORT3070', 'DIM_SEX', backend = 'xmart')
 ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
                 year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'),
-                backend = 'xmart')
+                backend = 'xmart', clean = FALSE)
 gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
 ```
 
@@ -58,7 +58,7 @@ each call.
 ``` r
 
 financial <- gho_data('FINANCIALHARDSHIP_PROPORTIONOFPOP', area = 'PHL',
-                       backend = 'legacy')
+                       backend = 'legacy', clean = FALSE)
 gho_clean(financial, keep_dimensions = TRUE, keep_metadata = TRUE)
 
 # Optional session default; explicit arguments still take precedence.

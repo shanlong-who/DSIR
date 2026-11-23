@@ -9,8 +9,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -81,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>DSIR 入门</h1>
             
       
-      <small class="dont-index">来源： <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/vignettes/DSIR.Rmd" class="external-link"><code>vignettes/DSIR.Rmd</code></a></small>
+      <small class="dont-index">来源： <a href="https://github.com/shanlong-who/DSIR/blob/main/vignettes/DSIR.Rmd" class="external-link"><code>vignettes/DSIR.Rmd</code></a></small>
       <div class="d-none name"><code>DSIR.Rmd</code></div>
     </div>
 
@@ -298,7 +298,8 @@ UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
 <span>  indicator    <span class="op">=</span> <span class="st">"UHC_INDEX_REPORTED"</span>,</span>
 <span>  spatial_type <span class="op">=</span> <span class="st">"country"</span>,</span>
 <span>  area         <span class="op">=</span> <span class="va">wpro_cty</span>,</span>
-<span>  year_from    <span class="op">=</span> <span class="fl">2015</span></span>
+<span>  year_from    <span class="op">=</span> <span class="fl">2015</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">uhc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -307,6 +308,11 @@ UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
 <div class="section level3">
 <h3 id="第三步清洗原始响应">第三步：清洗原始响应<a class="anchor" aria-label="anchor" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E6%B8%85%E6%B4%97%E5%8E%9F%E5%A7%8B%E5%93%8D%E5%BA%94"></a>
 </h3>
+<p>这里用 <code>clean = FALSE</code> 展示原始列。0.15.0
+起，<code><a href="../../reference/gho_data.html" hreflang="en">gho_data()</a></code> 和 <code><a href="../../reference/sdg_data.html" hreflang="en">sdg_data()</a></code>
+默认直接返回清洗后的表。需要逐行保留维度或来源字段时，在下载调用中指定
+<code>keep_dimensions = TRUE</code> 或
+<code>keep_metadata = TRUE</code>。</p>
 <p><code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code> 生成 <strong>DSIR 统一的 15
 列指标数据结构</strong>，与 <code><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean()</a></code>
 的默认结果一致。字段为
@@ -468,7 +474,8 @@ UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
 <code class="sourceCode R"><span><span class="co"># ISO3 — regional vector passed straight through</span></span>
 <span><span class="va">sdg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span></span>
 <span>  indicator <span class="op">=</span> <span class="st">"3.4.1"</span>,</span>
-<span>  area      <span class="op">=</span> <span class="va">wpro_cty</span></span>
+<span>  area      <span class="op">=</span> <span class="va">wpro_cty</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sdg</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -487,7 +494,7 @@ UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
 <p>SDG 维度位于 <code>sdg$dimensions</code> 的命名字段中，并非 GHO
 的位置维度。默认 15 列结果省略这些字段；分析分层数据时应显式保留：</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.8.2"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>, clean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">raw</span><span class="op">$</span><span class="va">dimensions</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span><span class="va">raw</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>结果会增加字符列，如
@@ -503,9 +510,9 @@ UTC。<code>checked_at</code> 是 UTC 格式的查询开始时间。</p>
 <span>  dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    Age <span class="op">=</span> <span class="st">"ALLAGE"</span>, Location <span class="op">=</span> <span class="st">"ALLAREA"</span>, Sex <span class="op">=</span> <span class="st">"BOTHSEX"</span>,</span>
 <span>    Quantile <span class="op">=</span> <span class="st">"_T"</span>, Type_of_household <span class="op">=</span> <span class="st">"_T"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span>,</span>
+<span>  keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>这些筛选在完成分页下载后于本地执行。同一维度内的多个值按“或”组合，不同维度之间按“且”组合。若请求的维度不存在，会发出警告并返回零行，避免静默忽略人群限制。</p>
 <p>2026 年 9 月 30 日核对的联合国 3.8.2 目录列出按 2025
 年修订定义发布的序列 <code>SH_OOP_XPD_EARNNET40</code>。GHO 的
@@ -538,8 +545,7 @@ RDS 保存这种结构。</p>
 数据服务。</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gho_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">"FINANCIALHARDSHIP_PROPORTIONOFPOP"</span>, area <span class="op">=</span> <span class="st">"PHL"</span>,</span>
-<span>                         backend <span class="op">=</span> <span class="st">"legacy"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span>keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                         backend <span class="op">=</span> <span class="st">"legacy"</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">gho_detailed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">provider</span>, <span class="va">iso3</span>, <span class="va">year</span>, <span class="va">value_num</span>, <span class="va">dim1_type</span>, <span class="va">dim1</span>, <span class="va">dim2_type</span>, <span class="va">dim2</span><span class="op">)</span></span></code></pre></div>
 <p>类型来自每条观测的
@@ -565,8 +571,8 @@ RDS 保存这种结构。</p>
 <code class="sourceCode R"><span><span class="co"># Two indicators on the same topic from different APIs:</span></span>
 <span><span class="co">#   GHO NCDMORT3070 (probability of premature NCD mortality)</span></span>
 <span><span class="co">#   SDG 3.4.1       (mortality rate from NCDs)</span></span>
-<span><span class="va">gho_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">sdg_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/sdg_clean.html" hreflang="en">sdg_clean</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">gho_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">"NCDMORT3070"</span>, area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span>
+<span><span class="va">sdg_ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/sdg_data.html" hreflang="en">sdg_data</a></span><span class="op">(</span><span class="st">"3.4.1"</span>,        area <span class="op">=</span> <span class="va">wpro_cty</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/bind_indicators.html" hreflang="en">bind_indicators</a></span><span class="op">(</span><span class="va">gho_ncd</span>, <span class="va">sdg_ncd</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

@@ -271,7 +271,7 @@ Pick an `IndicatorCode` from the result — this is the value you pass to
 [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
 in the next step.
 
-### Step 2: Fetch the data
+### Step 2: Fetch raw observations
 
 ``` r
 
@@ -279,7 +279,8 @@ uhc <- gho_data(
   indicator    = "UHC_INDEX_REPORTED",
   spatial_type = "country",
   area         = wpro_cty,
-  year_from    = 2015
+  year_from    = 2015,
+  clean = FALSE
 )
 
 uhc |> glimpse()
@@ -288,7 +289,12 @@ uhc |> glimpse()
 Note that `area` accepts long ISO3 vectors — here we fetch all 28 WPR
 countries in one call.
 
-### Step 3: Clean the raw response
+### Step 3: Inspect the cleaned response
+
+The two-step example uses `clean = FALSE` to show the raw columns. With
+the default `clean = TRUE`,
+[`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
+performs this cleaning step directly.
 
 [`gho_clean()`](https://shanlong-who.github.io/DSIR/reference/gho_clean.md)
 produces the **unified DSIR cleaned-indicator schema** — the same
@@ -478,11 +484,10 @@ uhc_clean |>
 
 ## Working with SDG indicators
 
-[`sdg_data()`](https://shanlong-who.github.io/DSIR/reference/sdg_data.md)
-and
+`sdg_data(clean = FALSE)` and
 [`sdg_clean()`](https://shanlong-who.github.io/DSIR/reference/sdg_clean.md)
-follow the same fetch-then-tidy pattern as their GHO counterparts. The
-main differences are that indicator codes use the dotted SDG format
+support the same two-step pattern as their GHO counterparts. The main
+differences are that indicator codes use the dotted SDG format
 (e.g. `"3.4.1"`) and that raw `value` is kept as character — the SDG API
 returns non-numeric entries (`"<0.1"`, aggregate notes) for some rows.
 The cleaned `value_num`, `low`, and `high` columns are numeric, with
@@ -520,7 +525,8 @@ client. Do not mix the two formats in a single call.
 # ISO3 — regional vector passed straight through
 sdg <- sdg_data(
   indicator = "3.4.1",
-  area      = wpro_cty
+  area      = wpro_cty,
+  clean = FALSE
 )
 sdg |> glimpse()
 
@@ -552,7 +558,7 @@ analysis, retain them explicitly:
 
 ``` r
 
-raw <- sdg_data("3.8.2", area = "PHL")
+raw <- sdg_data("3.8.2", area = "PHL", clean = FALSE)
 unique(raw$dimensions)
 sdg_clean(raw, keep_dimensions = TRUE)
 ```
@@ -574,9 +580,9 @@ sdg_data(
   dimensions = list(
     Age = "ALLAGE", Location = "ALLAREA", Sex = "BOTHSEX",
     Quantile = "_T", Type_of_household = "_T"
-  )
-) |>
-  sdg_clean(keep_dimensions = TRUE)
+  ),
+  keep_dimensions = TRUE
+)
 ```
 
 These filters run locally after pagination. Values within one dimension
@@ -633,8 +639,7 @@ This financial-hardship code is not in the public xMart directory as of
 ``` r
 
 gho_detailed <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL",
-                         backend = "legacy") |>
-  gho_clean(keep_dimensions = TRUE, keep_metadata = TRUE)
+                         backend = "legacy", keep_dimensions = TRUE, keep_metadata = TRUE)
 gho_detailed |>
   select(provider, iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
 ```
@@ -671,8 +676,8 @@ not harmonise codes or definitions across the sources.
 # Two indicators on the same topic from different APIs:
 #   GHO NCDMORT3070 (probability of premature NCD mortality)
 #   SDG 3.4.1       (mortality rate from NCDs)
-gho_ncd <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
-sdg_ncd <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+gho_ncd <- gho_data("NCDMORT3070", area = wpro_cty)
+sdg_ncd <- sdg_data("3.4.1",        area = wpro_cty)
 bind_indicators(gho_ncd, sdg_ncd) |> glimpse()
 ```
 

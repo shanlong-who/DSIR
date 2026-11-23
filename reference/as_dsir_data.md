@@ -2,8 +2,8 @@
 
 Adds a `dsir_data` tibble subclass to an already cleaned indicator
 table. Cleaners return this subclass by default; `output = "tibble"`
-opts out. Downloads and directory functions retain their existing return
-types. This experimental interface and its metadata schema may change.
+opts out. GHO and SDG observation downloads also return this class by
+default. This experimental interface and its metadata schema may change.
 
 ## Usage
 

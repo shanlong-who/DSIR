@@ -9,8 +9,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -31,7 +31,7 @@ dsir_data object. All checks and plotting are offline.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ dsir_data object. All checks and plotting are offline.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Plot a Cleaned DSIR Indicator</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/R/dsir_plot.R" class="external-link"><code>R/dsir_plot.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/dsir_plot.R" class="external-link"><code>R/dsir_plot.R</code></a></small>
       <div class="d-none name"><code>plot.dsir_data.Rd</code></div>
     </div>
 
@@ -93,7 +93,7 @@ dsir_data object. All checks and plotting are offline.">
 <span>  <span class="va">x</span>,</span>
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trend"</span>, <span class="st">"compare"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"trend"</span>, <span class="st">"compare"</span><span class="op">)</span>,</span>
 <span>  country <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -126,8 +126,9 @@ dsir_data object. All checks and plotting are offline.">
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a>
 </dt>
-<dd><p>Required: <code>"trend"</code> for points and annual line segments, or
-<code>"compare"</code> for horizontal country points at one common year.</p></dd>
+<dd><p>Default <code>"auto"</code> chooses a common-year comparison or an annual
+trend after selection. A trend needs repeated years within a series.
+Use <code>"trend"</code> or <code>"compare"</code> to select the display explicitly.</p></dd>
 
 
 <dt id="arg-country">country<a class="anchor" aria-label="anchor" href="#arg-country"></a>
@@ -151,7 +152,9 @@ or <code>"dim_sex"</code>. Trends with multiple countries default to <code>"iso3
 <dt id="arg-facet">facet<a class="anchor" aria-label="anchor" href="#arg-facet"></a>
 </dt>
 <dd><p>Optional column name for panels, such as <code>"iso3"</code> or
-<code>"dim_age"</code>. Other population dimensions must be constant.</p></dd>
+<code>"dim_age"</code>. A single remaining country or identified population dimension
+fills the unused mapping. If both mappings are open and two dimensions
+vary, specify which one to group or facet. Automatic mappings are reported.</p></dd>
 
 
 <dt id="arg-interval">interval<a class="anchor" aria-label="anchor" href="#arg-interval"></a>

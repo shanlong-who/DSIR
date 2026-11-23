@@ -9,8 +9,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="切换导航栏">
@@ -81,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>WHO xMart 与全球卫生估计</h1>
             
       
-      <small class="dont-index">来源： <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/vignettes/ghe-xmart.Rmd" class="external-link"><code>vignettes/ghe-xmart.Rmd</code></a></small>
+      <small class="dont-index">来源： <a href="https://github.com/shanlong-who/DSIR/blob/main/vignettes/ghe-xmart.Rmd" class="external-link"><code>vignettes/ghe-xmart.Rmd</code></a></small>
       <div class="d-none name"><code>ghe-xmart.Rmd</code></div>
     </div>
 
@@ -103,7 +103,7 @@ xMart。下载失败后不会切换服务。构建教程时，下列联网示例
 <span><span class="fu"><a href="../../reference/gho_dimensions.html" hreflang="en">gho_dimensions</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, <span class="st">'DIM_SEX'</span>, backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
 <span><span class="va">ncd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">'NCDMORT3070'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>, year_from <span class="op">=</span> <span class="fl">2020</span>,</span>
 <span>                year_to <span class="op">=</span> <span class="fl">2021</span>, dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>DIM_SEX <span class="op">=</span> <span class="st">'TOTAL'</span><span class="op">)</span>,</span>
-<span>                backend <span class="op">=</span> <span class="st">'xmart'</span><span class="op">)</span></span>
+<span>                backend <span class="op">=</span> <span class="st">'xmart'</span>, clean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span><span class="va">ncd</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>公共目录提供已发布的数据路径和指标标识。宽表保存命名维度和数值度量组；长表保存明确的维度类型与成员配对。DSIR
 将两种结构映射为已有的原始字段。<code><a href="../../reference/gho_clean.html" hreflang="en">gho_clean()</a></code> 默认保留 15
@@ -131,7 +131,7 @@ M49／原生地区代码。这些筛选会阻止回退，不会被丢弃。维�
 自动回退。使用服务特有的约定时，请显式固定后端。缺少时间戳不会触发切换。每次调用都会重新检查选择条件。</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">financial</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gho_data.html" hreflang="en">gho_data</a></span><span class="op">(</span><span class="st">'FINANCIALHARDSHIP_PROPORTIONOFPOP'</span>, area <span class="op">=</span> <span class="st">'PHL'</span>,</span>
-<span>                       backend <span class="op">=</span> <span class="st">'legacy'</span><span class="op">)</span></span>
+<span>                       backend <span class="op">=</span> <span class="st">'legacy'</span>, clean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../../reference/gho_clean.html" hreflang="en">gho_clean</a></span><span class="op">(</span><span class="va">financial</span>, keep_dimensions <span class="op">=</span> <span class="cn">TRUE</span>, keep_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Optional session default; explicit arguments still take precedence.</span></span>

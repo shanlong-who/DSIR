@@ -9,8 +9,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -31,7 +31,7 @@ optional keyword filtering on the indicator description.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ optional keyword filtering on the indicator description.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List SDG Indicators</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/R/sdg.R" class="external-link"><code>R/sdg.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/sdg.R" class="external-link"><code>R/sdg.R</code></a></small>
       <div class="d-none name"><code>sdg_indicators.Rd</code></div>
     </div>
 
@@ -133,7 +133,8 @@ response is returned.</p>
 </h2>
 
 
-<p>Downloads and directories retain their existing classes and columns.
+<p>Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless <code>clean = FALSE</code>.
 <code>dsir_metadata(x)$sources</code> records the actual backend, endpoint, UTC
 <code>retrieved_at</code>, retrieval status, cache use, source record count, reported
 API version and release. Unknown versions and times remain <code>NA</code>.
@@ -165,7 +166,9 @@ user-supplied input without acquisition records. They contain the cleaner,
 package version, UTC cleaning time, input/output sizes and columns, options,
 and a profile of semantic fields. Each profile records its retained column
 (or <code>NA</code>), distinct count including missing values, missing count and its
-constant value, if any. Varying omitted values are not stored row by row.
+constant value, if any. From 0.15.0, <code>cleaning$dimension_values</code> stores
+the distinct observed codes for each named dimension at cleaning time.
+Per-row membership is available only for retained dimensions.
 Recorded aliases link equivalent core and named dimensions. Cleaning time
 never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.</p>

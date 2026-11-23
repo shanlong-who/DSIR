@@ -68,16 +68,17 @@ release.
 
 ## Retrieval metadata
 
-Downloads and directories retain their existing classes and columns.
-`dsir_metadata(x)$sources` records the actual backend, endpoint, UTC
-`retrieved_at`, retrieval status, cache use, source record count,
-reported API version and release. Unknown versions and times remain
-`NA`. Each source row includes its own server query. `query` records the
-public selection, including local filters and reference-country/year
-restrictions. `result` describes the function's original return;
-`current` is computed from the supplied object. Source counts precede
-local filtering and GHE measure pivoting, so they can differ from
-returned row counts.
+Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless
+`clean = FALSE`. `dsir_metadata(x)$sources` records the actual backend,
+endpoint, UTC `retrieved_at`, retrieval status, cache use, source record
+count, reported API version and release. Unknown versions and times
+remain `NA`. Each source row includes its own server query. `query`
+records the public selection, including local filters and
+reference-country/year restrictions. `result` describes the function's
+original return; `current` is computed from the supplied object. Source
+counts precede local filtering and GHE measure pivoting, so they can
+differ from returned row counts.
 
 Result status distinguishes `success`, `empty`, `failed`, `incomplete`,
 `invalid`, `partial` and `unverified`. Completeness concerns the
@@ -108,8 +109,10 @@ user-supplied input without acquisition records. They contain the
 cleaner, package version, UTC cleaning time, input/output sizes and
 columns, options, and a profile of semantic fields. Each profile records
 its retained column (or `NA`), distinct count including missing values,
-missing count and its constant value, if any. Varying omitted values are
-not stored row by row. Recorded aliases link equivalent core and named
+missing count and its constant value, if any. From 0.15.0,
+`cleaning$dimension_values` stores the distinct observed codes for each
+named dimension at cleaning time. Per-row membership is available only
+for retained dimensions. Recorded aliases link equivalent core and named
 dimensions. Cleaning time never substitutes for retrieval time. These
 records describe the cleaning input; current coverage and subsequent
 field status remain separate.

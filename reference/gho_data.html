@@ -9,8 +9,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.5.0/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.5.0/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -33,7 +33,7 @@ region and year range.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ region and year range.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Fetch GHO Data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.14.0/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/gho.R" class="external-link"><code>R/gho.R</code></a></small>
       <div class="d-none name"><code>gho_data.Rd</code></div>
     </div>
 
@@ -101,7 +101,10 @@ region and year range.</p>
 <span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dim3 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  backend <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  backend <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  keep_dimensions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  keep_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -173,16 +176,53 @@ uses the <code>DSIR.who_backend</code> option, or <code>"auto"</code> when that 
 unset. An explicit argument overrides the option for this call without
 changing it. Use the same backend for discovery and retrieval.</p></dd>
 
+
+<dt id="arg-clean">clean<a class="anchor" aria-label="anchor" href="#arg-clean"></a>
+</dt>
+<dd><p>Logical. Return cleaned observations as a <code>dsir_data</code> tibble
+by default. Use <code>FALSE</code> for the original observation columns.</p></dd>
+
+
+<dt id="arg-keep-dimensions">keep_dimensions<a class="anchor" aria-label="anchor" href="#arg-keep-dimensions"></a>
+</dt>
+<dd><p>Logical. Append <code>dim1_type</code>, <code>dim2_type</code>, and
+<code>dim3_type</code> from the source's <code>Dim1Type</code>, <code>Dim2Type</code>, and <code>Dim3Type</code>?
+Default <code>FALSE</code>. Types are kept per row: one indicator can use the
+same position for different dimensions. No type is guessed from a
+code's spelling, and missing types remain <code>NA</code>. xMart output also
+retains all named source dimensions as <code>dim_*</code> character columns.</p></dd>
+
+
+<dt id="arg-keep-metadata">keep_metadata<a class="anchor" aria-label="anchor" href="#arg-keep-metadata"></a>
+</dt>
+<dd><p>Logical. Retain source context? Default <code>FALSE</code>.
+With <code>TRUE</code>, appends <code>provider</code> (<code>"legacy"</code> or <code>"xmart"</code>) from recorded
+retrieval provenance; unknown origins remain <code>NA</code>, never the current
+session setting. Also appends character columns <code>observation_id</code>, <code>spatial_type</code>,
+<code>time_type</code>, <code>data_source_type</code>, <code>data_source</code>, <code>updated</code>,
+<code>parent_location</code>, <code>parent_location_name</code>, <code>time_detail</code>, <code>time_start</code>,
+and <code>time_end</code>, copied from the raw API fields. Raw <code>Comments</code> are kept
+as <code>footnotes</code>, a list-column of character vectors. Missing scalar
+fields are <code>NA</code>; missing list fields are empty character vectors.
+This option is independent of <code>keep_dimensions</code>. Unit and dimension
+labels are not inferred. xMart output also retains <code>unit</code>,
+<code>measure_field</code>, and <code>spatial_type_source</code>. Both backends preserve
+acquisition provenance in the object metadata, including with the default
+15-column output. Plain tibble output also keeps <code>who_provenance</code>.
+Retaining these fields makes no extra
+network requests beyond the usual indicator-name lookup.</p></dd>
+
 </dl>
 </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a>
 </h2>
-    <p>A <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> of indicator observations, or
-an empty tibble when the service is unreachable or no observations match.
+    <p>A cleaned <a href="as_dsir_data.html">dsir_data</a> table, or the raw observation
+tibble with <code>clean = FALSE</code>. Empty cleaned results have the same core schema.
 The raw <code>Provider</code> column records <code>"legacy"</code> or <code>"xmart"</code> per row.
-A <code>who_provenance</code> attribute records the selected backend and, for
-successful downloads, the request context and retrieval time.
+Raw output stores the selected backend in <code>who_provenance</code>. For cleaned
+output, use <code>dsir_metadata(x)$provenance$retrieval</code>. Successful downloads
+also record the request context and retrieval time.
 Automatic queries also record <code>requested_backend = "auto"</code> and, when
 fallback is attempted, <code>fallback_reason</code> (<code>"directory_not_listed"</code> or
 <code>"indicator_empty"</code>). The same selection metadata is attached to automatic
@@ -227,7 +267,8 @@ or startup requests are required.</p>
 </h2>
 
 
-<p>Downloads and directories retain their existing classes and columns.
+<p>Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless <code>clean = FALSE</code>.
 <code>dsir_metadata(x)$sources</code> records the actual backend, endpoint, UTC
 <code>retrieved_at</code>, retrieval status, cache use, source record count, reported
 API version and release. Unknown versions and times remain <code>NA</code>.
@@ -259,7 +300,9 @@ user-supplied input without acquisition records. They contain the cleaner,
 package version, UTC cleaning time, input/output sizes and columns, options,
 and a profile of semantic fields. Each profile records its retained column
 (or <code>NA</code>), distinct count including missing values, missing count and its
-constant value, if any. Varying omitted values are not stored row by row.
+constant value, if any. From 0.15.0, <code>cleaning$dimension_values</code> stores
+the distinct observed codes for each named dimension at cleaning time.
+Per-row membership is available only for retained dimensions.
 Recorded aliases link equivalent core and named dimensions. Cleaning time
 never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.</p>

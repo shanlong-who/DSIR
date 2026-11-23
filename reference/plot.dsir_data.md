@@ -12,7 +12,7 @@ plot(
   x,
   y = NULL,
   ...,
-  type = c("trend", "compare"),
+  type = c("auto", "trend", "compare"),
   country = NULL,
   year = NULL,
   group = NULL,
@@ -41,8 +41,9 @@ plot(
 
 - type:
 
-  Required: `"trend"` for points and annual line segments, or
-  `"compare"` for horizontal country points at one common year.
+  Default `"auto"` chooses a common-year comparison or an annual trend
+  after selection. A trend needs repeated years within a series. Use
+  `"trend"` or `"compare"` to select the display explicitly.
 
 - country:
 
@@ -61,8 +62,10 @@ plot(
 
 - facet:
 
-  Optional column name for panels, such as `"iso3"` or `"dim_age"`.
-  Other population dimensions must be constant.
+  Optional column name for panels, such as `"iso3"` or `"dim_age"`. A
+  single remaining country or identified population dimension fills the
+  unused mapping. If both mappings are open and two dimensions vary,
+  specify which one to group or facet. Automatic mappings are reported.
 
 - interval:
 

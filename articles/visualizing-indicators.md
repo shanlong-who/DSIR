@@ -32,8 +32,7 @@ from the APIs:
 ``` r
 
 ncd <- gho_data("NCDMORT3070", spatial_type = "country",
-                area = c("PHL", "VNM", "KHM", "MNG", "FJI", "LAO")) |>
-  gho_clean()
+                area = c("PHL", "VNM", "KHM", "MNG", "FJI", "LAO"))
 ```
 
 So that this vignette builds offline (and to keep the examples
@@ -116,18 +115,25 @@ data.plot <- ncd %>%
   mutate(unit = "percent") %>%
   as_dsir_data()
 
-plot(data.plot, type = "trend", country = "PHL", interval = TRUE)
+plot(data.plot, country = "PHL", interval = TRUE)
 ```
 
 ![](visualizing-indicators_files/figure-html/s3-trend-1.png)
 
 ``` r
 
-plot(data.plot, type = "compare", year = 2023, interval = TRUE) +
+plot(data.plot, year = 2023, interval = TRUE) +
   labs(title = "Illustrative country comparison")
 ```
 
 ![](visualizing-indicators_files/figure-html/s3-compare-1.png)
+
+For trends with countries and one varying population dimension,
+specifying `facet = "iso3"` assigns that dimension to colour. Specifying
+a country colour group instead assigns that dimension to panels. Omitted
+dimension codes listed by
+[`summary()`](https://rdrr.io/r/base/summary.html) cannot be used to
+group rows. Retain them with `keep_dimensions = TRUE` in the download.
 
 The returned objects are standard ggplots. Reported bounds are drawn as
 ranges without assuming a confidence level. A comparison uses one common
