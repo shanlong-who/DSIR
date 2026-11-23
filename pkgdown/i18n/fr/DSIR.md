@@ -105,6 +105,8 @@ Cet exemple demande les données des 28 États Membres de la Région du Pacifiqu
 
 ### Étape 3 : nettoyer la réponse brute
 
+Cet exemple utilise `clean = FALSE` pour afficher les colonnes brutes. Depuis la version 0.15.0, `gho_data()` et `sdg_data()` renvoient directement la table nettoyée par défaut. Pour conserver les dimensions ou les métadonnées de chaque observation, précisez `keep_dimensions = TRUE` ou `keep_metadata = TRUE` lors du téléchargement.
+
 `gho_clean()` produit la **structure commune de DSIR à 15 colonnes**, également utilisée par défaut par `sdg_clean()`. Les colonnes sont `source` (`"gho"`), `id`, `indicator`, `location`, `iso3`, `location_name`, `year`, `value`, `value_num`, `low`, `high`, `series` et les trois dimensions GHO `dim1`–`dim3`. Les lieux connus reçoivent leur libellé ; les colonnes absentes de la réponse sont remplies avec des `NA` du type approprié.
 
 <!-- chunk:15 -->

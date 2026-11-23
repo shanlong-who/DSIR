@@ -105,6 +105,8 @@ legacy 使用 `Date` 字段，xMart 使用 `Sys_CommitDateUtc`。DSIR 尚未确�
 
 ### 第三步：清洗原始响应
 
+这里用 `clean = FALSE` 展示原始列。0.15.0 起，`gho_data()` 和 `sdg_data()` 默认直接返回清洗后的表。需要逐行保留维度或来源字段时，在下载调用中指定 `keep_dimensions = TRUE` 或 `keep_metadata = TRUE`。
+
 `gho_clean()` 生成 **DSIR 统一的 15 列指标数据结构**，与 `sdg_clean()` 的默认结果一致。字段为 `source`（`"gho"`）、`id`、`indicator`、`location`、`iso3`、`location_name`、`year`、`value`、`value_num`、`low`、`high`、`series` 以及三个 GHO 维度字段 `dim1`–`dim3`。已知地理位置会补充相应名称；原始响应中缺少的字段用相应类型的 `NA` 填充。
 
 <!-- chunk:15 -->

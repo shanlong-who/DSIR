@@ -31,6 +31,8 @@ Les résultats des fonctions de nettoyage conservent les métadonnées d'acquisi
 
 <!-- chunk:6 -->
 
+Après sélection des pays et des années, `plot()` choisit une comparaison pour une année commune ou une tendance. Si plusieurs pays sont suivis dans le temps et que seul le sexe varie dans chaque pays, `facet = "iso3"` compare les sexes dans un panneau par pays. Avec `group = "iso3"`, chaque panneau correspond à un sexe. Utilisez `keep_dimensions = TRUE` lors du téléchargement pour conserver les codes par observation.
+
 Les résultats sont des objets ggplot ordinaires. Les bornes fournies sont représentées par des intervalles, sans supposer de niveau de confiance. Une comparaison utilise une année commune. Les lignes de tendance sont interrompues en cas de valeur manquante ou d'écart supérieur à un an. Aucune méthode n'agrège les données ni ne convertit les unités. Sélectionnez un seul indicateur, une seule série ou mesure et une seule unité, puis filtrez les autres strates ou indiquez les colonnes avec `group` et `facet`. Par exemple, les tendances par sexe peuvent utiliser `group = "dim1"` et `facet = "iso3"`. Si des dimensions variables ont été omises lors du nettoyage, recommencez avec les options de conservation. Après modification de champs nécessaires au graphique marqués `needs_review`, vérifiez les données puis utilisez des correspondances ggplot explicites.
 
 ## Tendances avec une bande d'incertitude
