@@ -3,7 +3,7 @@
 #' Retrieves the official code lists for each series linked to an SDG
 #' indicator, without downloading its observations. These are available
 #' categories, not evidence that every category occurs in every country's
-#' data. Inspect `unique(df$dimensions)` after [sdg_data()] to see observed
+#' data. Inspect `unique(df$dimensions)` after `sdg_data(..., clean = FALSE)` to see observed
 #' strata. Use the `code` column for filters; `sdmx` is an alternative
 #' representation and may differ from the JSON API's observation codes.
 #'

@@ -36,9 +36,18 @@ test_that("cleaning records retention and units without copying raw observations
   expect_equal(fields$constant[fields$column == "dim_age"], "ALLAGE")
   expect_equal(fields$constant[fields$column == "attr_units"], "PERCENT")
   expect_false(any(c("dim_sex", "attr_units", "metadata") %in% names(compact)))
-  expect_output(print(compact), "Cleaned: sdg_clean")
+  expect_output(print(compact), "Dimensions at cleaning")
+  expect_output(print(summary(compact)), "dim_sex: FEMALE, MALE")
+  expect_output(print(compact[1, ]), "dim_sex: FEMALE, MALE")
   expect_identical(summary(compact)$cleaning, metadata$cleaning)
   detailed <- sdg_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
+  selected <- detailed[detailed$iso3 == "PHL", ]
+  expect_true("  dim_sex: FEMALE" %in% capture.output(print(selected)))
+  expect_identical(sdg_clean(detailed), detailed)
+  legacy <- compact
+  attr(legacy, "dsir_metadata")$cleaning$dimension_values <- NULL
+  expect_identical(sdg_clean(legacy), legacy)
+  expect_output(print(legacy), "dim_sex: multiple values")
   fields <- dsir_metadata(detailed)$cleaning$fields
   expect_equal(fields$retained_as[fields$column == "dim_sex"], "dim_sex")
   expect_equal(fields$retained_as[fields$column == "attr_units"], "attr_units")

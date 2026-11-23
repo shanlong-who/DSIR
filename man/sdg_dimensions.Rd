@@ -27,13 +27,14 @@ tibble instead of a partial code list.
 Retrieves the official code lists for each series linked to an SDG
 indicator, without downloading its observations. These are available
 categories, not evidence that every category occurs in every country's
-data. Inspect \code{unique(df$dimensions)} after \code{\link[=sdg_data]{sdg_data()}} to see observed
+data. Inspect \code{unique(df$dimensions)} after \code{sdg_data(..., clean = FALSE)} to see observed
 strata. Use the \code{code} column for filters; \code{sdmx} is an alternative
 representation and may differ from the JSON API's observation codes.
 }
 \section{Retrieval metadata}{
 
-Downloads and directories retain their existing classes and columns.
+Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless \code{clean = FALSE}.
 \code{dsir_metadata(x)$sources} records the actual backend, endpoint, UTC
 \code{retrieved_at}, retrieval status, cache use, source record count, reported
 API version and release. Unknown versions and times remain \code{NA}.
@@ -69,7 +70,9 @@ user-supplied input without acquisition records. They contain the cleaner,
 package version, UTC cleaning time, input/output sizes and columns, options,
 and a profile of semantic fields. Each profile records its retained column
 (or \code{NA}), distinct count including missing values, missing count and its
-constant value, if any. Varying omitted values are not stored row by row.
+constant value, if any. From 0.15.0, \code{cleaning$dimension_values} stores
+the distinct observed codes for each named dimension at cleaning time.
+Per-row membership is available only for retained dimensions.
 Recorded aliases link equivalent core and named dimensions. Cleaning time
 never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.

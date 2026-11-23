@@ -15,16 +15,37 @@ pagination_page <- function(page, total_rows = 2, total_pages = 2) {
 
 test_that("SDG counts are checked before local filters", {
   httr2::with_mocked_responses(list(pagination_page(1), pagination_page(2)), {
-    out <- sdg_data("3.8.2", area = "PHL", year_from = 2021)
+    out <- sdg_data("3.8.2", area = "PHL", year_from = 2021, clean = FALSE)
     expect_equal(nrow(out), 1L)
     expect_equal(out$timePeriodStart, 2021)
+  })
+})
+
+test_that("default SDG downloads preserve filtered observations and failed retrieval status", {
+  httr2::with_mocked_responses(list(pagination_page(1), pagination_page(2)), {
+    x <- sdg_data("3.8.2", area = "PHL", year_from = 2021)
+    expect_s3_class(x, "dsir_data")
+    expect_identical(x$year, 2021L)
+    expect_equal(x$value_num, 1)
+    expect_identical(sdg_clean(x), x)
+    plain <- sdg_clean(x, output = "tibble")
+    expect_false(inherits(plain, "dsir_data"))
+    expect_identical(dsir_metadata(plain)$cleaning, dsir_metadata(x)$cleaning)
+    expect_identical(sdg_clean(plain)$year, x$year)
+    expect_error(sdg_clean(x, keep_dimensions = TRUE), "sdg_data")
+  })
+  httr2::with_mocked_responses(list(pagination_page(1),
+    pagination_response('{"data":[],"totalPages":2,"totalElements":2}')), {
+    expect_warning(x <- sdg_data("3.8.2"), class = "dsir_incomplete_data")
+    expect_identical(names(x), names(.dsi_clean_schema()))
+    expect_identical(dsir_metadata(x)$result$status, "incomplete")
   })
 })
 
 test_that("an empty later SDG page never returns the earlier partial data", {
   empty <- pagination_response('{"data":[],"totalPages":2,"totalElements":2}')
   httr2::with_mocked_responses(list(pagination_page(1), empty), {
-    expect_warning(out <- sdg_data("3.8.2"), class = "dsir_incomplete_data")
+    expect_warning(out <- sdg_data("3.8.2", clean = FALSE), class = "dsir_incomplete_data")
     expect_equal(nrow(out), 0L)
   })
 })
@@ -38,7 +59,7 @@ test_that("too few rows and changing pagination declarations fail soft", {
   )
   for (pages in cases) {
     httr2::with_mocked_responses(pages, {
-      expect_warning(out <- sdg_data("3.8.2"), class = "dsir_incomplete_data")
+      expect_warning(out <- sdg_data("3.8.2", clean = FALSE), class = "dsir_incomplete_data")
       expect_equal(nrow(out), 0L)
     })
   }
@@ -59,7 +80,7 @@ test_that("invalid pagination envelopes warn rather than error or loop", {
   )
   for (body in bodies) {
     httr2::with_mocked_responses(list(pagination_response(body)), {
-      expect_warning(out <- sdg_data("3.8.2"), class = "dsir_incomplete_data")
+      expect_warning(out <- sdg_data("3.8.2", clean = FALSE), class = "dsir_incomplete_data")
       expect_equal(nrow(out), 0L)
     })
   }
@@ -68,7 +89,7 @@ test_that("invalid pagination envelopes warn rather than error or loop", {
 test_that("a declared empty SDG result remains a legitimate no-data result", {
   page <- pagination_response('{"data":[],"totalPages":0,"totalElements":0}')
   httr2::with_mocked_responses(list(page), {
-    expect_warning(out <- sdg_data("3.8.2"), "No data returned")
+    expect_warning(out <- sdg_data("3.8.2", clean = FALSE), "No data returned")
     expect_equal(nrow(out), 0L)
   })
 })
@@ -79,7 +100,7 @@ test_that("incompatible SDG page schemas fail soft", {
     '"timePeriodStart":2021,"value":2}],"totalPages":2,"totalElements":2}'
   ))
   httr2::with_mocked_responses(list(pagination_page(1), second), {
-    expect_warning(out <- sdg_data("3.8.2"), "pages could not be combined")
+    expect_warning(out <- sdg_data("3.8.2", clean = FALSE), "pages could not be combined")
     expect_equal(nrow(out), 0L)
   })
 })
@@ -87,7 +108,7 @@ test_that("incompatible SDG page schemas fail soft", {
 test_that("a later HTTP failure discards SDG partial data", {
   pages <- list(pagination_page(1), pagination_response("{}", 404L))
   httr2::with_mocked_responses(pages, {
-    expect_warning(out <- sdg_data("3.8.2"), "SDG request failed")
+    expect_warning(out <- sdg_data("3.8.2", clean = FALSE), "SDG request failed")
     expect_equal(nrow(out), 0L)
   })
 })

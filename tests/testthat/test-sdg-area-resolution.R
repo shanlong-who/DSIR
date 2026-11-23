@@ -65,7 +65,7 @@ test_that("sdg_data accepts ISO3 directly (network test)", {
   skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
-  result <- sdg_data("3.4.1", area = "PHL")
+  result <- sdg_data("3.4.1", area = "PHL", clean = FALSE)
   expect_s3_class(result, "tbl_df")
   expect_gt(nrow(result), 0L)
   # The server-side area code should be the M49 equivalent

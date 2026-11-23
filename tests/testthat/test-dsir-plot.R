@@ -39,22 +39,39 @@ test_that("comparisons use one common year with no implicit latest selection", {
   expect_error(plot(x, type = "compare", year = c(2022, 2023)), "one common year")
 })
 
-test_that("unmapped strata are rejected even without duplicate country years", {
+test_that("identified strata are mapped and ambiguous choices are reported", {
   raw <- plot_test_raw()
   raw$Dim1 <- rep(c("SEX_MLE", "SEX_FMLE"), each = 4)
   x <- gho_clean(raw)
-  expect_error(plot(x, type = "compare", year = 2023), "Unresolved.*dim1")
+  expect_message(p <- plot(x, year = 2023), "group.*dim1")
+  expect_identical(p$labels$colour, "dim1")
   raw <- rbind(plot_test_raw(), plot_test_raw())
   raw$Dim1 <- rep(c("SEX_MLE", "SEX_FMLE"), each = 8)
   x <- gho_clean(raw)
   expect_error(plot(x, type = "trend"), "Unresolved.*dim1")
-  expect_error(plot(x, type = "trend", group = "dim1"), "Multiple countries")
+  expect_message(p <- plot(x, group = "dim1"), "facet.*iso3")
+  expect_equal(length(unique(p$data$.dsir_panel)), 2L)
+  expect_message(plot(x, facet = "iso3"), "group.*dim1")
+  expect_message(plot(x, group = "iso3"), "facet.*dim1")
+  expect_message(plot(x, facet = "dim1"), "group.*iso3")
   p <- plot(x, type = "trend", group = "dim1", facet = "iso3")
   expect_no_warning(ggplot2::ggplot_build(p))
   expect_equal(length(unique(p$data$.dsir_segment)), 4L)
   raw$Dim2 <- rep(c("Y0T4", "Y5T9"), each = 8)
   expect_error(plot(gho_clean(raw), type = "trend", group = "dim1", facet = "iso3"), "dim2")
   expect_no_error(plot(gho_clean(raw), type = "trend", country = "PHL", group = "dim1", facet = "dim2"))
+})
+
+test_that("automatic trends require repeated years within a comparable stratum", {
+  raw <- plot_test_raw()[1:4, ]
+  raw$Dim1 <- c("F", "M", "F", "M")
+  x <- gho_clean(raw)
+  expect_message(p <- plot(x), "group.*dim1")
+  expect_equal(length(unique(p$data$.dsir_group)), 2L)
+  expect_error(plot(x[1:2, ]), "No series")
+  raw$Dim1Type <- NA_character_
+  expect_error(plot(gho_clean(raw)), "Unresolved.*dim1")
+  expect_s3_class(plot(gho_clean(raw), group = "dim1"), "ggplot")
 })
 
 test_that("SDG omitted varying context requires recleaning, not guessed strata", {
@@ -67,7 +84,7 @@ test_that("SDG omitted varying context requires recleaning, not guessed strata",
   expect_error(plot(compact, type = "compare"), "omitted.*dim_sex")
   expect_error(plot(compact, type = "compare", country = "PHL"), "omitted")
   x <- sdg_clean(raw, keep_dimensions = TRUE)
-  expect_error(plot(x, type = "compare"), "Unresolved.*dim_sex")
+  expect_message(plot(x, type = "compare"), "group.*dim_sex")
   p <- plot(x, type = "compare", group = "dim_sex")
   expect_identical(p$labels$y, "PERCENT")
   expect_match(p$labels$subtitle, "ALLAGE")
@@ -179,8 +196,11 @@ test_that("plotting respects field review but allows unrelated derived flags", {
 
 test_that("plot input errors identify unavailable or unsupported selections", {
   x <- gho_clean(plot_test_raw())
-  expect_error(plot(x), "Specify")
-  expect_error(plot(x, type = "auto"), "arg")
+  expect_message(p <- plot(x), "group.*iso3")
+  expect_identical(p$labels$x, "Year")
+  expect_s3_class(plot(x, type = "auto", year = 2023)$coordinates, "CoordFlip")
+  expect_error(plot(x, country = "PHL", year = 2023), "one finite estimate")
+  expect_error(plot(x[c(1L, 6L), ]), "No series")
   expect_error(plot(x, type = "trend", year = 2020.5), "integer-valued")
   expect_error(plot(x, type = "trend", year = 1900), "Years absent")
   expect_error(plot(x, type = "trend", country = "ZZZ"), "Country codes absent")

@@ -35,13 +35,34 @@ auto_response <- function(req, available = TRUE, empty_selection = FALSE) {
 }
 
 auto_queries <- function() list(
-  data = function(...) gho_data('X', ...),
+  data = function(...) gho_data('X', ..., clean = FALSE),
   count = function(...) gho_count('X', ...),
   has_data = function(...) gho_has_data('X', ...),
   coverage = function(...) gho_coverage('X', ...),
   dimensions = function(...) gho_dimensions('X', ...),
   last_updated = function(...) gho_last_updated('X', ...)
 )
+
+test_that('default GHO downloads clean exactly once and retain the actual provider', {
+  auto_fixture()
+  httr2::with_mocked_responses(auto_response, {
+    for (backend in c('auto', 'legacy')) {
+      x <- gho_data('X', backend = backend)
+      expect_s3_class(x, 'dsir_data')
+      expect_identical(names(x), names(.dsi_clean_schema()))
+      expect_identical(x$year, 2023L)
+      expect_equal(x$value_num, if (backend == 'auto') 60 else 50)
+      expect_equal(dsir_metadata(x)$sources$backend, if (backend == 'auto') 'xmart' else 'legacy')
+      expect_identical(gho_clean(x), x)
+      expect_error(gho_clean(x, keep_dimensions = TRUE), 'gho_data')
+    }
+    detailed <- gho_data('X', keep_dimensions = TRUE, keep_metadata = TRUE)
+    expect_true(all(c('provider', 'dim_sex') %in% names(detailed)))
+    expect_identical(gho_clean(detailed, keep_metadata = TRUE), detailed)
+    expect_error(sdg_clean(detailed), 'sdg')
+  })
+  expect_error(gho_data('X', clean = FALSE, keep_metadata = TRUE), 'Retention')
+})
 
 test_that('automatic indicator queries share xMart-first selection and provenance', {
   auto_fixture()
@@ -102,7 +123,7 @@ test_that('fallback preserves geography and years and cleaning retains actual or
     urls <<- c(urls, utils::URLdecode(req$url)); auto_response(req)
   }, {
     out <- suppressWarnings(gho_data('X', area = c('PHL', 'JPN'), year_from = 2020,
-                                    year_to = 2023))
+                                    year_to = 2023, clean = FALSE))
     expect_identical(out$Provider, 'legacy')
     expect_true(attr(out, 'who_provenance')$complete)
     expect_match(attr(out, 'who_provenance')$query_url, 'ghoapi.azureedge.net', fixed = TRUE)
@@ -122,7 +143,7 @@ test_that('filtered empty selections and partial coverage never switch providers
   httr2::with_mocked_responses(function(req) {
     urls <<- c(urls, req$url); auto_response(req, empty_selection = TRUE)
   }, {
-    expect_no_warning(out <- gho_data('X', area = 'PHL', year_from = 2099))
+    expect_no_warning(out <- gho_data('X', area = 'PHL', year_from = 2099, clean = FALSE))
     expect_equal(nrow(out), 0L)
     count <- gho_count('X', area = 'PHL', year_from = 2099)
     exists <- gho_has_data('X', area = 'PHL', year_from = 2099)
@@ -132,7 +153,7 @@ test_that('filtered empty selections and partial coverage never switch providers
   httr2::with_mocked_responses(function(req) {
     urls <<- c(urls, req$url); auto_response(req)
   }, {
-    out <- gho_data('X', area = c('PHL', 'JPN'), year_from = 2000, year_to = 2023)
+    out <- gho_data('X', area = c('PHL', 'JPN'), year_from = 2000, year_to = 2023, clean = FALSE)
     expect_equal(nrow(out), 1L)
     expect_equal(out$NumericValue, 60)
     expect_equal(out$Provider, 'xmart')
@@ -167,7 +188,7 @@ test_that('invalid availability evidence never permits fallback', {
     httr2::with_mocked_responses(function(req) {
       calls <<- calls + 1L; who_response(body)
     }, {
-      expect_warning(out <- gho_data('X'), 'WHO')
+      expect_warning(out <- gho_data('X', clean = FALSE), 'WHO')
       expect_equal(nrow(out), 0L)
       expect_null(attr(out, 'who_provenance')$fallback_reason)
     })
@@ -204,7 +225,7 @@ test_that('transport and HTTP failures at either xMart stage do not fall back', 
         if (failure == 'transport') stop('Connection failed')
         who_response('{}', status = 500L)
       }, {
-        expect_warning(out <- gho_data('X'), 'WHO request failed')
+        expect_warning(out <- gho_data('X', clean = FALSE), 'WHO request failed')
         expect_equal(nrow(out), 0L)
         expect_null(attr(out, 'who_provenance')$fallback_reason)
       })
@@ -220,7 +241,7 @@ test_that('fallback never discards or guesses provider-specific filters', {
   filters <- list(list(dimensions = list(DIM_SEX = 'TOTAL')), list(dim1 = 'SEX_BTSX'),
     list(dim2 = 'AGEGROUP_YEARS30-69'), list(dim3 = 'URB'), list(area = '608'))
   for (filter in filters) {
-    out <- suppressWarnings(do.call(gho_data, c(list(indicator = 'X'), filter)))
+    out <- suppressWarnings(do.call(gho_data, c(list(indicator = 'X', clean = FALSE), filter)))
     expect_equal(nrow(out), 0L)
     expect_equal(attr(out, 'who_provenance')$backend, 'xmart')
     expect_null(attr(out, 'who_provenance')$fallback_reason)
@@ -239,10 +260,10 @@ test_that('explicit backend selection overrides auto and performs no auto probe'
   httr2::with_mocked_responses(function(req) {
     urls <<- c(urls, utils::URLdecode(req$url)); auto_response(req)
   }, {
-    expect_equal(gho_data('X', backend = 'legacy')$Provider, 'legacy')
-    expect_equal(gho_data('X', backend = 'xmart')$Provider, 'xmart')
+    expect_equal(gho_data('X', backend = 'legacy', clean = FALSE)$Provider, 'legacy')
+    expect_equal(gho_data('X', backend = 'xmart', clean = FALSE)$Provider, 'xmart')
     withr::local_options(DSIR.who_backend = 'legacy')
-    expect_equal(gho_data('X', backend = 'auto')$Provider, 'xmart')
+    expect_equal(gho_data('X', backend = 'auto', clean = FALSE)$Provider, 'xmart')
     expect_equal(getOption('DSIR.who_backend'), 'legacy')
   })
   expect_equal(sum(grepl('$select=IND_ID&', urls, fixed = TRUE)), 1L)
@@ -259,9 +280,9 @@ test_that('automatic selection is retried after both failures and legacy fallbac
     }
     auto_response(req)
   }, {
-    expect_equal(nrow(suppressWarnings(gho_data('X'))), 0L)
-    expect_equal(suppressWarnings(gho_data('X'))$Provider, 'legacy')
-    expect_equal(gho_data('X')$Provider, 'xmart')
+    expect_equal(nrow(suppressWarnings(gho_data('X', clean = FALSE))), 0L)
+    expect_equal(suppressWarnings(gho_data('X', clean = FALSE))$Provider, 'legacy')
+    expect_equal(gho_data('X', clean = FALSE)$Provider, 'xmart')
   })
   expect_equal(attempt, 3L)
 })
@@ -311,10 +332,10 @@ test_that('timestamp diagnostics follow actual provider and missing timestamps d
 test_that('auto validates arguments before querying and catalogs stay on xMart', {
   auto_fixture()
   testthat::local_mocked_bindings(.dsi_request = function(...) stop('unexpected request'), .package = 'DSIR')
-  expect_error(gho_data('X', year_from = 2025, year_to = 2020), 'ordered')
-  expect_error(gho_data('X', area = NA_character_), 'area')
-  expect_error(gho_data('X', dimensions = list(DIM_SEX = NULL)), 'non-missing')
-  expect_error(gho_data('X', dim1 = 1), 'dim1')
+  expect_error(gho_data('X', year_from = 2025, year_to = 2020, clean = FALSE), 'ordered')
+  expect_error(gho_data('X', area = NA_character_, clean = FALSE), 'area')
+  expect_error(gho_data('X', dimensions = list(DIM_SEX = NULL), clean = FALSE), 'non-missing')
+  expect_error(gho_data('X', dim1 = 1, clean = FALSE), 'dim1')
   expect_error(gho_dimensions('X', NA_character_), 'dimension')
   out <- gho_indicators()
   expect_equal(out$IndicatorName, 'xMart name')

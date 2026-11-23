@@ -7,8 +7,9 @@
 #'   [sdg_clean()] or [ghe_clean()].
 #' @param y Unused; must be `NULL`.
 #' @param ... Reserved; must be empty. Customize the returned ggplot with `+`.
-#' @param type Required: `"trend"` for points and annual line segments, or
-#'   `"compare"` for horizontal country points at one common year.
+#' @param type Default `"auto"` chooses a common-year comparison or an annual
+#'   trend after selection. A trend needs repeated years within a series.
+#'   Use `"trend"` or `"compare"` to select the display explicitly.
 #' @param country Optional character vector of ISO3 codes present in `x`.
 #'   This first version supports countries, not regional aggregates.
 #' @param year Optional integer-valued year vector. For comparisons, exactly
@@ -16,7 +17,9 @@
 #' @param group Optional column name for colour groups, such as `"dim1"`
 #'   or `"dim_sex"`. Trends with multiple countries default to `"iso3"`.
 #' @param facet Optional column name for panels, such as `"iso3"` or
-#'   `"dim_age"`. Other population dimensions must be constant.
+#'   `"dim_age"`. A single remaining country or identified population dimension
+#'   fills the unused mapping. If both mappings are open and two dimensions
+#'   vary, specify which one to group or facet. Automatic mappings are reported.
 #' @param interval Logical. Show reported `low` and `high` bounds as ranges?
 #'   Default `FALSE`. No intervals are calculated, and no confidence level
 #'   is assumed. Incomplete bounds are omitted with a warning; invalid bounds
@@ -56,13 +59,13 @@
 #' data.clean <- gho_clean(raw)
 #' plot(data.clean, type = "trend")
 #' plot(data.clean, type = "compare", year = 2023)
-plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
+plot.dsir_data <- function(x, y = NULL, ..., type = c("auto", "trend", "compare"),
                            country = NULL, year = NULL, group = NULL,
                            facet = NULL, interval = FALSE) {
   rlang::check_dots_empty()
   if (!is.null(y)) cli::cli_abort("{.arg y} is not used; customize the returned ggplot instead.")
-  if (missing(type)) cli::cli_abort('Specify {.code type = "trend"} or {.code type = "compare"}.')
   type <- match.arg(type)
+  automatic <- type == "auto"
   .dsi_check_flag(interval, "interval")
   metadata <- dsir_metadata(x)
   problem <- .dsi_data_problem(x)
@@ -90,10 +93,13 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
     cli::cli_abort("Select country observations with recorded ISO3 codes before plotting.")
   }
   if (anyNA(data$year)) cli::cli_abort("Missing years cannot be plotted; inspect or filter these rows.")
+  if (automatic) type <- if (length(unique(data$year)) == 1L) "compare" else "trend"
   if (type == "compare" && length(unique(data$year)) != 1L) {
     cli::cli_abort("Comparisons require one common year; supply {.arg year} or filter first.")
   }
-  if (is.null(group) && type == "trend" && length(unique(data$iso3)) > 1L) group <- "iso3"
+  mapping <- .dsi_plot_mapping(data, metadata$cleaning, type, group, facet)
+  group <- mapping$group
+  facet <- mapping$facet
   for (arg in c("group", "facet")) {
     field <- if (arg == "group") group else facet
     if (is.null(field)) next
@@ -122,6 +128,12 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
   finite <- is.finite(data$value_num)
   if (any(!finite)) cli::cli_warn("Omitting {sum(!finite)} missing or non-finite estimate{?s}; trend lines break at these rows.")
   if (!any(finite)) cli::cli_abort("No finite estimates remain to plot.")
+  if (automatic && sum(finite) == 1L) {
+    cli::cli_abort("Only one finite estimate is available. Use {.code summary(x)} to inspect it.")
+  }
+  if (automatic && type == "trend" && !anyDuplicated(data$.dsir_line[finite])) {
+    cli::cli_abort("No series has estimates in two years. Select a common year or inspect {.code summary(x)}.")
+  }
   bounds <- rep(FALSE, nrow(data))
   if (interval) {
     bounds <- finite & !is.na(data$low) & !is.na(data$high)
@@ -173,7 +185,45 @@ plot.dsir_data <- function(x, y = NULL, ..., type = c("trend", "compare"),
     ggplot2::labs(title = context$title, subtitle = paste(subtitle, collapse = " | "),
                   colour = group, caption = context$caption)
   if (is.null(group)) p <- p + ggplot2::guides(colour = "none")
+  if (length(mapping$inferred)) cli::cli_inform("Automatic mapping: {mapping$inferred}.")
   p
+}
+
+.dsi_plot_mapping <- function(data, cleaning, type, group, facet) {
+  mapping <- list(group = group, facet = facet, inferred = character())
+  if (!is.null(group) && !is.null(facet)) return(mapping)
+  # Positional WHO fields need a recorded type or a verified alias.
+  fields <- grep("^dim_", names(data), value = TRUE)
+  aliases <- cleaning$aliases
+  profile <- cleaning$fields
+  for (position in c("dim1", "dim2", "dim3")) {
+    field <- paste0(position, "_type")
+    recorded <- if (field %in% names(data)) unique(data[[field]]) else
+      profile$constant[profile$column == field]
+    if (position %in% aliases || (length(recorded) == 1L && !is.na(recorded) && nzchar(recorded))) {
+      fields <- c(fields, position)
+    }
+  }
+  canonical <- function(fields) {
+    fields[fields %in% c("location_name", "location")] <- "iso3"
+    alias <- match(fields, names(aliases))
+    fields[!is.na(alias)] <- unname(aliases[alias[!is.na(alias)]])
+    fields
+  }
+  varying <- fields[vapply(data[fields], function(x) length(unique(x)) > 1L, logical(1))]
+  if (type == "trend" && length(unique(data$iso3)) > 1L) varying <- c("iso3", varying)
+  varying <- varying[!duplicated(canonical(varying))]
+  remaining <- varying[!canonical(varying) %in% canonical(c(group, facet))]
+  if (length(remaining) > 1L) {
+    cli::cli_abort(c("Unresolved plot dimensions: {.val {remaining}}.",
+      "i" = "Choose a {.arg group} or {.arg facet}, or filter to one stratum."))
+  }
+  if (length(remaining)) {
+    slot <- if (is.null(group)) "group" else "facet"
+    mapping[[slot]] <- remaining
+    mapping$inferred <- sprintf('%s = "%s"', slot, remaining)
+  }
+  mapping
 }
 
 .dsi_plot_context <- function(data, metadata, mapped, interval, require_indicator = TRUE) {

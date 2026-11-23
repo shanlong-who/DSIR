@@ -69,7 +69,7 @@ sdg_coverage <- function(indicator, area = NULL,
 
   df <- sdg_data(
     indicator, area = area, year_from = year_from, year_to = year_to,
-    series = series, dimensions = dimensions
+    series = series, dimensions = dimensions, clean = FALSE
   )
   if (!is.data.frame(df) || nrow(df) == 0L) return(empty)
   missing_cols <- setdiff(c("geoAreaCode", "series", "timePeriodStart"), names(df))

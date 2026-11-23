@@ -1,6 +1,6 @@
 Package: DSIR
 Title: Data Science Infrastructure for Global Health
-Version: 0.14.0
+Version: 0.15.0
 Authors@R: person(given = "Shanlong",
                   family = "Ding",
                   role = c("aut", "cre"),

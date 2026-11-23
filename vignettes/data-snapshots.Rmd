@@ -30,12 +30,12 @@ examples are displayed without execution:
 
 ```{r live-workflow, eval=FALSE}
 old_data <- gho_data("WHS4_100", spatial_type = "country", area = "PHL",
-                     year_from = 2020, backend = "xmart")
+                     year_from = 2020, backend = "xmart", clean = FALSE)
 data_snapshot(old_data, file = "snapshots/gho_old.rds")
 
 # Later, repeat exactly the same selection.
 new_data <- gho_data("WHS4_100", spatial_type = "country", area = "PHL",
-                     year_from = 2020, backend = "xmart")
+                     year_from = 2020, backend = "xmart", clean = FALSE)
 data_snapshot(new_data, file = "snapshots/gho_new.rds")
 
 result <- compare_snapshots("snapshots/gho_old.rds", "snapshots/gho_new.rds")

@@ -128,7 +128,7 @@ test_that("series and dimension filters run after all pages are downloaded", {
   out <- httr2::with_mocked_responses(mock, {
     sdg_data("3.8.2", area = "PHL", year_from = 2010,
              series = "TARGET",
-             dimensions = list(Sex = c("BOTHSEX", "FEMALE"), Quantile = "_T"))
+             dimensions = list(Sex = c("BOTHSEX", "FEMALE"), Quantile = "_T"), clean = FALSE)
   })
   expect_length(urls, 2L)
   expect_false(any(grepl("Sex|Quantile|TARGET|timePeriodStart", urls)))
@@ -144,12 +144,12 @@ test_that("missing requested dimensions never return unfiltered observations", {
     '"dimensions":{"Sex":"BOTHSEX"}}],"totalPages":1}'
   ))
   httr2::with_mocked_responses(list(page), {
-    expect_warning(out <- sdg_data("3.8.2", dimensions = list(Quantile = "_T")),
+    expect_warning(out <- sdg_data("3.8.2", dimensions = list(Quantile = "_T"), clean = FALSE),
                    "not present")
     expect_equal(nrow(out), 0L)
   })
   httr2::with_mocked_responses(list(page), {
-    out <- sdg_data("3.8.2", dimensions = list(Sex = "FEMALE"))
+    out <- sdg_data("3.8.2", dimensions = list(Sex = "FEMALE"), clean = FALSE)
     expect_equal(nrow(out), 0L)
     expect_type(sdg_clean(out, keep_dimensions = TRUE)$dim_sex, "character")
   })
@@ -171,9 +171,9 @@ test_that("invalid filters fail before any network request", {
   for (bad in list("BOTHSEX", list("BOTHSEX"), list(Sex = character()),
                    list(Sex = NA_character_), list(Sex = ""),
                    list(Sex = "MALE", Sex = "FEMALE"))) {
-    expect_error(sdg_data("3.8.2", dimensions = bad), "named list")
+    expect_error(sdg_data("3.8.2", dimensions = bad, clean = FALSE), "named list")
   }
   for (bad in list(1, character(), NA_character_, "")) {
-    expect_error(sdg_data("3.8.2", series = bad), "character vector")
+    expect_error(sdg_data("3.8.2", series = bad, clean = FALSE), "character vector")
   }
 })

@@ -8,7 +8,7 @@
   x,
   y = NULL,
   ...,
-  type = c("trend", "compare"),
+  type = c("auto", "trend", "compare"),
   country = NULL,
   year = NULL,
   group = NULL,
@@ -24,8 +24,9 @@
 
 \item{...}{Reserved; must be empty. Customize the returned ggplot with \code{+}.}
 
-\item{type}{Required: \code{"trend"} for points and annual line segments, or
-\code{"compare"} for horizontal country points at one common year.}
+\item{type}{Default \code{"auto"} chooses a common-year comparison or an annual
+trend after selection. A trend needs repeated years within a series.
+Use \code{"trend"} or \code{"compare"} to select the display explicitly.}
 
 \item{country}{Optional character vector of ISO3 codes present in \code{x}.
 This first version supports countries, not regional aggregates.}
@@ -37,7 +38,9 @@ one year must be selected or already present in \code{x}.}
 or \code{"dim_sex"}. Trends with multiple countries default to \code{"iso3"}.}
 
 \item{facet}{Optional column name for panels, such as \code{"iso3"} or
-\code{"dim_age"}. Other population dimensions must be constant.}
+\code{"dim_age"}. A single remaining country or identified population dimension
+fills the unused mapping. If both mappings are open and two dimensions
+vary, specify which one to group or facet. Automatic mappings are reported.}
 
 \item{interval}{Logical. Show reported \code{low} and \code{high} bounds as ranges?
 Default \code{FALSE}. No intervals are calculated, and no confidence level

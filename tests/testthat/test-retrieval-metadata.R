@@ -12,7 +12,7 @@ test_that("legacy observations and empty selections preserve metadata through cl
   bodies <- c('{"value":[{"IndicatorCode":"EXAMPLE","IndicatorName":"Example",',
               '"SpatialDim":"PHL","SpatialDimType":"COUNTRY","TimeDim":2020,"TimeDimType":"YEAR","NumericValue":10}]}')
   httr2::with_mocked_responses(list(retrieval_response(paste0(bodies, collapse = ""))), {
-    raw <- gho_data("EXAMPLE", area = "PHL", backend = "legacy")
+    raw <- gho_data("EXAMPLE", area = "PHL", backend = "legacy", clean = FALSE)
     metadata <- dsir_metadata(raw)
     expect_identical(class(raw), c("tbl_df", "tbl", "data.frame"))
     expect_identical(metadata$source, "gho")
@@ -30,13 +30,13 @@ test_that("legacy observations and empty selections preserve metadata through cl
     expect_identical(data_snapshot(as_dsir_data(clean))$data, data_snapshot(clean)$data)
   })
   httr2::with_mocked_responses(list(retrieval_response('{"value":[]}')), {
-    raw <- gho_data("EXAMPLE", backend = "legacy")
+    raw <- gho_data("EXAMPLE", backend = "legacy", clean = FALSE)
     expect_identical(dsir_metadata(raw)$result$status, "empty")
     expect_true(dsir_metadata(raw)$result$complete)
     expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{}', 404L)), {
-    raw <- suppressWarnings(gho_data("EXAMPLE", backend = "legacy"))
+    raw <- suppressWarnings(gho_data("EXAMPLE", backend = "legacy", clean = FALSE))
     expect_identical(dsir_metadata(raw)$result$status, "failed")
     expect_false(dsir_metadata(raw)$result$complete)
     expect_true(is.na(dsir_metadata(raw)$sources$retrieved_at))
@@ -102,7 +102,7 @@ test_that("SDG records full pagination before local filtering and survives S3 co
     '"timePeriodStart":', 2019 + i, ',"value":"10","release":"R1"}],',
     '"pageNumber":', i, ',"totalPages":2,"totalElements":2}'))
   httr2::with_mocked_responses(list(page(1), page(2)), {
-    raw <- sdg_data("3.4.1", area = "PHL", year_from = 2021, series = "S")
+    raw <- sdg_data("3.4.1", area = "PHL", year_from = 2021, series = "S", clean = FALSE)
   })
   metadata <- dsir_metadata(raw)
   expect_identical(metadata$source, "sdg")
@@ -128,7 +128,7 @@ test_that("SDG records full pagination before local filtering and survives S3 co
 
 test_that("SDG distinguishes empty failed incomplete and unapplied-filter results", {
   httr2::with_mocked_responses(list(retrieval_response('{"data":[],"totalPages":0,"totalElements":0}')), {
-    raw <- suppressWarnings(sdg_data("3.4.1"))
+    raw <- suppressWarnings(sdg_data("3.4.1", clean = FALSE))
     expect_identical(dsir_metadata(raw)$result$status, "empty")
     expect_true(dsir_metadata(raw)$result$complete)
     expect_acquisition_preserved(sdg_clean(raw), raw)
@@ -137,7 +137,7 @@ test_that("SDG distinguishes empty failed incomplete and unapplied-filter result
   for (response in list(retrieval_response('{}', 404L),
                         retrieval_response('{"data":[],"totalPages":2,"totalElements":2}'))) {
     httr2::with_mocked_responses(list(first, response), {
-      raw <- suppressWarnings(sdg_data("3.4.1"))
+      raw <- suppressWarnings(sdg_data("3.4.1", clean = FALSE))
       expect_true(dsir_metadata(raw)$result$status %in% c("failed", "incomplete"))
       expect_false(dsir_metadata(raw)$result$complete)
       expect_true(is.na(dsir_metadata(raw)$sources$retrieved_at))
@@ -145,13 +145,13 @@ test_that("SDG distinguishes empty failed incomplete and unapplied-filter result
     })
   }
   httr2::with_mocked_responses(list(retrieval_response('{"data":[{"value":"1"}],"totalPages":1}')), {
-    raw <- suppressWarnings(sdg_data("3.4.1", year_from = 2020))
+    raw <- suppressWarnings(sdg_data("3.4.1", year_from = 2020, clean = FALSE))
     expect_equal(nrow(raw), 1L)
     expect_identical(dsir_metadata(raw)$result$status, "invalid")
     expect_false(dsir_metadata(raw)$result$complete)
   })
   httr2::with_mocked_responses(list(retrieval_response('{"data":[{"value":"1"}]}')), {
-    expect_true(is.na(dsir_metadata(sdg_data("3.4.1"))$result$complete))
+    expect_true(is.na(dsir_metadata(sdg_data("3.4.1", clean = FALSE))$result$complete))
   })
 })
 
@@ -250,7 +250,7 @@ test_that("xMart observations record valid emptiness separately from failed requ
   body <- paste0('{"@odata.count":1,"value":[{"Sys_PK":1,"IND_ID":"X",',
     '"DIM_TIME":"2020","DIM_GEO_CODE_M49":"608","DIM_SEX":"TOTAL","PERCENT_N":10}]}')
   httr2::with_mocked_responses(list(retrieval_response(body)), {
-    raw <- gho_data('X', backend = 'xmart')
+    raw <- gho_data('X', backend = 'xmart', clean = FALSE)
     metadata <- dsir_metadata(raw)
     expect_identical(metadata$result$status, 'success')
     expect_identical(metadata$sources$query[[1]]$filter, context$filter)
@@ -258,13 +258,13 @@ test_that("xMart observations record valid emptiness separately from failed requ
     expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{"@odata.count":0,"value":[]}')), {
-    raw <- gho_data('X', backend = 'xmart')
+    raw <- gho_data('X', backend = 'xmart', clean = FALSE)
     expect_identical(dsir_metadata(raw)$result$status, 'empty')
     expect_true(dsir_metadata(raw)$result$complete)
     expect_acquisition_preserved(gho_clean(raw), raw)
   })
   httr2::with_mocked_responses(list(retrieval_response('{}', 404L)), {
-    raw <- suppressWarnings(gho_data('X', backend = 'xmart'))
+    raw <- suppressWarnings(gho_data('X', backend = 'xmart', clean = FALSE))
     expect_identical(dsir_metadata(raw)$result$status, 'failed')
     expect_true(is.na(dsir_metadata(raw)$sources$retrieved_at))
     expect_identical(dsir_metadata(raw)$sources$endpoint,

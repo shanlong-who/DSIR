@@ -218,7 +218,7 @@ test_that("gho_clean populates indicator from live catalog (integration)", {
   on.exit(.dsi_cache$gho_indicator_catalog <- old, add = TRUE)
   rm("gho_indicator_catalog", envir = .dsi_cache)
 
-  raw <- gho_data("WHOSIS_000001", area = "FRA")
+  raw <- gho_data("WHOSIS_000001", area = "FRA", clean = FALSE)
   skip_if(nrow(raw) == 0L, "GHO returned no rows for WHOSIS_000001/FRA")
 
   clean <- gho_clean(raw)

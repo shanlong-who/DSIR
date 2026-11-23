@@ -28,7 +28,7 @@ attribute. Use \code{\link[=dsir_metadata]{dsir_metadata()}} to inspect it.
 \description{
 Adds a \code{dsir_data} tibble subclass to an already cleaned indicator table.
 Cleaners return this subclass by default; \code{output = "tibble"} opts out.
-Downloads and directory functions retain their existing return types.
+GHO and SDG observation downloads also return this class by default.
 This experimental interface and its metadata schema may change.
 }
 \details{

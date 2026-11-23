@@ -11,7 +11,7 @@ test_that("year_from works on the previously broken case (3.2.1, 608)", {
   skip_if_offline()
 
   t <- system.time({
-    out <- sdg_data("3.2.1", area = "608", year_from = 2010)
+    out <- sdg_data("3.2.1", area = "608", year_from = 2010, clean = FALSE)
   })
 
   expect_s3_class(out, "tbl_df")
@@ -28,7 +28,7 @@ test_that("year_from + year_to bracket the result inclusively", {
   skip_if_offline()
 
   out <- sdg_data("3.2.1", area = "608",
-                  year_from = 2015, year_to = 2018)
+                  year_from = 2015, year_to = 2018, clean = FALSE)
   expect_s3_class(out, "tbl_df")
   expect_gt(nrow(out), 0L)
 
@@ -41,8 +41,8 @@ test_that("no year filter returns the full result", {
   skip_if(Sys.getenv("DSIR_RUN_LIVE_TESTS") != "true", "Live API tests require explicit opt-in")
   skip_if_offline()
 
-  full       <- sdg_data("3.2.1", area = "608")
-  from_2010  <- sdg_data("3.2.1", area = "608", year_from = 2010)
+  full       <- sdg_data("3.2.1", area = "608", clean = FALSE)
+  from_2010  <- sdg_data("3.2.1", area = "608", year_from = 2010, clean = FALSE)
 
   expect_s3_class(full, "tbl_df")
   expect_gt(nrow(full), 0L)

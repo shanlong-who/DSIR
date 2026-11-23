@@ -1,7 +1,7 @@
 # DSIR design notes
 
 The original review covered main at `634c2bf` (DSIR 0.10.0) on 2026-10-04.
-The contracts below also record the later changes through DSIR 0.14.0.
+The contracts below also record the later changes through DSIR 0.15.0.
 For file locations and maintenance entry points, see the
 [repository maintenance guide](repository-hygiene.md).
 
@@ -36,8 +36,8 @@ tests, help pages, and [release notes](../../NEWS.md).
 
 ## Contracts worth preserving
 
-- **Acquisition metadata:** downloads and discovery results retain their
-  existing classes and expose metadata through `dsir_metadata()`. Server
+- **Acquisition metadata:** raw and cleaned downloads and discovery
+  results expose metadata through `dsir_metadata()`. Server
   retrieval time, cache delivery, historical fallback and current table size
   are distinct. Source counts precede local filtering and GHE measure pivoting.
   SDG records pagination before local filters; unknown completeness stays
@@ -48,7 +48,12 @@ tests, help pages, and [release notes](../../NEWS.md).
 - **Experimental data objects:** development after 0.13.0 adds
   `as_dsir_data()` conversion of cleaned tables. Since 0.13.0.9002, cleaners
   default to this subclass, with an explicit `output = "tibble"` alternative.
-  Downloads and directories keep their default classes. The subclass describes structured data with metadata,
+  Since 0.15.0, GHO and SDG observation downloads also use this subclass by
+  default. Raw mode and directories retain their provider columns. The
+  corresponding cleaner accepts already cleaned tables and cannot recover
+  omitted fields. Named dimension codes are recorded at cleaning time,
+  separately from the breakdowns present in current rows.
+  The subclass describes structured data with metadata,
   not a guarantee of unmodified API observations. Source provenance remains
   historical; current coverage is computed from current rows. Valid mutations
   retain the class, flag derived columns and invalidate affected interpretation.
@@ -56,7 +61,7 @@ tests, help pages, and [release notes](../../NEWS.md).
   metadata. Cleaning records live in attributes on both outputs and distinguish
   cleaning time from retrieval time. They summarize retention and constant
   semantic context without hiding a copy of raw observations in the object.
-  Explicit `trend` and `compare` plot methods return ggplots after checking
+  Automatic and explicit `trend` and `compare` plots return ggplots after checking
   indicator/measure/unit identity, population strata, unique positions and
   field-review status. They never aggregate, convert units, select a latest
   year implicitly or bridge missing annual observations. Other chart types

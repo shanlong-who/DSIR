@@ -11,7 +11,10 @@ sdg_data(
   year_to = NULL,
   page_size = 1000L,
   series = NULL,
-  dimensions = NULL
+  dimensions = NULL,
+  clean = TRUE,
+  keep_dimensions = FALSE,
+  keep_metadata = FALSE
 )
 }
 \arguments{
@@ -45,11 +48,35 @@ Missing dimension values do not match. An absent requested dimension
 warns and returns no rows. Default \code{NULL} keeps all strata. Like year
 and series filters, these filters run client-side and do not reduce
 the number of downloaded pages.}
+
+\item{clean}{Logical. Return cleaned observations as a \code{dsir_data} tibble
+by default. Use \code{FALSE} for the original observation columns.}
+
+\item{keep_dimensions}{Logical. Append the named SDG dimensions as
+character columns? Default \code{FALSE} preserves the 15-column format.
+With \code{TRUE}, names are converted to snake_case and prefixed with
+\code{dim_}, e.g. \code{Age} becomes \code{dim_age}, \verb{Reporting Type} becomes
+\code{dim_reporting_type}, and \code{Type_of_household} becomes
+\code{dim_type_of_household}. Codes are kept unchanged; absent values
+remain \code{NA}. Conflicting names after conversion cause an error.
+No dimensions, total-population codes, or GHO component codes are
+inferred. Use \code{\link[=sdg_dimensions]{sdg_dimensions()}} to look up official codes and labels.}
+
+\item{keep_metadata}{Logical. Retain observation attributes and source
+context? Default \code{FALSE}. With \code{TRUE}, all returned attributes become
+character columns prefixed with \code{attr_} (e.g. \code{attr_units},
+\code{attr_nature}). Also appends \code{data_source}, \code{time_detail},
+\code{time_coverage}, \code{base_period}, \code{value_type}, and \code{geo_info_url} as
+character columns. \code{footnotes}, \code{indicator_codes}, \code{goal_codes}, and
+\code{target_codes} are list-columns of character vectors, preserving all
+entries rather than just the first. Missing scalar fields are \code{NA};
+missing list fields are empty character vectors. This option is
+independent of \code{keep_dimensions} and makes no extra network requests.}
 }
 \value{
-A \link[tibble:tibble]{tibble} of indicator observations, or
-an empty tibble when the service is unreachable or there are no
-matching rows. The raw \code{dimensions} and \code{attributes} columns retain
+A cleaned \link[=as_dsir_data]{dsir_data} table, or the original
+observation tibble with \code{clean = FALSE}. Empty cleaned results have
+the same core schema. The raw \code{dimensions} and \code{attributes} columns retain
 the API's named breakdowns and attributes (usually packed data-frame
 columns). Inspect \code{unique(df$dimensions)} to discover observed strata.
 Use \code{sdg_clean(df, keep_dimensions = TRUE)} to retain named dimensions
@@ -64,7 +91,8 @@ API, with optional filters by area, year, series, and named dimensions.
 }
 \section{Retrieval metadata}{
 
-Downloads and directories retain their existing classes and columns.
+Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless \code{clean = FALSE}.
 \code{dsir_metadata(x)$sources} records the actual backend, endpoint, UTC
 \code{retrieved_at}, retrieval status, cache use, source record count, reported
 API version and release. Unknown versions and times remain \code{NA}.
@@ -100,7 +128,9 @@ user-supplied input without acquisition records. They contain the cleaner,
 package version, UTC cleaning time, input/output sizes and columns, options,
 and a profile of semantic fields. Each profile records its retained column
 (or \code{NA}), distinct count including missing values, missing count and its
-constant value, if any. Varying omitted values are not stored row by row.
+constant value, if any. From 0.15.0, \code{cleaning$dimension_values} stores
+the distinct observed codes for each named dimension at cleaning time.
+Per-row membership is available only for retained dimensions.
 Recorded aliases link equivalent core and named dimensions. Cleaning time
 never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.

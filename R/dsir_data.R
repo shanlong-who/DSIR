@@ -2,7 +2,7 @@
 #'
 #' Adds a `dsir_data` tibble subclass to an already cleaned indicator table.
 #' Cleaners return this subclass by default; `output = "tibble"` opts out.
-#' Downloads and directory functions retain their existing return types.
+#' GHO and SDG observation downloads also return this class by default.
 #' This experimental interface and its metadata schema may change.
 #'
 #' @param x A data frame with the typed 15-column schema returned by
@@ -106,7 +106,8 @@ as_dsir_data <- function(x) {
 #'   and source-specific retrieval records. `current` describes the supplied
 #'   table; source record counts describe the complete bundled snapshot.
 #' @section Retrieval metadata:
-#' Downloads and directories retain their existing classes and columns.
+#' Raw downloads and directories carry acquisition records. GHO and SDG
+#' observation downloads also carry cleaning records unless `clean = FALSE`.
 #' `dsir_metadata(x)$sources` records the actual backend, endpoint, UTC
 #' `retrieved_at`, retrieval status, cache use, source record count, reported
 #' API version and release. Unknown versions and times remain `NA`.
@@ -142,7 +143,9 @@ as_dsir_data <- function(x) {
 #' package version, UTC cleaning time, input/output sizes and columns, options,
 #' and a profile of semantic fields. Each profile records its retained column
 #' (or `NA`), distinct count including missing values, missing count and its
-#' constant value, if any. Varying omitted values are not stored row by row.
+#' constant value, if any. From 0.15.0, `cleaning$dimension_values` stores
+#' the distinct observed codes for each named dimension at cleaning time.
+#' Per-row membership is available only for retained dimensions.
 #' Recorded aliases link equivalent core and named dimensions. Cleaning time
 #' never substitutes for retrieval time. These records describe the cleaning
 #' input; current coverage and subsequent field status remain separate.
@@ -300,30 +303,56 @@ print.dsir_data <- function(x, ...) {
   retrieval <- metadata$provenance$retrieval
   if (!is.null(metadata$sources)) {
     retrieval$backend <- metadata$sources$backend
-    retrieval$retrieved <- metadata$sources$retrieved_at
   }
   label <- function(value) {
     value <- value[!is.na(value) & nzchar(value)]
     if (!length(value)) "not recorded" else paste(unique(value), collapse = ", ")
   }
-  cat("<dsir_data> ", metadata$processing$state,
-      " | metadata: ", metadata$processing$semantics, "\n", sep = "")
-  cat("Origin: ", label(metadata$source %||% metadata$provenance$sources),
-      " | Backend: ", label(retrieval$backend),
-      " | Retrieved: ", label(retrieval$retrieved), "\n", sep = "")
   codes <- .dsi_data_values(x$id)
-  shown <- utils::head(codes, 3L)
-  cat("Indicators: ", label(shown), if (length(codes) > 3L) " (...)" else "", "\n", sep = "")
-  labels <- .dsi_data_values(x$indicator)
-  if (length(labels)) cat("Names: ", substr(paste(utils::head(labels, 2L), collapse = "; "), 1L, 160L), "\n", sep = "")
-  cleaning <- metadata$cleaning
-  if (!is.null(cleaning)) {
-    omitted <- cleaning$fields$column[is.na(cleaning$fields$retained_as) & cleaning$fields$distinct > 1L]
-    cat("Cleaned: ", cleaning$function_name, " | At: ", cleaning$cleaned_at,
-        " | Omitted varying fields: ", length(omitted), "\n", sep = "")
-  }
+  cat("<dsir_data> ", label(utils::head(codes, 3L)), if (length(codes) > 3L) " ...",
+      " | ", label(metadata$source %||% metadata$provenance$sources),
+      " | ", label(retrieval$backend), "\n", sep = "")
+  years <- metadata$current$years
+  locations <- length(metadata$current$locations)
+  cat("Coverage: ", locations, if (locations == 1L) " location" else " locations", " | Years: ",
+      if (length(years)) paste(unique(range(years)), collapse = "-") else "none", "\n", sep = "")
+  .dsi_print_dimensions(metadata$dimensions, metadata$cleaning, limit = 5L)
+  if (identical(metadata$processing$semantics, "needs_review")) cat("Modified fields need review.\n")
   print(.dsi_data_plain(x), ...)
   invisible(x)
+}
+
+.dsi_print_dimensions <- function(current, cleaning, limit = Inf) {
+  fields <- grep("^dim[123]$|^dim_", names(current), value = TRUE)
+  current <- current[fields]
+  history <- cleaning$dimension_values
+  profile <- cleaning$fields
+  # Objects saved before 0.15.0 have counts and constants but no code lists.
+  if (is.null(history) && NROW(profile)) {
+    old <- profile[startsWith(profile$column, "dim_") & profile$distinct > 0L, ]
+    history <- stats::setNames(lapply(seq_len(nrow(old)), function(i) {
+      if (!is.na(old$constant[i])) return(old$constant[i])
+      if (old$distinct[i] > 1L) return("multiple values (codes not recorded)")
+      character()
+    }), old$column)
+  }
+  omitted <- setdiff(names(history), c(fields, names(cleaning$aliases)[cleaning$aliases %in% fields]))
+  display <- function(values, title) {
+    values <- values[lengths(values) > 0L]
+    if (!length(values)) return()
+    cat(title, "\n", sep = "")
+    for (field in names(values)) {
+      codes <- values[[field]]
+      count <- length(codes)
+      cat("  ", field, ": ", paste(codes[seq_len(min(limit, count))], collapse = ", "),
+          if (count > limit) paste0(" ... (", count, " values)"), "\n", sep = "")
+    }
+  }
+  display(current, "Current dimensions")
+  display(history[omitted], "Dimensions at cleaning")
+  if (any(lengths(history[omitted]) > 0L) && is.finite(limit)) {
+    cat("Use keep_dimensions = TRUE to retain row-level codes.\n")
+  }
 }
 
 
@@ -369,6 +398,7 @@ print.summary_dsir_data <- function(x, ...) {
   cat("State:", x$processing$state, "| Metadata:", x$processing$semantics, "\n")
   cat("Current indicators and series:\n")
   print(x$indicators, ...)
+  .dsi_print_dimensions(x$dimensions, x$cleaning)
   cat("Missing values by column:\n")
   print(x$missing, ...)
   cat("Non-finite numeric values:", x$numeric$n_nonfinite, "\n")

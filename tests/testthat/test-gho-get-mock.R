@@ -77,7 +77,7 @@ test_that("gho_data returns an empty tibble on request failure", {
     mock_json('{"error":"not found"}', status = 404L),
     {
       out <- suppressWarnings(
-        gho_data("X", spatial_type = "country", area = "FRA")
+        gho_data("X", spatial_type = "country", area = "FRA", clean = FALSE)
       )
       expect_s3_class(out, "tbl_df")
       expect_equal(nrow(out), 0L)
@@ -115,7 +115,7 @@ test_that("gho_data() sends area filter using the OData 'in' operator", {
   }
   httr2::with_mocked_responses(mock_fn, {
     gho_data("X", spatial_type = "country",
-             area = c("FRA", "DEU", "JPN"))
+             area = c("FRA", "DEU", "JPN"), clean = FALSE)
   })
   expect_length(captured, 1L)
   decoded <- utils::URLdecode(captured[1])
@@ -137,7 +137,7 @@ test_that("gho_data() sends dim1/dim2/dim3 filters server-side", {
   }
   httr2::with_mocked_responses(mock_fn, {
     gho_data("X", spatial_type = "country",
-             dim1 = "SEX_BTSX", dim3 = c("A", "B"))
+             dim1 = "SEX_BTSX", dim3 = c("A", "B"), clean = FALSE)
   })
   expect_length(captured, 1L)
   decoded <- utils::URLdecode(captured[1])

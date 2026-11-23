@@ -9,7 +9,7 @@ health_cases <- function() {
       expected = list(id = "MDG_0000000026", iso3 = "PHL", year = 2020L,
                       dim1 = NA_character_, provider = "legacy"),
       fetch = function() gho_data("MDG_0000000026", spatial_type = "country", area = "PHL",
-                                  year_from = 2020, year_to = 2020, backend = "legacy"),
+                                  year_from = 2020, year_to = 2020, backend = "legacy", clean = FALSE),
       clean = function(x) gho_clean(x, keep_dimensions = TRUE, keep_metadata = TRUE)),
     gho_xmart = list(
       backend = "xmart", source = "gho",
@@ -18,7 +18,7 @@ health_cases <- function() {
                       dim_sex = "TOTAL", provider = "xmart"),
       fetch = function() gho_data("NCDMORT3070", spatial_type = "country", area = "PHL",
                                   year_from = 2020, year_to = 2020,
-                                  dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart"),
+                                  dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart", clean = FALSE),
       clean = function(x) gho_clean(x, keep_dimensions = TRUE, keep_metadata = TRUE)),
     ghe = list(
       backend = "xmart", source = "ghe",
@@ -34,7 +34,7 @@ health_cases <- function() {
       expected = list(id = "3.2.1", iso3 = "PHL", year = 2020L,
                       series = "SH_DYN_MORT", dim_sex = "BOTHSEX"),
       fetch = function() sdg_data("3.2.1", area = "PHL", year_from = 2020, year_to = 2020,
-                                  series = "SH_DYN_MORT", dimensions = list(Sex = "BOTHSEX")),
+                                  series = "SH_DYN_MORT", dimensions = list(Sex = "BOTHSEX"), clean = FALSE),
       clean = function(x) sdg_clean(x, keep_dimensions = TRUE, keep_metadata = TRUE))
   )
 }

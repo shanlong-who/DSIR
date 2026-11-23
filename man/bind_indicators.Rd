@@ -43,8 +43,8 @@ pulls or snapshots when request-level provenance is needed.
 }
 \examples{
 \donttest{
-gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
-sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+gho <- gho_data("NCDMORT3070", area = wpro_cty)
+sdg <- sdg_data("3.4.1",        area = wpro_cty)
 bind_indicators(gho, sdg)
 }
 }

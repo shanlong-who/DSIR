@@ -1,5 +1,51 @@
 # Cleaning records describe the input at cleaning time, not a hidden copy of it.
 
+.dsi_check_clean_options <- function(clean, keep_dimensions, keep_metadata) {
+  .dsi_check_flag(clean, "clean")
+  .dsi_check_flag(keep_dimensions, "keep_dimensions")
+  .dsi_check_flag(keep_metadata, "keep_metadata")
+  if (!clean && (keep_dimensions || keep_metadata)) {
+    cli::cli_abort("Retention options require {.code clean = TRUE}. Raw observations already contain the source fields.")
+  }
+}
+
+.dsi_is_clean_table <- function(x) {
+  inherits(x, "dsir_data") || !is.null(attr(x, "dsir_metadata", exact = TRUE)$cleaning) ||
+    all(names(.dsi_clean_schema()) %in% names(x))
+}
+
+.dsi_reclean <- function(x, source, keep_dimensions, keep_metadata, output) {
+  problem <- .dsi_data_problem(x)
+  if (!is.null(problem)) cli::cli_abort("{problem}")
+  metadata <- attr(x, "dsir_metadata", exact = TRUE)
+  record <- metadata$cleaning
+  known <- unique(c(x$source, metadata$source))
+  if (length(setdiff(known, source)) ||
+      (!is.null(record) && !identical(record$function_name, paste0(source, "_clean")))) {
+    cli::cli_abort("This cleaned table does not contain only {.val {source}} observations.")
+  }
+  extras <- setdiff(record$output_columns, names(.dsi_clean_schema()))
+  dimensions <- grep("^dim[123]_type$|^dim_", extras, value = TRUE)
+  requested <- c(keep_dimensions = keep_dimensions, keep_metadata = keep_metadata)
+  for (flag in names(requested)[requested]) {
+    needed <- if (flag == "keep_dimensions") dimensions else setdiff(extras, dimensions)
+    if (!isTRUE(record$options[[flag]]) || !all(needed %in% names(x))) {
+      cli::cli_abort(c("The requested fields cannot be recovered from this cleaned table.",
+        "i" = "Set {.arg {flag}} to TRUE in {.fn {paste0(source, '_data')}} or clean the original raw observations."))
+    }
+  }
+  if (output == "dsir_data") return(as_dsir_data(x))
+  if (!inherits(x, "dsir_data")) return(x)
+  out <- .dsi_data_plain(x)
+  # Plain cleaner results keep acquisition and cleaning records.
+  kept <- intersect(c("schema_version", "source", "kind", "sources", "query", "result", "cleaning"), names(metadata))
+  plain <- metadata[kept]
+  plain$layout <- "cleaning"
+  attr(out, "dsir_metadata") <- plain
+  if (length(metadata$provenance$retrieval)) attr(out, "who_provenance") <- metadata$provenance$retrieval
+  out
+}
+
 .dsi_clean_context <- function(df, source) {
   empty <- tibble::new_tibble(list(), nrow = nrow(df))
   aliases <- character()
@@ -78,6 +124,8 @@
     package_version = as.character(utils::packageVersion("DSIR")),
     input_rows = nrow(df), output_rows = nrow(out), input_columns = names(df),
     output_columns = names(out), options = options, fields = profile,
+    dimension_values = lapply(fields[startsWith(names(fields), "dim_")],
+      function(x) sort(unique(x[!is.na(x) & nzchar(trimws(x))]))),
     aliases = context$aliases, year_precision_lost = sum(lost)
   )
   attr(out, "dsir_metadata") <- metadata

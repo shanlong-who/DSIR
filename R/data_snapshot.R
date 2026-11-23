@@ -4,7 +4,7 @@
 #' and creation time. It makes no network requests and never fills, rounds,
 #' aggregates or otherwise changes observations.
 #'
-#' @param data A data frame returned by [gho_data()], or by
+#' @param data A data frame returned by [gho_data()] with `clean = FALSE`, or by
 #'   `gho_clean(..., keep_dimensions = TRUE, keep_metadata = TRUE)`.
 #'   The default 15-column cleaned output has insufficient identity context.
 #'   The first schema supports one GHO indicator and one backend per snapshot.
@@ -94,11 +94,11 @@
 #' compare_snapshots(old, new)$modified
 #'
 #' \dontrun{
-#' old_data <- gho_data("WHS4_100")
+#' old_data <- gho_data("WHS4_100", clean = FALSE)
 #' data_snapshot(old_data, file = "snapshots/gho_old.rds")
 #'
 #' # Later, repeat exactly the same query using the same backend.
-#' new_data <- gho_data("WHS4_100")
+#' new_data <- gho_data("WHS4_100", clean = FALSE)
 #' data_snapshot(new_data, file = "snapshots/gho_new.rds")
 #' result <- compare_snapshots("snapshots/gho_old.rds",
 #'                             "snapshots/gho_new.rds")

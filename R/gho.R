@@ -140,11 +140,15 @@ gho_indicators <- function(search = NULL, backend = NULL) {
 #' Reference lookups are cached only in memory; no credentials
 #' or startup requests are required.
 #'
-#' @return A [tibble][tibble::tibble] of indicator observations, or
-#'   an empty tibble when the service is unreachable or no observations match.
+#' @param clean Logical. Return cleaned observations as a `dsir_data` tibble
+#'   by default. Use `FALSE` for the original observation columns.
+#' @inheritParams gho_clean
+#' @return A cleaned [dsir_data][as_dsir_data] table, or the raw observation
+#'   tibble with `clean = FALSE`. Empty cleaned results have the same core schema.
 #'   The raw `Provider` column records `"legacy"` or `"xmart"` per row.
-#'   A `who_provenance` attribute records the selected backend and, for
-#'   successful downloads, the request context and retrieval time.
+#'   Raw output stores the selected backend in `who_provenance`. For cleaned
+#'   output, use `dsir_metadata(x)$provenance$retrieval`. Successful downloads
+#'   also record the request context and retrieval time.
 #'   Automatic queries also record `requested_backend = "auto"` and, when
 #'   fallback is attempted, `fallback_reason` (`"directory_not_listed"` or
 #'   `"indicator_empty"`). The same selection metadata is attached to automatic
@@ -169,8 +173,15 @@ gho_indicators <- function(search = NULL, backend = NULL) {
 #'          dimensions = list(DIM_SEX = "TOTAL"), backend = "xmart")
 #' }
 #' @inheritSection dsir_metadata Retrieval metadata
-gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL, year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL, dimensions = NULL, backend = NULL) {
-  .who_gho("data", indicator = indicator, spatial_type = spatial_type, area = area, year_from = year_from, year_to = year_to, dim1 = dim1, dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
+gho_data <- function(indicator, spatial_type = NULL, area = NULL, year_from = NULL,
+                     year_to = NULL, dim1 = NULL, dim2 = NULL, dim3 = NULL,
+                     dimensions = NULL, backend = NULL, clean = TRUE,
+                     keep_dimensions = FALSE, keep_metadata = FALSE) {
+  .dsi_check_clean_options(clean, keep_dimensions, keep_metadata)
+  data <- .who_gho("data", indicator = indicator, spatial_type = spatial_type,
+    area = area, year_from = year_from, year_to = year_to, dim1 = dim1,
+    dim2 = dim2, dim3 = dim3, dimensions = dimensions, backend = backend)
+  if (clean) gho_clean(data, keep_dimensions, keep_metadata) else data
 }
 
 
@@ -450,7 +461,9 @@ gho_dimensions <- function(indicator, dimension = "SpatialDimType", backend = NU
 #' bundled snapshot without caching it as live data. Codes absent from that
 #' snapshot, or unavailable xMart labels, remain `NA`.
 #'
-#' @param df A data frame returned by [gho_data()].
+#' @param df Raw observations from [gho_data()] with `clean = FALSE`, or an
+#'   already cleaned GHO table. Repeated cleaning preserves retained fields.
+#'   Request additional fields at download time or clean the raw observations.
 #' @param keep_dimensions Logical. Append `dim1_type`, `dim2_type`, and
 #'   `dim3_type` from the source's `Dim1Type`, `Dim2Type`, and `Dim3Type`?
 #'   Default `FALSE`. Types are kept per row: one indicator can use the
@@ -501,6 +514,10 @@ gho_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE,
   }
   .dsi_check_flag(keep_dimensions, "keep_dimensions")
   .dsi_check_flag(keep_metadata, "keep_metadata")
+
+  if (.dsi_is_clean_table(df)) {
+    return(.dsi_reclean(df, "gho", keep_dimensions, keep_metadata, output))
+  }
 
   n <- nrow(df)
   if (n == 0L) {

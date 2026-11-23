@@ -12,7 +12,9 @@ sdg_clean(
 )
 }
 \arguments{
-\item{df}{A data frame returned by \code{\link[=sdg_data]{sdg_data()}}.}
+\item{df}{Raw observations from \code{\link[=sdg_data]{sdg_data()}} with \code{clean = FALSE}, or an
+already cleaned SDG table. Repeated cleaning preserves retained fields.
+Request additional fields at download time or clean the raw observations.}
 
 \item{keep_dimensions}{Logical. Append the named SDG dimensions as
 character columns? Default \code{FALSE} preserves the 15-column format.
@@ -89,7 +91,8 @@ them, so filter to the required strata before using it for analysis.
 }
 \section{Retrieval metadata}{
 
-Downloads and directories retain their existing classes and columns.
+Raw downloads and directories carry acquisition records. GHO and SDG
+observation downloads also carry cleaning records unless \code{clean = FALSE}.
 \code{dsir_metadata(x)$sources} records the actual backend, endpoint, UTC
 \code{retrieved_at}, retrieval status, cache use, source record count, reported
 API version and release. Unknown versions and times remain \code{NA}.
@@ -125,7 +128,9 @@ user-supplied input without acquisition records. They contain the cleaner,
 package version, UTC cleaning time, input/output sizes and columns, options,
 and a profile of semantic fields. Each profile records its retained column
 (or \code{NA}), distinct count including missing values, missing count and its
-constant value, if any. Varying omitted values are not stored row by row.
+constant value, if any. From 0.15.0, \code{cleaning$dimension_values} stores
+the distinct observed codes for each named dimension at cleaning time.
+Per-row membership is available only for retained dimensions.
 Recorded aliases link equivalent core and named dimensions. Cleaning time
 never substitutes for retrieval time. These records describe the cleaning
 input; current coverage and subsequent field status remain separate.
@@ -133,7 +138,7 @@ input; current coverage and subsequent field status remain separate.
 
 \examples{
 \donttest{
-sdg_data("3.2.1", area = "156", year_from = 2015) |>
+sdg_data("3.2.1", area = "156", year_from = 2015, clean = FALSE) |>
   sdg_clean(keep_dimensions = TRUE)
 }
 }

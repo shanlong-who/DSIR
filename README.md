@@ -24,25 +24,35 @@ Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
-Version **0.13.0** is available on [CRAN](https://CRAN.R-project.org/package=DSIR),
-published on **30 October 2026**. Version **0.14.0** is available on GitHub,
-including experimental data objects, metadata, plots and maps.
+Version 0.15.0 is in preparation. Version 0.14.0 was released on GitHub.
 
 ```r
-# CRAN: 0.13.0
+# Current CRAN release
 install.packages("DSIR")
 
-# Or GitHub: 0.14.0, including dsir_map()
+# Current GitHub version
 # install.packages("remotes")
 remotes::install_github("shanlong-who/DSIR")
 ```
 
 ## Experimental data objects and offline catalogs
 
-Version 0.14.0 returns a `dsir_data` tibble subclass from
-`gho_clean()`, `ghe_clean()` and `sdg_clean()` by default. The 15-column core
-is unchanged. Use `output = "tibble"` for the ordinary class. Downloads and
-discovery functions retain their existing return classes.
+From 0.15.0, `gho_data()` and `sdg_data()` return a cleaned `dsir_data` tibble
+with 15 core columns by default. Set `clean = FALSE` for raw provider fields,
+including raw data for a source snapshot. GHO prefers xMart by default.
+Request `keep_dimensions = TRUE` for per-row breakdowns and `keep_metadata = TRUE`
+for observation attributes. Apply these options at download time.
+A repeated call to the same cleaner preserves an already cleaned result.
+GHE acquisition and discovery functions keep their previous interfaces.
+
+```r
+x <- sdg_data("3.2.1", area = "PHL", keep_dimensions = TRUE)
+print(x)
+summary(x)
+```
+
+Printing distinguishes current dimension codes from codes observed at cleaning
+when their columns were omitted. The summary shows the full code lists.
 
 Downloads and discovery results carry acquisition metadata by default:
 
@@ -71,7 +81,7 @@ edits to a plain tibble. Use `saveRDS()` to preserve it when saving data.
 library(DSIR)
 library(dplyr)
 
-# Use an already retrieved GHO table.
+# Use raw observations retrieved with clean = FALSE.
 data.clean <- gho_clean(data.raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 summary(data.clean)
 dsir_metadata(data.clean)$provenance
@@ -104,13 +114,19 @@ After selecting a single indicator, series, unit and comparable population
 stratum, use the experimental plot method:
 
 ```r
-plot(data.clean, type = "trend", country = "PHL")
-plot(data.clean, type = "compare", year = 2023, interval = TRUE)
+plot(data.clean, country = "PHL")
+plot(data.clean, year = 2023, interval = TRUE)
 
 # Keep the relevant named dimensions when cleaning.
 plot(data.clean, type = "trend", country = c("PHL", "LAO"),
      group = "dim1", facet = "iso3")
 ```
+
+With one common year, `plot()` compares estimates. With repeated years within
+a series, it draws trends. When countries and sex both vary over time, choose
+`facet = "iso3"` to compare sexes within countries, or `group = "iso3"` to
+compare countries within each sex. The remaining mapping is filled and reported.
+With multiple remaining choices, select or filter the dimensions explicitly.
 
 Each call returns a standard ggplot using a DSIR theme. Comparisons require
 one common year. Mixed units, unresolved strata and duplicate positions cause
@@ -170,7 +186,8 @@ data.raw <- gho_data(
   year_from = map.year,
   year_to = map.year,
   dimensions = list(DIM_SEX = "TOTAL", DIM_AGE = "YEARS30-69"),
-  backend = "xmart"
+  backend = "xmart",
+  clean = FALSE
 )
 if (nrow(data.raw) == 0L) stop("No observations returned; inspect the GHO request warnings.")
 
@@ -406,10 +423,10 @@ comparison; value changes and metadata-only changes are reported separately.
 
 ```r
 # Repeat exactly the same query later, using the same backend.
-old_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart")
+old_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart", clean = FALSE)
 data_snapshot(old_data, file = "snapshots/gho_old.rds")
 
-new_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart")
+new_data <- gho_data("WHS4_100", area = "PHL", backend = "xmart", clean = FALSE)
 data_snapshot(new_data, file = "snapshots/gho_new.rds")
 
 result <- compare_snapshots("snapshots/gho_old.rds", "snapshots/gho_new.rds")
@@ -451,7 +468,6 @@ aarr(years, values, method = "endpoint")        # first/last years only
 
 # Slots into a grouped summarise() on cleaned indicator data
 gho_data("NCDMORT3070", area = wpro_cty, dim1 = "SEX_BTSX") |>
-  gho_clean() |>
   dplyr::summarise(aarr = aarr(year, value_num), .by = iso3)
 ```
 
@@ -554,7 +570,7 @@ gho_data(
 gho_data("NCDMORT3070", spatial_type = "country", dim1 = "SEX_BTSX")
 
 # Tidy the raw GHO response
-raw <- gho_data("NCDMORT3070", spatial_type = "country", area = wpro_cty)
+raw <- gho_data("NCDMORT3070", spatial_type = "country", area = wpro_cty, clean = FALSE)
 gho_clean(raw)
 ```
 
@@ -575,7 +591,7 @@ for financial hardship, `dim1_type` can be `WEALTHQUINTILE`,
 
 ```r
 raw <- gho_data("FINANCIALHARDSHIP_PROPORTIONOFPOP", area = "PHL",
-                backend = "legacy")
+                backend = "legacy", clean = FALSE)
 gho_detailed <- gho_clean(raw, keep_dimensions = TRUE, keep_metadata = TRUE)
 gho_detailed |>
   dplyr::select(provider, iso3, year, value_num, dim1_type, dim1, dim2_type, dim2)
@@ -631,7 +647,7 @@ sdg_data("3.4.1", area = wpro_cty)
 sdg_data("3.2.1", area = "608", year_from = 2015, year_to = 2023)
 
 # Tidy the SDG response
-raw <- sdg_data("3.2.1", area = "PHL")
+raw <- sdg_data("3.2.1", area = "PHL", clean = FALSE)
 sdg_clean(raw)
 ```
 
@@ -647,7 +663,7 @@ rows. `value` is kept as character to preserve non-numeric entries
 (`"<0.1"`, aggregate notes); `value_num` is the numeric coercion
 (`NA` where coercion fails).
 
-**Preserving SDG dimensions.** `sdg_data()` retains named breakdowns
+**Preserving SDG dimensions.** `sdg_data(clean = FALSE)` retains named breakdowns
 inside `raw$dimensions`. They do not map to GHO's three dimension
 positions. Use `keep_dimensions = TRUE` to append all observed SDG
 dimensions as character columns such as `dim_age`, `dim_sex`, and
@@ -657,7 +673,7 @@ when using the compact format. Use `keep_metadata = TRUE` to also
 retain units, nature, and other attributes as `attr_*` columns.
 
 ```r
-raw <- sdg_data("3.8.2", area = "PHL")
+raw <- sdg_data("3.8.2", area = "PHL", clean = FALSE)
 unique(raw$dimensions) # Inspect actual dimension names and codes
 financial_hardship <- sdg_clean(
   raw, keep_dimensions = TRUE, keep_metadata = TRUE
@@ -671,9 +687,9 @@ national <- sdg_data(
   dimensions = list(
     Age = "ALLAGE", Location = "ALLAREA", Sex = "BOTHSEX",
     Quantile = "_T", Type_of_household = "_T"
-  )
-) |>
-  sdg_clean(keep_dimensions = TRUE)
+  ),
+  keep_dimensions = TRUE
+)
 ```
 
 **Discovering dimension codes and labels.** This reads official
@@ -734,8 +750,8 @@ output with `bind_indicators()` and use the `source` column to keep
 track of where each row came from:
 
 ```r
-gho <- gho_data("NCDMORT3070", area = wpro_cty) |> gho_clean()
-sdg <- sdg_data("3.4.1",        area = wpro_cty) |> sdg_clean()
+gho <- gho_data("NCDMORT3070", area = wpro_cty)
+sdg <- sdg_data("3.4.1",        area = wpro_cty)
 bind_indicators(gho, sdg)
 ```
 
@@ -805,7 +821,7 @@ gho_indicators('mortality', backend = 'xmart')
 gho_dimensions('NCDMORT3070', 'DIM_SEX', backend = 'xmart')
 ncd <- gho_data('NCDMORT3070', area = 'PHL', year_from = 2020,
                 year_to = 2021, dimensions = list(DIM_SEX = 'TOTAL'),
-                backend = 'xmart')
+                backend = 'xmart', clean = FALSE)
 gho_clean(ncd, keep_dimensions = TRUE, keep_metadata = TRUE)
 ```
 

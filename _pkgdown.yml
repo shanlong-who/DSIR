@@ -63,7 +63,7 @@ navbar:
       href: news/index.html
 reference:
 - title: Experimental data objects and discovery catalogs
-  desc: Cleaned tibble subclasses, metadata, plots and versioned offline discovery snapshots.
+  desc: Cleaned observations, dimension summaries, automatic plots and offline discovery catalogs.
   contents:
   - as_dsir_data
   - dsir_metadata
@@ -112,7 +112,7 @@ reference:
   - ghe_coverage
   - ghe_clean
 - title: SDG indicator data
-  desc: Functions for fetching and cleaning data from the UN SDG API.
+  desc: Cleaned observations, raw responses and indicator discovery from the UN SDG API.
   contents:
   - sdg_goals
   - sdg_targets

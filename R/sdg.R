@@ -235,9 +235,12 @@ sdg_areas <- function() {
 #'   and series filters, these filters run client-side and do not reduce
 #'   the number of downloaded pages.
 #'
-#' @return A [tibble][tibble::tibble] of indicator observations, or
-#'   an empty tibble when the service is unreachable or there are no
-#'   matching rows. The raw `dimensions` and `attributes` columns retain
+#' @param clean Logical. Return cleaned observations as a `dsir_data` tibble
+#'   by default. Use `FALSE` for the original observation columns.
+#' @inheritParams sdg_clean
+#' @return A cleaned [dsir_data][as_dsir_data] table, or the original
+#'   observation tibble with `clean = FALSE`. Empty cleaned results have
+#'   the same core schema. The raw `dimensions` and `attributes` columns retain
 #'   the API's named breakdowns and attributes (usually packed data-frame
 #'   columns). Inspect `unique(df$dimensions)` to discover observed strata.
 #'   Use `sdg_clean(df, keep_dimensions = TRUE)` to retain named dimensions
@@ -263,7 +266,9 @@ sdg_areas <- function() {
 #' @inheritSection dsir_metadata Retrieval metadata
 sdg_data <- function(indicator, area = NULL,
                      year_from = NULL, year_to = NULL,
-                     page_size = 1000L, series = NULL, dimensions = NULL) {
+                     page_size = 1000L, series = NULL, dimensions = NULL,
+                     clean = TRUE, keep_dimensions = FALSE, keep_metadata = FALSE) {
+  .dsi_check_clean_options(clean, keep_dimensions, keep_metadata)
   stopifnot(is.character(indicator), length(indicator) >= 1L)
   .sdg_validate_filters(series, dimensions)
   requested_area <- area
@@ -293,8 +298,11 @@ sdg_data <- function(indicator, area = NULL,
     year_from = year_from, year_to = year_to, series = series,
     dimensions = dimensions, page_size = page_size,
     local_filters = c("year", "series", "dimensions"))
-  finish <- function(data, status = NULL) .dsi_result(data, "sdg", "observations",
-    query = query, origin = origin, backend = "unsdg", endpoint = base_url, status = status)
+  finish <- function(data, status = NULL) {
+    data <- .dsi_result(data, "sdg", "observations", query = query, origin = origin,
+      backend = "unsdg", endpoint = base_url, status = status)
+    if (clean) sdg_clean(data, keep_dimensions, keep_metadata) else data
+  }
   if (nrow(out) == 0L) return(finish(out))
   status <- NULL
 
@@ -376,7 +384,9 @@ sdg_data <- function(indicator, area = NULL,
 #' SDG dimensions as additional columns. The default compact output omits
 #' them, so filter to the required strata before using it for analysis.
 #'
-#' @param df A data frame returned by [sdg_data()].
+#' @param df Raw observations from [sdg_data()] with `clean = FALSE`, or an
+#'   already cleaned SDG table. Repeated cleaning preserves retained fields.
+#'   Request additional fields at download time or clean the raw observations.
 #' @param keep_dimensions Logical. Append the named SDG dimensions as
 #'   character columns? Default `FALSE` preserves the 15-column format.
 #'   With `TRUE`, names are converted to snake_case and prefixed with
@@ -413,7 +423,7 @@ sdg_data <- function(indicator, area = NULL,
 #'
 #' @examples
 #' \donttest{
-#' sdg_data("3.2.1", area = "156", year_from = 2015) |>
+#' sdg_data("3.2.1", area = "156", year_from = 2015, clean = FALSE) |>
 #'   sdg_clean(keep_dimensions = TRUE)
 #' }
 #' @inheritSection dsir_metadata Retrieval metadata
@@ -425,6 +435,10 @@ sdg_clean <- function(df, keep_dimensions = FALSE, keep_metadata = FALSE,
   }
   .dsi_check_flag(keep_dimensions, "keep_dimensions")
   .dsi_check_flag(keep_metadata, "keep_metadata")
+
+  if (.dsi_is_clean_table(df)) {
+    return(.dsi_reclean(df, "sdg", keep_dimensions, keep_metadata, output))
+  }
 
   n <- nrow(df)
   if (n == 0L) {

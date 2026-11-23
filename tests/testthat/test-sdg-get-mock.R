@@ -56,7 +56,7 @@ test_that("sdg_data assembles rows across multiple pages without errors", {
   httr2::with_mocked_responses(
     c(mock_json(page1), mock_json(page2)),
     {
-      out <- sdg_data("3.4.1", area = "608")
+      out <- sdg_data("3.4.1", area = "608", clean = FALSE)
       expect_s3_class(out, "tbl_df")
       expect_equal(nrow(out), 4L)
       expect_setequal(out$timePeriodStart, c(2017, 2018, 2019, 2020))
@@ -87,7 +87,7 @@ test_that("sdg_data binds pages whose nested dimension columns differ", {
   httr2::with_mocked_responses(
     c(mock_json(page1), mock_json(page2)),
     {
-      out <- sdg_data("3.b.1", area = "156")
+      out <- sdg_data("3.b.1", area = "156", clean = FALSE)
       expect_s3_class(out, "tbl_df")
       expect_equal(nrow(out), 2L)
       expect_setequal(out$series, c("SH_ACS_DTP3", "SH_ACS_HPV"))
@@ -119,7 +119,7 @@ test_that("sdg_data sends multi-value indicator as repeated keys, not comma-join
   # silently drops. Must serialise as repeated `indicator=A&indicator=B`.
   m <- capture_url_mock('{"data": [], "totalPages": 1}')
   httr2::with_mocked_responses(m$fn, {
-    suppressWarnings(sdg_data(c("3.4.1", "3.4.2"), area = "608"))
+    suppressWarnings(sdg_data(c("3.4.1", "3.4.2"), area = "608", clean = FALSE))
   })
   urls <- m$urls()
   expect_gte(length(urls), 1L)
@@ -131,7 +131,7 @@ test_that("sdg_data sends multi-value indicator as repeated keys, not comma-join
 test_that("sdg_data sends multi-value area as repeated areaCode keys", {
   m <- capture_url_mock('{"data": [], "totalPages": 1}')
   httr2::with_mocked_responses(m$fn, {
-    suppressWarnings(sdg_data("3.4.1", area = c("608", "076")))
+    suppressWarnings(sdg_data("3.4.1", area = c("608", "076"), clean = FALSE))
   })
   urls <- m$urls()
   expect_gte(length(urls), 1L)
@@ -154,7 +154,7 @@ test_that("sdg_data applies year filter client-side", {
   )
   m <- capture_url_mock(page)
   httr2::with_mocked_responses(m$fn, {
-    out <<- sdg_data("3.4.1", area = "608", year_from = 2010, year_to = 2017)
+    out <<- sdg_data("3.4.1", area = "608", year_from = 2010, year_to = 2017, clean = FALSE)
   })
   urls <- m$urls()
   expect_gte(length(urls), 1L)
