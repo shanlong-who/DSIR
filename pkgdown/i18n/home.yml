@@ -118,9 +118,9 @@
 - en: Visualize and Present Results
   zh: 可视化并呈现结果
   fr: Visualiser et présenter les résultats
-- en: Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables. GitHub version 0.14.0 also provides checked indicator plots and experimental maps.
-  zh: 复用 ggplot2 主题和 flextable 格式，制作风格一致的图形与分析表格。GitHub 0.14.0 版本还提供带有数据检查的指标图和实验性地图功能。
-  fr: Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents. La version 0.14.0 sur GitHub propose aussi des graphiques d'indicateurs avec vérifications et des cartes expérimentales.
+- en: Draw trends and same-year country comparisons with plot(). Use DSIR themes and flextable formatting in reports, or explore country patterns with experimental maps.
+  zh: 用 plot() 绘制趋势图或同年国家比较图。在报告中使用 DSIR 主题和 flextable 表格，也可以用实验性地图查看各国差异。
+  fr: Tracez des tendances et comparez les pays pour une même année avec plot(). Utilisez les thèmes DSIR et les tableaux flextable dans vos rapports, ou explorez les différences entre pays sur une carte expérimentale.
 - en: View visualization examples
   zh: 查看可视化示例
   fr: Voir les exemples de visualisation
@@ -163,18 +163,18 @@
 - en: These are potential uses of the package, not claims of official adoption by WHO.
   zh: 这些是本包可能的应用场景，不表示 WHO 已正式采用本包。
   fr: Il s'agit d'utilisations possibles du package, sans affirmation d'une adoption officielle par l'OMS.
-- en: Ongoing development
-  zh: 持续开发
-  fr: Développement en cours
-- en: Development roadmap
-  zh: 开发方向
-  fr: Feuille de route
-- en: GitHub version 0.14.0 introduces experimental indicator maps with dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0 boundaries. Data objects retain acquisition and cleaning metadata.
-  zh: GitHub 0.14.0 版本新增实验性的 dsir_map() 指标地图，可使用用户提供的 sf 多边形或经明确许可下载的 WHO ADM0 边界。数据对象保留获取与清洗 metadata。
-  fr: La version 0.14.0 sur GitHub ajoute des cartes d'indicateurs expérimentales avec dsir_map(), à partir de polygones sf fournis ou de frontières OMS ADM0 téléchargées avec autorisation explicite. Les objets de données conservent les métadonnées de collecte et de nettoyage.
-- en: Maps require the optional sf package. WHO boundaries are downloaded on demand and cached locally; missing or invalid geometries are not repaired automatically.
-  zh: 制图需要可选依赖 sf。WHO 边界按需下载并缓存在本地；缺失或无效几何不会自动修补。
-  fr: Les cartes nécessitent le package facultatif sf. Les frontières de l'OMS sont téléchargées à la demande et mises en cache localement ; les géométries manquantes ou non valides ne sont pas réparées automatiquement.
+- en: Package updates
+  zh: 版本更新
+  fr: Mises à jour du package
+- en: New in DSIR 0.15.0
+  zh: DSIR 0.15.0 新功能
+  fr: Nouveautés de DSIR 0.15.0
+- en: gho_data() and sdg_data() now return cleaned indicator tables by default. Use clean = FALSE for the original provider columns.
+  zh: gho_data() 和 sdg_data() 现在默认返回清洗后的指标表。如需数据提供方的原始列，请指定 clean = FALSE。
+  fr: gho_data() et sdg_data() renvoient désormais des tables d’indicateurs nettoyées par défaut. Utilisez clean = FALSE pour obtenir les colonnes d’origine.
+- en: Use summary() to inspect population breakdowns. After you select observations, plot() chooses a trend or a same-year comparison.
+  zh: 用 summary() 查看人群分层。选定观测后，plot() 会根据数据绘制趋势图或同年比较图。
+  fr: Utilisez summary() pour examiner les groupes de population. Après sélection des observations, plot() choisit une tendance ou une comparaison pour une même année.
 - en: The person behind the project
   zh: 项目维护者
   fr: La personne à l'origine du projet
@@ -199,9 +199,9 @@
 - en: Getting started
   zh: 快速入门
   fr: Premiers pas
-- en: CRAN provides version 0.13.0, published on 30 October 2026. Install version 0.14.0 from GitHub for the experimental data objects, metadata, plots and maps.
-  zh: CRAN 提供 2026 年 10 月 30 日发布的 0.13.0 版本。若需使用实验性数据对象、metadata、指标图和地图功能，请从 GitHub 安装 0.14.0 版本。
-  fr: CRAN propose la version 0.13.0, publiée le 30 octobre 2026. Installez la version 0.14.0 depuis GitHub pour les objets de données, les métadonnées, les graphiques et les cartes expérimentaux.
+- en: Install the released package from CRAN. For the development version, use GitHub.
+  zh: 从 CRAN 安装正式版。如需开发版，请从 GitHub 安装。
+  fr: Installez la version publiée depuis le CRAN. Pour la version de développement, utilisez GitHub.
 - en: R installation commands
   zh: R 安装命令
   fr: Commandes d'installation dans R

@@ -79,7 +79,7 @@
 <article class="dsi-capability">
 <p class="dsi-card-number" aria-hidden="true">04 / PRESENT</p>
 <h3>Visualize and Present Results</h3>
-<p>Apply reusable ggplot2 themes and flextable formatting to create consistent charts and analytical tables. GitHub version 0.14.0 also provides checked indicator plots and experimental maps.</p>
+<p>Draw trends and same-year country comparisons with plot(). Use DSIR themes and flextable formatting in reports, or explore country patterns with experimental maps.</p>
 <a href="articles/visualizing-indicators.html">View visualization examples <span aria-hidden="true">&rarr;</span></a>
 </article>
 </div>
@@ -103,10 +103,10 @@
 
 <div class="dsi-section dsi-about-grid">
 <section class="dsi-roadmap" aria-labelledby="development-roadmap">
-<p class="dsi-eyebrow">Ongoing development</p>
-<h2 id="development-roadmap">Development roadmap</h2>
-<p>GitHub version 0.14.0 introduces experimental indicator maps with dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0 boundaries. Data objects retain acquisition and cleaning metadata.</p>
-<p class="dsi-small">Maps require the optional sf package. WHO boundaries are downloaded on demand and cached locally; missing or invalid geometries are not repaired automatically.</p>
+<p class="dsi-eyebrow">Package updates</p>
+<h2 id="development-roadmap">New in DSIR 0.15.0</h2>
+<p>gho_data() and sdg_data() now return cleaned indicator tables by default. Use clean = FALSE for the original provider columns.</p>
+<p class="dsi-small">Use summary() to inspect population breakdowns. After you select observations, plot() chooses a trend or a same-year comparison.</p>
 </section>
 <section class="dsi-developer" aria-labelledby="developer">
 <p class="dsi-eyebrow">The person behind the project</p>
@@ -121,16 +121,16 @@
 <div>
 <p class="dsi-eyebrow">Start with the package</p>
 <h2 id="getting-started">Getting started</h2>
-<p>CRAN provides version 0.13.0, published on 30 October 2026. Install version 0.14.0 from GitHub for the experimental data objects, metadata, plots and maps.</p>
+<p>Install the released package from CRAN. For the development version, use GitHub.</p>
 <div class="dsi-install" aria-label="R installation commands">
 
 ```r
-# CRAN: 0.13.0
+# Released version
 install.packages("DSIR")
 
-# Or GitHub: 0.14.0
+# Development version (optional)
 # install.packages("remotes")
-remotes::install_github("shanlong-who/DSIR")
+# remotes::install_github("shanlong-who/DSIR")
 
 # Optional dependency for dsir_map()
 # install.packages("sf")
