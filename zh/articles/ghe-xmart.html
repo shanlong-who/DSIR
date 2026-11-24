@@ -87,8 +87,7 @@
 
     
     
-<p>DSIR 0.13.0 默认使用 <code>backend = 'auto'</code>，优先查询 WHO 公共
-xMart
+<p>DSIR 默认使用 <code>backend = 'auto'</code>，优先查询 WHO 公共 xMart
 服务。仅当成功读取的目录未列出该确切代码，或确认整个指标的观测数为零时，才尝试旧版服务。在应用国家、年份或维度筛选前，系统通过一个小型请求核实指标是否有数据。筛选后没有结果或覆盖不完整不会触发回退，也不会合并不同发布版本。显式设置
 <code>backend = 'xmart'</code> 或 <code>backend = 'legacy'</code>
 始终固定数据服务。全球卫生估计（GHE）始终使用

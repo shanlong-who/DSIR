@@ -87,14 +87,14 @@
 
     
     
-<p>DSIR 0.13.0 utilise <code>backend = 'auto'</code> par défaut et
-privilégie le service public xMart de l’OMS. Il essaie legacy uniquement
-si le code exact est absent d’un répertoire lu avec succès ou si le
-nombre d’observations de l’indicateur entier est confirmé comme nul. Une
-petite requête vérifie cette disponibilité avant les filtres de pays,
-d’année ou de dimension. Un résultat filtré vide ou une couverture
-partielle ne déclenche aucun basculement et ne combine pas les versions.
-Les valeurs explicites <code>backend = 'xmart'</code> et
+<p>DSIR utilise <code>backend = 'auto'</code> par défaut et privilégie
+le service public xMart de l’OMS. Il essaie legacy uniquement si le code
+exact est absent d’un répertoire lu avec succès ou si le nombre
+d’observations de l’indicateur entier est confirmé comme nul. Une petite
+requête vérifie cette disponibilité avant les filtres de pays, d’année
+ou de dimension. Un résultat filtré vide ou une couverture partielle ne
+déclenche aucun basculement et ne combine pas les versions. Les valeurs
+explicites <code>backend = 'xmart'</code> et
 <code>backend = 'legacy'</code> fixent toujours le service. Les
 estimations sanitaires mondiales (GHE) utilisent toujours xMart. Un
 échec de téléchargement ne provoque jamais de changement de service. Les

@@ -205,7 +205,7 @@ Utiliser les tables de mortalité, la standardisation directe sur l’âge et le
 Visualiser et présenter les résultats
 </h3>
 <p>
-Appliquer des thèmes ggplot2 et une mise en forme flextable réutilisables pour créer des graphiques et des tableaux cohérents. La version 0.14.0 sur GitHub propose aussi des graphiques d’indicateurs avec vérifications et des cartes expérimentales.
+Tracez des tendances et comparez les pays pour une même année avec plot(). Utilisez les thèmes DSIR et les tableaux flextable dans vos rapports, ou explorez les différences entre pays sur une carte expérimentale.
 </p>
 <a href="articles/visualizing-indicators.html">Voir les exemples de visualisation <span aria-hidden="true">→</span></a>
 </article>
@@ -263,16 +263,16 @@ Il s’agit d’utilisations possibles du package, sans affirmation d’une adop
 </p>
 </section><div class="dsi-section dsi-about-grid">
 <section class="dsi-roadmap" aria-labelledby="development-roadmap"><p class="dsi-eyebrow">
-Développement en cours
+Mises à jour du package
 </p>
 <h2 id="development-roadmap">
-Feuille de route
+Nouveautés de DSIR 0.15.0
 </h2>
 <p>
-La version 0.14.0 sur GitHub ajoute des cartes d’indicateurs expérimentales avec dsir_map(), à partir de polygones sf fournis ou de frontières OMS ADM0 téléchargées avec autorisation explicite. Les objets de données conservent les métadonnées de collecte et de nettoyage.
+gho_data() et sdg_data() renvoient désormais des tables d’indicateurs nettoyées par défaut. Utilisez clean = FALSE pour obtenir les colonnes d’origine.
 </p>
 <p class="dsi-small">
-Les cartes nécessitent le package facultatif sf. Les frontières de l’OMS sont téléchargées à la demande et mises en cache localement ; les géométries manquantes ou non valides ne sont pas réparées automatiquement.
+Utilisez summary() pour examiner les groupes de population. Après sélection des observations, plot() choisit une tendance ou une comparaison pour une même année.
 </p>
 </section><section class="dsi-developer" aria-labelledby="developer"><p class="dsi-eyebrow">
 La personne à l’origine du projet
@@ -297,16 +297,16 @@ Prendre le package en main
 Premiers pas
 </h2>
 <p>
-CRAN propose la version 0.13.0, publiée le 30 octobre 2026. Installez la version 0.14.0 depuis GitHub pour les objets de données, les métadonnées, les graphiques et les cartes expérimentaux.
+Installez la version publiée depuis le CRAN. Pour la version de développement, utilisez GitHub.
 </p>
 <div class="dsi-install" aria-label="Commandes d'installation dans R">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># CRAN: 0.13.0</span></span>
+<code class="sourceCode R"><span><span class="co"># Released version</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Or GitHub: 0.14.0</span></span>
+<span><span class="co"># Development version (optional)</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span>
+<span><span class="co"># remotes::install_github("shanlong-who/DSIR")</span></span>
 <span></span>
 <span><span class="co"># Optional dependency for dsir_map()</span></span>
 <span><span class="co"># install.packages("sf")</span></span>

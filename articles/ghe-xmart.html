@@ -87,12 +87,12 @@
 
     
     
-<p>DSIR 0.13.0 defaults to <code>backend = 'auto'</code>, preferring
-WHO’s public xMart service. It tries legacy only for an exact code
-absent from a successfully read directory or a verified whole-indicator
-zero count. A bounded query checks indicator availability before
-applying country, year or dimension filters. Filtered empty results and
-partial coverage do not trigger fallback or combine releases. Explicit
+<p>DSIR defaults to <code>backend = 'auto'</code>, preferring WHO’s
+public xMart service. It tries legacy only for an exact code absent from
+a successfully read directory or a verified whole-indicator zero count.
+A bounded query checks indicator availability before applying country,
+year or dimension filters. Filtered empty results and partial coverage
+do not trigger fallback or combine releases. Explicit
 <code>backend = 'xmart'</code> and <code>backend = 'legacy'</code>
 always fix the provider. GHE always uses xMart. Downloads never switch
 providers after a failure. Network examples below are shown without

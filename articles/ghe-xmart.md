@@ -1,7 +1,7 @@
 # WHO xMart and Global Health Estimates
 
-DSIR 0.13.0 defaults to `backend = 'auto'`, preferring WHO’s public
-xMart service. It tries legacy only for an exact code absent from a
+DSIR defaults to `backend = 'auto'`, preferring WHO’s public xMart
+service. It tries legacy only for an exact code absent from a
 successfully read directory or a verified whole-indicator zero count. A
 bounded query checks indicator availability before applying country,
 year or dimension filters. Filtered empty results and partial coverage

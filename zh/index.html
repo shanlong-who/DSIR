@@ -205,7 +205,7 @@ DSIR 将常用的全球卫生数据源与分析工具整合到一套连贯的 R 
 可视化并呈现结果
 </h3>
 <p>
-复用 ggplot2 主题和 flextable 格式，制作风格一致的图形与分析表格。GitHub 0.14.0 版本还提供带有数据检查的指标图和实验性地图功能。
+用 plot() 绘制趋势图或同年国家比较图。在报告中使用 DSIR 主题和 flextable 表格，也可以用实验性地图查看各国差异。
 </p>
 <a href="articles/visualizing-indicators.html">查看可视化示例 <span aria-hidden="true">→</span></a>
 </article>
@@ -263,16 +263,16 @@ DSIR 将常用的全球卫生数据源与分析工具整合到一套连贯的 R 
 </p>
 </section><div class="dsi-section dsi-about-grid">
 <section class="dsi-roadmap" aria-labelledby="development-roadmap"><p class="dsi-eyebrow">
-持续开发
+版本更新
 </p>
 <h2 id="development-roadmap">
-开发方向
+DSIR 0.15.0 新功能
 </h2>
 <p>
-GitHub 0.14.0 版本新增实验性的 dsir_map() 指标地图，可使用用户提供的 sf 多边形或经明确许可下载的 WHO ADM0 边界。数据对象保留获取与清洗 metadata。
+gho_data() 和 sdg_data() 现在默认返回清洗后的指标表。如需数据提供方的原始列，请指定 clean = FALSE。
 </p>
 <p class="dsi-small">
-制图需要可选依赖 sf。WHO 边界按需下载并缓存在本地；缺失或无效几何不会自动修补。
+用 summary() 查看人群分层。选定观测后，plot() 会根据数据绘制趋势图或同年比较图。
 </p>
 </section><section class="dsi-developer" aria-labelledby="developer"><p class="dsi-eyebrow">
 项目维护者
@@ -297,16 +297,16 @@ DSIR 是由个人维护的开源项目，并非 WHO 官方软件产品，也未�
 快速入门
 </h2>
 <p>
-CRAN 提供 2026 年 10 月 30 日发布的 0.13.0 版本。若需使用实验性数据对象、metadata、指标图和地图功能，请从 GitHub 安装 0.14.0 版本。
+从 CRAN 安装正式版。如需开发版，请从 GitHub 安装。
 </p>
 <div class="dsi-install" aria-label="R 安装命令">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># CRAN: 0.13.0</span></span>
+<code class="sourceCode R"><span><span class="co"># Released version</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"DSIR"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Or GitHub: 0.14.0</span></span>
+<span><span class="co"># Development version (optional)</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shanlong-who/DSIR"</span><span class="op">)</span></span>
+<span><span class="co"># remotes::install_github("shanlong-who/DSIR")</span></span>
 <span></span>
 <span><span class="co"># Optional dependency for dsir_map()</span></span>
 <span><span class="co"># install.packages("sf")</span></span>

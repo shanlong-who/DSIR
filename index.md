@@ -96,9 +96,9 @@ progress to support mortality analysis and indicator monitoring.
 
 ### Visualize and Present Results
 
-Apply reusable ggplot2 themes and flextable formatting to create
-consistent charts and analytical tables. GitHub version 0.14.0 also
-provides checked indicator plots and experimental maps.
+Draw trends and same-year country comparisons with plot(). Use DSIR
+themes and flextable formatting in reports, or explore country patterns
+with experimental maps.
 
 [View visualization examples
 →](https://shanlong-who.github.io/DSIR/articles/visualizing-indicators.md)
@@ -135,17 +135,15 @@ international health data.
 These are potential uses of the package, not claims of official adoption
 by WHO.
 
-Ongoing development
+Package updates
 
-## Development roadmap
+## New in DSIR 0.15.0
 
-GitHub version 0.14.0 introduces experimental indicator maps with
-dsir_map(), using supplied sf polygons or explicitly downloaded WHO ADM0
-boundaries. Data objects retain acquisition and cleaning metadata.
+gho_data() and sdg_data() now return cleaned indicator tables by
+default. Use clean = FALSE for the original provider columns.
 
-Maps require the optional sf package. WHO boundaries are downloaded on
-demand and cached locally; missing or invalid geometries are not
-repaired automatically.
+Use summary() to inspect population breakdowns. After you select
+observations, plot() chooses a trend or a same-year comparison.
 
 The person behind the project
 
@@ -163,18 +161,17 @@ Start with the package
 
 ## Getting started
 
-CRAN provides version 0.13.0, published on 30 October 2026. Install
-version 0.14.0 from GitHub for the experimental data objects, metadata,
-plots and maps.
+Install the released package from CRAN. For the development version, use
+GitHub.
 
 ``` r
 
-# CRAN: 0.13.0
+# Released version
 install.packages("DSIR")
 
-# Or GitHub: 0.14.0
+# Development version (optional)
 # install.packages("remotes")
-remotes::install_github("shanlong-who/DSIR")
+# remotes::install_github("shanlong-who/DSIR")
 
 # Optional dependency for dsir_map()
 # install.packages("sf")

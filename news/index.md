@@ -1,6 +1,8 @@
 # Changelog
 
-## DSIR 0.15.0
+## DSIR 0.15.0 (2026-11-23)
+
+CRAN release: 2026-11-23
 
 - **Breaking default:**
   [`gho_data()`](https://shanlong-who.github.io/DSIR/reference/gho_data.md)
@@ -25,7 +27,7 @@
 
 ## DSIR 0.14.0 (2026-11-01)
 
-Available on GitHub. CRAN remains at 0.13.0. This version combines the
+This GitHub-only release followed CRAN version 0.13.0. It combines the
 0.13.0.9000-0.13.0.9003 development work; the S3 and mapping interfaces
 remain experimental.
 

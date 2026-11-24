@@ -25,7 +25,8 @@ Documentation: <https://shanlong-who.github.io/DSIR/>
 
 ## Installation
 
-Version 0.15.0 is in preparation. Version 0.14.0 was released on GitHub.
+DSIR 0.15.0 was published on
+[CRAN](https://CRAN.R-project.org/package=DSIR) on 23 November 2026.
 
 ``` r
 
@@ -34,7 +35,7 @@ install.packages("DSIR")
 
 # Current GitHub version
 # install.packages("remotes")
-remotes::install_github("shanlong-who/DSIR")
+# remotes::install_github("shanlong-who/DSIR")
 ```
 
 ## Experimental data objects and offline catalogs
