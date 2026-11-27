@@ -17,14 +17,17 @@
 .dsi_map_boundary_abort <- function(message, diagnostics) {
   checks <- diagnostics$checks
   failed <- is.na(checks$valid) | !checks$valid
-  details <- paste0(checks$key[failed], " [", diagnostics$engine, " ",
-    diagnostics$engine_version, "]: ", checks$reason[failed])
+  engine <- paste(c(diagnostics$engine, diagnostics$engine_version[!is.na(diagnostics$engine_version)]),
+    collapse = " ")
+  details <- paste0(checks$key[failed], " [", engine, "]: ", checks$reason[failed])
   cli::cli_abort(c("{message}", "x" = "{paste(details, collapse = '\n')}"),
     class = "dsir_map_boundary_error", diagnostics = diagnostics)
 }
 
-.dsi_map_structure_abort <- function(message, keys, reason, source) {
+.dsi_map_structure_abort <- function(message, keys, reason, source, issue = NULL, engine = "sf") {
+  version <- switch(engine, sf = as.character(utils::packageVersion("sf")),
+    GDAL = unname(sf::sf_extSoftVersion()[["GDAL"]]), NA_character_)
   .dsi_map_boundary_abort(message, list(schema_version = 1L,
-    checked_at = .dsi_timestamp(), engine = "sf", engine_version = as.character(utils::packageVersion("sf")),
+    checked_at = .dsi_timestamp(), engine = engine, engine_version = version, issue = issue,
     source = source, checks = tibble::tibble(key = keys, valid = FALSE, reason = reason)))
 }

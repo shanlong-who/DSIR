@@ -292,15 +292,143 @@ test_that("interactive approval is requested once and refusal never starts a req
 test_that("the Philippine empty-geometry regression cannot create a successful cache", {
   map_test_streaming()
   cache <- tempfile("map-cache-")
-  map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(map_test_feature("PHL", "null"))), {
+  # Reproduce the provider's one identified feature with a null geometry.
+  file <- test_path("fixtures", "who-adm0-null-geometry.geojson")
+  response <- map_test_response(paste(readLines(file), collapse = "\n"))
+  ids <- map_test_response('{"objectIdFieldName":"OBJECTID","objectIds":[158]}')
+  map_test_with_responses(list(map_test_item(), ids, response), {
     error <- tryCatch(dsir_map(data.frame(iso3 = "PHL", value_num = 10), download = "allow", cache_dir = cache),
       dsir_map_boundary_error = identity)
     expect_s3_class(error, "dsir_map_boundary_error")
     expect_match(conditionMessage(error), "[Ee]mpty.*PHL")
+    expect_match(conditionMessage(error), "corrected WHO boundary")
     expect_identical(error$diagnostics$engine, "sf")
+    expect_identical(error$diagnostics$issue, "empty_geometry")
     expect_identical(error$diagnostics$checks$key, "PHL")
+    expect_equal(error$diagnostics$source$object_id, 158L)
+    expect_identical(error$diagnostics$source$http_status, 200L)
+    expect_gt(error$diagnostics$source$download_bytes, 0)
   })
   expect_length(list.files(cache, recursive = TRUE), 0L)
+})
+
+test_that("mixed empty and nonempty rows cannot bypass boundary identity checks", {
+  map_test_streaming()
+  cache <- tempfile("map-cache-")
+  values <- data.frame(iso3 = "PHL", value_num = 10)
+  boundaries <- sf::st_sf(iso3 = c("PHL", "PHL"), geometry = sf::st_as_sfc(c(
+    "MULTIPOLYGON (((0 0, 1 0, 1 1, 0 0)))", "MULTIPOLYGON EMPTY"), crs = 4326))
+  expect_error(dsir_map(values, boundaries = boundaries), "Duplicate boundary")
+
+  # An empty record in the response does not prove that all identified
+  # polygon parts were returned. Reject both an extra ID and a repeated ID.
+  valid <- map_test_feature("PHL")
+  for (id in 1:2) {
+    empty <- map_test_feature("PHL", "null", id = id)
+    features <- paste0(sub("]}$", "", valid), ",",
+      sub('^\\{"type":"FeatureCollection","features":\\[', "", empty))
+    map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(features)), {
+      error <- tryCatch(dsir_map(values, download = "allow", cache_dir = cache),
+        dsir_map_boundary_error = identity)
+      expect_identical(error$diagnostics$issue, "feature_mismatch")
+    })
+  }
+  expect_length(list.files(cache, recursive = TRUE), 0L)
+})
+
+test_that("WHO multipart island boundaries retain every coordinate across refresh and cache", {
+  map_test_streaming()
+  cache <- tempfile("map-cache-")
+  values <- data.frame(iso3 = "FJI", value_num = 10)
+  archipelago <- paste0('{"type":"MultiPolygon","coordinates":[',
+    '[[[178,-18],[179,-18],[179,-17],[178,-18]]],',
+    '[[[-179,-17],[-178,-17],[-178,-16],[-179,-17]]]]}')
+  bytes <- map_test_feature("FJI", archipelago)
+  reference <- sf::st_read(bytes, quiet = TRUE)
+  download <- function(refresh) {
+    map_test_with_responses(list(map_test_item(), map_test_ids(), map_test_response(bytes)),
+      dsir_map(values, download = "allow", cache_dir = cache, refresh = refresh))
+  }
+  first <- download(FALSE)
+  refreshed <- download(TRUE)
+  cached <- dsir_map(values, download = "never", cache_dir = cache)
+  for (map in list(first, refreshed, cached)) {
+    expect_length(sf::st_geometry(map$data)[[1]], 2L)
+    expect_identical(sf::st_as_binary(sf::st_geometry(map$data)),
+      sf::st_as_binary(sf::st_geometry(reference)))
+    expect_no_warning(ggplot2::ggplot_build(map))
+  }
+  expect_true(dsir_metadata(cached)$boundaries$sources$cache_hit)
+})
+
+test_that("empty geometry and unsupported nonempty geometry collections are distinct", {
+  values <- data.frame(iso3 = "A", value_num = 10)
+  collection <- sf::st_sf(iso3 = "A", geometry = sf::st_as_sfc(
+    "GEOMETRYCOLLECTION (POLYGON ((0 0, 1 0, 1 1, 0 0)), POINT (2 2))", crs = 4326))
+  expect_false(sf::st_is_empty(collection))
+  expect_error(dsir_map(values, boundaries = collection), "Unsupported geometry type")
+})
+
+test_that("WHO geometry download failures identify transport, service and parse errors", {
+  map_test_streaming()
+  cache <- tempfile("map-cache-")
+  values <- data.frame(iso3 = "LAO", value_num = 10)
+  geometry_error <- function(response) {
+    map_test_with_responses(list(map_test_item(), map_test_ids(), response),
+      tryCatch(dsir_map(values, download = "allow", cache_dir = cache),
+        dsir_map_boundary_error = identity))
+  }
+  http <- geometry_error(map_test_response("Unavailable", 503L))
+  expect_identical(http$diagnostics$issue, "http_error")
+  expect_identical(http$diagnostics$source$http_status, 503L)
+  expect_match(conditionMessage(http), "HTTP status 503")
+
+  body <- '{"error":{"code":429,"message":"Too many requests","details":["Retry after 60 sec. {quota}"]}}'
+  service <- geometry_error(map_test_response(body))
+  expect_identical(service$diagnostics$issue, "arcgis_error")
+  expect_identical(service$diagnostics$engine, "ArcGIS")
+  expect_identical(service$diagnostics$source$http_status, 200L)
+  expect_identical(service$diagnostics$source$arcgis_code, 429L)
+  expect_equal(service$diagnostics$source$download_bytes, nchar(body, type = "bytes"))
+  expect_match(conditionMessage(service), "Retry after 60 sec. {quota}", fixed = TRUE)
+
+  unreadable <- suppressWarnings(geometry_error(map_test_response('{"type":"FeatureCollection"')))
+  expect_identical(unreadable$diagnostics$issue, "read_error")
+  expect_identical(unreadable$diagnostics$engine, "GDAL")
+  expect_match(conditionMessage(unreadable), "as GeoJSON")
+
+  count <- 0L
+  transport <- map_test_with_responses(function(req) {
+    count <<- count + 1L
+    if (count == 1L) return(map_test_item())
+    if (count == 2L) return(map_test_ids())
+    stop("Connection reset {network}")
+  }, tryCatch(dsir_map(values, download = "allow", cache_dir = cache),
+    dsir_map_boundary_error = identity))
+  expect_identical(transport$diagnostics$issue, "transport_error")
+  expect_match(conditionMessage(transport), "Connection reset {network}", fixed = TRUE)
+  expect_length(list.files(cache, recursive = TRUE), 0L)
+})
+
+test_that("the WHO reader raises the default GDAL budget only during the read", {
+  withr::local_envvar(OGR_GEOJSON_MAX_OBJ_SIZE = NA_character_)
+  captured <- character()
+  fail <- FALSE
+  testthat::local_mocked_bindings(st_read = function(...) {
+    captured <<- c(captured, Sys.getenv("OGR_GEOJSON_MAX_OBJ_SIZE", unset = NA_character_))
+    if (fail) stop("GDAL read failed.")
+    "unchanged geometry"
+  }, .package = "sf")
+  expect_identical(.dsi_map_read_geojson("ignored"), "unchanged geometry")
+  expect_identical(captured, "512")
+  expect_identical(Sys.getenv("OGR_GEOJSON_MAX_OBJ_SIZE", unset = NA_character_), NA_character_)
+  fail <- TRUE
+  expect_error(.dsi_map_read_geojson("ignored"), "GDAL read failed")
+  expect_identical(Sys.getenv("OGR_GEOJSON_MAX_OBJ_SIZE", unset = NA_character_), NA_character_)
+  Sys.setenv(OGR_GEOJSON_MAX_OBJ_SIZE = "300")
+  expect_error(.dsi_map_read_geojson("ignored"), "GDAL read failed")
+  expect_identical(captured, c("512", "512", "300"))
+  expect_identical(Sys.getenv("OGR_GEOJSON_MAX_OBJ_SIZE"), "300")
 })
 
 test_that("failed refreshes keep valid caches and corrupted caches cannot be used silently", {

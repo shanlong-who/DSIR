@@ -50,15 +50,18 @@
 #' does not establish geographic or temporal comparability.
 #'
 #' Empty or invalid geometries, unknown coordinate systems, missing areas and
-#' duplicate keys cause errors. Geometries are never repaired, simplified,
-#' dissolved or combined with another source automatically. The WHO ADM0
-#' service returned empty Philippine geometry during development; a Philippine
-#' map therefore requires corrected official data or complete user-supplied
-#' boundaries. This is validated from each response, not a country blacklist.
+#' duplicate keys cause errors. Geometries are used as supplied. If WHO ADM0
+#' returns empty or invalid geometry, obtain a corrected WHO boundary or
+#' provide a complete, validated `sf` table using `boundaries`. After a
+#' correction to the WHO service, set `refresh = TRUE` to request a fresh copy.
 #'
 #' Boundary validation errors have class `dsir_map_boundary_error` and a
 #' `diagnostics` field with area keys, validation reasons, engine and version,
-#' check time and source context. Catch with
+#' check time and source context. For geometry downloads, source context
+#' can include the query URL, HTTP status, file size, checksum and ArcGIS
+#' error code. ArcGIS can report a service error, including rate limiting,
+#' in a response with HTTP status 200. Follow the reported retry interval
+#' when the service is rate limiting requests. Catch with
 #' `tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)` and
 #' inspect or save the returned condition's `diagnostics` field. S2 validates
 #' geographic coordinates when enabled in sf; otherwise GEOS is used.
@@ -83,6 +86,9 @@
 #' official boundary reference date. Cache use preserves retrieval time and
 #' makes no network calls. Cached countries may have different retrieval dates;
 #' inspect the boundary records when a common snapshot is required.
+#' The GeoJSON reader uses a temporary 512 MiB feature parsing limit for
+#' WHO downloads when `OGR_GEOJSON_MAX_OBJ_SIZE` is unset. An explicit
+#' GDAL setting takes precedence.
 #' @seealso [plot.dsir_data()], [dsir_metadata()]
 #' @export
 #' @examples
@@ -213,18 +219,30 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   selected <- ids %in% keys
   if (anyDuplicated(ids[selected])) cli::cli_abort("Duplicate boundary keys; supply one polygon or multipolygon row per area.")
   absent <- setdiff(keys, ids)
-  if (length(absent)) .dsi_map_structure_abort("Boundary geometry is missing.", absent, "No matching boundary key.", source)
+  if (length(absent)) .dsi_map_structure_abort("Boundary geometry is missing.", absent,
+    "No matching boundary key.", source, "missing_feature")
   out <- boundaries[match(keys, ids), , drop = FALSE]
   if (is.na(sf::st_crs(out))) .dsi_map_structure_abort("Boundary coordinate reference system is missing; verify it before mapping.", keys, "Missing coordinate reference system.", source)
   empty <- sf::st_is_empty(out)
-  if (any(empty)) .dsi_map_structure_abort("Empty boundary geometry; obtain corrected source data or supply complete sf boundaries.", keys[empty], "Empty geometry.", source)
+  if (any(empty)) {
+    message <- if (identical(source$stage, "download")) {
+      "Empty boundary geometry in the WHO ADM0 response. Obtain a corrected WHO boundary or supply complete sf boundaries."
+    } else "Empty boundary geometry. Supply complete sf boundaries for the requested areas."
+    .dsi_map_structure_abort(message, keys[empty], "Empty geometry.", source, "empty_geometry")
+  }
   type <- as.character(sf::st_geometry_type(out))
   wrong <- !type %in% c("POLYGON", "MULTIPOLYGON")
   if (any(wrong)) {
     .dsi_map_structure_abort("Map boundaries must be polygons or multipolygons.", keys[wrong], paste("Unsupported geometry type:", type[wrong]), source)
   }
   validation <- .dsi_map_validation(out, keys, source)
-  if (any(!validation$checks$valid)) .dsi_map_boundary_abort("Invalid boundary geometry; no automatic repair is performed.", validation)
+  if (any(!validation$checks$valid)) {
+    validation$issue <- "invalid_geometry"
+    message <- if (identical(source$stage, "download")) {
+      "Invalid boundary geometry in the WHO ADM0 response. Obtain a corrected WHO boundary or supply complete, validated sf boundaries."
+    } else "Invalid boundary geometry. Supply complete, validated sf boundaries for the requested areas."
+    .dsi_map_boundary_abort(message, validation)
+  }
   attr(out, "dsir_boundary_validation") <- validation
   out
 }

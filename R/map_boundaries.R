@@ -55,6 +55,16 @@
   list(item_modified_at = modified.at, license = item$licenseInfo %||% NA_character_)
 }
 
+.dsi_map_read_geojson <- function(file) {
+  # GDAL's default 200 MiB limit can reject a complete detailed ADM0
+  # feature. Allow larger parser allocations while retaining a finite cap.
+  if (is.na(Sys.getenv("OGR_GEOJSON_MAX_OBJ_SIZE", unset = NA_character_))) {
+    Sys.setenv(OGR_GEOJSON_MAX_OBJ_SIZE = "512")
+    on.exit(Sys.unsetenv("OGR_GEOJSON_MAX_OBJ_SIZE"), add = TRUE)
+  }
+  sf::st_read(file, quiet = TRUE, stringsAsFactors = FALSE)
+}
+
 .dsi_map_fetch_country <- function(code, source, item) {
   query.url <- paste0(source$endpoint, "/query")
   where <- paste0("ISO_3_CODE = '", code, "'")
@@ -62,6 +72,14 @@
     httr2::req_url_query(where = where, returnIdsOnly = "true", f = "json"))
   if (is.null(ids)) cli::cli_abort("Could not verify WHO boundary identifiers for {.val {code}}.")
   object.ids <- unlist(ids$objectIds, use.names = FALSE)
+  context <- list(origin = "who_gis", stage = "download", endpoint = source$endpoint,
+    item_id = source$item_id, object_id = object.ids)
+  if (identical(ids$objectIds, list()) && is.character(ids$objectIdFieldName) &&
+      length(ids$objectIdFieldName) == 1L && !is.na(ids$objectIdFieldName) && nzchar(ids$objectIdFieldName)) {
+    .dsi_map_structure_abort(
+      "WHO ADM0 returned no matching boundary feature. Supply complete sf boundaries for the requested areas.",
+      code, "The identifier query returned zero features.", context, "missing_feature", "ArcGIS")
+  }
   if (length(object.ids) != 1L || !is.numeric(object.ids) || !is.finite(object.ids) ||
       object.ids < 0 || object.ids != trunc(object.ids) || !is.character(ids$objectIdFieldName) ||
       length(ids$objectIdFieldName) != 1L || is.na(ids$objectIdFieldName) || !nzchar(ids$objectIdFieldName)) {
@@ -72,35 +90,65 @@
   request <- .dsi_request(query.url) %>%
     httr2::req_url_query(where = where, objectIds = format(object.ids, scientific = FALSE),
       outFields = "*", returnGeometry = "true", outSR = 4326, f = "geojson") %>%
-    httr2::req_timeout(120)
+    httr2::req_timeout(120) %>%
+    httr2::req_error(is_error = function(response) FALSE)
   # Stream large coordinates to disk instead of expanding them into R lists.
-  data <- tryCatch({
-    httr2::req_perform(request, path = file)
-    sf::st_read(file, quiet = TRUE, stringsAsFactors = FALSE)
-  }, error = function(e) {
-    msg <- conditionMessage(e)
-    cli::cli_warn(c("WHO geometry download failed for {.val {code}}.", "x" = "{msg}"))
-    NULL
-  })
-  if (is.null(data)) cli::cli_abort("No usable WHO boundary download for {.val {code}}.")
-  if (!inherits(data, "sf")) .dsi_map_structure_abort("Empty geometry in the WHO boundary response.",
-    code, "Response has no readable geometry column.",
-    list(origin = "who_gis", stage = "download", endpoint = source$endpoint,
-      item_id = source$item_id, object_id = object.ids, download_md5 = unname(tools::md5sum(file))))
+  context$query_url <- request$url
+  response <- tryCatch(httr2::req_perform(request, path = file), error = identity)
+  if (inherits(response, "error")) {
+    .dsi_map_structure_abort("WHO ADM0 boundary download failed. Retry the request or supply complete sf boundaries.",
+      code, conditionMessage(response), context, "transport_error", "HTTP")
+  }
+  context$http_status <- httr2::resp_status(response)
+  context$content_type <- httr2::resp_content_type(response)
+  context$download_bytes <- file.size(file)
+  context$download_md5 <- unname(tools::md5sum(file))
+  if (context$http_status != 200L) {
+    .dsi_map_structure_abort("WHO ADM0 boundary download failed. Retry the request or supply complete sf boundaries.",
+      code, paste("HTTP status", context$http_status), context, "http_error", "HTTP")
+  }
+  # ArcGIS can report a service error with HTTP 200. Only inspect small bodies
+  # so detailed country geometries are still read directly from disk by GDAL.
+  if (isTRUE(context$download_bytes <= 65536)) {
+    body <- tryCatch(httr2::resp_body_json(response), error = function(e) NULL)
+    if (is.list(body) && is.list(body$error)) {
+      context$arcgis_code <- body$error$code
+      message <- if (isTRUE(body$error$code == 429L)) {
+        "WHO ADM0 boundary request was rate limited. Wait for the service's retry interval and try again."
+      } else "WHO ADM0 service rejected the boundary request. Retry the request or supply complete sf boundaries."
+      .dsi_map_structure_abort(message, code,
+        paste(c(body$error$message, unlist(body$error$details, use.names = FALSE)), collapse = " "),
+        context, "arcgis_error", "ArcGIS")
+    }
+  }
+  reader.details <- character()
+  data <- tryCatch(withCallingHandlers(.dsi_map_read_geojson(file), warning = function(w) {
+    reader.details <<- c(reader.details, conditionMessage(w))
+  }), error = identity)
+  if (inherits(data, "error")) {
+    .dsi_map_structure_abort("Could not read the WHO ADM0 boundary response as GeoJSON. Retry the request or supply complete sf boundaries.",
+      code, paste(c(reader.details, conditionMessage(data)), collapse = "\n"), context, "read_error", "GDAL")
+  }
+  if (!inherits(data, "sf")) {
+    .dsi_map_structure_abort("WHO ADM0 boundary response has no readable geometry column. Supply complete sf boundaries.",
+      code, "GeoJSON did not yield an sf geometry column.", context, "missing_geometry", "GDAL")
+  }
   if (nrow(data) != 1L || !ids$objectIdFieldName %in% names(data) ||
       !isTRUE(as.character(data[[ids$objectIdFieldName]]) == as.character(object.ids))) {
-    cli::cli_abort("WHO boundary feature identifiers changed or the response was incomplete for {.val {code}}.")
+    .dsi_map_structure_abort("WHO boundary feature identifiers changed or the response was incomplete.",
+      code, "Expected the one previously verified feature identifier.", context, "feature_mismatch")
   }
-  data <- .dsi_map_select_boundaries(data, "ISO_3_CODE", code,
-    source = list(origin = "who_gis", stage = "download", endpoint = source$endpoint,
-      item_id = source$item_id, object_id = object.ids, download_md5 = unname(tools::md5sum(file))))
-  if (!isTRUE(sf::st_crs(data) == sf::st_crs(4326))) cli::cli_abort("Unexpected coordinate system in the WHO boundary response.")
+  data <- .dsi_map_select_boundaries(data, "ISO_3_CODE", code, source = context)
+  if (!isTRUE(sf::st_crs(data) == sf::st_crs(4326))) {
+    .dsi_map_structure_abort("Unexpected coordinate system in the WHO boundary response.",
+      code, "Expected EPSG:4326.", context, "unexpected_crs")
+  }
   list(schema_version = 1L, item_id = source$item_id, endpoint = source$endpoint,
     layer_id = source$layer_id, code = code, id_field = ids$objectIdFieldName,
     object_id = object.ids, data = data, retrieved_at = .dsi_timestamp(),
     validation = attr(data, "dsir_boundary_validation", exact = TRUE),
     item_modified_at = item$item_modified_at, license = item$license,
-    download_md5 = unname(tools::md5sum(file)), query = list(where = where,
+    download_md5 = context$download_md5, query = list(where = where,
       object_ids = object.ids, out_sr = 4326L), cache_hit = FALSE)
 }
 

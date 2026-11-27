@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
+  "features": [
+    {
+      "type": "Feature",
+      "id": 158,
+      "geometry": null,
+      "properties": {"OBJECTID": 158, "ISO_3_CODE": "PHL"}
+    }
+  ]
+}

@@ -79,15 +79,18 @@ provide a constant \code{unit} column when units are known. A matching key alone
 does not establish geographic or temporal comparability.
 
 Empty or invalid geometries, unknown coordinate systems, missing areas and
-duplicate keys cause errors. Geometries are never repaired, simplified,
-dissolved or combined with another source automatically. The WHO ADM0
-service returned empty Philippine geometry during development; a Philippine
-map therefore requires corrected official data or complete user-supplied
-boundaries. This is validated from each response, not a country blacklist.
+duplicate keys cause errors. Geometries are used as supplied. If WHO ADM0
+returns empty or invalid geometry, obtain a corrected WHO boundary or
+provide a complete, validated \code{sf} table using \code{boundaries}. After a
+correction to the WHO service, set \code{refresh = TRUE} to request a fresh copy.
 
 Boundary validation errors have class \code{dsir_map_boundary_error} and a
 \code{diagnostics} field with area keys, validation reasons, engine and version,
-check time and source context. Catch with
+check time and source context. For geometry downloads, source context
+can include the query URL, HTTP status, file size, checksum and ArcGIS
+error code. ArcGIS can report a service error, including rate limiting,
+in a response with HTTP status 200. Follow the reported retry interval
+when the service is rate limiting requests. Catch with
 \code{tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)} and
 inspect or save the returned condition's \code{diagnostics} field. S2 validates
 geographic coordinates when enabled in sf; otherwise GEOS is used.
@@ -112,6 +115,9 @@ time, source terms and download checksum. Item modification time is not an
 official boundary reference date. Cache use preserves retrieval time and
 makes no network calls. Cached countries may have different retrieval dates;
 inspect the boundary records when a common snapshot is required.
+The GeoJSON reader uses a temporary 512 MiB feature parsing limit for
+WHO downloads when \code{OGR_GEOJSON_MAX_OBJ_SIZE} is unset. An explicit
+GDAL setting takes precedence.
 }
 \examples{
 if (requireNamespace("sf", quietly = TRUE)) {
