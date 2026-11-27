@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,9 +72,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.15.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.15.1" id="dsir-0151-2026-11-27">DSIR 0.15.1 (2026-11-27)<a class="anchor" aria-label="anchor" href="#dsir-0151-2026-11-27"></a>
+</h2>
+<ul>
+<li>
+<code><a href="../reference/dsir_map.html">dsir_map()</a></code> can read detailed WHO ADM0 GeoJSON features that exceed GDAL’s default parsing limit, including Indonesia, with a temporary 512 MiB limit. Explicit GDAL settings take precedence. Geometry is validated before caching.</li>
+<li>
+<code><a href="../reference/dsir_map.html">dsir_map()</a></code> distinguishes WHO ADM0 request failures, unreadable downloads, missing features, empty geometries and invalid polygons. Boundary errors can record HTTP status, download size, checksum and the ArcGIS service error code, including rate limits reported with HTTP status 200. Use complete, validated <code>sf</code> boundaries when the official geometry is unusable, or refresh after the WHO service corrects the source.</li>
+</ul>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.15.0" id="dsir-0150-2026-11-23">DSIR 0.15.0 (2026-11-23)<a class="anchor" aria-label="anchor" href="#dsir-0150-2026-11-23"></a>
 </h2>

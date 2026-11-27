@@ -1,5 +1,20 @@
 # Changelog
 
+## DSIR 0.15.1 (2026-11-27)
+
+- [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
+  can read detailed WHO ADM0 GeoJSON features that exceed GDAL’s default
+  parsing limit, including Indonesia, with a temporary 512 MiB limit.
+  Explicit GDAL settings take precedence. Geometry is validated before
+  caching.
+- [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)
+  distinguishes WHO ADM0 request failures, unreadable downloads, missing
+  features, empty geometries and invalid polygons. Boundary errors can
+  record HTTP status, download size, checksum and the ArcGIS service
+  error code, including rate limits reported with HTTP status 200. Use
+  complete, validated `sf` boundaries when the official geometry is
+  unusable, or refresh after the WHO service corrects the source.
+
 ## DSIR 0.15.0 (2026-11-23)
 
 CRAN release: 2026-11-23

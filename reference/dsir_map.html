@@ -35,7 +35,7 @@ package. Alternatively, supply your own polygons for an offline map.">
 
     <a class="navbar-brand me-2" href="../index.html">DSIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.15.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ package. Alternatively, supply your own polygons for an offline map.">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Map an Indicator with Recorded or User-Supplied Boundaries</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/v0.15.0/R/dsir_map.R" class="external-link"><code>R/dsir_map.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shanlong-who/DSIR/blob/main/R/dsir_map.R" class="external-link"><code>R/dsir_map.R</code></a></small>
       <div class="d-none name"><code>dsir_map.Rd</code></div>
     </div>
 
@@ -203,14 +203,17 @@ fields absent from such tables cannot be verified. Ordinary tables should
 provide a constant <code>unit</code> column when units are known. A matching key alone
 does not establish geographic or temporal comparability.</p>
 <p>Empty or invalid geometries, unknown coordinate systems, missing areas and
-duplicate keys cause errors. Geometries are never repaired, simplified,
-dissolved or combined with another source automatically. The WHO ADM0
-service returned empty Philippine geometry during development; a Philippine
-map therefore requires corrected official data or complete user-supplied
-boundaries. This is validated from each response, not a country blacklist.</p>
+duplicate keys cause errors. Geometries are used as supplied. If WHO ADM0
+returns empty or invalid geometry, obtain a corrected WHO boundary or
+provide a complete, validated <code>sf</code> table using <code>boundaries</code>. After a
+correction to the WHO service, set <code>refresh = TRUE</code> to request a fresh copy.</p>
 <p>Boundary validation errors have class <code>dsir_map_boundary_error</code> and a
 <code>diagnostics</code> field with area keys, validation reasons, engine and version,
-check time and source context. Catch with
+check time and source context. For geometry downloads, source context
+can include the query URL, HTTP status, file size, checksum and ArcGIS
+error code. ArcGIS can report a service error, including rate limiting,
+in a response with HTTP status 200. Follow the reported retry interval
+when the service is rate limiting requests. Catch with
 <code>tryCatch(dsir_map(...), dsir_map_boundary_error = function(e) e)</code> and
 inspect or save the returned condition's <code>diagnostics</code> field. S2 validates
 geographic coordinates when enabled in sf; otherwise GEOS is used.
@@ -232,7 +235,10 @@ Each cache records its endpoint, query, retrieval time, item modification
 time, source terms and download checksum. Item modification time is not an
 official boundary reference date. Cache use preserves retrieval time and
 makes no network calls. Cached countries may have different retrieval dates;
-inspect the boundary records when a common snapshot is required.</p>
+inspect the boundary records when a common snapshot is required.
+The GeoJSON reader uses a temporary 512 MiB feature parsing limit for
+WHO downloads when <code>OGR_GEOJSON_MAX_OBJ_SIZE</code> is unset. An explicit
+GDAL setting takes precedence.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
