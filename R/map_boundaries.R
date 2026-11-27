@@ -10,18 +10,32 @@
 .dsi_map_interactive <- function() interactive()
 .dsi_map_confirm <- function(message) utils::askYesNo(message, default = FALSE)
 
-.dsi_map_permission <- function(download, codes) {
+.dsi_map_permission <- function(download, codes, type = "polygon") {
   if (download == "allow") return(invisible(TRUE))
+  subject <- if (type == "point") "centre coordinates" else "boundaries"
   if (download == "ask" && .dsi_map_interactive()) {
     shown <- paste(utils::head(codes, 6L), collapse = ", ")
-    message <- paste0("Download unmodified WHO ADM0 boundaries for ", length(codes),
+    message <- paste0("Download unmodified WHO ADM0 ", subject, " for ", length(codes),
       " area(s) (", shown, if (length(codes) > 6L) ", ..." else "", ") and cache them?\n",
-      "Source: WHO GIS, Detailed_Boundary_ADM0. Detailed polygons can be large.\n",
+      "Source: WHO GIS, Detailed_Boundary_ADM0.\n",
+      if (type == "polygon") "Detailed polygons can be large.\n",
       "Terms: https://data.who.int/about/data/terms-and-conditions")
     if (isTRUE(.dsi_map_confirm(message))) return(invisible(TRUE))
   }
+  if (type == "point") {
+    cli::cli_abort(c("WHO centre coordinate download was not permitted; no network request was made.",
+      "i" = 'Use {.code download = "allow"} explicitly in scripts/Quarto, or use a complete centre coordinate cache.'))
+  }
   cli::cli_abort(c("WHO boundary download was not permitted; no network request was made.",
     "i" = 'Use {.code download = "allow"} explicitly in scripts/Quarto, or supply {.arg boundaries} or a complete cache.'))
+}
+
+.dsi_map_cache_dir <- function(cache_dir) {
+  if (is.null(cache_dir)) cache_dir <- file.path(tools::R_user_dir("DSIR", "cache"), "maps")
+  if (!is.character(cache_dir) || length(cache_dir) != 1L || is.na(cache_dir) || !nzchar(cache_dir)) {
+    cli::cli_abort("{.arg cache_dir} must be a single directory path.")
+  }
+  cache_dir
 }
 
 .dsi_map_json <- function(request) {
@@ -203,10 +217,7 @@
 }
 
 .dsi_map_who_boundaries <- function(codes, download, cache_dir, refresh) {
-  if (is.null(cache_dir)) cache_dir <- file.path(tools::R_user_dir("DSIR", "cache"), "maps")
-  if (!is.character(cache_dir) || length(cache_dir) != 1L || is.na(cache_dir) || !nzchar(cache_dir)) {
-    cli::cli_abort("{.arg cache_dir} must be a single directory path.")
-  }
+  cache_dir <- .dsi_map_cache_dir(cache_dir)
   source <- .dsi_map_source()
   files <- file.path(cache_dir, paste0("who-adm0-", source$item_id, "-v1"), paste0(codes, ".rds"))
   records <- lapply(seq_along(codes), function(i) {

@@ -73,6 +73,13 @@ map_test_feature <- function(code = "LAO", geometry = '{"type":"Polygon","coordi
     '{"OBJECTID":', id, ',"ISO_3_CODE":"', code, '"},"geometry":', geometry, '}]}')
 }
 
+map_test_centres <- function(codes = c("CHN", "PHL", "KIR"),
+                             longitude = c(103, 123, -50.51), latitude = c(36, 12, 0.43)) {
+  features <- sprintf(paste0('{"attributes":{"OBJECTID":%d,"ISO_3_CODE":"%s",',
+    '"CENTER_LON":%s,"CENTER_LAT":%s}}'), seq_along(codes), codes, longitude, latitude)
+  map_test_response(paste0('{"features":[', paste(features, collapse = ","), ']}'))
+}
+
 map_test_streaming <- function(env = parent.frame()) {
   # httr2 mocks bypass the disk writer used by real req_perform(path = ...).
   perform <- httr2::req_perform
@@ -114,6 +121,68 @@ test_that("ordinary tables use exact boundary joins and return standard ggplots"
   expect_identical(metadata$selection$value_column, "rate")
   expect_match(metadata$created_at, "T.*Z$")
   expect_identical(dsir_metadata(p + ggplot2::labs(title = "Custom map")), metadata)
+})
+
+test_that("WHO centre maps preserve reported points and locate Western Pacific outliers", {
+  values <- data.frame(iso3 = c("KIR", "CHN", "PHL"), value_num = c(15, 90, 70), year = 2024L)
+  urls <- character()
+  responses <- list(map_test_item(), map_test_centres())
+  cache <- tempfile("centre-cache-")
+  device <- grDevices::dev.cur()
+  testthat::local_mocked_bindings(.dsi_timestamp = function() "2026-11-27T06:00:00Z",
+    .package = "DSIR")
+  map_test_with_responses(function(req) {
+    urls <<- c(urls, utils::URLdecode(req$url))
+    responses[[length(urls)]]
+  }, {
+    expect_message(p <- dsir_map(values, type = "point", year = 2024, download = "allow", cache_dir = cache),
+      "2026-11-27.*Latest WHO GIS release status unverified")
+  })
+  expect_length(urls, 2L)
+  expect_identical(grDevices::dev.cur(), device)
+  expect_match(urls[[2L]], "returnGeometry=false", fixed = TRUE)
+  expect_match(urls[[2L]], "CENTER_LON,CENTER_LAT", fixed = TRUE)
+  expect_identical(p$data$iso3, values$iso3)
+  expect_true(all(sf::st_geometry_type(p$data) == "POINT"))
+  expect_equal(unname(sf::st_coordinates(p$data)), cbind(c(-50.51, 103, 123), c(.43, 36, 12)))
+  record <- dsir_metadata(p)$boundaries
+  expect_identical(record$type, "point")
+  expect_identical(record$outliers$iso3, "KIR")
+  expect_equal(record$outliers$longitude, -50.51)
+  expect_identical(record$snapshot_dates, "2026-11-27")
+  expect_match(p$labels$caption, "KIR")
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  expect_no_warning(ggplot2::ggplotGrob(p))
+
+  testthat::local_mocked_bindings(.dsi_request = function(...) stop("Unexpected network"),
+    .dsi_timestamp = function() "2027-01-01T06:00:00Z", .package = "DSIR")
+  expect_message(again <- dsir_map(values, type = "point", download = "never", cache_dir = cache),
+    "2026-11-27.*Latest WHO GIS release status unverified")
+  expect_true(all(dsir_metadata(again)$boundaries$sources$cache_hit))
+  expect_identical(sf::st_geometry(again$data), sf::st_geometry(p$data))
+  expect_error(dsir_map(values, download = "never", cache_dir = cache), "not permitted")
+  single <- suppressMessages(dsir_map(values[1, ], type = "point", download = "never", cache_dir = cache))
+  expect_no_warning(ggplot2::ggplotGrob(single))
+  expect_match(single$labels$caption, "KIR")
+})
+
+test_that("centre maps require complete responses and preserve caches on failed refresh", {
+  values <- data.frame(iso3 = c("CHN", "PHL", "KIR"), value_num = 1:3)
+  cache <- tempfile("centre-cache-")
+  borders <- map_test_boundaries(values$iso3)
+  expect_error(dsir_map(values, type = "point", boundaries = borders), "without geometry")
+  expect_error(dsir_map(values, type = "point", download = "never", cache_dir = cache), "not permitted")
+  map_test_with_responses(list(map_test_item(), map_test_centres(c("CHN", "PHL"), c(103, 123), c(36, 12))),
+    expect_error(dsir_map(values, type = "point", download = "allow", cache_dir = cache), "missing.*KIR"))
+  expect_length(list.files(cache, recursive = TRUE), 0L)
+  map_test_with_responses(list(map_test_item(), map_test_centres()),
+    old <- suppressMessages(dsir_map(values, type = "point", download = "allow", cache_dir = cache)))
+  map_test_with_responses(list(map_test_item(), map_test_centres(longitude = c(103, 201, -50))),
+    expect_error(dsir_map(values, type = "point", download = "allow", cache_dir = cache, refresh = TRUE),
+      "invalid.*PHL"))
+  new <- suppressMessages(dsir_map(values, type = "point", download = "never", cache_dir = cache))
+  expect_identical(sf::st_geometry(new$data), sf::st_geometry(old$data))
 })
 
 test_that("sf tables supply their own polygons without a download", {

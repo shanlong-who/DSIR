@@ -14,7 +14,8 @@ dsir_map(
   download = c("ask", "allow", "never"),
   cache_dir = NULL,
   refresh = FALSE,
-  crs = NULL
+  crs = NULL,
+  type = c("polygon", "point")
 )
 }
 \arguments{
@@ -51,11 +52,17 @@ subdirectory of \code{tools::R_user_dir("DSIR", "cache")}. Supply a project
 directory to retain the exact boundaries used by an analysis.}
 
 \item{refresh}{Logical, default \code{FALSE}. Explicitly download fresh WHO
-polygons even when cached. Download permission is still required. Failed
-or invalid downloads never replace a valid country cache.}
+polygons or centre coordinates even when cached. Download permission
+is still required. Failed or invalid downloads never replace a valid
+country cache.}
 
 \item{crs}{Optional display coordinate reference system passed to
 \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}. It does not change cached source geometries.}
+
+\item{type}{Map type. \code{"polygon"} (default) uses polygons.
+\code{"point"} reads the published \code{CENTER_LON} and \code{CENTER_LAT} fields of
+the same WHO ADM0 layer. Use a regular analysis table without supplied
+boundaries in this mode.}
 }
 \value{
 A ggplot using \code{\link[=theme_dsi]{theme_dsi()}} and a continuous viridis scale.
@@ -65,10 +72,11 @@ reports map-creation context, input metadata and boundary provenance;
 this record does not audit subsequent ggplot modifications.
 }
 \description{
-Draw a choropleth from a \link[=as_dsir_data]{dsir_data} object, an ordinary
-data frame or an \code{sf} table. Return a standard ggplot. WHO ADM0 boundaries
-are downloaded by country only with permission and cached outside the
-package. Alternatively, supply your own polygons for an offline map.
+Draw a choropleth or a point-symbol map from a
+\link[=as_dsir_data]{dsir_data} object or an ordinary data frame. Polygon maps
+also accept an \code{sf} table or supplied polygons. WHO ADM0 polygons and
+centre coordinates are requested only with permission and cached
+outside the package. Return a standard ggplot.
 }
 \details{
 The optional package \code{sf} is required only when this function is used.
@@ -83,6 +91,18 @@ duplicate keys cause errors. Geometries are used as supplied. If WHO ADM0
 returns empty or invalid geometry, obtain a corrected WHO boundary or
 provide a complete, validated \code{sf} table using \code{boundaries}. After a
 correction to the WHO service, set \code{refresh = TRUE} to request a fresh copy.
+
+Point maps require one finite, in-range coordinate pair per requested
+ISO3 code. They cache coordinates separately and emit a message with the
+UTC retrieval date or dates and the unverified WHO GIS release status.
+These dates also appear in the caption and the map metadata as records
+of coordinate retrieval.
+For Western Pacific codes in \link{wpro_cty}, centres outside the display
+extent (88°E to 141°W across the date line and 48°S to 53°N) are flagged
+in the caption and metadata. Western Pacific maps using the default
+projection display flagged points in a world locator when the main view
+has points. Other projections display flagged points at their reported
+positions. Every requested point remains in the returned \code{sf} data.
 
 Boundary validation errors have class \code{dsir_map_boundary_error} and a
 \code{diagnostics} field with area keys, validation reasons, engine and version,

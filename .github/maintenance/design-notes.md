@@ -77,6 +77,10 @@ tests, help pages, and [release notes](../../NEWS.md).
   plot semantic checks, common-year requirement and no-aggregation rule.
   Map metadata records creation and per-country acquisition, not an audit of
   later ggplot edits. Item modification time is not a boundary reference date.
+  Explicit point maps use the same WHO layer's published centre fields and a
+  separate cache. The snapshot date records coordinate retrieval. Keep all
+  requested points and mark Western Pacific display outliers at their
+  reported coordinates.
 - **Public discovery catalogs:** `gho_catalog` retains backend-specific rows;
   `sdg_catalog` preserves nested series and their shared indicator links;
   `ghe_catalog` lists causes and measures separately rather than inventing

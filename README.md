@@ -222,6 +222,21 @@ map <- dsir_map(analysis, value = "rate", country = "area_code",
                 boundaries = borders, boundary_key = "area_code")
 ```
 
+Use `type = "point"` to map the published centre coordinates from the same
+WHO ADM0 layer. Each requested area retains its point. Western Pacific
+coordinates outside the regional display are flagged and shown in a world
+locator when using the default projection and a populated regional view.
+The message and caption report the UTC coordinate snapshot date and note
+that the latest WHO GIS release status is unverified.
+
+```r
+mcv2 <- gho_data("MCV2", "country", wpro_cty, year_from = 2024,
+                year_to = 2024, backend = "xmart")
+map <- dsir_map(mcv2, year = 2024, type = "point", download = "allow")
+map
+dsir_metadata(map)$boundaries$outliers
+```
+
 Without supplied geometry, the function requests only the needed countries
 from the public WHO ADM0 Feature Service, without a WHO account. Its default
 `download = "ask"` asks before an interactive download; scripts and Quarto

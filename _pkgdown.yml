@@ -123,7 +123,7 @@ reference:
   - sdg_clean
   - sdg_coverage
   - sdg_last_updated
-- title: Experimental maps
+- title: Experimental polygon and point maps
   desc: Checked choropleths with user-supplied polygons or explicitly downloaded WHO ADM0 boundaries.
   contents:
   - dsir_map

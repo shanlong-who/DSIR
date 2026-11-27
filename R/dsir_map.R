@@ -1,9 +1,10 @@
 #' Map an Indicator with Recorded or User-Supplied Boundaries
 #'
-#' Draw a choropleth from a [dsir_data][as_dsir_data] object, an ordinary
-#' data frame or an `sf` table. Return a standard ggplot. WHO ADM0 boundaries
-#' are downloaded by country only with permission and cached outside the
-#' package. Alternatively, supply your own polygons for an offline map.
+#' Draw a choropleth or a point-symbol map from a
+#' [dsir_data][as_dsir_data] object or an ordinary data frame. Polygon maps
+#' also accept an `sf` table or supplied polygons. WHO ADM0 polygons and
+#' centre coordinates are requested only with permission and cached
+#' outside the package. Return a standard ggplot.
 #'
 #' @param data A data frame with one row per mapped area. A `dsir_data` object
 #'   uses its existing semantic checks. An `sf` input supplies its own geometry.
@@ -30,10 +31,15 @@
 #'   subdirectory of `tools::R_user_dir("DSIR", "cache")`. Supply a project
 #'   directory to retain the exact boundaries used by an analysis.
 #' @param refresh Logical, default `FALSE`. Explicitly download fresh WHO
-#'   polygons even when cached. Download permission is still required. Failed
-#'   or invalid downloads never replace a valid country cache.
+#'   polygons or centre coordinates even when cached. Download permission
+#'   is still required. Failed or invalid downloads never replace a valid
+#'   country cache.
 #' @param crs Optional display coordinate reference system passed to
 #'   [ggplot2::coord_sf()]. It does not change cached source geometries.
+#' @param type Map type. `"polygon"` (default) uses polygons.
+#'   `"point"` reads the published `CENTER_LON` and `CENTER_LAT` fields of
+#'   the same WHO ADM0 layer. Use a regular analysis table without supplied
+#'   boundaries in this mode.
 #'
 #' @return A ggplot using [theme_dsi()] and a continuous viridis scale.
 #'   Missing estimates are shown in grey. Its data is an `sf` table containing
@@ -54,6 +60,18 @@
 #' returns empty or invalid geometry, obtain a corrected WHO boundary or
 #' provide a complete, validated `sf` table using `boundaries`. After a
 #' correction to the WHO service, set `refresh = TRUE` to request a fresh copy.
+#'
+#' Point maps require one finite, in-range coordinate pair per requested
+#' ISO3 code. They cache coordinates separately and emit a message with the
+#' UTC retrieval date or dates and the unverified WHO GIS release status.
+#' These dates also appear in the caption and the map metadata as records
+#' of coordinate retrieval.
+#' For Western Pacific codes in [wpro_cty], centres outside the display
+#' extent (88°E to 141°W across the date line and 48°S to 53°N) are flagged
+#' in the caption and metadata. Western Pacific maps using the default
+#' projection display flagged points in a world locator when the main view
+#' has points. Other projections display flagged points at their reported
+#' positions. Every requested point remains in the returned `sf` data.
 #'
 #' Boundary validation errors have class `dsir_map_boundary_error` and a
 #' `diagnostics` field with area keys, validation reasons, engine and version,
@@ -106,11 +124,12 @@
 dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
                      boundaries = NULL, boundary_key = NULL,
                      download = c("ask", "allow", "never"), cache_dir = NULL,
-                     refresh = FALSE, crs = NULL) {
+                     refresh = FALSE, crs = NULL, type = c("polygon", "point")) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     cli::cli_abort("Mapping requires the optional {.pkg sf} package; install it with {.code install.packages('sf')}.")
   }
   download <- match.arg(download)
+  type <- match.arg(type)
   .dsi_check_flag(refresh, "refresh")
   if (!is.data.frame(data)) cli::cli_abort("{.arg data} must be a data frame or sf table.")
   if (inherits(data, c("grouped_df", "rowwise_df"))) cli::cli_abort("Ungroup {.arg data} before mapping.")
@@ -126,6 +145,9 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   structured <- inherits(data, "dsir_data")
   if (structured && value != "value_num") {
     cli::cli_abort("For derived measures, supply an ordinary analysis table with explicit units; DSIR metadata describes {.field value_num}.")
+  }
+  if (type == "point" && (inherits(data, "sf") || !is.null(boundaries) || !is.null(boundary_key))) {
+    cli::cli_abort("Point maps use WHO ADM0 centre coordinates. Supply an analysis table without geometry or boundary arguments.")
   }
   if (inherits(data, "sf")) {
     if (!is.null(boundaries)) cli::cli_abort("Supply geometry in {.arg data} or {.arg boundaries}, not both.")
@@ -167,7 +189,8 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   if (is.null(boundaries)) {
     if (!is.null(boundary_key)) cli::cli_abort("{.arg boundary_key} applies only to supplied boundaries.")
     if (any(!grepl("^[A-Z]{3}$", keys))) cli::cli_abort("WHO ADM0 downloads require uppercase three-letter ISO3 keys.")
-    result <- .dsi_map_who_boundaries(keys, download, cache_dir, refresh)
+    result <- if (type == "point") .dsi_map_who_centres(keys, download, cache_dir, refresh) else
+      .dsi_map_who_boundaries(keys, download, cache_dir, refresh)
     borders <- result$data
     boundary.metadata <- result$metadata
   } else {
@@ -182,18 +205,34 @@ dsir_map <- function(data, value = "value_num", country = "iso3", year = NULL,
   map.data <- sf::st_sf(plain, geometry = sf::st_geometry(borders))
   missing <- sum(is.na(map.data[[value]]))
   subtitle <- c(if ("year" %in% names(plain)) paste("Year:", unique(plain$year)), context$strata)
-  caption <- c(context$caption,
-    if (boundary.metadata$origin == "who_gis") "Boundaries: WHO ADM0" else "Boundaries: user supplied",
-    if (missing) paste("Grey: missing estimate; areas:", missing))
-  p <- ggplot2::ggplot(map.data, ggplot2::aes(fill = .data[[value]])) +
-    ggplot2::geom_sf(colour = "grey50", linewidth = 0.2) +
-    ggplot2::scale_fill_viridis_c(end = 0.9, na.value = "grey85", name = context$unit) +
-    ggplot2::coord_sf(crs = crs, datum = NA) + theme_dsi(grid = "none") +
+  if (type == "point") {
+    outliers <- boundary.metadata$outliers$iso3
+    p <- .dsi_map_draw_points(map.data, keys, value, country, context$unit, crs, outliers)
+    geo.caption <- c(boundary.metadata$note, if (length(outliers))
+      paste0("Reported centres outside the Western Pacific display: ", paste(outliers, collapse = ", "), "."))
+    message(boundary.metadata$note)
+  } else {
+    geo.caption <- if (boundary.metadata$origin == "who_gis") "Boundaries: WHO ADM0" else "Boundaries: user supplied"
+    p <- ggplot2::ggplot(map.data, ggplot2::aes(fill = .data[[value]])) +
+      ggplot2::geom_sf(colour = "grey50", linewidth = 0.2) +
+      ggplot2::scale_fill_viridis_c(end = 0.9, na.value = "grey85", name = context$unit) +
+      ggplot2::coord_sf(crs = crs, datum = NA)
+  }
+  caption <- c(context$caption, geo.caption, if (missing) paste("Grey: missing estimate; areas:", missing))
+  p <- p + theme_dsi(grid = "none") +
     ggplot2::theme(axis.line.x = ggplot2::element_blank(),
       axis.line.y = ggplot2::element_blank(), axis.ticks = ggplot2::element_blank(),
       axis.text = ggplot2::element_blank(), panel.grid = ggplot2::element_blank()) +
     ggplot2::labs(title = context$title, subtitle = paste(subtitle, collapse = " | "),
                   caption = paste(caption, collapse = "\n"))
+  if (type == "point") {
+    p <- p + ggplot2::labs(x = NULL, y = NULL) +
+      ggplot2::theme(
+        panel.grid = ggplot2::element_line(colour = "#D6E5EC", linewidth = 0.25),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.background = ggplot2::element_rect(fill = "#F6FAFC", colour = NA),
+        plot.caption = ggplot2::element_text(hjust = 0))
+  }
   attr(p, "dsir_metadata") <- list(schema_version = 1L, layout = "map",
     created_at = .dsi_timestamp(), selection = list(country_column = country,
       value_column = value, keys = keys, year = if ("year" %in% names(plain)) unique(plain$year) else NULL,
