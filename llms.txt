@@ -307,7 +307,7 @@ SDG API.
 - [`sdg_last_updated()`](https://shanlong-who.github.io/DSIR/reference/sdg_last_updated.md)
   : Query the SDG Database Update Timestamp
 
-## Experimental maps
+## Experimental polygon and point maps
 
 Checked choropleths with user-supplied polygons or explicitly downloaded
 WHO ADM0 boundaries.

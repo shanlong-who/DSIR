@@ -1,5 +1,12 @@
 # Changelog
 
+## DSIR (development version)
+
+- Add `dsir_map(type = "point")` for WHO ADM0 centre coordinates. The
+  map and its message report the coordinate snapshot dates and the
+  unverified WHO GIS release status. Western Pacific coordinates outside
+  the regional display are flagged and retained.
+
 ## DSIR 0.15.1 (2026-11-27)
 
 - [`dsir_map()`](https://shanlong-who.github.io/DSIR/reference/dsir_map.md)

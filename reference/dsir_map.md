@@ -1,11 +1,11 @@
 # Map an Indicator with Recorded or User-Supplied Boundaries
 
-Draw a choropleth from a
+Draw a choropleth or a point-symbol map from a
 [dsir_data](https://shanlong-who.github.io/DSIR/reference/as_dsir_data.md)
-object, an ordinary data frame or an `sf` table. Return a standard
-ggplot. WHO ADM0 boundaries are downloaded by country only with
-permission and cached outside the package. Alternatively, supply your
-own polygons for an offline map.
+object or an ordinary data frame. Polygon maps also accept an `sf` table
+or supplied polygons. WHO ADM0 polygons and centre coordinates are
+requested only with permission and cached outside the package. Return a
+standard ggplot.
 
 ## Usage
 
@@ -20,7 +20,8 @@ dsir_map(
   download = c("ask", "allow", "never"),
   cache_dir = NULL,
   refresh = FALSE,
-  crs = NULL
+  crs = NULL,
+  type = c("polygon", "point")
 )
 ```
 
@@ -77,15 +78,23 @@ dsir_map(
 
 - refresh:
 
-  Logical, default `FALSE`. Explicitly download fresh WHO polygons even
-  when cached. Download permission is still required. Failed or invalid
-  downloads never replace a valid country cache.
+  Logical, default `FALSE`. Explicitly download fresh WHO polygons or
+  centre coordinates even when cached. Download permission is still
+  required. Failed or invalid downloads never replace a valid country
+  cache.
 
 - crs:
 
   Optional display coordinate reference system passed to
   [`ggplot2::coord_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html).
   It does not change cached source geometries.
+
+- type:
+
+  Map type. `"polygon"` (default) uses polygons. `"point"` reads the
+  published `CENTER_LON` and `CENTER_LAT` fields of the same WHO ADM0
+  layer. Use a regular analysis table without supplied boundaries in
+  this mode.
 
 ## Value
 
@@ -113,6 +122,19 @@ ADM0 returns empty or invalid geometry, obtain a corrected WHO boundary
 or provide a complete, validated `sf` table using `boundaries`. After a
 correction to the WHO service, set `refresh = TRUE` to request a fresh
 copy.
+
+Point maps require one finite, in-range coordinate pair per requested
+ISO3 code. They cache coordinates separately and emit a message with the
+UTC retrieval date or dates and the unverified WHO GIS release status.
+These dates also appear in the caption and the map metadata as records
+of coordinate retrieval. For Western Pacific codes in
+[wpro_cty](https://shanlong-who.github.io/DSIR/reference/who_region_vectors.md),
+centres outside the display extent (88°E to 141°W across the date line
+and 48°S to 53°N) are flagged in the caption and metadata. Western
+Pacific maps using the default projection display flagged points in a
+world locator when the main view has points. Other projections display
+flagged points at their reported positions. Every requested point
+remains in the returned `sf` data.
 
 Boundary validation errors have class `dsir_map_boundary_error` and a
 `diagnostics` field with area keys, validation reasons, engine and
